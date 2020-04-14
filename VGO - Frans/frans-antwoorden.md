@@ -12,6 +12,8 @@ Bij het gebruik van deze oplossingenlijst gaat u automatisch akkoord met de volg
 4. Was je handen na gebruik van deze lijst
 5. Wees vriendelijk tegen je moeder
 
+# Eerste oefenset
+
 ### Se présenter, les prépositions
 
 voor het eerste deel gaat de credit naar $naam
@@ -315,8 +317,6 @@ Vragen die ik fout had zijn aangeduid met '//'
 36/43 juist
 
  == 74%
-
-
 
 
 
