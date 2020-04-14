@@ -1,0 +1,142 @@
+Invoer: een bestand met 1 lijn tekst van 70 karakters, bvb.:
+Het spaanse graan heeft de orkaan doorstaan...
+Schrijf een programma dat telt hoeveel keer de letter 'a' voorkomt. Toon de uitvoer aan de gebruiker.
+
+%include 'gt.asm'
+covar
+
+inarea: resb 70
+uitvoer: resd 1
+
+inleiding
+
+
+openin
+lees
+cld
+
+sub eax, eax
+sub esi, esi
+sub ebx, ebx
+mov al, 'a'
+mov ecx, 70
+
+terug:
+cmp al, [inarea + esi]
+jne verder
+add ebx, 1
+verder:
+add esi, 1
+sub ecx, 1
+cmp ecx, 0
+je einde
+jmp terug
+
+einde:
+mov [uitvoer], ebx
+uit [uitvoer]
+
+slot
+
+Herschrijf de vorige oefening om alle klinkers (a,e,i,o,u) te tellen.
+
+%include 'gt.asm'
+covar
+
+inarea: resb 70
+uitvoer: resd 1
+
+inleiding
+
+
+openin
+lees
+cld
+
+sub eax, eax
+sub esi, esi
+sub ebx, ebx
+mov al, 'a'
+mov ecx, 70
+
+terug:
+mov al, 'a'
+cmp al, [inarea + esi]
+je verder
+mov al, 'e'
+cmp al, [inarea + esi]
+je verder
+mov al, 'i'
+cmp al, [inarea + esi]
+je verder
+mov al, 'o'
+cmp al, [inarea + esi]
+je verder
+mov al, 'u'
+cmp al, [inarea + esi]
+je verder
+jmp skip
+verder:
+add ebx, 1
+skip:
+add esi, 1
+sub ecx, 1
+cmp ecx, 0
+je einde
+jmp terug
+
+einde:
+mov [uitvoer], ebx
+uit [uitvoer]
+
+slot
+
+
+Schrijf een programma dat een woord uitleest uit het invoerbestand. Het woord staat op de eerste lijn (die verder uit allemaal spaties bestaat). Lees dan het bestand verder uit, en tel hoe vaak het woord nog voorkomt in de rest van de tekst. Toon het resultaat aan de gebruiker. (Elke lijn bevat één woord gevolgd door spaties.)
+
+%include 'gt.asm'
+covar
+
+inarea: resb 70
+uitvoer: resd 1
+
+inleiding
+
+
+openin
+lees
+cld
+
+sub eax, eax
+sub esi, esi
+sub ebx, ebx
+sub edx, edx
+mov al, 'a'
+mov ecx, 10
+
+terug:
+mov al, [inarea + edi]
+cmp al, [inarea + esi]
+jne verder
+add ebx, 1
+verder:
+add esi, 1
+sub ecx, 1
+cmp ecx, 0
+je next
+jmp terug
+next:
+add edi, 70
+sub edx, 1
+cmp edx, 0 
+je einde
+
+
+einde:
+mov [uitvoer], ebx
+uit [uitvoer]
+
+slot
+
+
+

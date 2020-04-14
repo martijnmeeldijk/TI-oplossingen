@@ -1,0 +1,392 @@
+Schrijf een programma dat 2 getallen leest via inv en de som afdrukt in het uitvoerbestand. De getallen bestaan uit niet meer dan 5 cijfers. Als uitvoer willen we:
+
+HET EERSTE GETAL IS:     39
+HET TWEEDE GETAL IS:     40
+===========================
+DE SOM IS:               79
+
+%include "gt.asm"
+covar
+
+hulp: resd 1
+getal1: resd 1
+getal2: resd 2
+inarea: resb 70
+outarea: resb 70
+         db 13,10
+vb1: dd "HET EERSTE GETAL IS:"
+vb2: dd "HET TWEEDE GETAL IS:"
+vb3: dd "DE SOM IS:          "
+spatie: dd " "
+lijn: dd "==========================="
+som: dd "DE SOM IS:"
+
+inleiding
+openuit
+
+inv[getal1]
+inv[getal2]
+
+# EERSTE GETAL
+cld
+mov ecx, 70
+mov al, " "
+mov edi, outarea
+rep stosb
+
+mov ecx, 20
+mov esi, vb1
+mov edi, outarea
+rep movsb
+
+mov eax, [getal1]
+
+mov edi, outarea + 27
+std
+mov ebx, 10
+lus: mov edx, 0
+idiv ebx
+add dl, 30h
+xchg al, dl
+stosb
+xchg al, dl
+cmp eax, 0
+jne lus
+schrijf
+
+# TWEEDE GETAL
+cld
+mov ecx, 70
+mov al, " "
+mov edi, outarea
+rep stosb
+
+mov ecx, 20
+mov esi, vb2
+mov edi, outarea
+rep movsb
+
+mov eax, [getal2]
+
+mov edi, outarea + 27
+std
+mov ebx, 10
+lus1: mov edx, 0
+idiv ebx
+add dl, 30h
+xchg al, dl
+stosb
+xchg al, dl
+cmp eax, 0
+jne lus1
+schrijf
+
+# STREEP
+cld
+mov ecx, 70
+mov al, " "
+mov edi, outarea
+rep stosb
+
+cld
+mov ecx, 27
+mov al, "="
+mov edi, outarea
+rep stosb
+schrijf
+
+# SOM
+cld
+mov ecx, 70
+mov al, " "
+mov edi, outarea
+rep stosb
+
+mov ecx, 20
+mov esi, vb3
+mov edi, outarea
+rep movsb
+
+mov eax, [getal1]
+add eax, [getal2]
+
+mov edi, outarea + 27
+std
+mov ebx, 10
+lus2: mov edx, 0
+idiv ebx
+add dl, 30h
+xchg al, dl
+stosb
+xchg al, dl
+cmp eax, 0
+jne lus2
+schrijf
+
+
+
+
+slot
+
+;BELASTING BEREKENEN
+
+Invoer (meerdere lijnen):
+   kol  1-20: naam
+   kol 31-40: inkomen
+Uitvoer (voor ieder invoerrecord):
+   kol  1-20: naam (idem als invoer)
+   kol 31-40: inkomen (idem als invoer)
+   kol 42-50: belasting
+Deze belasting wordt als volgt berekent:
+
+Als inkomen <= 2500, dan is belasting = 0
+Als inkomen > 2500 en <= 5000, dan is belasting = (inkomen - 2500) * 10%
+Als inkomen > 5000 en <= 10000, dan is belasting = (inkomen - 5000) * 20% + 250
+Als inkomen > 10000, dan is belasting = (inkomen - 10000) * 40% + 1250
+
+%include "gt.asm"
+covar
+
+hulp: resd 1
+inarea: resb 70
+outarea: resb 70
+         db 13,10
+spatie: dd " "
+tien: dd 10
+vijf: dd 5
+twee: dd 2
+een: dd 1
+
+inleiding
+sub esi, esi 
+openuit
+openin
+
+lus:
+cld
+mov ecx, 70
+mov al, " "
+mov edi, outarea
+rep stosb
+
+lees
+cmp eax, 0
+je einde
+
+cld
+mov ecx, 70
+mov esi, inarea
+mov edi, outarea
+rep movsb
+
+
+mov esi, inarea + 30
+mov ecx, 10
+tekstbin
+mov [hulp], eax
+uit [hulp]
+
+imul dword [een]
+cmp eax, 2500
+jg next
+sub eax, eax
+jmp past
+
+
+next:
+cmp eax, 5000
+jg next1
+sub eax, 2500
+idiv dword [tien]
+jmp past
+
+next1:
+cmp eax, 10000
+jg next2
+sub eax, 5000
+idiv dword [vijf]
+add eax, 250
+jmp past
+
+next2
+sub eax, 10000
+imul eax, 2
+idiv dword [vijf]
+add eax, 1250
+past:
+
+
+mov edi, outarea + 49
+std
+mov ebx, 10
+luss: mov edx, 0
+idiv ebx
+add dl, 30h
+xchg al, dl
+stosb
+xchg al, dl
+cmp eax, 0
+jne luss
+schrijf
+
+
+jmp lus
+
+
+
+einde:
+
+
+
+
+
+
+
+slot
+
+
+
+Maak een invoerbestand met meerdere lijnen als volgt:
+   kol  1-20: naam
+   kol 21-25: aantal dagen
+   kol 31-35: dagloon
+1) Schrijf een programma dat de eerste record van dit invoerbestand leest en afdrukt. De uitvoer wordt dus:
+   kol  1-35: idem als op invoerrecord
+   kol 36-70: blanco
+2) Wijzig uw programma zodat nu het invoerbestand record per record afgedrukt wordt.
+
+3) Voeg volgende functie toe aan uw programma: voor ieder invoerrecord wordt nu ook het brutoloon (= aantal-dagen * dagloon) berekend en afgedrukt in kol 42-50.
+
+4) Voeg volgende functie toe aan uw programma: voor ieder invoerrecord wordt nu ook de afhouding (= brutoloon * 40%) berekend en afgedrukt in kol 52-60.
+
+5) Voeg volgende functie toe aan uw programma: nadat de gegevens van het laatste invoerrecord verwerkt (en afgedrukt) zijn, wordt er: (a) een blanco lijn gedrukt, en (b) het totaal van de kolommen brutoloon en afhouding afgedrukt.
+
+Het is verboden de bevelen voor een volgend punt in te typen zonder dat men er zich van vergewist heeft dat de voorgaande punten perfect opgelost zijn!
+%include "gt.asm"
+covar
+
+hulp: resd 1
+hulp1: resd 1
+inarea: resb 70
+outarea: resb 70
+         db 13,10
+spatie: dd " "
+tien: dd 10
+vijf: dd 5
+twee: dd 2
+een: dd 1
+totaalbruto: resd 1
+totaalafhouding: resd 1
+
+inleiding
+sub esi, esi 
+openuit
+openin
+
+lus:
+cld
+mov ecx, 70
+mov al, " "
+mov edi, outarea
+rep stosb
+
+lees
+cmp eax, 0
+je einde
+
+cld
+mov ecx, 36
+mov esi, inarea
+mov edi, outarea
+rep movsb
+
+cld
+mov esi, inarea + 21
+mov ecx, 4
+tekstbin
+mov [hulp], eax
+uit [hulp]
+
+cld
+mov esi, inarea + 31
+mov ecx, 4
+tekstbin
+mov [hulp1], eax
+uit [hulp1]
+
+
+imul dword [hulp]
+mov [hulp], eax
+add [totaalbruto], eax
+
+mov edi, outarea + 48
+std
+mov ebx, 10
+luss: mov edx, 0
+idiv ebx
+add dl, 30h
+xchg al, dl
+stosb
+xchg al, dl
+cmp eax, 0
+jne luss
+
+mov eax, [hulp]
+imul dword [een]
+imul dword [twee]
+idiv dword [vijf]
+add [totaalafhouding], eax
+
+mov edi, outarea + 58
+std
+mov ebx, 10
+lus2: mov edx, 0
+idiv ebx
+add dl, 30h
+xchg al, dl
+stosb
+xchg al, dl
+cmp eax, 0
+jne lus2
+
+schrijf
+jmp lus
+einde:
+
+cld
+mov ecx, 70
+mov al, " "
+mov edi, outarea
+rep stosb
+schrijf
+
+mov eax, [totaalbruto]
+mov edi, outarea + 48
+std
+mov ebx, 10
+lusbruto: mov edx, 0
+idiv ebx
+add dl, 30h
+xchg al, dl
+stosb
+xchg al, dl
+cmp eax, 0
+jne lusbruto
+
+mov eax, [totaalafhouding]
+mov edi, outarea + 58
+std
+mov ebx, 10
+lusafhouding: mov edx, 0
+idiv ebx
+add dl, 30h
+xchg al, dl
+stosb
+xchg al, dl
+cmp eax, 0
+jne lusafhouding
+
+schrijf
+
+
+slot

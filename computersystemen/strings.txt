@@ -1,0 +1,75 @@
+Schrijf een programma dat afdrukt:
+WHO IS MY TAILOR?
+MY TAILOR IS CHRISTIAN DIOR
+MY TAILOR IS RICH
+IS MY TAILOR RICH?
+
+
+%include "gt.asm"
+covar
+outarea: resb 70
+db 0Dh, 0Ah
+vb1: db 'WHO IS MY TAILOR?'
+vb2: db 'MY TAILOR IS CHRISTIAN DIOR'
+vb3: db 'MY TAILOR IS RICH'
+vb4: db 'IS MY TAILOR RICH?'
+spatie: db ' '
+
+
+
+inleiding
+openuit
+
+mov ecx, 70
+mov esi, spatie
+mov edi, outarea
+rep movsb
+
+mov ecx, 17
+mov esi, vb1
+mov edi, outarea
+rep movsb
+schrijf
+
+mov ecx, 70
+mov esi, spatie
+mov edi, outarea
+rep movsb
+
+
+sub esi, esi
+
+mov ecx, 27
+mov esi, vb2
+mov edi, outarea
+rep movsb
+schrijf
+
+mov ecx, 70
+mov esi, spatie
+mov edi, outarea
+rep movsb
+
+sub esi, esi
+
+mov ecx, 17
+mov esi, vb3
+mov edi, outarea
+rep movsb
+schrijf
+
+mov ecx, 70
+mov esi, spatie
+mov edi, outarea
+rep movsb
+
+sub esi, esi
+
+mov ecx, 18
+mov esi, vb4
+mov edi, outarea
+rep movsb
+schrijf
+
+
+slot

@@ -1,0 +1,150 @@
+Schrijf een programma dat 9 getallen inleest en de volgende getallen berekent en toont:
+
+Het gemiddelde
+Hoeveel getallen groter zijn dan het gemiddelde
+Hoeveel getallen kleiner zijn dan het gemiddelde
+
+%include "gt.asm"
+covar
+getal: resd 9
+ding: resd 1
+meer: resd 1
+minder: resd 1
+negen: dd 9
+een: dd 1
+
+inleiding
+sub ecx, ecx
+sub eax, eax
+sub edi, edi
+mov ecx, 9
+
+
+
+hoger:  
+    cmp ecx, 0
+    jle verder
+    inv[getal + edi]
+    add eax, [getal + edi]
+    add edi, 4
+    sub ecx, 1
+    jmp hoger
+
+verder:
+mov [ding], eax
+imul dword [een]
+idiv dword [negen]
+mov [ding], eax
+mov ecx, 9
+sub edi, edi
+
+terug:
+    mov eax, [ding]
+    cmp eax, [getal + edi]
+    jl nogverder
+    je natel
+    sub eax, eax
+    add eax, 1
+    add [meer], eax
+    add edi, 4
+    jmp na
+    
+nogverder:
+    mov eax, [ding]
+    cmp eax, [getal + edi]
+    sub eax, eax
+    add eax, 1
+    add [minder], eax
+    
+natel:    
+    add edi, 4
+na:
+    loop terug
+    
+
+uit [ding]
+uit [minder]
+uit [meer]
+slot
+
+
+
+Schrijf een programma dat 6 getallen inleest en deze gesorteerd van klein naar groot afdrukt. Om te sorteren kan men als volgt te werk gaan:
+doe 5 maal:
+  { i = 0;
+    doe 5 maal
+      { vergelijk element(i) met element(i+1);
+        if (element(i) > element(i+1) {
+          verwissel;
+        }
+        i = i + 1;
+      }
+  }
+
+%include "gt.asm"
+covar
+getal: resd 6
+nul: dd 0
+hulp1: resd 1
+hulp2: resd 2
+teller: resd 1
+
+inleiding
+
+
+sub esi, esi
+sub ecx, ecx
+
+
+inv [getal]
+inv [getal + 4]
+inv [getal + 8]
+inv [getal + 12]
+inv [getal + 16]
+inv [getal + 20]
+
+begin:
+sub ecx, ecx
+sub esi, esi
+
+vergelijk:
+cmp ecx, 5
+je verder
+mov eax, [getal + esi]
+mov edx, [getal + esi + 4]
+cmp eax, edx
+jle skip
+mov [getal + esi + 4], eax
+mov [getal + esi], edx
+skip:
+
+add ecx, 1
+add esi, 4
+jmp vergelijk
+
+verder:
+sub ecx, ecx
+mov ecx, [teller]
+add ecx, 1
+mov [teller], ecx
+cmp ecx, 5
+jle begin
+
+
+
+
+uit [getal]
+uit [getal + 4]
+uit [getal + 8]
+uit [getal + 12]
+uit [getal + 16]
+uit [getal + 20]
+
+
+
+
+
+
+
+slot
+
