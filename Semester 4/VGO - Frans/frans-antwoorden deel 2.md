@@ -434,10 +434,10 @@ Welk= quel
 
     
 
-15. Toegang hebben tot gegevens //
+15. Toegang hebben tot gegevens
 
     ```
-    Avoir accès aux données
+    Avoir accès à des données
     ```
 
     
@@ -466,10 +466,10 @@ Welk= quel
 
     
 
-19. De boxen aansluiten // 
+19. De boxen aansluiten
 
     ```
-    Connecter les haute-parleurs
+    Brancher les enceintes
     ```
 
     
