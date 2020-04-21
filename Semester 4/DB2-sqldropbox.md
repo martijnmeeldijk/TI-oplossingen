@@ -246,4 +246,28 @@ where h.objectnaam like 'Mars' or h.objectnaam like 'Maan'
 
 order by 1,2
 ```
+Geef de klant die het meest op de maan is geweest (+het aantal). Sorteer van voor naar achter.
+```postgreSQL
+select klantnr, count(objectnaam)
+from deelnames d inner join bezoeken b on(b.reisnr = d.reisnr)
+where b.objectnaam = 'Maan'
+group by klantnr
+order by 2 desc
+FETCH FIRST ROW ONLY
+```
+Maak een lijst met die mensen die meer dan 2 maal een reis ondernomen hebben waarin men geen enkele satelliet van Jupiter bezoekt !. Sorteer van voor naar achter.
 
+```postgreSQL
+select d.klantnr ,k.naam || k.vnaam  as "volledige naam", count(d.reisnr) as "aantal ondernomen reizen"
+from deelnames d inner join klanten k on (d.klantnr = k.klantnr)
+where d.reisnr not in (
+	select r.reisnr from reizen r 
+inner join bezoeken b on(r.reisnr = b.reisnr)
+where objectnaam  in  
+(select objectnaam
+from hemelobjecten
+where satellietvan = 'Jupiter')
+)
+group by d.klantnr, k.naam, k.vnaam
+having count(d.reisnr)>2
+```
