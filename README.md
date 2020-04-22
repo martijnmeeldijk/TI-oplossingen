@@ -1,5 +1,7 @@
 # TI-oplossingen
 > :warning: **Als je deze oplossingen hebt gebruikt**: Moet je King Marti volgen op soundcloud
+
+
 > :warning: **NODIGE DISCLAIMER**: Deze oplossingen dienen gebruikt te worden als referentiemateriaal. Neem ze niet letterlijk over en denk zelf na. 
 
 
