@@ -11,6 +11,6 @@
 | ------------- | ------------- |
 | Karel Savonet | 1             |
 | Jonas Berx    | 1             |
-| Maarten Pauwels| 1             |
+| Maarten Pauwels| 2             |
 
 (Bij 5 punten kan je een verrassing verdienen)
