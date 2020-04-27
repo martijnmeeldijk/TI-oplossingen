@@ -16,6 +16,8 @@
   <!-- Custom styles for this template -->
   <link href="css/scrolling-nav.css" rel="stylesheet">
 
+  <link href="jquery.dynatable.css" rel="stylesheet">
+
 </head>
 
 <body id="page-top">
@@ -49,14 +51,14 @@
     <div class="container">
       <div class="row">
         <div class="col-lg-8 mx-auto">
-          <h2>About this page</h2>
-          <p class="lead">This is a great place to talk about your webpage. This template is purposefully unstyled so you can use it as a boilerplate or starting point for you own landing page designs! This template features:</p>
-          <ul>
-            <li>Clickable nav links that smooth scroll to page sections</li>
-            <li>Responsive behavior when clicking nav links perfect for a one page website</li>
-            <li>Bootstrap's scrollspy feature which highlights which section of the page you're on in the navbar</li>
-            <li>Minimal custom CSS so you are free to explore your own unique design options</li>
-          </ul>
+          <table id="my-ajax-table" class="dynatable">
+            <thead>
+              <th>author:login</th>
+              <th>total</th>
+            </thead>
+            <tbody>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
@@ -66,8 +68,8 @@
     <div class="container">
       <div class="row">
         <div class="col-lg-8 mx-auto">
-          <h2>Disclaimer</h2>
-          <p class="lead">No one will ever like you. No just kidding, I like you.</p>
+          <h2>fuk</h2>
+          <p class="lead">het wil niet werken, ik wil een lijst die een API call doet naar github, en zo per persoon het aantal commits toont. hij toont het aantal commits, maar omdat het een nested JSON is wilt hij de naam niet tonen </p>
         </div>
       </div>
     </div>
@@ -93,7 +95,24 @@
   <!-- Custom JavaScript for this theme -->
   <script src="js/scrolling-nav.js"></script>
 
-  <script></script>
+  <script src="jquery.dynatable.js"></script>
+
+  <script>
+
+  
+    $.getJSON('https://api.github.com/repos/martijnmeeldijk/TI-oplossingen/stats/contributors', function (evt){
+      console.log(evt);
+      $('#my-ajax-table').dynatable({
+        dataset: {
+        records: evt
+      }
+    });
+    }
+    );
+    
+    
+    
+</script>
 
 </body>
 

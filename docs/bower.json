@@ -1,40 +1,30 @@
 {
-  "name": "Dynatable",
+  "name": "dynatable",
   "description": "A funner, semantic, HTML5+JSON, interactive table plugin.",
   "version": "0.3.1",
   "keywords": [
     "table",
     "datatables",
-    "dynamic table"
+    "dynamic"
   ],
-  "maintainers": [
+  "authors": [
     {
       "name": "Steve Schwartz",
       "email": "steve@alfajango.com",
-      "web": "http://www.alfajango.com/blog"
-    }
-  ],
-  "contributors": [
-    {
-      "name": "Steve Schwartz",
-      "email": "steve@alfajango.com",
-      "web": "http://www.alfajango.com/blog"
+      "homepage": "http://www.alfajango.com/blog"
     }
   ],
   "dependencies": {
-    "jquery": "1.6"
+    "jquery": ">=1.6"
   },
-  "bugs": {
-    "mail": "support@alfajango.com",
-    "web": "https://github.com/alfajango/jquery-dynatable/issues"
-  },
-  "repositories"	: [
+  "main": "jquery.dynatable.js",
+  "repository"	: [
     {
       "type": "git",
       "url": "https://github.com/alfajango/jquery-dynatable.git"
     }
   ],
-  "licenses": [
+  "license": [
     {
       "name": "AGPL",
       "url": "http://www.dynatable.com/license"
@@ -44,5 +34,13 @@
       "url": "http://www.dynatable.com/license"
     }
   ],
-  "homepage": "http://www.dynatable.com"
+  "homepage": "http://www.dynatable.com",
+  "ignore": [
+    "**/.*",
+    "CONTRIBUTING.md",
+    "node_modules",
+    "vendor",
+    "test",
+    "tests"
+  ]
 }
