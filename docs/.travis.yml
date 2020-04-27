@@ -1,6 +1,11 @@
-language: ruby
-cache: bundler
-rvm: 2.6
-
-install: script/bootstrap
-script: script/cibuild
+sudo:          false
+language:      node_js
+node_js:
+  - "node"
+install:       npm install
+script:
+  - npm test
+  - gulp
+cache:
+  directories:
+    - node_modules
