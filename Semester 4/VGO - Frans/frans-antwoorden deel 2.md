@@ -320,7 +320,6 @@ Welk= quel
 
 ## Les actions, traduisez
 
-(Foute antwoorden zijn aangeduid met '//')
 
 1. Een bestand openen
 
@@ -488,6 +487,5 @@ Welk= quel
     Appuyer sur un bouton
     ```
 
-    19/21
 
 
