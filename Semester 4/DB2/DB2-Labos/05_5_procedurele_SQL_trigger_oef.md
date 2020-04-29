@@ -1,6 +1,6 @@
 # Reeks les Triggers
 
-Bekijke voo deze vragen zeker de links die Bertels heeft gegeven
+Bekijk voor deze vragen zeker de links die Bertels heeft gegeven
 
 * http://www.phphulp.nl/php/tutorials/3/371/ 
 * http://www.phphulp.nl/php/tutorials/3/493/1184/ 
@@ -62,6 +62,6 @@ hier staat het echt letterlijk in
 4. *Schrijf een nuttige trigger op je eigen databank.*
 
 ```
-nuttig is vrij te interpreteren, ik heb een trigger geschreven die een exception gooit: "Andreas mag niet mee" als je Andreas Milants probeert te inserten bij de klanten.
+nuttig is vrij te interpreteren, ik heb een trigger geschreven die een exception gooit: "Andreas mag niet mee" als je Andreas Milants probeert te inserten bij de klanten van ruimtereizen.
 ```
 
