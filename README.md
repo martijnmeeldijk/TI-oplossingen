@@ -7,6 +7,7 @@
 
 
 ## Points:
+
 | Naam          | Points        |
 | ------------- | ------------- |
 | Maarten Pauwels| 2             |
