@@ -328,10 +328,10 @@ un MVVM
 une vue
 ```
 
-7. een ontwerppattroon --fout
+7. een ontwerppattroon
 
 ```
-un modèle de conception 
+un patron de conception
 ```
 
 ![😎](https://static.xx.fbcdn.net/images/emoji.php/v9/t22/2/16/1f60e.png)	
@@ -381,7 +381,7 @@ un bouton
 15.  een textbox  --fout
 
 ```
-une boîte de texte
+une fenêtre de texte
 ```
 
 16. een eigenschap 
@@ -432,16 +432,16 @@ un chiffre
 en bas
 ```
 
-24. bovenaan --fout
+24. bovenaan 
 
 ```
-au sommet
+en haut
 ```
 
-25. een spelrooster --fout
+25. een spelrooster 
 
 ```
-Un calendrier de jeu 
+une grille de jeu
 ```
 
 26. een vakje 
@@ -465,12 +465,12 @@ une case pleine
 29. een puzzel  --fout
 
 ```
-un puzzle
+un casse-tête
 ```
 
-30. een puzzelspel --fout
+30. een puzzelspel 
 
 ```
-een un jeu de réflexion 
+un jeu de réflexion 
 ```
 
