@@ -1,6 +1,20 @@
 # Oplossingen SQL-Dropbox (DB2)
 
+## Inhoud
 
+\* [Oplossingen SQL-Dropbox (DB2)](#oplossingen-sql-dropbox-db2)
+
+   \* [Subq 2 verbreding](#subq-2-verbreding)
+
+   \* [Optim](#optim)
+
+   \* [Vensters](#vensters)
+
+   \* [Joins Extra](#joins-extra)
+
+   \* [Extra 4](#extra-4)
+
+   \* [Extra 5](#extra-5)
 
 ## Subq 2 verbreding
 
