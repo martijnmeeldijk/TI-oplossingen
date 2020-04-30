@@ -49,7 +49,6 @@
     * [Decision Tree](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester%204/BA%20minor%20tests/Decision_Tree.md)
     * [KNN](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester%204/BA%20minor%20tests/knn.md)
     * [Naive Bayes](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester%204/BA%20minor%20tests/naivebayes.md)
-    
 * Business Analytics Major
   * [Pentaho Exercises](https://github.com/martijnmeeldijk/TI-oplossingen/tree/master/Semester%204/Ba_Major/Pentaho_Exercises)
 * Databanken 2
@@ -62,6 +61,7 @@
     * [Labo 6 - Triggers, views en performantie](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester%204/DB2/DB2-Labos/06_3_view_sp_triggers_performantie.md)
     * [Labo 7 - Vensters en aggregaties](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester%204/DB2/DB2-Labos/07_vensters_en_aggregaties.md)
   * [Hoe maak ik een lokale databank](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester%204/DB2/DB2-Labos/hoe_maak_ik_een_lokale_databank.md)
+  * [Oplossingen Labos Jasper](https://github.com/martijnmeeldijk/TI-oplossingen/tree/master/Semester%204/DB2/DB2-Labos/jasper)
 * Frans (VGO)
   * Antwoorden Toledo Tests
     * [Eerste Reeks](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester%204/VGO%20-%20Frans/frans-antwoorden.md)
