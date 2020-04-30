@@ -54,7 +54,7 @@
   * [Pentaho Exercises](https://github.com/martijnmeeldijk/TI-oplossingen/tree/master/Semester%204/Ba_Major/Pentaho_Exercises)
 * Databanken 2
   * [Sql Dropbox](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester%204/DB2/DB2-sqldropbox.md)
-  * ['Oplossingen' Labos](https://github.com/martijnmeeldijk/TI-oplossingen/tree/master/Semester%204/DB2/DB2-Labos)
+  * [Guides Labos](https://github.com/martijnmeeldijk/TI-oplossingen/tree/master/Semester%204/DB2/DB2-Labos)
     * [Labo 2 - Index Geolite](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester%204/DB2/DB2-Labos/02_3_index_geolite.md)
     * [Labo 3 - Optimalistatie](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester%204/DB2/DB2-Labos/03_04_optimalisatie_oef.md)
     * [Labo 4 - Chinook Media](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester%204/DB2/DB2-Labos/04_04_chinook_media.md)
