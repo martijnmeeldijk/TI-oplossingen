@@ -26,7 +26,7 @@ and b.objectnaam is null
 
 deze vraag is:
 
-<img src="/Users/martijn/Desktop/School/1-4/opl/TI-oplossingen/Semester 4/DB2/DB2-Labos/img/bretels-certified.png" alt="bretels-certified" style="zoom:25%;" />
+<img src="img/bretels-certified.png" alt="bretels-certified" style="zoom:25%;" />
 
 
 
