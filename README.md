@@ -8,7 +8,7 @@
 
 | Naam          | Points        |
 | ------------- | ------------- |
-| Maarten Pauwels| 3             |
+| Maarten Pauwels| 4            |
 | Karel Savonet | 1             |
 | Jonas Berx    | 1             |
 | Jasper Vandenberghen| 1        |
