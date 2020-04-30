@@ -20,11 +20,14 @@
 ### Semester 1
 * Computersystemen
   * [Oefeningen](https://github.com/martijnmeeldijk/TI-oplossingen/tree/master/Semester%201/computersystemen)
+
+
 ### Semester 2
 * [Computernetwerken 2](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester%202)
   * [Oefeningen](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester%202/cnw2.pdf)
   * [Oplossingen monitoraat 2019](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester%202/oplossingen%20monitoraat%20cnw2.txt)
-  
+
+
 ### Semester 3
 * IT en Management
   * [Samenvatting](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester%203/SAMENVATTING%20IT%26M.docx)
@@ -39,7 +42,8 @@
 * Webontwikkeling 3
   * [Samenvatting](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester%203/samenvatting%20Webontwikkeling%203.pdf)
   
-## Semester 4
+
+### Semester 4
 * Business Analytics minor
   * Tests 
     * [Decision Tree](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester%204/BA%20minor%20tests/Decision_Tree.md)
