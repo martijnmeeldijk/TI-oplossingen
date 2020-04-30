@@ -4,6 +4,17 @@
 
 > :warning: **NODIGE DISCLAIMER**: Deze oplossingen dienen gebruikt te worden als referentiemateriaal. Neem ze niet letterlijk over en denk zelf na. 
 
+## Bijdrage Points:
+
+| Naam          | Points        |
+| ------------- | ------------- |
+| Maarten Pauwels| 2             |
+| Karel Savonet | 1             |
+| Jonas Berx    | 1             |
+| Jasper Vandenberghen| 1        |
+
+(Bij 5 punten kan je een verrassing verdienen)
+
 ## Contents
 
 ### Semester 1
@@ -53,13 +64,4 @@
     * [Tweede Reeks](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester%204/VGO%20-%20Frans/frans-antwoorden%20deel%202.md)
     * [Derde Reeks (coming soon)](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester%204/VGO%20-%20Frans/frans-antwoorden%20deel%203.md)
 
-## Points:
 
-| Naam          | Points        |
-| ------------- | ------------- |
-| Maarten Pauwels| 2             |
-| Karel Savonet | 1             |
-| Jonas Berx    | 1             |
-| Jasper Vandenberghen| 1        |
-
-(Bij 5 punten kan je een verrassing verdienen)
