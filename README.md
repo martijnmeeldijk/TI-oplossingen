@@ -8,7 +8,7 @@
 
 | Naam          | Points        |
 | ------------- | ------------- |
-| Maarten Pauwels| 2             |
+| Maarten Pauwels| 3             |
 | Karel Savonet | 1             |
 | Jonas Berx    | 1             |
 | Jasper Vandenberghen| 1        |
@@ -66,6 +66,6 @@
   * Antwoorden Toledo Tests
     * [Eerste Reeks](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester%204/VGO%20-%20Frans/frans-antwoorden.md)
     * [Tweede Reeks](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester%204/VGO%20-%20Frans/frans-antwoorden%20deel%202.md)
-    * [Derde Reeks (coming soon)](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester%204/VGO%20-%20Frans/frans-antwoorden%20deel%203.md)
+    * [Derde Reeks](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester%204/VGO%20-%20Frans/frans-antwoorden%20deel%203.md)
 
 
