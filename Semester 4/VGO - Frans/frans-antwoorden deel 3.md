@@ -12,6 +12,14 @@ Bij het gebruik van deze oplossingenlijst gaat u automatisch akkoord met de volg
 
 # Derde oefenset
 
+### Inhoud
+
+  \* [Les qualités de votre code](#les-qualités-de-votre-code)
+
+  \* [Les verbes et actions pour parler de votre projet](#les-verbes-et-actions-pour-parler-de-votre-projet)
+
+  \* [Les termes nécessaires pour parler de votre projet](#les-termes-nécessaires-pour-parler-de-votre-projet)
+
 ## Les qualités de votre code
 
 *Traduisez les mots entre parenthèses*
