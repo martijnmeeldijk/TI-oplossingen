@@ -271,3 +271,48 @@ where satellietvan = 'Jupiter')
 group by d.klantnr, k.naam, k.vnaam
 having count(d.reisnr)>2
 ```
+
+
+
+## Extra 5
+
+Geef de nummers van de wedstrijden gespeeld door een speler waarvan de naam begint met een B of D. Sorteer van voor naar achter.
+
+```postgreSQL
+select wedstrijdnr
+from spelers s inner join wedstrijden 
+using(spelersnr)
+where s.naam like 'B%' or s.naam like 'D%'
+order by 1
+```
+
+Geef van elke speler die minstens 1 wedstrijd gewonnen heeft voor team nr 1 en voor wie in totaal meer dan 100 euro aan boete betaald is, het spelersnummer, zijn naam, woonplaats en het totale boetebedrag. Sorteer van voor naar achter.
+
+```postgreSQL
+select s.spelersnr, s.naam, s.plaats, sum(b.bedrag)
+from spelers s
+inner join boetes b on (s.spelersnr = b.spelersnr)
+where s.spelersnr in (select spelers.spelersnr
+					  from spelers inner join wedstrijden using (spelersnr)
+					  where gewonnen > verloren and teamnr = 1
+					 )
+group by 1,2,3
+having sum(b.bedrag) > 100 
+order by 1,2,3,4
+```
+
+Geef alle spelers voor wie meer boetes zijn betaald dan dat ze wedstrijden hebben gespeeld. Sorteer van voor naar achter
+
+```postgreSQL
+select s.naam, s.voorletters, s.geb_datum
+from spelers s
+where (select count(*)
+	   from boetes 
+	   where boetes.spelersnr = s.spelersnr)
+		>
+		(select count(*)
+	   from wedstrijden 
+	   where wedstrijden.spelersnr = s.spelersnr)
+order by 1,2,3
+```
+
