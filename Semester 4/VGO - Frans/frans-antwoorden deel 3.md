@@ -62,10 +62,10 @@ lisible
 vue d'ensemble
 ```
 
-7. S il y a des ... (fouten), on les retrouve plus facilement. //
+7. S il y a des ... (fouten), on les retrouve plus facilement. 
 
 ```
-erreurs
+fautes
 ```
 
 8. Une classe doit être ... (herbruikbaar).
@@ -110,10 +110,10 @@ efficace
 testable
 ```
 
-15. Cela permet de voir si l'appli ... (werkt). //
+15. Cela permet de voir si l'appli ... (werkt).
 
 ```
-travaille
+fonctionne
 ```
 
 16. Autrement, on ne peut pas trouver les erreurs, et donc les ... (verbeteren).
@@ -134,10 +134,10 @@ indépendant
 la vue
 ```
 
-19. Si tout est indépendant, on peut ... (delen) les tâches. partager? //
+19. Si tout est indépendant, on peut ... (delen) les tâches.
 
 ```
-diviser
+partager
 ```
 
 20. Par exemples on peut travailler à plusieurs ... (tegelijkertijd) sur le code.
@@ -172,10 +172,10 @@ Traduisez en néerlandais les actions suivantes:
 de beperkingen respecteren
 ```
 
-2. Ajouter une fonctionnalité //
+2. Ajouter une fonctionnalité 
 
 ```
-Een functie toevoegen
+Een functionnaliteit toevoegen (dubbele n)
 ```
 
 3. Eteindre le son 
@@ -268,22 +268,22 @@ Op het spelscherm komen
 Een spel selecteren
 ```
 
-18. Noircir une case //
+18. Noircir une case 
 
 ```
-Een vierkant zwart maken
+Een vakje zwart maken
 ```
 
-19. Résoudre une grille //
+19. Résoudre une grille
 
 ```
-Een rooster oplossen
+Een puzzel oplossen
 ```
 
-20. Faire apparaître une image //
+20. Faire apparaître une image 
 
 ```
-Een afbeelding laten verschijnen
+Een beeld laten verschijnen
 ```
 
 21. Déduire une case noire //
