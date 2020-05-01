@@ -13,6 +13,7 @@
 | Jonas Berx    | 1             |
 | Jasper Vandenberghen| 1        |
 | Sander Van Thillo| 1        |
+| Bram Verbist      | 1        |
 
 (Bij 5 punten kan je een verrassing verdienen)
 
