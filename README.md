@@ -13,7 +13,8 @@
 | Jonas Berx          | 1             | 0           | 1          |      
 | Jasper Vandenberghen| 1             | 0           | 1          |      
 | Sander Van Thillo   | 1             | 0           | 1          |      
-| Bram Verbist        | 1             | 0           | 1          |      
+| Bram Verbist        | 1             | 0           | 1          |  
+| Jonas Zegers        | 1             | 0           | 1          |    
 
 
 ## Shop
