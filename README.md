@@ -59,10 +59,8 @@ Je kunt je MartiPoints inwisselen voor leuke beloningen:
 
 ### Semester 4
 * Business Analytics minor
-  * Tests 
+  * [Tests](https://github.com/martijnmeeldijk/TI-oplossingen/tree/master/Semester%204/BA%20minor%20tests)
     * [Decision Tree](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester%204/BA%20minor%20tests/Decision_Tree.md)
-    * [KNN](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester%204/BA%20minor%20tests/knn.md)
-    * [Naive Bayes](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester%204/BA%20minor%20tests/naivebayes.md)
 * Business Analytics Major
   * [Pentaho Exercises](https://github.com/martijnmeeldijk/TI-oplossingen/tree/master/Semester%204/Ba_Major/Pentaho_Exercises)
 * Databanken 2
