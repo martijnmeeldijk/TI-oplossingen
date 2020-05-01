@@ -20,7 +20,7 @@ Je kunt je MartiPoints inwisselen voor leuke beloningen:
 * 5 MartiPoints
   * Een persoonlijke serenade (opgenomen of live)
 * 10 MartiPoints
-  * Een houten kunstwerkje
+  * Een houten kunstwerkje naar keuze: [voorbeeld](img/dolphin.jpg)
 
 ## Contents
 
