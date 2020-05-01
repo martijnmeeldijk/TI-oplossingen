@@ -15,6 +15,11 @@
 | Sander Van Thillo   | 1             | 0           | 1          |      
 | Bram Verbist        | 1             | 0           | 1          |      
 
+
+## Shop
+<img src="img/martipoints.png" width="100" title="MartiPoints">
+
+
 Je kunt je MartiPoints inwisselen voor leuke beloningen:
 
 * 5 MartiPoints
