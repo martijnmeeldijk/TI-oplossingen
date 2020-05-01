@@ -4,18 +4,23 @@
 
 > :warning: **NODIGE DISCLAIMER**: Deze oplossingen dienen gebruikt te worden als referentiemateriaal. Neem ze niet letterlijk over en denk zelf na. 
 
-## Bijdrage Points:
+## MartiPoints:
 
-| Naam          | Points        |
-| ------------- | ------------- |
-| Maarten Pauwels| 4            |
-| Karel Savonet | 1             |
-| Jonas Berx    | 1             |
-| Jasper Vandenberghen| 1        |
-| Sander Van Thillo| 1        |
-| Bram Verbist      | 1        |
+| Naam                | MartiPoints   | Ingewisseld | Tegoed
+| -------------       | ------------- |-------------|-------------
+| Maarten Pauwels     | 4             | 0           | 4          |
+| Karel Savonet       | 1             | 0           | 1          |             
+| Jonas Berx          | 1             | 0           | 1          |      
+| Jasper Vandenberghen| 1             | 0           | 1          |      
+| Sander Van Thillo   | 1             | 0           | 1          |      
+| Bram Verbist        | 1             | 0           | 1          |      
 
-(Bij 5 punten kan je een verrassing verdienen)
+Je kunt je MartiPoints inwisselen voor leuke beloningen:
+
+* 5 MartiPoints
+  * Een persoonlijke serenade (opgenomen of live)
+* 10 MartiPoints
+  * Een houten kunstwerkje
 
 ## Contents
 
