@@ -329,4 +329,23 @@ where (select count(*)
 	   where wedstrijden.spelersnr = s.spelersnr)
 order by 1,2,3
 ```
+Geef de spelers (woonplaats, naam, geslacht, in volgorde van hun geslacht en naam) voor wie minstens één boete betaald werd maar die geen aanvoerder zijn van een team. Sorteer van voor naar achter. Geen dubbels.
+
+```postgreSQL
+select geslacht, naam, plaats
+from boetes b left outer join teams t using (spelersnr)
+inner join spelers using (spelersnr)
+where teamnr is null
+group by spelersnr, geslacht, naam, plaats
+order by 1,2,3
+```
+Geef de twee laagste bondnrs terug. (tip: dwz er zijn dus minder dan 2 bondsnr die kleiner zijn) Sorteer van voor naar achter.
+```postgreSQL
+select s.bondsnr
+from spelers s
+where s.bondsnr is not null and ((select count(bondsnr) from spelers s1 where s1.bondsnr < s.bondsnr) =1
+or (select count(bondsnr) from spelers s1 where s1.bondsnr < s.bondsnr) =0 )
+group by s.bondsnr 
+order by 1
+```
 

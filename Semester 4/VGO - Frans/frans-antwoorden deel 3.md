@@ -184,10 +184,13 @@ Een functionnaliteit toevoegen (dubbele n)
 Het geluid afzetten
 ```
 
-4. Retourner à l écran d accueil //
+4. Retourner à l écran d accueil (foutief)
 
 ```
-Terugkeren naar het beginscherm
+Terugkeren naar het startscherm 
+Terugkeren naar het beginscherm 
+Teruggaan naar het  startscherm 
+Teruggaan naar het beginscherm
 ```
 
 5. Finir le jeu
@@ -202,28 +205,39 @@ Het spel afmaken
 Een spel maken
 ```
 
-7. Envoyer une information // 
+7. Envoyer une information (foutief)
 
 ```
-Informatie verzenden
+Informatie versturen 
+Informatie verzenden 
+Informatie sturen 
+Informatie zenden 
 ```
 
-8. Démarrer une nouvelle partie //
+8. Démarrer une nouvelle partie (foutief)
 
 ```
-Een nieuw spel starten
+Start een nieuw spel 
+Een nieuw spel starten 
+Een nieuw spel beginnen 
+Begin een nieuw spel 
 ```
 
-9. Synchroniser les données //
+9. Synchroniser les données (foutief)
 
 ```
-De gegevens synchroniseren
+Synchroniseer de gegevens 
+De gegevens synchroniseren 
+Synchronisatie van gegevens
 ```
 
-10. Relier deux parties //
+10. Relier deux parties (foutief)
 
 ```
-Twee delen verbinden
+Twee delen verbinden 
+Een verbinding maken tussen twee delen 
+Verbindt twee delen 
+Verbind twee delen (is probere zonder dt)
 ```
 
 11. Modifier un paramètre
@@ -256,10 +270,13 @@ De chronometer starten
 Op een knopje klikken
 ```
 
-16. Arriver à l'écran de jeu // 
+16. Arriver à l'écran de jeu (foutief)
 
 ```
-Op het spelscherm komen
+Naar het spelscherm gaan 
+Op het spelscherm komen 
+Uitkomen bij het spelscherm 
+Uitkomen op het scherm van het spel 
 ```
 
 17. Sélectionner un jeu 
@@ -286,10 +303,13 @@ Een puzzel oplossen
 Een beeld laten verschijnen
 ```
 
-21. Déduire une case noire //
+21. Déduire une case noire (foutief)
 
-```
-Een zwart vierkant tekenen
+``` 
+Een zwart vierkant tekenen 
+Een zwarte doos tekenen 
+Een zwart vierkant uitlijnen
+Trek een zwarte doos af
 ```
 
 
