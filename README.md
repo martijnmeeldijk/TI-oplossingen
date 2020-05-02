@@ -28,6 +28,8 @@ Je kunt je MartiPoints inwisselen voor leuke beloningen:
   * Een persoonlijke serenade (opgenomen of live)
 * 10 MartiPoints
   * Een houten kunstwerkje naar keuze: [voorbeeld](img/dolphin.jpg)
+* 100 MartiPoints
+  * SoundCloud collab
 * (More coming soon)
 
 ## Contents
