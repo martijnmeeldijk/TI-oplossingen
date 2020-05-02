@@ -34,6 +34,8 @@ Je kunt je MartiPoints inwisselen voor leuke beloningen:
 ### Semester 1
 * Computersystemen
   * [Oefeningen](https://github.com/martijnmeeldijk/TI-oplossingen/tree/master/Semester%201/computersystemen)
+  * [Samenvatting Axelele](Semester 1/computersystemen/Computernetwerken1.pdf)
+* [Netwerken 1]()
 
 
 ### Semester 2
