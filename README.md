@@ -16,6 +16,8 @@
 | Jasper Vandenberghen| 1             | 0           | 1          |      
 | Sander Van Thillo   | 1             | 0           | 1          |      
 | Bram Verbist        | 1             | 0           | 1          |  
+| DennisWinnepenninckx| 1             | 0           | 1          |  
+
 
 
 ## Shop
