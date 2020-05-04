@@ -220,12 +220,10 @@ Een nieuw spel beginnen
 Begin een nieuw spel 
 ```
 
-9. Synchroniser les données (foutief)
+9. Synchroniser les données
 
 ```
-Synchroniseer de gegevens 
-De gegevens synchroniseren 
-Synchronisatie van gegevens
+de gegevens synchroniseren
 ```
 
 10. Relier deux parties (foutief)
@@ -267,13 +265,10 @@ De chronometer starten
 Op een knopje klikken
 ```
 
-16. Arriver à l'écran de jeu (foutief)
+16. Arriver à l'écran de jeu
 
 ```
-Naar het spelscherm gaan 
-Op het spelscherm komen 
-Uitkomen bij het spelscherm 
-Uitkomen op het scherm van het spel 
+op het spelscherm aankomen 
 ```
 
 17. Sélectionner un jeu 
