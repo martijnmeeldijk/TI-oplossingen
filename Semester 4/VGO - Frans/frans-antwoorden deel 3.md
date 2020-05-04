@@ -128,10 +128,10 @@ corriger
 indépendant
 ```
 
-18. Ainis, ... (view) et le modèle peuvent être réutilisés. //
+18. Ainis, ... (view) et le modèle peuvent être réutilisés.
 
 ```
-la vue
+vue
 ```
 
 19. Si tout est indépendant, on peut ... (delen) les tâches.
@@ -152,10 +152,10 @@ en même temps
 gérer
 ```
 
-22. Si on modifie une partie, l autre ne doit pas être ... (geïmpacteerd/beïnvloed). //
+22. Si on modifie une partie, l autre ne doit pas être ... (geïmpacteerd/beïnvloed).
 
 ```
-impacté
+impactée
 ```
 
 
@@ -214,10 +214,10 @@ Een informatie sturen
 Een nieuwe spel starten 
 ```
 
-9. Synchroniser les données 
+9. Synchroniser les données
 
-``` 
-De gegevens synchroniseren 
+```
+de gegevens synchroniseren
 ```
 
 10. Relier deux parties 
@@ -256,10 +256,11 @@ De chronometer starten
 Op een knopje klikken
 ```
 
-16. Arriver à l'écran de jeu 
+
+16. Arriver à l'écran de jeu
 
 ```
-Op het spelscherm komen 
+op het spelscherm aankomen 
 ```
 
 17. Sélectionner un jeu 
