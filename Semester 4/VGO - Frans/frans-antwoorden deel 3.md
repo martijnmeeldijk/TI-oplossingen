@@ -128,10 +128,10 @@ corriger
 indépendant
 ```
 
-18. Ainis, ... (view) et le modèle peuvent être réutilisés. //
+18. Ainis, ... (view) et le modèle peuvent être réutilisés.
 
 ```
-la vue
+vue
 ```
 
 19. Si tout est indépendant, on peut ... (delen) les tâches.
@@ -152,10 +152,10 @@ en même temps
 gérer
 ```
 
-22. Si on modifie une partie, l autre ne doit pas être ... (geïmpacteerd/beïnvloed). //
+22. Si on modifie une partie, l autre ne doit pas être ... (geïmpacteerd/beïnvloed).
 
 ```
-impacté
+impactée
 ```
 
 
