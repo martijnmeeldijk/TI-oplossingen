@@ -175,7 +175,7 @@ de beperkingen respecteren
 2. Ajouter une fonctionnalité 
 
 ```
-Een functionnaliteit toevoegen (dubbele n)
+Een functionaliteit toevoegen
 ```
 
 3. Eteindre le son 
@@ -184,13 +184,10 @@ Een functionnaliteit toevoegen (dubbele n)
 Het geluid afzetten
 ```
 
-4. Retourner à l écran d accueil (foutief)
+4. Retourner à l écran d accueil (niet-foutief)
 
 ```
-Terugkeren naar het startscherm 
-Terugkeren naar het beginscherm 
-Teruggaan naar het  startscherm 
-Teruggaan naar het beginscherm
+terugkeren naar het startscherm
 ```
 
 5. Finir le jeu
