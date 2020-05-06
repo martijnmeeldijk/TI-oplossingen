@@ -17,6 +17,8 @@
    \* [Extra 5](#extra-5)
    
    \* [Venster XML](#venster-xml)
+   
+   \* [JSON](#json)
 
 ## Subq 2 verbreding
 
@@ -379,4 +381,31 @@ SELECT xmlcomment('maan')::text, xmlforest(objectnaam, afstand, diameter)::text
 from hemelobjecten
 where satellietvan like 'Neptunus'
 order by 1,2
+```
+
+
+## JSON
+
+Gebruik JSON instructies. Selecteer in onderstaande json string '{"a":[1,2,3],"b":[4,5,6]}' het tweede object
+
+```postgreSQL
+SELECT '{"a":[1,2,3],"b":[4,5,6]}'::json->'b'
+```
+
+Gebruik JSON instructies. Expandeer het buitenste JSON object uit de string '{"a":"foo", "b":"bar"}'.
+(dit staat letterlijk in de slides)
+```postgreSQL
+SELECT *
+ FROM json_each('{"a":"foo", "b":"bar"}')
+```
+
+Gebruik JSON instructies. Selecteer in onderstaande json string '{"1":[1,2,3],"2":[4,5,6]}' het tweede object
+```postgreSQL
+ select '{"1":[1,2,3],"2":[4,5,6]}'::json->'2'
+```
+
+
+Gebruik JSON instructies. Selecteer in onderstaande json string '{"1":[1,2,3],"2":[4,5,6]}' het eerste object
+```postgreSQL
+select '{"1":[1,2,3],"2":[4,5,6]}'::json->'1'
 ```
