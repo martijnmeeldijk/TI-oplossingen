@@ -6,15 +6,18 @@
 
 ## MartiPoints:
 
-| Naam                | MartiPoints   | Ingewisseld | Tegoed
-| -------------       | ------------- |-------------|-------------
-| Maarten Pauwels     | 4             | 0           | 4          |
-| Jonas Zegers        | 2             | 0           | 2          |    
-| Karel Savonet       | 1             | 0           | 1          |             
-| Jonas Berx          | 1             | 0           | 1          |      
-| Jasper Vandenberghen| 1             | 0           | 1          |      
-| Sander Van Thillo   | 1             | 0           | 1          |      
-| Bram Verbist        | 1             | 0           | 1          |  
+| Naam                 | MartiPoints   | Ingewisseld | Tegoed
+| -------------        | ------------- |-------------|-------------
+| Maarten Pauwels      | 4             | 0           | 4          |
+| Karel Savonet        | 3             | 0           | 3          |             
+| Jonas Zegers         | 2             | 0           | 2          |    
+| Axel Hamelryck       | 2             | 0           | 2          |    
+| Sander Van Thillo    | 2             | 0           | 2          |      
+| Jonas Berx           | 1             | 0           | 1          |      
+| Jasper Vandenberghen | 1             | 0           | 1          |      
+| Bram Verbist         | 1             | 0           | 1          |  
+| Dennis Winnepenninckx| 1             | 0           | 1          |  
+
 
 
 ## Shop
@@ -27,6 +30,8 @@ Je kunt je MartiPoints inwisselen voor leuke beloningen:
   * Een persoonlijke serenade (opgenomen of live)
 * 10 MartiPoints
   * Een houten kunstwerkje naar keuze: [voorbeeld](img/dolphin.jpg)
+* 100 MartiPoints
+  * SoundCloud collab
 * (More coming soon)
 
 ## Contents
@@ -34,8 +39,9 @@ Je kunt je MartiPoints inwisselen voor leuke beloningen:
 ### Semester 1
 * Computersystemen
   * [Oefeningen](https://github.com/martijnmeeldijk/TI-oplossingen/tree/master/Semester%201/computersystemen)
-  * [Samenvatting Axelele](Semester 1/computersystemen/Computernetwerken1.pdf)
-* [Netwerken 1]()
+  * [Samenvatting Axelele](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester%201/computersystemen/Computersystemen_axelele_2019.pdf)
+* ComputerNetwerken 1
+  * [Samenvatting Axelele](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester%201/Computernetwerken%201/Computernetwerken_axelele_2019.pdf)
 
 
 ### Semester 2

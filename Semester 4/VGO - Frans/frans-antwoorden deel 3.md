@@ -128,10 +128,10 @@ corriger
 indépendant
 ```
 
-18. Ainis, ... (view) et le modèle peuvent être réutilisés. //
+18. Ainis, ... (view) et le modèle peuvent être réutilisés.
 
 ```
-la vue
+vue
 ```
 
 19. Si tout est indépendant, on peut ... (delen) les tâches.
@@ -152,19 +152,19 @@ en même temps
 gérer
 ```
 
-22. Si on modifie une partie, l autre ne doit pas être ... (geïmpacteerd/beïnvloed). //
+22. Si on modifie une partie, l autre ne doit pas être ... (geïmpacteerd/beïnvloed).
 
 ```
-impacté
+impactée
 ```
 
 
 
 ## Les verbes et actions pour parler de votre projet
 
-:warning: Dit deel is nog in progress, als je deze antwoorden invult zal je niet genoeg punten halen
+Traduisez en néerlandais les actions suivantes: 
 
-Traduisez en néerlandais les actions suivantes:
+:warning: 20/21 (zolang ze de opdracht niet na 03/05 nog eens aangepast heeft) 
 
 1. Respecter les contraintes
 
@@ -175,7 +175,7 @@ de beperkingen respecteren
 2. Ajouter une fonctionnalité 
 
 ```
-Een functionnaliteit toevoegen (dubbele n)
+Een functionaliteit toevoegen
 ```
 
 3. Eteindre le son 
@@ -184,13 +184,10 @@ Een functionnaliteit toevoegen (dubbele n)
 Het geluid afzetten
 ```
 
-4. Retourner à l écran d accueil (foutief)
+4. Retourner à l écran d accueil (niet-foutief)
 
 ```
-Terugkeren naar het startscherm 
-Terugkeren naar het beginscherm 
-Teruggaan naar het  startscherm 
-Teruggaan naar het beginscherm
+terugkeren naar het startscherm
 ```
 
 5. Finir le jeu
@@ -205,39 +202,28 @@ Het spel afmaken
 Een spel maken
 ```
 
-7. Envoyer une information (foutief)
+7. Envoyer une information 
 
 ```
-Informatie versturen 
-Informatie verzenden 
-Informatie sturen 
-Informatie zenden 
+Een informatie sturen
 ```
 
-8. Démarrer une nouvelle partie (foutief)
+8. Démarrer une nouvelle partie (nieuwe ipv nieuw)
 
 ```
-Start een nieuw spel 
-Een nieuw spel starten 
-Een nieuw spel beginnen 
-Begin een nieuw spel 
+Een nieuwe spel starten 
 ```
 
-9. Synchroniser les données (foutief)
+9. Synchroniser les données
 
 ```
-Synchroniseer de gegevens 
-De gegevens synchroniseren 
-Synchronisatie van gegevens
+de gegevens synchroniseren
 ```
 
-10. Relier deux parties (foutief)
+10. Relier deux parties 
 
 ```
 Twee delen verbinden 
-Een verbinding maken tussen twee delen 
-Verbindt twee delen 
-Verbind twee delen (is probere zonder dt)
 ```
 
 11. Modifier un paramètre
@@ -270,13 +256,11 @@ De chronometer starten
 Op een knopje klikken
 ```
 
-16. Arriver à l'écran de jeu (foutief)
+
+16. Arriver à l'écran de jeu
 
 ```
-Naar het spelscherm gaan 
-Op het spelscherm komen 
-Uitkomen bij het spelscherm 
-Uitkomen op het scherm van het spel 
+op het spelscherm aankomen 
 ```
 
 17. Sélectionner un jeu 
@@ -310,6 +294,9 @@ Een zwart vierkant tekenen
 Een zwarte doos tekenen 
 Een zwart vierkant uitlijnen
 Trek een zwarte doos af
+Een zwarte doos aftrekken
+Een zwarte doos afleiden
+Een zwart vak aftrekken
 ```
 
 
