@@ -369,3 +369,14 @@ inner join reizen r on(r.reisnr = d.reisnr)
 
 order by 1,2,3
 ```
+
+
+Toon in xmlformaat de objectnamen, afstand en diameter voor objecten die rond Neptunus draaien. Geef als eerste kolom de commentaar maan. Sorteer van voor naar achter.
+Tip: XML is gebaseerd op het datatype text.
+
+```postgreSQL
+SELECT xmlcomment('maan')::text, xmlforest(objectnaam, afstand, diameter)::text
+from hemelobjecten
+where satellietvan like 'Neptunus'
+order by 1,2
+```
