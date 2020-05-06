@@ -15,6 +15,8 @@
    \* [Extra 4](#extra-4)
 
    \* [Extra 5](#extra-5)
+   
+   \* [Venster XML](#venster-xml)
 
 ## Subq 2 verbreding
 
@@ -349,3 +351,21 @@ group by s.bondsnr
 order by 1
 ```
 
+## Venster XML
+
+Geef voor elke een klant een overzicht aan uitgaven. Hoe? Geef voor elke klant een cumulatie overzicht van prijs van de reizen waar hij aan deelgenomen heeft. De volgorde, waarin er wordt cumulatief wordt opgeteld, wordt bepaald door de vertrekdatum van de reis. Sorteer van voor naar achter.
+Tip: vergelijk deze uitvoer met de uitvoer van een query die een gesorteerd overzicht geeft van de klanten en hun deelnames aan reizen.
+
+```postgreSQL
+select k.klantnr, r.reisnr, sum(r.prijs)
+OVER(partition by
+k.klantnr
+	 order by r.vertrekdatum rows between unbounded
+preceding and current row
+	) 
+from klanten k
+left outer join deelnames d on(d.klantnr = k.klantnr)
+inner join reizen r on(r.reisnr = d.reisnr)
+
+order by 1,2,3
+```
