@@ -86,5 +86,8 @@ Je kunt je MartiPoints inwisselen voor leuke beloningen:
     * [Eerste Reeks](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester%204/VGO%20-%20Frans/frans-antwoorden.md)
     * [Tweede Reeks](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester%204/VGO%20-%20Frans/frans-antwoorden%20deel%202.md)
     * [Derde Reeks](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester%204/VGO%20-%20Frans/frans-antwoorden%20deel%203.md)
+    
+* IP Major
+  * [Guide Martijn](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester%204/IP%20Major/guide_martijn.md)
 
 
