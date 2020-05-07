@@ -19,6 +19,11 @@
 | Dennis Winnepenninckx| 1             | 0           | 1          |  
 
 
+## Quests :moneybag:
+Hier vind je speciale uitdagingen om extra martipoints mee te verdienen.
+* 10 martipoints: Een (goeie) samenvatting/uitleg van BA Minor
+* 5 martipoints: Opgeloste examenoefeningen van Routing & Switching
+* More coming soon...
 
 ## Shop
 <img src="img/martipoints.png" width="100" title="MartiPoints">
