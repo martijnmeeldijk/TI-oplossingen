@@ -10,7 +10,7 @@
 | -------------        | ------------- |-------------|-------------
 | Maarten Pauwels      | 4             | 0           | 4          |
 | Karel Savonet        | 3             | 0           | 3          |             
-| Jonas Zegers         | 2             | 0           | 2          |    
+| Jonas Zegers         | 3             | 0           | 3          |    
 | Axel Hamelryck       | 2             | 0           | 2          |    
 | Sander Van Thillo    | 2             | 0           | 2          |      
 | Jonas Berx           | 1             | 0           | 1          |      
