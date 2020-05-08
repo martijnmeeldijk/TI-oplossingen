@@ -81,6 +81,7 @@ Je kunt je MartiPoints inwisselen voor leuke beloningen:
 ### Semester 4
 * Business Analytics minor
   * [Tests](https://github.com/martijnmeeldijk/TI-oplossingen/tree/master/Semester%204/BA%20minor%20tests)
+  * [Guide](https://github.com/martijnmeeldijk/TI-oplossingen/tree/master/Semester%204/BA%20minor/Guide%20martijn)
 * Business Analytics Major
   * [Pentaho Exercises](https://github.com/martijnmeeldijk/TI-oplossingen/tree/master/Semester%204/Ba_Major/Pentaho_Exercises)
 * Databanken 2
