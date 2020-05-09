@@ -4,6 +4,8 @@
 
 > :warning: **NODIGE DISCLAIMER**: Deze oplossingen dienen gebruikt te worden als referentiemateriaal. Neem ze niet letterlijk over en denk zelf na. 
 
+Ik hoop dat het goed met jullie gaat in deze moeilijke tijden.
+
 ## MartiPoints:
 
 | Naam                 | MartiPoints   | Ingewisseld | Tegoed
