@@ -9,9 +9,12 @@ typora-copy-images-to: ./img
 
 ## 1. Compare several models for predicting fat percentage. Which one do you think is the best?
 
-Vergelijk ze allemaal, ik denk dat de *linear* met alle de beste is omdat de error het laagste is, maar wie ben ik.
+Ik ben niet 100% zeker waarom het juist is, maar ik denk dat jullie de RMSE moeten vergelijken. Hoe kleiner het is hoe beter de methode volgens mijn bron.
+Bron: https://stats.stackexchange.com/questions/56302/what-are-good-rmse-values
 
-//fout
+```
+KNN regression (k=5) using only the same variables as with the statistically significant selected multiple linear regression. 
+```
 
 ## 2. Daily Demand Forecasting. What is the average amount of orders?
 
@@ -157,7 +160,7 @@ I don't see why there would be a different amount of orders on a different week 
 
 - ### Question 1
 
-  0 out of 1 points
+  1 out of 1 points
 
   |      |                                                              |
   | ---- | ------------------------------------------------------------ |
