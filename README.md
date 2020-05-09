@@ -21,6 +21,9 @@ Je kan martipoints verdienen door iets toe te voegen aan de repo of door iets te
 | Jasper Vandenberghen | 1             | 0           | 1          |      
 | Bram Verbist         | 1             | 0           | 1          |  
 | Dennis Winnepenninckx| 1             | 0           | 1          |  
+| Katerina Stavrinoudi | 1             | 0           | 1          |  
+
+
 
 
 ## Quests :moneybag:
