@@ -7,6 +7,7 @@
 Ik hoop dat het goed met jullie gaat in deze moeilijke tijden.
 
 ## MartiPoints:
+Je kan martipoints verdienen door iets toe te voegen aan de repo of door iets te verbeteren.
 
 | Naam                 | MartiPoints   | Ingewisseld | Tegoed
 | -------------        | ------------- |-------------|-------------
