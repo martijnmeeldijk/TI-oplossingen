@@ -9,6 +9,7 @@
 | Naam                 | MartiPoints   | Ingewisseld | Tegoed
 | -------------        | ------------- |-------------|-------------
 | Maarten Pauwels      | 4             | 0           | 4          |
+| r0705835             | 3             | 0           | 3          |
 | Karel Savonet        | 3             | 0           | 3          |             
 | Jonas Zegers         | 3             | 0           | 3          |    
 | Axel Hamelryck       | 2             | 0           | 2          |    
@@ -18,6 +19,7 @@
 | Bram Verbist         | 1             | 0           | 1          |  
 | Dennis Winnepenninckx| 1             | 0           | 1          |  
 
+r0705835
 
 ## Quests :moneybag:
 Hier vind je speciale uitdagingen om extra martipoints mee te verdienen.
