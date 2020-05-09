@@ -19,7 +19,6 @@
 | Bram Verbist         | 1             | 0           | 1          |  
 | Dennis Winnepenninckx| 1             | 0           | 1          |  
 
-r0705835
 
 ## Quests :moneybag:
 Hier vind je speciale uitdagingen om extra martipoints mee te verdienen.
