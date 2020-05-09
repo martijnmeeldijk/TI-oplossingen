@@ -4,19 +4,26 @@
 
 > :warning: **NODIGE DISCLAIMER**: Deze oplossingen dienen gebruikt te worden als referentiemateriaal. Neem ze niet letterlijk over en denk zelf na. 
 
+Ik hoop dat het goed met jullie gaat in deze moeilijke tijden.
+
 ## MartiPoints:
+Je kan martipoints verdienen door iets toe te voegen aan de repo of door iets te verbeteren.
 
 | Naam                 | MartiPoints   | Ingewisseld | Tegoed
 | -------------        | ------------- |-------------|-------------
 | Maarten Pauwels      | 4             | 0           | 4          |
-| Karel Savonet        | 3             | 0           | 3          |             
-| Jonas Zegers         | 3             | 0           | 3          |    
+| Jonas Zegers         | 3.5           | 0           | 3.5        |  
+| r0705835             | 3             | 0           | 3          |
+| Karel Savonet        | 3             | 0           | 3          |               
 | Axel Hamelryck       | 2             | 0           | 2          |    
 | Sander Van Thillo    | 2             | 0           | 2          |      
 | Jonas Berx           | 1             | 0           | 1          |      
 | Jasper Vandenberghen | 1             | 0           | 1          |      
 | Bram Verbist         | 1             | 0           | 1          |  
 | Dennis Winnepenninckx| 1             | 0           | 1          |  
+| Katerina Stavrinoudi | 1             | 0           | 1          |  
+
+
 
 
 ## Quests :moneybag:
