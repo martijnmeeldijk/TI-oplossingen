@@ -19,7 +19,7 @@ adult, male, did not surive
 QUESTION 4
 
 ```
-true
+0.212
 ```
 
 QUESTION 5
@@ -74,6 +74,7 @@ QUESTION 13
 
 ```
 !!!not adult, male->did not survive!!!
+!!!Also not Did not survive -> Adult, male
 ```
 
 
