@@ -73,9 +73,11 @@ Je zou natuurlijk ook nog een conditie kunnen toevoegen, maar dat is niet echt n
 
 ## 8. Zoo: Look at the Distribution using the variable cluster and Split by Type. Which type dominates an entire cluster?
 
+Volg dit pad in haar oplossing: *file* -> *k-means* -> *Select columns* -> *Distributions*
 
+Druk bij *distributions* op *Split by:* **type**
 
-
+Nu zal je het hopelijk wel vinden.
 
 ## (mijn) Antwoorden
 
@@ -86,4 +88,7 @@ Je zou natuurlijk ook nog een conditie kunnen toevoegen, maar dat is niet echt n
 5. True
 6. True
 7. Tortoise
+8. Mammal
+
+:tada: Aight boys we hebben 8/8
 
