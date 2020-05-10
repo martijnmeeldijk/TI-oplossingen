@@ -8,6 +8,8 @@ typora-copy-images-to: ./img
 
 Ik heb ook de meeste antwoorden van dit labo fout. Aarzel niet om te zeggen waar het misloopt.
 
+Edit: Aimee heeft het met de hand verbeterd en me 6.75/9 gegeven. Dus eigenlijk valt het best mee.
+
 ## 1. What is the simple linear regression equation, with breast circumference as the predictive variable and fat percentage as the target variable? (in the form y = b0 + b1x1)
 
 <img src="img/image-20200508201303931.png" alt="image-20200508201303931" style="zoom: 33%;" />
