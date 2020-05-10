@@ -7,10 +7,11 @@ typora-copy-images-to: ./img
 
 :warning: Zie onderaan de file wat ik juist had en wat niet, zodat je mijn foute redeneringen niet moet volgen.
 
-Edit: Aimée heeft het verbeterd en ik heb 12/13. Noice.
+Edit: Aimée heeft het verbeterd en ik heb 12/13. Noice. Als je de edit van Katerina meeteld heb je 13/13. Very noice.
 
 ## 1. Compare several models for predicting fat percentage. Which one do you think is the best?
 
+Katerina:
 Ik ben niet 100% zeker waarom het juist is, maar ik denk dat jullie de RMSE moeten vergelijken. Hoe kleiner het is hoe beter de methode volgens mijn bron.
 Bron: https://stats.stackexchange.com/questions/56302/what-are-good-rmse-values
 
