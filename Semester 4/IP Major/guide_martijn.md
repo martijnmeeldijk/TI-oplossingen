@@ -154,3 +154,7 @@ entry: {
   },
 ```
 
+Vergeet ni om nu een script tag in de pagina waar je het scipt wilt te includen. (zoals Robbe) Kijk in *templates/layout/app.js*
+
+Daar wordt app js geincluded, kopieer deze lijn naar de pagina waar je je js wilt. Verander de *app.js* naar de js file die je wilt.
+

@@ -59,7 +59,17 @@ Moet je hiervoor zelfs orange openen?
 
 ## 7. Zoo: Use k-means to make 4 clusters. Which of the following animals is clustered as a bird, but doesn't have feathers?
 
-Oke dit heeft even geduurd om te begrijpen. Je kan best de oplossing *solutions/10_clustering_zoo.ows* openen
+Oke dit heeft even geduurd om te begrijpen. Je kan best de oplossing *solutions/10_clustering_zoo.ows* openen. Zet de *K-means* widget op *fixed: 5* 
+
+<img src="img/image-20200510152720523.png" alt="image-20200510152720523" style="zoom:33%;" />
+
+Als je deze settings gebruikt worden alle dieren met veren gemarkeerd met x. Dit geeft niet veel inzicht in de vraag die wordt gesteld, maar we zien wel dat de vogels zich in dit geval waarschijnlijk in cluster `C3` bevinden.
+
+<img src="img/image-20200510153057228.png" alt="image-20200510153057228" style="zoom:33%;" />
+
+Achter de *scatterplot* heb ik een *select rows* gezet. Met als conditie `cluster is C3` als je nu kijkt zie je dat er één dier tussen zit zonder veren. 
+
+Je zou natuurlijk ook nog een conditie kunnen toevoegen, maar dat is niet echt nodig.
 
 ## 8. Zoo: Look at the Distribution using the variable cluster and Split by Type. Which type dominates an entire cluster?
 
@@ -75,4 +85,5 @@ Oke dit heeft even geduurd om te begrijpen. Je kan best de oplossing *solutions/
 4. legs = 5
 5. True
 6. True
+7. Tortoise
 
