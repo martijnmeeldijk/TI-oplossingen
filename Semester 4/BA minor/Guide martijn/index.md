@@ -16,5 +16,7 @@
 
 [Week 9 - Decision tree](09_Decision_Tree.md)
 
+[Week 10 - Logistic Regression](10_Logistic_Regression.md)
+
 [Coming soon]()
 
