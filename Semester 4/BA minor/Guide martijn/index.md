@@ -14,5 +14,7 @@
 
 [Week 8 - Clustering ](08_Clustering.md)
 
+[Week 9 - Decision tree](09_Decision_Tree.md)
+
 [Coming soon]()
 
