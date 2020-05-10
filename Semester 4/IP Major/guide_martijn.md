@@ -104,6 +104,8 @@ Zie **lesson_6/guide/2_cat_context.md** in de labos van ip major.
 
 https://hexdocs.pm/phoenix/Phoenix.Token.html
 
+Oke; dus wat ik heb gedaan is die mix phx.gen.json gebruikt en mijn files vergeleken met die van Labo 6. Je moet bijvoorbeeld wat kleine aanpassingen maken aan je Animal, AnimalContext en je migrations. Normaal gezien kan je het bijna perfect overschrijven van de gegeven code snippets.
+
 
 
 ## Multilingual support
