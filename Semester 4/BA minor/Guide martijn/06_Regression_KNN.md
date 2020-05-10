@@ -7,7 +7,7 @@ typora-copy-images-to: ./img
 
 :warning: Zie onderaan de file wat ik juist had en wat niet, zodat je mijn foute redeneringen niet moet volgen.
 
-Edit: Aimée heeft het verbeterd en ik heb 12/13. Noice. Als je de edit van Katerina meeteld heb je 13/13. Very noice.
+Edit: Aimée heeft het verbeterd en ik heb 12/13. Noice. Als je de edit van Katerina meetelt heb je 13/13. Very noice.
 
 ## 1. Compare several models for predicting fat percentage. Which one do you think is the best?
 
