@@ -4,7 +4,7 @@
 
 [Week 3 - KNN](03_KNN.md)
 
-[Week 4 - Naive Bayes](04_Naive_bayes.md)
+[Week 4 - Naive Bayes](04_Naive_Bayes.md)
 
 [Week 5 - Regression](05_Regression.md)
 
