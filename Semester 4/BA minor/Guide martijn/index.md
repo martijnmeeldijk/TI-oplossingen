@@ -10,7 +10,9 @@
 
 [Week 6 - Regression KNN](06_Regression_KNN.md)
 
-[Week 7 - Assosciation Rule](07_Association_Rule.md)
+[Week 7 - Association Rule](07_Association_Rule.md)
+
+[Week 8 - Clustering ](08_Clustering.md)
 
 [Coming soon]()
 
