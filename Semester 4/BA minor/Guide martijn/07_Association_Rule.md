@@ -121,7 +121,8 @@ Gebruik *association rules* en pruts wat met de settings, je zal het wel vinden.
 10. False
 11. Neither of the above
 12. Cola -> Milk, Diapers
-13. Adult, Male -> Did Not Survive // fout
+13. "Adult, Male -> Did Not Survive" // fout en "Did Not Survive -> Adult, Male" is ook fout
+
 
 
 
