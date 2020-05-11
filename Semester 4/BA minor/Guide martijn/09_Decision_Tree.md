@@ -20,7 +20,7 @@ Gebruik de *rank* widget. Hier kan je de information gain voor alle citeria zien
 
 *Test and score* met de *Tree* als learner. Komt in orde makker.
 
-Ik had het wel fout, maar hey, ik heb geprobeerd.
+Kijk onder kolom CA (classification accuracy).
 
 ## 3. How likely is a car to be acceptable or better?
 
@@ -75,7 +75,7 @@ Ja, dat hangt af van de settings. Ik gok op random forest.
 ## (mijn) Antwoorden
 
 1. Safety
-2. 0.988 // fout
+2. 0.891
 3. 0.3
 4. 0
 5. 172
