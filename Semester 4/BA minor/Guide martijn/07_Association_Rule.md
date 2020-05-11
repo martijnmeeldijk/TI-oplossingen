@@ -99,7 +99,7 @@ Yeet
 
 ## 12. Which rule has the highest lift?
 
-Gebruik *association rules* en pruts wat met de settings, je zal het wel vinden.
+Gebruik *association rules* en vindt welke regel het hoogste Lift (kolom) heeft.
 
 ## 13. Which Association Rule do you think is the strongest?
 
@@ -120,7 +120,7 @@ Gebruik *association rules* en pruts wat met de settings, je zal het wel vinden.
 9. False
 10. False
 11. Neither of the above
-12. Beer -> Diapers // fout
+12. Cola -> Milk, Diapers
 13. Adult, Male -> Did Not Survive // fout
 
 
