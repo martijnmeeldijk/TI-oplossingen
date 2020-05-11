@@ -14,6 +14,12 @@ De output van de *logistic regression* widget heeft 22 rijen, is dit het antwoor
 
 <img src="img/image-20200510223926287.png" alt="image-20200510223926287" style="zoom:33%;" />
 
+Het was fout. Ik heb aan Aimée gevraagd waarom:
+
+> There are 4 equations, you got that right.
+
+Oke we moesten dus het aantal kolommen tellen. Noice.
+
 ## 2. What does each equation mean?
 
 [source](https://saedsayad.com/logistic_regression.htm)
@@ -23,6 +29,12 @@ De output van de *logistic regression* widget heeft 22 rijen, is dit het antwoor
 Ik veronderstel het antwoord de kans om een bepaalde eigenschap te hebben of niet, of nee. 
 
 *different regression models to compare* klinkt ook wel logisch. frick.
+
+Aimée wist me weer een goede uitleg te geven:
+
+> Normally we think of logistic regression as a binary classifier. The equation takes the values for each instance as inputs x1, x2, x3, ... and outputs the probability that that instance belongs to the class. 76% yes, for example.
+> In this case, we don't have only one class, so we actually have to create a different logistic regression equation for each class, then you'll plug an instance's values into each equation and get a probability that it belongs to that class, so 1st equation: 65% acc, 2nd equation: 35% good, 3rd equation: 4% unacc, 4th equation: 37% vgood. Then you choose the one with the highest percentage as the predicted class (here, acceptable).
+> So in short, each equation determines the probability of one of the possible classes.
 
 ## 3. What is the odds ratio for Unacceptable for Low Safety (using L2)?
 
@@ -56,21 +68,15 @@ Zet een *Confusion Matrix* achter je *test and score*.
 
 ## (mijn) Antwoorden
 
-1. 22 // fout
-
-2. different regression models to compare // fout
-
-3. 12020.282 // fout, ik heb zonder op te letten L1 gebruikt
-
+1. 4 (volgens Aimée Backiel)
+2. the probability of a car belonging to a certain category (ook bedankt aan Aimée)
+3. 122.466
 4. Safety, Persons, and Buying
-
 5. True
-
-6. Decision Tree // fout 
-
-   aah fuk ik ben echt dom, binary tree had de hoogste CA. Misschien moet ik beter effe gaan pitten. Of een serie kijken ofzo. 
-
+6. Bin Tree
 7. 2
+
+Aight boys, 7 op 7
 
 
 
