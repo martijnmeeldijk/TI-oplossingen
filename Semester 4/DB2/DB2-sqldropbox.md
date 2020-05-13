@@ -409,3 +409,18 @@ Gebruik JSON instructies. Selecteer in onderstaande json string '{"1":[1,2,3],"2
 ```postgreSQL
 select '{"1":[1,2,3],"2":[4,5,6]}'::json->'1'
 ```
+
+Gebruik JSON instructies. Selecteer in onderstaande json string '[{"1":"2"},{"4":"5"}]' het eerste object
+```postgreSQL
+SELECT  '[{"1":"2"},{"4":"5"}]'::json->>0
+```
+
+Gebruik JSON instructies. Selecteer uit onderstaande json string '{"a": {"b":{"c": "foo"}, "c":{"5":"6"}}}' het element "6"
+```postgreSQL
+SELECT '{"a": {"b":{"c": "foo"}, "c":{"5":"6"}}}'::json->'a'->'c'->'5'
+```
+
+Gebruik JSON instructies. Selecteer uit onderstaande json string '{"a": {"b":{"c": "foo"}, "c":{"5":"6"}}}' het element "{"c": "foo"}"
+```postgreSQL
+SELECT '{"a": {"b":{"c": "foo"}, "c":{"5":"6"}}}'::json->'a'->'b'
+```
