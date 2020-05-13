@@ -12,8 +12,8 @@ Je kan martipoints verdienen door iets toe te voegen aan de repo of door iets te
 | Naam                 | MartiPoints   | Ingewisseld | Tegoed
 | -------------        | ------------- |-------------|-------------
 | Maarten Pauwels      | 4             | 0           | 4          |
+| r0705835             | 4             | 0           | 4          |
 | Jonas Zegers         | 3.5           | 0           | 3.5        |  
-| r0705835             | 3             | 0           | 3          |
 | Karel Savonet        | 3             | 0           | 3          |               
 | Katerina Stavrinoudi | 3             | 0           | 3          |  
 | Axel Hamelryck       | 2             | 0           | 2          |    
