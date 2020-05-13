@@ -81,6 +81,6 @@ Ja, dat hangt af van de settings. Ik gok op random forest.
 5. 172
 6. Binary Tree
 7. 0.591
-8. Tree isn't split by Information Gain
+8. legs has more than 2 values 
 9. 1
 10. Random Forest
