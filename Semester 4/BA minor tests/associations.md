@@ -73,8 +73,7 @@ cola -> milk,diapers
 QUESTION 13
 
 ```
-!!!not adult, male->did not survive!!!
-!!!Also not Did not survive -> Adult, male
+Adult, Did Not Survive -> Male
 ```
 
 
