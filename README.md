@@ -31,8 +31,10 @@ Je kan martipoints verdienen door iets toe te voegen aan de repo of door iets te
 
 ## Quests :moneybag:
 Hier vind je speciale uitdagingen om extra martipoints mee te verdienen.
-* 10 martipoints: Een (goeie) samenvatting/uitleg van BA Minor
+* 1 martipoint: iets verbeteren
+* 4 martipoints: Een (goeie) samenvatting/uitleg van eender welk vak.
 * 5 martipoints: Opgeloste examenoefeningen van Routing & Switching
+* 300 martipoints: ervoor zorgen dat we niet naar de campus moeten voor fokking ip major
 * More coming soon...
 
 ## Shop
