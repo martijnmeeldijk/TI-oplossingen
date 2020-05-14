@@ -4,7 +4,7 @@ typora-copy-images-to: ./img
 
 # Logistic Regression
 
-> :warning: Ik ben nog aan het wachten op een antwoord van Ms. Backiel voor de eerste twee vragen.
+Wow je bent bij het einde van het vak geraakt: [hier](https://youtu.be/_p6hDcPhhqo) een bonus voor je goede werk.
 
 ## 1. Cars: How many equations are there?
 
