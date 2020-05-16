@@ -3,6 +3,10 @@
 Commands zijn geschreven in een "logische" volgorde.
 Context zal gegeven worden waar nodig.
 
+Probeer dit niet vlak over te nemen. Ik heb hier zelf redelijk wat tijd in gestoken. Het is niet supermoeilijk om 70% te halen. Het examen is met open internet, dit wilt dus zeggen als je een commando niet weet je dit makkelijk kan googlen. Doe dit ook als je deze oefeningen probeert te maken.
+
+Success en stel vragen waar nodig.
+
 ## PT_pre test1. pka solution
 
 Deze oefening gaat vooral over ipv4 en ipv6 toekennen, basisconfiguraties en routing.
@@ -79,100 +83,220 @@ __Sidenote: enable ipv6 unicast-routing via dit commando: router(config)# ipv6 u
 
 ## PT_pre test2. pka solution
 
-Dit is niet 100% juist. maak gerust verbeteringen. ik heb momenteel 71% met vooral ip config en vlan te doen.
-Good luck
+### Step 1: Determine addressing
+We moeten beslissen welke addressen we gaan gebruiken in deze oefening. We gebruien hierbij de addressing list en wat eigen inspiratie.
+Hier zijn de addressen die ik heb gebruikt. Lees zeker goed na of je een eigen ip mag kiezen of je een specifiek adres moet gebruiken!
 
-We beginnen met de pc's hun ip addressen toe te kennen. Dit gaat gewoon door op de pc te duwen en naar IP Configuration te gaan.
+- HQ : 
+    - G0/0.20 : 172.16.20.254 / 24 
+    - G0/0.40 : 172.16.40.254 / 24 
+    - G0/0.60 : 172.16.60.254 / 24 
+    - G0/0.88 : 172.16.88.254 / 24
+    - G0/1.250 : 172.16.250.254 / 24
+    - G0/1.254 : 172.16.254.254 / 24
+- Mgmt :
+    - SVI : 172.16.88.200 / 24
+- Acct : 
+    - SVI : 172.16.88.100 / 24
+- HR : 
+    - SVI : 172.16.88.50 / 24
+- Clerical A:
+    - IPv4 : 172.16.20.20
+    - Subnet : 255.255.255.0
+    - Default-gateway : 172.16.20.254
+    - DNS : 172.16.254.252
+- Acct A:
+    - IPv4 : 172.16.40.20
+    - Subnet : 255.255.255.0
+    - Default-gateway : 172.16.40.254
+    - DNS : 172.16.254.252
+- HR A:
+    - IPv4 : 172.16.60.20
+    - Subnet : 255.255.255.0
+    - Default-gateway : 172.16.60.254
+    - DNS : 172.16.254.252
+- Clerical B:
+    - IPv4 : 172.16.20.21
+    - Subnet : 255.255.255.0
+    - Default-gateway : 172.16.20.254
+    - DNS : 172.16.254.252
+- Acct B:
+    - IPv4 : 172.16.40.21
+    - Subnet : 255.255.255.0
+    - Default-gateway : 172.16.40.254
+    - DNS : 172.16.254.252
+- HR B:
+    - IPv4 : 172.16.60.21
+    - Subnet : 255.255.255.0
+    - Default-gateway : 172.16.60.254
+    - DNS : 172.16.254.252
 
-### PC Ip assignment
-    1. Clerical A:
-        1. Ipv4 address: 172.16.20.10
-        2. SubnetMask: 255.255.255.0
-        3. DNS: 172.16.254.252
-    2. Acct A
-        1. Ipv4: 172.16.40.10
-        . SubnetMask: 255.255.255.0
-        3. DNS: 172.16.254.252
-    3. HR A
-        1. Ipv4: 172.16.60.10
-        2. SubnetMask: 255.255.255.0
-        3. DNS: 172.16.254.252
+### Step 2: Configure initial device settings on Mgmt and HQ
+Hier stellen we de sitch mgmt en router hq in met de initiele settings:
 
-    4. Clerical B
-        1. Ipv4: 172.16.20.20
-        2. SubnetMask: 255.255.255.0
-        3. DNS: 172.16.254.252
-    5. Acct B
-        1. Ipv4 172.16.40.20
-        2.SubnetMask: 255.255.255.0
-        3. DNS: 172.16.254.252
-    6. HR B
-        1. Ipv4: 172.16.60.20
-        2. SubnetMask: 255.255.255.0
-        3. DNS: 172.16.254.252
+- HQ Router :
+    - Router()> en
+    - Router()# conf t
+    - Router(config)# hostname HQ
+    - HQ(config)# no ip domain-lookup
+    - HQ(config)# enable secret cisco
+        - HQ(config)# line vty 0 15
+        - HQ(config-line)# password cisco
+        - HQ(config-line)# login
+        - HQ(config-line)# exit
+    - HQ(config)# line console 0
+        - HQ(config-line)# password cisco
+        - HQ(config-line)# login
+        - HQ(config-line)# exit
+    - HQ(config)# service password-encryption
 
-### Router port assignment
+- Mgmt Switch :
+    - Switch()> en
+    - Switch()# conf t
+    - Switch(config)# hostname Mgmt
+    - Switch(config)# enable secret cisco
+    - Switch(config)# line vty 0 15 
+        - Switch(config-line)# password cisco
+        - Switch(config-line)# login
+        - Switch(config-line)# exit
+    - Switch(config)# line console 0
+        - Switch(config-line)# password cisco 
+        - Switch(config-line)# exit 
+    - Switch(config)# service password-encryption 
 
-De router HQ heeft sub interfaces op zijn interfaces. Deze moeten geconfigured worden naargelang de vlan
-vb. G0/0.20 heeft access op vlan 20
+### Step 3: Configure VLAN's
+Herhaal deze stappen ook voor de HR en Acct switches.
 
-- router(config)# interface g0/0.##
-- router(config=subif)# encapsulation dot1Q ## (## representes vlan number)
-- router(config-subif)# ip address #.#.#.# subnetmask
+- Mgmt Switch : 
+    - Mgmt()> en
+    - Mgmt()# conf t
+        - Mgmt(config)# vlan 20
+            - Mgmt(config-vlan)# name Clerical
+            - Mgmt(config-vlan)# exit
+        - Mgmt(config)# interface vlan 20
+            - Mgmt(config-if)# no shut
+            - Mgmt(config-if)# exit
+        - Mgmt(config)# vlan 40
+            - Mgmt(config-vlan)# name Acct
+            - Mgmt(config-vlan)# exit
+        - Mgmt(config)# interface vlan 40
+            - Mgmt(config-if)# no shut
+            - Mgmt(config-if)# exit
+        - Mgmt(config)# vlan 60
+            - Mgmt(config-vlan)# name HR
+            - Mgmt(config-vlan)# exit
+        - Mgmt(config)# interface vlan 60
+            - Mgmt(config-if)# no shut
+            - Mgmt(config-if)# exit
+        - Mgmt(config)# vlan 88
+            - Mgmt(config-vlan)# name NetAdmin
+            - Mgmt(config-vlan)# exit
+        - Mgmt(config)# interface vlan 88
+            - Mgmt(config-if)# no shut
+            - Mgmt(config-if)# exit
 
-Je gaat hier de main interfaces wel nog moeten aanzetten. dit doe je zo:
+### Step 4: Assign Switch interfaces to VLAN
+Herhaal dit ook voor de HR switch.
 
-- router(config)# interface g0/#
-- router(config-if)# no shut
+- Acct Switch : 
+    - Acct()> en
+    - Acct()# conf t
+        - Acct(config)# interface range f0/1 - 5
+            - Acct(config-if-range)# switchport mode access
+            - Acct(config-if-range)# switchport access vlan 20
+            - Acct(config-if-range)# exit
+        - Acct(config)# interface range f0/6 - 10
+            - Acct(config-if-range)# switchport mode access
+            - Acct(config-if-range)# switchport access vlan 40
+            - Acct(config-if-range)# exit
+        - Acct(config)# interface range f0/11 - 15
+            - Acct(config-if-range)# switchport mode access
+            - Acct(config-if-range)# switchport access vlan 60
+            - Acct(config-if-range)# exit
+
+### Step 5: Configure the Switches for remote management
+Hier gaan we VLAN 88 configureren wodat de switches hierover kunnen communiceren
+Herhaal deze stappen ook voor Mgmt en HR switches
+
+__Vergeet hier niet de juiste waarden van de ip voor iedere switch te nemen. (Zie Step1)__
+
+- Mgmt Switch :
+    - Mgmt()> en
+    - Mgmt()# conf t
+    - Mgmt(config)# interface vlan 88
+    - Mgmt(config-if)# ip add 172.16.88.200 255.255.255.0
+    - Mgmt(config-if)# exit
+    - Mgmt(config)# ip default-gateway 172.16.88.254
+
+    Hier moet misschien nog iets bij.
+
+### Step 6: Configure VLAN trunking
+Trunking tussen de switches. Dit moet je doen voor deze poorten:
+- Mgmt switch:
+    - Fa0/23
+    - Fa0/24
+- Acct switch:
+    - Fa0/23
+- HR switch:
+    - Fa0/24
+
+Voorbeeld Mgmt Fa0/23:
+- Mgmt(config)# interface fa0/23
+- Mgmt(config-if)# switchport mode trunk
+- Mgmt(config-if)# switchport trunk allowed vlan 20,40,60,88
+- Mgmt(config-if)# no shut
+- Mgmt(config-if)# exit
+
+### Step 7: Configure inter vlan routing
+Hier gaan we de G0/0 en G0/1 interfaces van HQ instellen dat ze de juiste vlans hebben
+Dit moeten we doen voor vlan 20 - 40 - 60 - 88 - 250 - 254
+
+- HQ()# conf t
+- HQ(config)# interface g0/0.20
+- HQ(config-if)# encapsulation dot1Q 20
+- HQ(config-if)# ip add 172.16.20.254 255.255.255.0
+- HQ(config-if)# interface g0/0.40
+- HQ(config-if)# encapsulation dot1Q 40
+- HQ(config-if)# ip add 172.16.40.254 255.255.255.0
+- HQ(config-if)# interface g0/0.60
+- HQ(config-if)# encapsulation dot1Q 60
+- HQ(config-if)# ip add 172.16.60.254 255.255.255.0
+- HQ(config-if)# interface g0/0.88
+- HQ(config-if)# encapsulation dot1Q 88
+- HQ(config-if)# ip add 172.16.88.254 255.255.255.0
+- HQ(config-if)# interface g0/1.250
+- HQ(config-if)# encapsulation dot1Q 250
+- HQ(config-if)# ip add 172.16.250.254 255.255.255.0
+- HQ(config-if)# interface g0/1.254
+- HQ(config-if)# encapsulation dot1Q 254
+- HQ(config-if)# ip add 172.16.254.254 255.255.255.0
+
+### Step 8: Configure Host Addressing
+Test hier eerst op een pc in zijn console of je ping www.cisco.com kan doen. De eerste ping zal timeout zijn maar daarna moet je normaal een connectie hebben.
+
+### Step 9: Configure Access Control lists
+De vty op HQ zijn al secure (Zie step 2)
+a. Max 1 ACL statement
+- HQ()# conf t
+- HQ(config)# access-list 10 permit 172.16.60.0 0.0.0.255
+b. Max 2 ACL statement
+- HQ()# conf t
+- HQ(config)# ip access-list standard INT-WEB
+- HQ(config-std-nacl)# permit 172.16.40.0 0.0.0.255
+- HQ(config-std-nacl)# permit 172.16.60.0 0.0.0.255 
 
 
-### Vlan creation
 
-Op iedere switch en router moeten vlans aangemaakt worden.
-Let hier op dat je bij alleen in SRV de juiste vlans aanmaakt en niet deze ook in de andere switches aanmaakt.
+### Step 10: Addenda
 
-+ Switch> en
-+ Switch# conf t
-+ Switch(config)# vlan ##
-+ Switch(config-vlan)# name 'vlan_name'
+Hier zijn nog een aantal commando's die je moet invullen om het volledig in orde te maken
 
-#### NetAdmin vlan
+HQ(config)# line vty 0 15
+HQ(config)# access-class 10 in
 
-Dit vlan is bedoelt als management vlan.
-Geen van de pc's kan hierop verbinden
+HQ(config)# interface g0/1.250
+HQ(config)# ip acces-group INT-WEB out
 
-ik heb voor vlan 88 de volgende ip's gebruikt
+Het kan zijn dat je niet 100% haalt, ik heb zelf de guide gevolgd en ik kwam op 97% uit toen ik de oefening opnieuw maakte. Ik weet niet exact welke stappen ik gemist heb. Let me know en verbeter gerust.
 
-Acct switch : 172.16.88.10/24
-Mgmt switch : 172.16.88.20/24
-Hr switch : 172.16.88.30/24
-
-#### Vlan 88 config
-
-Acct, HR en Mgmt switch hebben toegang nodig tot vlan 88
-Deze ports moeten dus trunk ports zijn.
-
-Switch(config-if)# switchport mode trunk
-Switch(config-if)# switchport trunk allowed vlan ##
-Switch(config-if)# switchport trunk native vlan ##
-
-### Vlan assignment
-
-Voor iedere vlan moeten de ports assigned worden
-
-+ Switch# interface range fa0/.. - .. 
-+ Switch# switchport mode access
-+ Switch# switchport access vlan ..
-
-### Securing connections
-
-De router en switches moeten beveiligd worden met een passwoord.
-Vty line 0 tem 15
-
-* R# conf t
-* R(config)# line vty 0 15
-* R(config-line)# enable secret cisco
-
-Doe hetzelfde voor de console line:
-* R(config)# line console 0
-* R(config-line)# enable secret cisco
+Good job, je bent nu een stap dichter tot een 20/20 voor Routing en switching
