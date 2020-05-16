@@ -92,8 +92,8 @@ Je kunt je MartiPoints inwisselen voor leuke beloningen:
 
 ### Semester 4
 * Business Analytics minor
-  * [Tests](Semester%204/BA%20minor%20tests)
-  * [Guides Martijn](Semester%204/BA%20minor/Guide%20martijn/index.md)
+  * [Tests van andere mensen](Semester%204/BA%20minor/BA%20minor%20tests%20(van%20andere%20mensen))
+  * [Guides Martijn + tests](Semester%204/BA%20minor/Guide%20martijn%2Btests/index.md)
 * Business Analytics Major
   * [Pentaho Exercises](Semester%204/Ba_Major/Pentaho_Exercises)
 * Databanken 2
