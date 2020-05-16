@@ -1,3 +1,7 @@
+---
+typora-copy-images-to: ./img
+---
+
 # Lokale databank
 
 Bertels vraagt je waarschijnlijk vaak om dingen toe te voegen aan je lokale databank. Nu vraag je je waarschijnlijk af: Hoe moet dat nu precies? Wel
@@ -8,7 +12,7 @@ Bertels vraagt je waarschijnlijk vaak om dingen toe te voegen aan je lokale data
 
 Kies een schema naar keuze, right-click en selecteer backup.
 
-<img src="/Users/martijn/Desktop/School/1-4/opl/TI-oplossingen/Semester 4/DB2/DB2-Labos/img/stap1.png" alt="stap1" style="zoom:33%;" />
+<img src="img/stap1.png" alt="stap1" style="zoom:33%;" />
 
 ## Stap 2
 
@@ -34,13 +38,13 @@ Maak een nieuw schema aan op je lokale databank.
 
 Druk op **restore**
 
-<img src="/Users/martijn/Desktop/School/1-4/opl/TI-oplossingen/Semester 4/DB2/DB2-Labos/img/stap4_1.png" alt="stap4_1" style="zoom:33%;" />
+<img src="img/stap4_1.png" alt="stap4_1" style="zoom:33%;" />
 
 ## Stap 5
 
 Selecteer het bestand dat je hebt opgeslagen. De restore options zijn hetzelfde als de dump options bij stap 3. Je hoeft ze normaal gezien niet aan te passen, maar een kijkje nemen kan geen kwaad.
 
-<img src="/Users/martijn/Desktop/School/1-4/opl/TI-oplossingen/Semester 4/DB2/DB2-Labos/img/stap5.png" alt="stap5" style="zoom:33%;" />
+<img src="img/stap5.png" alt="stap5" style="zoom:33%;" />
 
 Druk op **restore**. Als alles goed is verlopen heb je nu je eigen kopie van de gekozen databank. Je kan er nu lekker zelf aan prutsen enzo. Geweldig!!!
 
@@ -48,4 +52,4 @@ Druk op **restore**. Als alles goed is verlopen heb je nu je eigen kopie van de 
 
 This tutorial is:
 
-<img src="/Users/martijn/Desktop/School/1-4/opl/TI-oplossingen/Semester 4/DB2/DB2-Labos/img/bretels-certified.png" alt="bretels-certified" style="zoom:50%;" />
+<img src="img/bretels-certified.png" alt="bretels-certified" style="zoom:50%;" />
