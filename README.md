@@ -117,5 +117,9 @@ Je kunt je MartiPoints inwisselen voor leuke beloningen:
     
 * IP Major
   * [Guide Martijn](Semester%204/IP%20Major/guide_martijn.md)
+  
+* Routing & Switching
+  * [Antwoorden cisco tests](https://itexamanswers.net/)
+  * [Oplossingen Jonas](Semester%204/Routing%26Switching)
 
 
