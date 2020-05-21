@@ -6,7 +6,7 @@ Hier zie je een mooie galerij van mijn schitterende kunstwerken.
 
 ## Mr. President
 
-![ainsley obama](photoshop/ainsley obama.jpg)
+![ainsley obama](photoshop/ainsleyobama.jpg)
 
 
 
@@ -18,31 +18,31 @@ Hier zie je een mooie galerij van mijn schitterende kunstwerken.
 
 ## Een van mijn betere werken
 
-![Custom Pepe](photoshop/Custom Pepe.jpg)
+![Custom Pepe](photoshop/CustomPepe.jpg)
 
 
 
 ## Kevin au soleil
 
-![Kevin au soleil](photoshop/Kevin au soleil.jpg)
+![Kevin au soleil](photoshop/Kevinausoleil.jpg)
 
 
 
 ## Ja 
 
-![Kevin Star Wars](photoshop/Kevin Star Wars.jpg)
+![Kevin Star Wars](photoshop/KevinStarWars.jpg)
 
 
 
 ## Moet ik hier een beschrijving bij geven?
 
-![koole kasper](photoshop/koole kasper.jpg)
+![koole kasper](photoshop/koolekasper.jpg)
 
 
 
 ## Maggie cena
 
-![Maggie cena](photoshop/Maggie cena.jpg)
+![Maggie cena](photoshop/Maggiecena.jpg)
 
 
 
