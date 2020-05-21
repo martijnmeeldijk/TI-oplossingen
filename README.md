@@ -6,6 +6,10 @@
 
 Ik hoop dat het goed met jullie gaat in deze moeilijke tijden.
 
+* [Inhoud (hier vind je alle nuttige dingen)](contents.md)
+* [Quests](quests.md)
+* [Martipoints shop](shop.md)
+
 ## MartiPoints:
 Je kan martipoints verdienen door iets toe te voegen aan de repo of door iets te verbeteren.
 
