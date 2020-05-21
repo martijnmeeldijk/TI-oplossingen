@@ -47,7 +47,7 @@ Je kunt je MartiPoints inwisselen voor leuke beloningen:
 
 * 2 MartiPoints
   * Een persoonlijk gedicht
-  * Een photoshop edit naar keuze
+  * Een photoshop edit naar keuze [Art Gallery](img/photoshop.md)
   * Snoepgoed (momenteel moet je dan wel de verzendingskosten betalen)
     * Mars (van de aldi)
     * Leo (van de aldi)
