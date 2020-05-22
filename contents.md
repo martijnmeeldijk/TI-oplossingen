@@ -58,4 +58,6 @@
 * Routing & Switching
   * [Antwoorden cisco tests](https://itexamanswers.net/)
   * [Oplossingen Jonas](Semester%204/Routing%26Switching)
+  * [Samenvatting Martijn](Semester%204/Routing%26Switching/martijn/samenvatting.md)
+  * [Oefeningen Martijn](Semester%204/Routing%26Switching/martijn/oefeningen)
 
