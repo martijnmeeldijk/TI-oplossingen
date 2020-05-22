@@ -4,9 +4,14 @@
 
 > :warning:  Ik maak dit voor mezelf. Het kan dat er erg onlogische dingen inzitten. Je mag het document altijd bewerken als je zin hebt.
 
+> :warning: Je mag deze guide niet lezen, hij bevat gecopyrighted materiaal van Cisco. Deze guide is mijn persoonlijke samenvatting en dient niet geherdistribueert te worden.
+
 # Tips and Tricks
 
+## My to-do list
 
+* OSPF
+* 
 
 ## Shortcuts
 
@@ -316,4 +321,124 @@ S1(config-if)# switchport mode dynamic auto
 ```
 
 
+
+# Module 4: Inter-VLAN Routing
+
+## Legacy inter-vlan routing
+
+<img src="img/image-20200522223258396.png" alt="image-20200522223258396" style="width:50%;" />
+
+zo ziet dat eruit.
+
+> Legacy inter-VLAN routing using physical interfaces works, but it has a significant limitation. It is not reasonably scalable because routers have a limited number of physical interfaces. Requiring one physical router interface per VLAN quickly exhausts the physical interface capacity of a router.
+
+
+
+
+
+## Router-on-a-Stick Inter-VLAN Routing
+
+<img src="img/image-20200522223817196.png" alt="image-20200522223817196" style="width:50%;" />
+
+dat ziet er zo uit
+
+Je moet de vlans op de switches configureren (dat lukt wel als je het vorige hoofdstuk hebt gedaan)
+
+daarna moet je de router configureren:
+
+```
+R1(config)# interface G0/0/1.10 -- de .10 voor vlan 10 (dit is een conventie, geen verplichting)
+R1(config-subif)# description Default Gateway for VLAN 10
+R1(config-subif)# encapsulation dot1Q 10 -- lees hieronder (1)
+R1(config-subif)# ip address 192.168.10.1 255.255.255.0
+R1(config-subif)# exit
+```
+
+(1)
+
+> **encapsulation dot1q** *vlan_id* **[native]** - This command configures the subinterface to respond to 802.1Q encapsulated traffic from the specified *vlan-id*. The **native** keyword option is only appended to set the native VLAN to something other than VLAN 1.
+
+doe oefening 4.2.7
+
+## Inter-VLAN Routing on a Layer 3 Switch
+
+<img src="img/image-20200522224033400.png" alt="image-20200522224033400" style="width:50%;" />
+
+dat hebben we dan ook alweer gehad.
+
+Hoe doe je dat?
+
+**1. Create the VLANs.**
+
+```
+D1(config)# vlan 10
+D1(config-vlan)# name LAN10
+D1(config-vlan)# vlan 20
+D1(config-vlan)# name LAN20
+D1(config-vlan)# exit
+```
+
+**2. Create the SVI VLAN interfaces.**
+
+```
+D1(config)# interface vlan 10
+D1(config-if)# description Default Gateway SVI for 192.168.10.0/24
+D1(config-if)# ip add 192.168.10.1 255.255.255.0
+D1(config-if)# no shut
+D1(config-if)# exit
+D1(config)#
+D1(config)# int vlan 20
+D1(config-if)# description Default Gateway SVI for 192.168.20.0/24
+D1(config-if)# ip add 192.168.20.1 255.255.255.0
+D1(config-if)# no shut
+D1(config-if)# exit
+```
+
+**3. Configure access ports.**
+
+```
+D1(config)# interface GigabitEthernet1/0/6
+D1(config-if)# description Access port to PC1
+D1(config-if)# switchport mode access
+D1(config-if)# switchport access vlan 10
+D1(config-if)# exit
+D1(config)#
+D1(config)# interface GigabitEthernet1/0/18
+D1(config-if)# description Access port to PC2
+D1(config-if)# switchport mode access
+D1(config-if)# switchport access vlan 20
+D1(config-if)# exit
+```
+
+**4. Enable IP routing.**
+
+> Finally, enable IPv4 routing with the **ip routing** global configuration command to allow traffic to be exchanged between VLANs 10 and 20. This command must be configured to enable inter-VAN routing on a Layer 3 switch for IPv4.
+
+typo in netacad btw
+
+```
+D1(config)# ip routing
+```
+
+**Je moet ook routing configureren met volgens ospf**
+
+**OSPF**: Open Shortest Path First (een routing protocol)
+
+```
+D1(config)# router ospf 10
+D1(config-router)# network 192.168.10.0 0.0.0.255 area 0
+D1(config-router)# network 192.168.20.0 0.0.0.255 area 0
+D1(config-router)# network 10.10.10.0 0.0.0.3 area 0
+```
+
+
+
+### Troubleshooten
+
+| **Issue Type**              | **How to Fix**                                               | **How to Verify**                                            |
+| :-------------------------- | :----------------------------------------------------------- | :----------------------------------------------------------- |
+| Missing VLANs               | Create (or re-create) the VLAN if it does not exist.Ensure host port is assigned to the correct VLAN. | `**show vlan [brief]****show interfaces switchport****ping**` |
+| Switch Trunk Port Issues    | Ensure trunks are configured correctly.Ensure port is a trunk port and enabled. | `**show interfaces trunk****show running-config**`           |
+| Switch Access Port Issues   | Assign correct VLAN to access port.Ensure port is an access port and enabled.Host is incorrectly configured in the wrong subnet. | `**show interfaces switchport****show running-config interface****ipconfig**` |
+| Router Configuration Issues | Router subinterface IPv4 address is incorrectly configured.Router subinterface is assigned to the VLAN ID. | `**show ip interface brief****show interfaces**`             |
 
