@@ -51,11 +51,11 @@
     * [Eerste Reeks](Semester%204/VGO%20-%20Frans/frans-antwoorden.md)
     * [Tweede Reeks](Semester%204/VGO%20-%20Frans/frans-antwoorden%20deel%202.md)
     * [Derde Reeks](Semester%204/VGO%20-%20Frans/frans-antwoorden%20deel%203.md)
-    
 * IP Major
   * [Guide Martijn](Semester%204/IP%20Major/guide_martijn.md)
-  
 * Routing & Switching
   * [Antwoorden cisco tests](https://itexamanswers.net/)
   * [Oplossingen Jonas](Semester%204/Routing%26Switching)
+  * [Samenvatting Martijn](Semester%204/Routing%26Switching/martijn/samenvatting.md)
+  * [Oefeningen Martijn](Semester%204/Routing%26Switching/martijn/oefeningen)
 
