@@ -618,6 +618,8 @@ en dan kan je `show spanning-tree active` doen om te checken of alles oke is.
 
 **DHCP**: Dynamic Host Configuration Protocol
 
+**SOHO**: Small Offices/Home Offices (ik wist niet wat dit betekende in de cursus van netacad, nu is alles veel duidelijker)
+
 Geeft dynamisch ip adressen en netwerkconfiguratie-info aan apparatuur.
 
 De DHCP server heeft een tabel waaruit hij voor een bepaalde termijn ip adressen uitleent aan apparaten. (een **lease**)
@@ -640,7 +642,7 @@ Dit wordt dus meestal gestuurd wanneer de lease bijna gaat vervallen.
 
 <img src="img/image-20200524151732448.png" alt="image-20200524151732448" width="50%;" />
 
-## Configuratie
+## Configuratie (commando's)
 
 **Stap 1**: sommige adressen mogen er niet in (bv je server met al je porno erop, die wil je zeker een statisch ip geven zodat je hem zeker kan bereiken)
 
@@ -652,5 +654,296 @@ Router(config)# ip dhcp excluded-address low-address [high-address]
 
 ```
 Router(config)# ip dhcp pool pool-name
+```
+
+**Stap 3**: Pool configureren
+
+| **Task**                               | **IOS Command**                                            |
+| :------------------------------------- | :--------------------------------------------------------- |
+| Define the address pool.               | **network** *network-number* [*mask* \| / *prefix-length*] |
+| Define the default router or gateway.  | **default-router** address [ *address2….address8*]         |
+| Define a DNS server.                   | **dns-server** *address* [ *address2…address8*]            |
+| Define the domain name.                | **domain-name** *domain*                                   |
+| Define the duration of the DHCP lease. | **lease** {*days* [*hours* [ *minutes*]] \| **infinite**}  |
+| Define the NetBIOS WINS server.        | **netbios-name-server** *address* [ *address2…address8*]   |
+
+> **Note**: Microsoft recommends not deploying WINS, instead configure DNS for Windows name resolution and decommission WINS.
+
+geen idee waar dit over gaat
+
+
+
+**Aan de router vertellen waar hij DHCP paketten moet doorgeven.**
+
+```
+R1(config)# interface g0/0/0
+R1(config-if)# ip helper-address 192.168.11.6
+R1(config-if)# end
+```
+
+**DHCP aan- en uitzetten**
+
+```
+R1(config)# no service dhcp
+R1(config)# service dhcp
+```
+
+**Een DHCP client configureren** (een interface een adres laten krijgen via dhcp)
+
+> To configure an Ethernet interface as a DHCP client, use the **ip address dhcp** interface configuration mode command, as shown in the example. This configuration assumes that the ISP has been configured to provide select customers with IPv4 addressing information.
+
+```
+SOHO(config)# interface G0/0/1
+SOHO(config-if)# ip address dhcp
+SOHO(config-if)# no shutdown
+```
+
+**Op pc dhcp aanzetten in command line**
+
+```
+C:\Users\Student> ipconfig /release --doet ipv4 configuratie weg
+C:\Users\Student> ipconfig /renew --vraagt ip adres aan dhcp server
+C:\Users\Student> ipconfig /all --toon ip adres van de pc en bijhorende info
+```
+
+
+
+## Verificatie (commando's)
+
+| **Command**                             | **Description**                                              |
+| :-------------------------------------- | :----------------------------------------------------------- |
+| **show running-config \| section dhcp** | Displays the DHCPv4 commands configured on the router.       |
+| **show ip dhcp binding**                | Displays a list of all IPv4 address to MAC address bindings provided by the DHCPv4 service. |
+| **show ip dhcp server statistics**      | Displays count information regarding the number of DHCPv4 messages that have been sent and received. |
+
+## Voorbeeld
+
+In dit voorbeeld is de router de DHCP server:
+
+```
+R1(config)# ip dhcp excluded-address 192.168.10.1 192.168.10.9
+R1(config)# ip dhcp excluded-address 192.168.10.254
+R1(config)# ip dhcp pool LAN-POOL-1
+R1(dhcp-config)# network 192.168.10.0 255.255.255.0
+R1(dhcp-config)# default-router 192.168.10.1
+R1(dhcp-config)# dns-server 192.168.11.5
+R1(dhcp-config)# domain-name example.com
+R1(dhcp-config)# end
+```
+
+
+
+
+
+# Module 8: SLAAC and DHCPv6
+
+## Vocabulaire
+
+<u>Eerst een paar afkortingen & termen</u> (netacad verwacht blijkbaar dat we die allemaal al kennen)
+
+**GUA**: Global Unicast Address
+
+**LLA**: Link Local Address
+
+**SLAAC**: Stateless Address Auto-configuration
+
+**RA**: Router Advertisement
+
+**RS**: Router sollicitation
+
+**Multicast adres**:
+
+* Een apparaat kan in een multicast groep zitten. (Een beetje zoals een messenger groep). Deze groep heeft een **multicast adres**. Als je nu een bericht stuurt naar dat adres, zullen alle apparaten in de groep het bericht ontvangen. 
+
+* Voorbeelden:
+
+  * **ff02::1**, het all-nodes multicast adres.
+
+  * **ff02::2**, all routers
+
+  * ... je hebt het wel door hopelijk
+
+    
+
+ik heb ontdekt hoe je lijntjes kan maken in markdown yeey :dancer: je doet gewoon '---'
+
+---
+
+---
+
+---
+
+---
+
+---
+
+oke genoeg lijntjes, we gaan verder.
+
+
+
+## Router advertisements
+
+Een router stuurt **router advertisements** om de hosts duidelijk te maken hoe ze hun ipv6 adressen moeten verkrijgen.
+
+> By default, an IPv6-enabled router periodically send ICMPv6 RAs (router advertisements) which simplifies how a host can dynamically create or acquire its IPv6 configuration.
+
+---
+
+Router advertisements kunnen deze flags bevatten:
+
+**A flag** - The *Address Autoconfiguration flag* signifies to use Stateless Address Autoconfiguration (SLAAC) to create an IPv6 GUA 
+
+> Zo kunnen hosts zelf een GUA maken, zonder dat er een DHCP server nodig is. De host gebruikt dan de prefix (subnet id) die voorzien is in de RA en kan dan random of met EUI-64 de rest van het adres genereren. (de rest van het adres heet by the way het *interface id*)
+
+**O flag** - The *Other Configuration flag* signifies that additional information is available from a stateless DHCPv6 server. 
+
+**M flag** - The *Managed Address Configuration flag* signifies to use a stateful DHCPv6 server to obtain an IPv6 GUA.
+
+<img src="img/image-20200524225331469.png" alt="image-20200524225331469" width="50%;" />
+
+---
+
+Mogelijke combinaties:
+
+**A** (Autoconfiguration): Alleen SLAAC, zonder toeters en bellen (<u>stateless</u>)
+
+**A+O **(Autoconfiguration + other configuration): SLAAC + DHCPv6, extra info komt van de DHCPv6 server (<u>stateless</u>)
+
+**M **(Managed Configuration): DHCPv6 server die alles beheerd (<u>stateful</u>) 
+
+<img src="img/image-20200524225302235.png" alt="image-20200524225302235" width="50%;" />
+
+## Duplicate address detection
+
+Als je een random adres genereert kan het natuurlijk dat er iemand anders hetzelfde adres heeft. Weet maar gewoon dat het bestaat. Meer info vindt je [hier](https://lmgtfy.com/?q=duplicate+address+detection&iie=1)
+
+
+
+## DHCPv6
+
+1. The host sends an RS message.
+2. The router responds with an RA message.
+3. The host sends a DHCPv6 SOLICIT message.
+4. The DHCPv6 server responds with an ADVERTISE message.
+5. The host responds to the DHCPv6 server.
+6. The DHCPv6 server sends a REPLY message.
+
+<img src="img/image-20200524231642771.png" alt="image-20200524231642771" width="50%;" />
+
+## Configuratie (commando's)
+
+**SLAAC aanzetten** (als je ipv6 unicast routing aanzet is SLAAC de default)
+
+```
+ipv6 unicast-routing
+```
+
+**Stateless DHCPv6 configureren**
+
+Server (in dit geval een router):
+
+```
+R1(config)# ipv6 unicast-routing
+R1(config)# ipv6 dhcp pool IPV6-STATELESS --dit maakt een pool, de conventie is om hem in ALL CAPS te schrijven
+R1(config-dhcpv6)# dns-server 2001:db8:acad:1::254 --geeft dns server aan de pool
+R1(config-dhcpv6)# domain-name example.com 
+R1(config-dhcpv6)# exit
+R1(config)# interface GigabitEthernet0/0/1
+R1(config-if)# description Link to LAN
+R1(config-if)# ipv6 address fe80::1 link-local
+R1(config-if)# ipv6 address 2001:db8:acad:1::1/64
+R1(config-if)# ipv6 nd other-config-flag --hier heb je de flag
+R1(config-if)# ipv6 dhcp server IPV6-STATELESS
+R1(config-if)# no shut
+```
+
+Client (in dit geval ook een router):
+
+```
+R3(config)# ipv6 unicast-routing
+R3(config)# interface g0/0/1
+R3(config-if)# ipv6 enable
+R3(config-if)# ipv6 address autoconfig
+R3(config-if)# end
+```
+
+**Stateful DHCPv6 configureren**
+
+Server:
+
+```
+R1(config)# ipv6 unicast-routing
+R1(config)# ipv6 dhcp pool IPV6-STATEFUL
+R1(config-dhcpv6)# address prefix 2001:db8:acad:1::/64
+R1(config-dhcpv6)# dns-server 2001:4860:4860::8888
+R1(config-dhcpv6)# domain-name example.com
+R1(config)# interface GigabitEthernet0/0/1
+R1(config-if)# description Link to LAN
+R1(config-if)# ipv6 address fe80::1 link-local
+R1(config-if)# ipv6 address 2001:db8:acad:1::1/64
+R1(config-if)# ipv6 nd managed-config-flag --m flag op 1 zetten
+R1(config-if)# ipv6 nd prefix default no-autoconfig --a flag op 0 zetten
+R1(config-if)# ipv6 dhcp server IPV6-STATEFUL
+R1(config-if)# no shut
+R1(config-if)# end
+R1(config-if)# ipv6 nd other-config-flag
+```
+
+> **Note:** You can use the **no ipv6 nd managed-config-flag** to set the M flag back to its default of 0. The **no** **ipv6 nd prefix default no-autoconfig** command sets the A flag back its default of 1.
+
+Client:
+
+```
+R3(config)# ipv6 unicast-routing
+R3(config)# interface g0/0/1
+R3(config-if)# ipv6 enable
+R3(config-if)# ipv6 address dhcp
+R3(config-if)# end
+```
+
+
+
+**Configure a DHCPv6 Relay Agent**
+
+Syntax:
+
+```
+Router(config-if)# ipv6 dhcp relay destination ipv6-address [interface-type interface-number]
+```
+
+Voorbeeld:
+
+```
+R1(config)# interface gigabitethernet 0/0/1
+R1(config-if)# ipv6 dhcp relay destination 2001:db8:acad:1::2 G0/0/0
+R1(config-if)# exit
+```
+
+
+
+## Verificatie (commando's)
+
+IPv6 pool en extra info tonen:
+
+```
+show ipv6 dhcp pool
+```
+
+Display the IPv6 link-local address of the client and the global unicast address assigned by the server.
+
+```
+show ipv6 dhcp binding
+```
+
+Toon DHCPv6 info van de interfaces 
+
+```
+show ipv6 dhcp interface
+```
+
+Op de client kijken of het werkt:
+
+```
+ipconfig /all
 ```
 
