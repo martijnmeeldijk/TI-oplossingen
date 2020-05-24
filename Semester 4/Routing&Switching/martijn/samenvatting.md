@@ -1,16 +1,20 @@
 # Routing & Switching essentials
 
+> :warning: LEGAL:  Je mag deze guide niet lezen of delen, hij bevat gecopyrighted materiaal van Cisco. Deze guide is mijn persoonlijke samenvatting en dient niet geherdistribueert te worden.
+
+> :warning:  Ik maak dit voor mezelf. Het kan dat er erg onlogische dingen inzitten. 
+
 [TOC]
 
-> :warning:  Ik maak dit voor mezelf. Het kan dat er erg onlogische dingen inzitten. Je mag het document altijd bewerken als je zin hebt.
+(Die TOC zorgt ervoor dat je in *typora* een mooie table of contents krijgt. Github ondersteunt dit niet... Als ik zin heb zal ik als ik klaar ben met de samenvatting er eentje genereren.)
 
-> :warning: Je mag deze guide niet lezen, hij bevat gecopyrighted materiaal van Cisco. Deze guide is mijn persoonlijke samenvatting en dient niet geherdistribueert te worden.
+
 
 # Tips and Tricks
 
 ## My to-do list
 
-* OSPF
+* OSPF en *8.4.1.2 Packet Tracer - Skills Integration Challenge.pka*
 * 
 
 ## Shortcuts
@@ -65,7 +69,7 @@ Checken of je shit werkt:
 
 
 
-## SSH 1.3.6
+## SSH oefening 1.3.6
 
 Op de switch:
 
@@ -282,12 +286,12 @@ Trunk poort maken**
 
 | **Task**                                                   | **IOS Command**                                              |
 | :--------------------------------------------------------- | :----------------------------------------------------------- |
-| Enter global configuration mode.                           | `Switch# **configure terminal**`                             |
-| Enter interface configuration mode.                        | `Switch(config)# **interface** *interface-id*`               |
-| Set the port to permanent trunking mode.                   | `Switch(config-if)# **switchport mode trunk**`               |
-| Sets the native VLAN to something other than VLAN 1.       | `Switch(config-if)# **switchport trunk native vlan** *vlan-id*` |
-| Specify the list of VLANs to be allowed on the trunk link. | `Switch(config-if)# **switchport trunk allowed vlan** *vlan-list*` |
-| Return to the privileged EXEC mode.                        | `Switch(config-if)# **end**`                                 |
+| Enter global configuration mode.                           | `Switch# configure terminal`                                 |
+| Enter interface configuration mode.                        | `Switch(config)# interface interface-id`                     |
+| Set the port to permanent trunking mode.                   | `Switch(config-if)# switchport mode trunk`                   |
+| Sets the native VLAN to something other than VLAN 1.       | `Switch(config-if)# switchport trunk native vlan vlan-id`    |
+| Specify the list of VLANs to be allowed on the trunk link. | `Switch(config-if)# switchport trunk allowed vlan vlan-list` |
+| Return to the privileged EXEC mode.                        | `Switch(config-if)# end`                                     |
 
 **Trunk verwijderen/resetten**
 
@@ -437,8 +441,216 @@ D1(config-router)# network 10.10.10.0 0.0.0.3 area 0
 
 | **Issue Type**              | **How to Fix**                                               | **How to Verify**                                            |
 | :-------------------------- | :----------------------------------------------------------- | :----------------------------------------------------------- |
-| Missing VLANs               | Create (or re-create) the VLAN if it does not exist.Ensure host port is assigned to the correct VLAN. | `**show vlan [brief]****show interfaces switchport****ping**` |
-| Switch Trunk Port Issues    | Ensure trunks are configured correctly.Ensure port is a trunk port and enabled. | `**show interfaces trunk****show running-config**`           |
-| Switch Access Port Issues   | Assign correct VLAN to access port.Ensure port is an access port and enabled.Host is incorrectly configured in the wrong subnet. | `**show interfaces switchport****show running-config interface****ipconfig**` |
-| Router Configuration Issues | Router subinterface IPv4 address is incorrectly configured.Router subinterface is assigned to the VLAN ID. | `**show ip interface brief****show interfaces**`             |
+| Missing VLANs               | Create (or re-create) the VLAN if it does not exist.Ensure host port is assigned to the correct VLAN. | `show vlan [brief] show interfaces switchport ping`          |
+| Switch Trunk Port Issues    | Ensure trunks are configured correctly.Ensure port is a trunk port and enabled. | `show interfaces trunk show running-config`                  |
+| Switch Access Port Issues   | Assign correct VLAN to access port.Ensure port is an access port and enabled.Host is incorrectly configured in the wrong subnet. | `show interfaces switchport show running-config interface ipconfig` |
+| Router Configuration Issues | Router subinterface IPv4 address is incorrectly configured.Router subinterface is assigned to the VLAN ID. | `show ip interface brief show interfaces`                    |
+
+
+
+
+
+
+
+# Module 5: STP Concepts
+
+## Korte uitleg
+
+**STP**: Spanning tree protocol
+
+> Spanning Tree Protocol (STP) is a loop-prevention network protocol that allows for redundancy while creating a loop-free Layer 2 topology. 
+>
+> STP logically blocks physical loops in a Layer 2 network, preventing frames from circling the network forever
+
+<img src="img/image-20200523113613941.png" alt="image-20200523113613941" width="50%;" />
+
+Je wilt in je netwerk graag **redundantie**, want als er ineens een apparaat ontploft, dan ligt niet heel je netwerk plat. Als je switches in een cirkel opstelt, kan het dat pakketjes oneindig lang blijven ronddraaien in die cirkel. **STP** voorkomt dit door poorten te **blokkeren** als ze niet echt nodig zijn. Als er nu een switch kapot gaat, dan worden de nodige geblokkeerde poorten open gezet opdat het netwerk terug operationeel is.
+
+
+
+Ik ga het hele algoritme hier niet uitleggen, als je geïnteresserd bent kan je altijd de slides van module 4 op toledo lezen. 
+
+Er zijn ook verschillende soorten STP. Ik weet niet echt of ze verwachten of we dit allemaal kennen. Nou ja, lees het maar op netacad als je extra tijd hebt (waarschijnlijk niet dus).
+
+
+
+# Module 6: EtherChannel
+
+> EtherChannel is a link aggregation technology that groups multiple physical Ethernet links together into one single logical link. It is used to provide fault-tolerance, load sharing, increased bandwidth, and redundancy between switches, routers, and servers.
+
+Oke dus als we dat in minder vage woorden willen omschrijven.
+
+*Je kan meerdere verbindingen tussen apparaten samensmelten tot één superverbinding. Dit heet EtherChannel.*
+
+Thanks for coming to my Ted Talk.
+
+<img src="img/image-20200523222223835.png" alt="image-20200523222223835" width="50%;" />
+
+zo ziet dat er dan uit.
+
+Blijkbaar (volgens netacad) is EtherChannel ook nodig omdat normaal gezien **STP** (spanning tree) redundante poorten gaat blokkeren. Je kan dit dus voorkomen met EtherChannel.
+
+Oh ja, nog een leuk feitje, je kan maximum 8 links in een EtherChannel stoppen.
+
+## AutoNegotiation Protocols
+
+Er zijn 2 protocollen die je hiervoor zou kunnen gebruiken (die doen wat werk in jouw plaats)
+
+1. **Port Aggregation Protocol (PAgP)**
+
+   ​	Heeft drie modes; 
+
+   - **On** - This mode forces the interface to channel without PAgP. Interfaces configured in the on mode do not exchange PAgP packets.
+   - **PAgP desirable** - This PAgP mode places an interface in an active negotiating state in which the interface initiates negotiations with other interfaces by sending PAgP packets.
+   - **PAgP auto** - This PAgP mode places an interface in a passive negotiating state in which the interface responds to the PAgP packets that it receives but does not initiate PAgP negotiation.
+
+2.  **Link Aggregation Control Protocol (LACP)**
+
+   ​	Zelfde liedje
+
+   - **On** - This mode forces the interface to channel without LACP. Interfaces configured in the on mode do not exchange LACP packets.
+   - **LACP active** - This LACP mode places a port in an active negotiating state. In this state, the port initiates negotiations with other ports by sending LACP packets.
+   - **LACP passive** - This LACP mode places a port in a passive negotiating state. In this state, the port responds to the LACP packets that it receives but does not initiate LACP packet negotiation.
+
+Je kan EtherChannel ook configureren **zonder** deze protocollen.
+
+
+
+## Wanneer werkt het?
+
+* De speed en duplex configuratie van je poorten moet hetzelfde zijn
+
+* De poorten moeten op dezelfde VLAN zitten, of het moeten trunk poorten zijn die dezelfde allowed vlans hebben.
+
+  
+
+Kort samengevat, je links moeten hetzelfde zijn. Je kan geen *ultra super mega link fusion* doen als je links verschillend zijn.
+
+<img src="img/fusion.jpg" alt="fusion" width="33%;" />
+
+kan iemand deze naar rudi sturen?
+
+## Hoe maak je het?
+
+```
+S1(config)# interface range FastEthernet 0/1 - 2
+S1(config-if-range)# channel-group 1 mode active
+Creating a port-channel interface Port-channel 1
+S1(config-if-range)# exit
+S1(config-if)# interface port-channel 1
+S1(config-if)# switchport mode trunk
+S1(config-if)# switchport trunk allowed vlan 1,2,20
+```
+
+Kies een range van interfaces en maak daarop een channel-group die je een nummer geeft. Nu kan je deze groep gewoon als interface gebruiken. Cool.
+
+
+
+## Commando's
+
+| Wat doet het                                                 | Hoe moet het                             |
+| ------------------------------------------------------------ | ---------------------------------------- |
+| Op een range van interfaces een channel group zetten en de EtherChannel modus instellen. | channel-mode [channel#] mode [mode]      |
+| Kijken of het werkt                                          | show etherchannel summary                |
+| De gemaakte channel aanspreken. (Om bv te gebruiken als trunk) | interface port-channel [channel#]        |
+| Meer details                                                 | show run \| begin interface port-channel |
+
+Zo mergen we twee switchpoorten tot 1 super trunk.
+
+```
+S1(config)# interface range g0/1 - 2
+S1(config-if-range)# shutdown
+S1(config-if-range)# channel-group 2 mode active --zie hieronder
+S1(config-if-range)# no shutdown
+S1(config-if-range)# interface port-channel 2
+S1(config-if)# switchport mode trunk
+```
+
+**active **zorgt ervoor dat **LACP** wordt gebruikt.
+
+**passive** gebruikt LACP alleen als een ander apparaat gedetecteerd wordt dat LACP gebruikt
+
+**desirable** zorgt ervoor dat de switch een PAgP link gaat onderhandelen
+
+als je op `?` drukt nadat je `channel-group 2 mode` hebt getypt krijg je dit
+
+```
+active     Enable LACP unconditionally
+auto       Enable PAgP only if a PAgP device is detected
+desirable  Enable PAgP unconditionally
+on         Enable Etherchannel only
+passive    Enable LACP only if a LACP device is detected
+```
+
+druk dus altijd op `?`
+
+Je hoeft eigenlijk niks te weten over routers of switches. Druk gewoon op :question:
+
+:question: :question:
+
+:warning:
+
+Soms gaan ports toch random in blocking mode. (door stp). Doe dit:
+
+```
+S1(config)# spanning-tree vlan 1 root primary
+or
+S1(config)# spanning-tree vlan 1 priority 24576
+```
+
+Oke ik heb weer iets bijgeleerd. Ze gaan niet zomaar in blocking mode. Ze gaan in blocking mode omdat er dan geen loop ontstaat (duh), maar waarom vroegen ze mij in die assignment dan om dat op te lossen? Het antwoord is simpel. STP blokkeerde de Gigabit Ethernet poorten van een switch, en gebruikte in de plaats daarvan de Fast Ethernet poorten. Dat is niet zo handig. Dus door dit commando te gebruiken op de switch met de GE poorten, blokkeerde spanning tree de FE poorten.
+
+
+
+en dan kan je `show spanning-tree active` doen om te checken of alles oke is.
+
+
+
+:warning: tip voor het packet tracer lab van dit hoofdstuk: gebruik de **volle zwarte** kabel, niet de autoconnect. Autoconnect geeft je de verkeerde kabel en dan rekent packet tracer de oefening fout. 
+
+
+
+
+
+# Module 7: DHCPv4
+
+## Korte uitleg
+
+**DHCP**: Dynamic Host Configuration Protocol
+
+Geeft dynamisch ip adressen en netwerkconfiguratie-info aan apparatuur.
+
+De DHCP server heeft een tabel waaruit hij voor een bepaalde termijn ip adressen uitleent aan apparaten. (een **lease**)
+
+**Hoe wordt een lease verkregen?**
+
+1. DHCP Discover (DHCPDISCOVER)
+2. DHCP Offer (DHCPOFFER)
+3. DHCP Request (DHCPREQUEST)
+4. DHCP Acknowledgment (DHCPACK)
+
+<img src="img/image-20200524151623997.png" alt="image-20200524151623997" width="50%;" />
+
+**Hoe wordt een lease vernieuwd?**
+
+Dit wordt dus meestal gestuurd wanneer de lease bijna gaat vervallen.
+
+1. DHCP Request (DHCPREQUEST) 
+2. DHCP Acknowledgment (DHCPACK)
+
+<img src="img/image-20200524151732448.png" alt="image-20200524151732448" width="50%;" />
+
+## Configuratie
+
+**Stap 1**: sommige adressen mogen er niet in (bv je server met al je porno erop, die wil je zeker een statisch ip geven zodat je hem zeker kan bereiken)
+
+```
+Router(config)# ip dhcp excluded-address low-address [high-address]
+```
+
+**Stap 2**: maak een pool
+
+```
+Router(config)# ip dhcp pool pool-name
+```
 
