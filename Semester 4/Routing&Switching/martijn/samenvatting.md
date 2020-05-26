@@ -15,9 +15,12 @@
 ## My to-do list
 
 * OSPF en *8.4.1.2 Packet Tracer - Skills Integration Challenge.pka*
-* 
+* Oefening op SLAAC en DHCPv6
+* Lijst maken van vragen en antwoorden van vorige examens + netacad examens (jullie mogen mij hier zeker mee helpen)
 
 ## Shortcuts
+
+In Cisco iOS kan je elk commando zo kort maken als je wilt, zolang het niet dubbelzinnig is. Er zijn ook sommige speciale afkortingen voor veelgebruikte commando's. Hierbeneden vind je een combinatie van beide soorten.
 
 | Commando                           | Afkorting         |
 | ---------------------------------- | ----------------- |
@@ -27,9 +30,59 @@
 | show ip interface brief            | sh ip int brie    |
 | show running-config [interface]    | sh ru [interface] |
 | interface GigabitEthernet 0/0      | int G0/0          |
-|                                    |                   |
-|                                    |                   |
-|                                    |                   |
+| enable                             | en                |
+| no ip domain-lookup                | no ip dom lo      |
+| show running-config                | sh run            |
+
+
+
+## More useful commands
+
+| Commando           | Wat doet het?                                                |
+| ------------------ | ------------------------------------------------------------ |
+| tracert [ip-adres] | Trace the path from this device to the device on the other end |
+|                    |                                                              |
+|                    |                                                              |
+
+
+
+## Initial Config­uration (Switches and Routers)
+
+| **Comm­and**                      | **From Mode**    | **What It Does**                              |
+| --------------------------------- | ---------------- | --------------------------------------------- |
+| **`hostname xyz`**                | global config    | sets hostname to xyz                          |
+| **`enable secret xyz`**           | global config    | sets encrypted password for priv. EXEC to xyz |
+| **`service passwo­rd-­enc­rypt`** | global config    | encrypts all passwords                        |
+| **`line console 0`**              | global config    | enters line config mode for console           |
+| **`line vty 0 15`**               | global config    | enters line config mode for 16 vty lines      |
+| **`pas­sword xyz`**               | line config      | sets line password to xyz                     |
+| **`log­in`**                      | line config      | enables users to login                        |
+| **`int vlan 1`**                  | global config    | enters interface config mode for vlan1        |
+| **`ip address [IP] [subnet]`**    | interface config | sets IP address                               |
+| **`no shut`**                     | interface config | turns on interface                            |
+| **`banner motd #Text Here#`**     | global config    | sets motd banner                              |
+
+## Router Commands
+
+| **Comm­and**                              | **From Mode**    | **Func­tion**                                    |
+| ----------------------------------------- | ---------------- | ------------------------------------------------ |
+| **`int­erface g0/1`**                     | global config    | enters interface config for Gigabit Ethernet 0/1 |
+| **`ip address *IP/prefix*`**              | interface config | sets interf­ace's IPv4 address                   |
+| **`no shut`**                             | interface config | turns on the interface                           |
+| **`des­cri­ption *descr­iption text*`**   | interface config | used to document info about the interface        |
+| **`ipv6 address *IP prefix*`**            | interface config | sets interf­ace's IPv6 address                   |
+| **`ipv6 address *IP/prefix* link-local`** | interface config | sets interf­ace's IPv6 link-local address        |
+| **`ipv6 unicast-routing`**                | global config    | enables IPv6 routing                             |
+
+## Keyboard Shortcuts
+
+| Up Arrow     | Automa­tically re-types last command                   |
+| ------------ | ------------------------------------------------------ |
+| Ctrl+Shift+6 | Oh crap, stop! (Cancels whatever it's currently doing) |
+| Ctrl+C       | Exits config mode                                      |
+| Ctrl+Z       | Applies current command & returns to priv. EXEC mode   |
+| Ctrl+U       | Erases anything on current prompt line                 |
+| Tab          | Completes abbrev­iated command                         |
 
 ## Translating domain server
 
@@ -46,6 +99,14 @@ Dit vind ik altijd nuttig. Daarom zet ik het hier vanboven.
 ![hierarchy](img/hierarchy.jpg)
 
 
+
+| **Level** | **Mode**         | **Prompt**             |
+| --------- | ---------------- | ---------------------- |
+| 1         | User EXEC        | Device>                |
+| 2         | Privileged EXEC  | Device#                |
+| 3         | Global Config    | Device­(co­nfig)#      |
+| 4a        | Interface Config | Device­(co­nfi­g-if)#  |
+| 4b        | Line Config      | Device­(co­nfi­g-line) |
 
 ## Port labels
 
@@ -946,4 +1007,73 @@ Op de client kijken of het werkt:
 ```
 ipconfig /all
 ```
+
+
+
+
+
+# Module 9: FHRP Concepts
+
+**FHRP**: First Hop Redundancy Protocols
+
+**HSRP**: Hot Standby Router Protocol
+
+> HSRP is a Cisco-proprietary FHRP that is designed to allow for transparent failover of a first-hop IP device.
+
+Dus HSRP is een FHRP van Cisco.
+
+In de test van Netacad van deze module wordt er van je verwacht dat je alle eigenschappen van verschillende FHR protocollen kent (GLBP, HSRP, VRRPv2, VRRPv3, IRDP, ...) Ik weet niet of dit super nuttig is, maar ik heb het gezegd.
+
+## Essentie
+
+### FHRP
+
+Een end-device heeft, zoals wij het geleerd hebben altijd **één default gateway**. Dat is niet goed, want als die gateway kapot gaat is alles naar de klote (= single point of failure). Hoe lossen we dit op? Simpel. We geven de end-device een **virtual router** als default gateway. Als de router die jouw pakketjes aan het routeren is plotseling sterft. Dan kan een andere router (die in standby stond) gewoon alle info van de dode router overnemen en het lijkt gewoon alsof er niets gebeurd is.
+
+
+
+<img src="img/image-20200526143712872.png" alt="image-20200526143712872" width="50%;" />
+
+Stappen:
+
+1. The standby router stops seeing Hello messages from the forwarding router.
+2. The standby router assumes the role of the forwarding router.
+3. Because the new forwarding router assumes both the IPv4 and MAC addresses of the virtual router, the host devices see no disruption in service.
+
+---
+
+### HSRP
+
+HSRP geeft routers een **priority** (tussen 0 en 255, default 100). De router met de hoogste priority wordt de **active router**. Stel je het volgende scenario voor. Er komt ineens een nieuwe router in het netwerk met een hogere priority dan de huidige **active router**. Normaal gezien behoudt de huidige Alpha Chad router zijn positie. Je kan ook **preemption aanzetten** met het `standby preempt` commando. Dan wordt de huidige actieve router een Beta Cuck en de nieuwe router (met hogere prioriteit) wordt dan de nieuwe Alpha Chad router. 
+
+<img src="img/chad.jpg" alt="chad" width="48%;" />
+
+> **Note**: HSRP configuration is not a required skill for this module, course, or for the CCNA certification. However, we thought you might enjoy implementing HSRP in Packet Tracer. Completing this activity will help you better understand how FHRPs, and specifically HSRP, operates.
+
+Moeten we het kunnen van Rudi? Bij de oefeningen staat dat je *9.3.3* moet maken dus allee dan.
+
+
+
+## Commando's
+
+**Voorbeeld**
+
+HSRP op een router configureren (active router)
+
+```
+R1(config)# interface g0/1
+R1(config-if)# standby version 2 --het hele gedoe activeren
+R1(config-if)# standby 1 ip 192.168.1.254 --ip van virtuele router
+R1(config-if)# standby 1 priority 150 --To configure a router to be the active router
+R1(config-if)# standby 1 preempt --dit heb ik net uitgeledg met mijn geweldige analogie
+```
+
+standby router
+
+```
+standby version 2 --weet je nog wat de default priority was?
+standby 1 ip 192.168.1.254
+```
+
+Nu moet je op de end-devices (en waarschijnlijk oo de switches) de default gateway veranderen naar `192.168.1.254`.
 
