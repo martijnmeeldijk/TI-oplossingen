@@ -1,6 +1,8 @@
+
+
 # Routing & Switching essentials
 
-> :warning: LEGAL:  Je mag deze guide niet lezen of delen, hij bevat gecopyrighted materiaal van Cisco. Deze guide is mijn persoonlijke samenvatting en dient niet geherdistribueert te worden.
+> :warning: LEGAL:  Je mag deze guide niet lezen of delen, hij bevat gecopyrighted materiaal van Cisco. Deze guide is mijn persoonlijke samenvatting en dient niet geherdistribueert te worden. 
 
 > :warning:  Ik maak dit voor mezelf. Het kan dat er erg onlogische dingen inzitten. 
 
@@ -1077,3 +1079,184 @@ standby 1 ip 192.168.1.254
 
 Nu moet je op de end-devices (en waarschijnlijk oo de switches) de default gateway veranderen naar `192.168.1.254`.
 
+
+
+
+
+# Module 10: LAN Security Concepts
+
+## Samenvatting
+
+Er zijn een heleboel systemen die je kan gebruiken om je netwerk te beveiligen. Er zijn ook heel wat aanvallen. Ik zal er hier een paar kort samenvatten/uitleggen (als ik ze interessant of noemenswaardig vind). Je kan misschien best even Module 10 op Netacad lezen als het je interesseert. Er zijn geen oefeningen voor deze module, gewoon veel info. Je kan misschien de quiz op Netacad maken als je je verveelt.
+
+## Vocabulaire
+
+**AAA**:  Authentication, Authorization, and Accounting
+
+> control who is permitted to access a network (authenticate) 
+>
+> what they can do while they are there (authorize) 
+>
+> audit what actions they performed while accessing the network (accounting)
+
+**AMP**: advanced malware protection
+
+**NGIPS**: next-generation intrusion prevention system
+
+**NAC**: Network Access Control
+
+**WLC**: wireless LAN controller
+
+**AP**: access point
+
+**BYODs**: bring your own devices
+
+**WSA**: web security appliance
+
+**HIPS**: host-based intrusion prevention system
+
+**ESA**: email security appliance
+
+**DAI**: Dynamic ARP Inspection
+
+**IPSG**: IP Source Guard
+
+**(D)DOS** attack: (Distributed) Denial of service attack
+
+**CDP**: Cisco Discovery Protocol
+
+(Ziek veel afkortingen hier. Misschien niet super nuttig, maar wie weet komt er een vraag waar één van deze afkortingen in voor komt...)
+
+
+
+## SSH
+
+Conclusie; Gebruik ssh. Het is veilig.
+
+
+
+## 802.1X
+
+> The IEEE 802.1X standard is a port-based access control and authentication protocol. This protocol restricts unauthorized workstations from connecting to a LAN through publicly accessible switch ports. The authentication server authenticates each workstation that is connected to a switch port before making available any services offered by the switch or the LAN.
+
+Met dit protocol mag je, zelfs als je een ethernet kabel rechtstreeks in je pc steekt niet zomaar op het netwerk.
+
+
+
+## Layer 2 Vulnerabilities
+
+Laag 2 is heel kwetsbaar. Als er een kwetsbaarheid is in laag 2, vallen alle veiligheidoverwegingen in de bovenliggende lagen aan diggelen.
+
+### Threats & Solutions
+
+Een paar voorbeelden van laag 2 aanvallen van Netacad:
+
+| **Category**                 | **Examples**                                                 |
+| :--------------------------- | :----------------------------------------------------------- |
+| **MAC Table Attacks**        | Includes MAC address flooding attacks.                       |
+| **VLAN Attacks**             | Includes VLAN hopping and VLAN double-tagging attacks. It also includes attacks between devices on a common VLAN. |
+| **DHCP Attacks**             | Includes DHCP starvation and DHCP spoofing attacks.          |
+| **ARP Attacks**              | Includes ARP spoofing and ARP poisoning attacks.             |
+| **Address Spoofing Attacks** | Includes MAC address and IP address spoofing attacks.        |
+| **STP Attacks**              | Includes Spanning Tree Protocol manipulation attacks.        |
+
+En een paar oplossingen:
+
+| **Solution**                     | **Description**                                              |
+| :------------------------------- | :----------------------------------------------------------- |
+| **Port Security**                | Prevents many types of attacks including MAC address flooding attacks and DHCP starvation attacks. |
+| **DHCP Snooping**                | Prevents DHCP starvation and DHCP spoofing attacks.          |
+| **Dynamic ARP Inspection (DAI)** | Prevents ARP spoofing and ARP poisoning attacks.             |
+| **IP Source Guard (IPSG)**       | Prevents MAC and IP address spoofing attacks.                |
+
+
+
+### MAC Address Table Flooding
+
+Een aanvaller gaat heel veel verschillende pakketjes met verschillende **source mac adressen** sturen. Na een tijd is de **mac address table** van de switch vol. Dus gaat de switch binnenkomend verkeerd (binnen de vlan/lan) naar alle poorten sturen. Ook naar de poort van de aanvaller. De aanvaller kan nu alle pakketjes binnen deze LAN of VLAN bekijken.
+
+**Oplossing**
+
+Port security:
+
+> Port security will only allow a specified number of source MAC addresses to be learned on the port.
+
+
+
+## LAN Attacks
+
+### VLAN Hopping Attacks
+
+Een aanvaller doet alsof zijn pc een switch is met een trunk poort. Als hij zich aansluit aan een poort van een switch op het netwerk, dan gaat de switch deze poort vaak automatisch in trunk mode zetten. Dit komt omdat switches vaak zijn geconfigureerd met Dynamic Trunking Protocol (DTP). Nu kan de aanvaller verkeer ontvangen en versturen in eender welke VLAN.
+
+
+
+### VLAN Double-Tagging Attack
+
+Een frame inpakken in een ander frame. In de buitenste zet je dat het frame bedoeld is voor de native vlan (bv VLAN 10). In de binnenste steek je de VLAN (bv VLAN 20) waarnaar je het frame wilt sturen. De switch die het pakketje krijgt denkt dat alles oke is, pakt het pakketje uit en stuurt het door op zijn trunk. Wanneer het aankomt bij de volgende switch, ziet die ineens een pakketje voor VLAN 20. Hij stuurt het dan door naar VLAN 20.
+
+Dit werk alleen als de aanvaller aangesloten is aan een poort die in dezelfde VLAN zit als de native VLAN van de trunk poort van de switch.
+
+**Je kan de vorige twee aanvallen zo voorkomen:**
+
+- Disable trunking on all access ports.
+
+- Disable auto trunking on trunk links so that trunks must be manually enabled.
+
+- Be sure that the native VLAN is only used for trunk links.
+
+  
+
+### DHCP Attacks
+
+> DHCP Attack: DHCP servers dynamically provide IP configuration information including IP address, subnet mask, default gateway, DNS servers, and more to clients. Two types of DHCP attacks are DHCP starvation and DHCP spoofing. Both attacks are mitigated by implementing DHCP snooping.
+
+#### DHCP Starvation Attack
+
+Alle adressen in de DHCP pool te claimen (d.m.v. een programma zoals Gobbler). Nu kan niemand nog een adres krijgen. 
+
+#### DHCP Spoofing Attack
+
+Zelf een DHCP server op het netwerk aansluiten die verkeerde informatie doorstuurt (ip adressen, default gateway, dns). Waardoor je dus DOS of een man-in-the-middle attack kunt doen. Je kan bijvoorbeeld gebruikers naar jouw eigen dns server wijzen. Als ze dan naar google gaan, kan je ze een fake website of iets dergelijks voorschotelen.
+
+
+
+### ARP attacks
+
+Een aanvaller stuurt fake ARP replies om pc's bv. een andere default gateway te geven. Nu de pc's zijn apparaat als default gateway hebben, kan hij man-in-the-middle aanvallen doen.
+
+> ARP Attack: A threat actor sends a gratuitous ARP message containing a spoofed MAC address to a switch, and the switch updates its MAC table accordingly. Now the threat actor sends unsolicited ARP Replies to other hosts on the subnet with the MAC Address of the threat actor and the IP address of the default gateway. ARP spoofing and ARP poisoning are mitigated by implementing DAI.
+
+
+
+### Address Spoofing Attack
+
+Jouw adres hetzelfde maken als een ander adres op het netwerk (ip of mac). Dan krijg jij de pakketjes van iemand anders.
+
+> Address Spoofing Attack: IP address spoofing is when a threat actor hijacks a valid IP address of another device on the subnet or uses a random IP address. MAC address spoofing attacks occur when the threat actors alter the MAC address of their host to match another known MAC address of a target host. IP and MAC address spoofing can be mitigated by implementing IPSG.
+
+
+
+### STP Attack
+
+Hier probeert een anvaller de root bridge te worden. ([als je niet weet wat een root bridge is klik hier](#module-5:-stp-concepts)) Hij stuurt BPDU's uit met een hele lage priority, waardoor de switches in het netwerk hem verkiezen als root bridge. Nu kan hij aan al het verkeer in het domein.
+
+> STP Attack: Threat actors manipulate STP to conduct an attack by spoofing the root bridge and changing the topology of a network. Threat actors make their hosts appear as root bridges; therefore, capturing all traffic for the immediate switched domain. This STP attack is mitigated by implementing BPDU Guard on all access ports
+
+
+
+### CDP Reconnaissance
+
+> The Cisco Discovery Protocol (CDP) is a proprietary Layer 2 link discovery protocol. It is enabled on all Cisco devices by default. CDP can automatically discover other CDP-enabled devices and help auto-configure their connection. Network administrators also use CDP to help configure and troubleshoot network devices.
+
+CDP stuurt veel info om apparaten automatisch te configureren. Je kan misbruik maken van deze info.
+
+Om dit te voorkomen kan je CDP volledig of op sommige poorten uitzetten. Bijvoorbeeld op poorten waar vreemde apparaten zich aan kunnen verbinden.
+
+> CDP Reconnaissance: CDP information is sent out CDP-enabled ports in periodic, unencrypted broadcasts. CDP information includes the IP address of the device, IOS software version, platform, capabilities, and the native VLAN. The device receiving the CDP message updates its CDP database. the information provided by CDP can also be used by a threat actor to discover network infrastructure vulnerabilities. To mitigate the exploitation of CDP, limit the use of CDP on devices or ports.
+
+
+
+# Module 11: Switch Security Configuration
+
+Okeeej. Na een heel hoofdstuk tekst gaan we nu leren hoe we al deze shit echt moeten toepassen.
