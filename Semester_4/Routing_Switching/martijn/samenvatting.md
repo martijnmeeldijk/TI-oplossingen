@@ -6,9 +6,94 @@
 
 > :warning:  Ik maak dit voor mezelf. Het kan dat er erg onlogische dingen inzitten. 
 
-[TOC]
 
-(Die TOC zorgt ervoor dat je in *typora* een mooie table of contents krijgt. Github ondersteunt dit niet... Als ik zin heb zal ik als ik klaar ben met de samenvatting er eentje genereren.)
+
+<!--ts-->
+   * [Routing &amp; Switching essentials](#routing--switching-essentials)
+   * [Tips and Tricks](#tips-and-tricks)
+      * [My to-do list](#my-to-do-list)
+      * [Shortcuts](#shortcuts)
+      * [More useful commands](#more-useful-commands)
+      * [Initial Config­uration (Switches and Routers)](#initial-configuration-switches-and-routers)
+      * [Router Commands](#router-commands)
+      * [Keyboard Shortcuts](#keyboard-shortcuts)
+      * [Translating domain server](#translating-domain-server)
+      * [Command Hierarchy](#command-hierarchy)
+      * [Port labels](#port-labels)
+   * [Module 1: Basic Device configuration](#module-1-basic-device-configuration)
+      * [SSH oefening 1.3.6](#ssh-oefening-136)
+      * [Commando's](#commandos)
+      * [SVI configureren](#svi-configureren)
+   * [Module 2: Switching concepts](#module-2-switching-concepts)
+   * [Module 3: VLAN's](#module-3-vlans)
+      * [Soorten VLANS](#soorten-vlans)
+      * [VLAN commando's](#vlan-commandos)
+         * [VLAN's](#vlans)
+         * [Trunks](#trunks)
+      * [DTP](#dtp)
+   * [Module 4: Inter-VLAN Routing](#module-4-inter-vlan-routing)
+      * [Legacy inter-vlan routing](#legacy-inter-vlan-routing)
+      * [Router-on-a-Stick Inter-VLAN Routing](#router-on-a-stick-inter-vlan-routing)
+      * [Inter-VLAN Routing on a Layer 3 Switch](#inter-vlan-routing-on-a-layer-3-switch)
+         * [Troubleshooten](#troubleshooten)
+   * [Module 5: STP Concepts](#module-5-stp-concepts)
+      * [Korte uitleg](#korte-uitleg)
+   * [Module 6: EtherChannel](#module-6-etherchannel)
+      * [AutoNegotiation Protocols](#autonegotiation-protocols)
+      * [Wanneer werkt het?](#wanneer-werkt-het)
+      * [Hoe maak je het?](#hoe-maak-je-het)
+      * [Commando's](#commandos-1)
+   * [Module 7: DHCPv4](#module-7-dhcpv4)
+      * [Korte uitleg](#korte-uitleg-1)
+      * [Configuratie (commando's)](#configuratie-commandos)
+      * [Verificatie (commando's)](#verificatie-commandos)
+      * [Voorbeeld](#voorbeeld)
+   * [Module 8: SLAAC and DHCPv6](#module-8-slaac-and-dhcpv6)
+      * [Vocabulaire](#vocabulaire)
+      * [Router advertisements](#router-advertisements)
+      * [Duplicate address detection](#duplicate-address-detection)
+      * [DHCPv6](#dhcpv6)
+      * [Configuratie (commando's)](#configuratie-commandos-1)
+      * [Verificatie (commando's)](#verificatie-commandos-1)
+   * [Module 9: FHRP Concepts](#module-9-fhrp-concepts)
+      * [Essentie](#essentie)
+         * [FHRP](#fhrp)
+         * [HSRP](#hsrp)
+      * [Commando's](#commandos-2)
+   * [Module 10: LAN Security Concepts](#module-10-lan-security-concepts)
+      * [Samenvatting](#samenvatting)
+      * [Vocabulaire](#vocabulaire-1)
+      * [SSH](#ssh)
+      * [802.1X](#8021x)
+      * [Layer 2 Vulnerabilities](#layer-2-vulnerabilities)
+         * [Threats &amp; Solutions](#threats--solutions)
+         * [MAC Address Table Flooding](#mac-address-table-flooding)
+      * [LAN Attacks](#lan-attacks)
+         * [VLAN Hopping Attacks](#vlan-hopping-attacks)
+         * [VLAN Double-Tagging Attack](#vlan-double-tagging-attack)
+         * [DHCP Attacks](#dhcp-attacks)
+            * [DHCP Starvation Attack](#dhcp-starvation-attack)
+            * [DHCP Spoofing Attack](#dhcp-spoofing-attack)
+         * [ARP attacks](#arp-attacks)
+         * [Address Spoofing Attack](#address-spoofing-attack)
+         * [STP Attack](#stp-attack)
+         * [CDP Reconnaissance](#cdp-reconnaissance)
+   * [Module 11: Switch Security Configuration](#module-11-switch-security-configuration)
+      * [Implement Port Security](#implement-port-security)
+         * [MAC Address Table Attacks](#mac-address-table-attacks)
+            * [<strong>Limit and Learn MAC Addresses</strong>](#limit-and-learn-mac-addresses)
+         * [Port security aging](#port-security-aging)
+         * [Port Security Violation Modes](#port-security-violation-modes)
+         * [Ports in error-disabled State](#ports-in-error-disabled-state)
+         * [Verificatie (commando's)](#verificatie-commandos-2)
+
+<!-- Added by: martijn, at: Wed May 27 15:10:57 CEST 2020 -->
+
+<!--te-->
+
+Github ondersteunt geen Table of Contents, dus heb ik nu een script dat er eentje genereert
+
+Epicccccccc
 
 
 
@@ -1260,3 +1345,124 @@ Om dit te voorkomen kan je CDP volledig of op sommige poorten uitzetten. Bijvoor
 # Module 11: Switch Security Configuration
 
 Okeeej. Na een heel hoofdstuk tekst gaan we nu leren hoe we al deze shit echt moeten toepassen.
+
+
+
+## Implement Port Security
+
+Best practice: Zet alle ongebruikte poorten uit met `shutdown`.
+
+### MAC Address Table Attacks
+
+Je kan ze gemakkelijk voorkomen door port-security aan te zetten. Dan wordt er in dit geval maar 1 mac-adres per poort toegelaten. Dan kan de aanvaller geen [Mac Address Table attack](#mac-address-table-flooding) doen
+
+```
+S1(config)# interface f0/1
+S1(config-if)# switchport port-security
+Command rejected: FastEthernet0/1 is a dynamic port.
+S1(config-if)# switchport mode access
+S1(config-if)# switchport port-security
+S1(config-if)# end
+```
+
+#### **Limit and Learn MAC Addresses**
+
+Je kan een maximum aantal mac adresses toelaten per poort:
+
+```
+Switch(config-if)# switchport port-security maximum [aantal] 
+```
+
+Je kan een vast mac adres toelaten op een poort:
+
+```
+Switch(config-if)# switchport port-security mac-address mac-address
+```
+
+En je kan de switch een mac adres dynamisch laten leren en dat adres dan in de running-config "plakt" (vandaar sticky):
+
+> Als je dan de running-config opslaat, wordt het adres ook echt opgeslagen in de NVRAM.
+
+```
+Switch(config-if)# switchport port-security mac-address sticky
+```
+
+Je kan ze dus alledrie tesamen gebruiken.
+
+
+
+### Port security aging
+
+- **Absolute** - The secure addresses on the port are deleted after the specified aging time.
+- **Inactivity** - The secure addresses on the port are deleted only if they are inactive for the specified aging time.
+
+Syntax:
+
+```
+Switch(config-if)# switchport port-security aging { static | time time | type {absolute | inactivity}}
+```
+
+Voorbeeld:
+
+```
+S1(config)# interface fa0/1
+S1(config-if)# switchport port-security aging time 10 
+S1(config-if)# switchport port-security aging type inactivity 
+```
+
+> The example shows an administrator configuring the aging type to 10 minutes of inactivity and by using the **show port-security interface** command to verify the configuration.
+
+
+
+### Port Security Violation Modes
+
+Wat moet er gebeuren als er dan toch iemand afkomt met een mac adres dat niet toegelaten is volgens de regels die we hebben ingesteld?
+
+Syntax: 
+
+```
+Switch(config-if)# switchport port-security violation { protect | restrict | shutdown} 
+```
+
+| Mode                 | Description                                                  |
+| :------------------- | :----------------------------------------------------------- |
+| `shutdown` (default) | The port transitions to the error-disabled state immediately, turns off the port LED, and sends a syslog message. It increments the violation counter. When a secure port is in the error-disabled state, an administrator must re-enable it by entering the **shutdown** and **no shutdown** commands. |
+| `restrict`           | The port drops packets with unknown source addresses until you remove a sufficient number of secure MAC addresses to drop below the maximum value or increase the maximum value. This mode causes the Security Violation counter to increment and generates a syslog message. |
+| `protect`            | This is the least secure of the security violation modes. The port drops packets with unknown MAC source addresses until you remove a sufficient number of secure MAC addresses to drop below the maximum value or increase the maximum value. No syslog message is sent. |
+
+Voorbeeld:
+
+```
+S1(config)# interface f0/1
+S1(config-if)# switchport port-security violation restrict
+S1(config-if)# end
+```
+
+> The following example shows an administrator changing the security violation to “restrict”. The output of the **show port-security interface** command confirms that the change has been made.
+
+
+
+### Ports in error-disabled State
+
+Als er een *violation* is gebeurd, dan krijg je mogelijk dit te zien:
+
+```
+*Sep 20 06:44:54.966: %PM-4-ERR_DISABLE: psecure-violation error detected on Fa0/18, putting Fa0/18 in err-disable state
+*Sep 20 06:44:54.966: %PORT_SECURITY-2-PSECURE_VIOLATION: Security violation occurred, caused by MAC address 000c.292b.4c75 on port FastEthernet0/18.
+*Sep 20 06:44:55.973: %LINEPROTO-5-PPDOWN: Line protocol on Interface FastEthernet0/18, changed state to down
+*Sep 20 06:44:56.971: %LINK-3-UPDOWN: Interface FastEthernet0/18, changed state to down
+```
+
+Als dat gebeurt zorg je eerst dat je zeker bent dat je de *threat* geëlimineerd hebt. Dan doe je `shutdown` en daarna `no shutdown` op de poort waar je dit kreeg.
+
+
+
+### Verificatie (commando's)
+
+| Wat doet het                                          | Hoe moet het?                              |
+| ----------------------------------------------------- | ------------------------------------------ |
+| Port security tonen                                   | `show port-security`                       |
+| Port security per interface tonen                     | `show port-security interface [interface]` |
+| Sticky mac-adressen van een interface zien            | `show run | begin interface [interface]`   |
+| Handmatig geconfigureerde mac-adressen per poort zien | `show port-security address`               |
+
