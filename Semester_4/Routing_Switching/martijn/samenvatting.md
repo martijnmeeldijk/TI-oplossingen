@@ -86,8 +86,15 @@
          * [Port Security Violation Modes](#port-security-violation-modes)
          * [Ports in error-disabled State](#ports-in-error-disabled-state)
          * [Verificatie (commando's)](#verificatie-commandos-2)
+      * [Vlan Attacks tegengaan](#vlan-attacks-tegengaan)
+      * [DHCP Attacks tegengaan](#dhcp-attacks-tegengaan)
+      * [ARP Attacks tegengaan](#arp-attacks-tegengaan)
+      * [STP attacks tegengaan](#stp-attacks-tegengaan)
+         * [PortFast](#portfast)
+         * [BPDU Guard](#bpdu-guard)
+      * [Commando's en tips](#commandos-en-tips)
 
-<!-- Added by: martijn, at: Wed May 27 15:10:57 CEST 2020 -->
+<!-- Added by: martijn, at: Wed May 27 17:26:40 CEST 2020 -->
 
 <!--te-->
 
@@ -1465,4 +1472,186 @@ Als dat gebeurt zorg je eerst dat je zeker bent dat je de *threat* geëlimineerd
 | Port security per interface tonen                     | `show port-security interface [interface]` |
 | Sticky mac-adressen van een interface zien            | `show run | begin interface [interface]`   |
 | Handmatig geconfigureerde mac-adressen per poort zien | `show port-security address`               |
+
+
+
+## Vlan Attacks tegengaan
+
+Je moet ervoor zorgen dat als iemand zijn pc verbind aan een poort, dat die poort niet automatisch een trunk wordt. (DTP disablen.) Zet ook ongebruikte poorten uit. Zet de native vlan op een ongebruikte vlan. Lees [hier](#lan-attacks) voor meer info 
+
+> For example, assume the following:
+>
+> - FastEthernet ports 0/1 through fa0/16 are active access ports
+> - FastEthernet ports 0/17 through 0/24 are not currently in use
+> - FastEthernet ports 0/21 through 0/24 are trunk ports.
+>
+> VLAN hopping can be mitigated by implementing the following configuration.
+
+Zo kunnen die poorten niet ineens trunks worden:
+
+```
+S1(config)# interface range fa0/1 - 16
+S1(config-if-range)# switchport mode access
+```
+
+Op een ongebruikte VLAN zetten, want deze poorten zijn momenteel niet in gebruik:
+
+```
+S1(config)# interface range fa0/17 - 20
+S1(config-if-range)# switchport mode access
+S1(config-if-range)# switchport access vlan 1000
+```
+
+Manueel op trunk zetten en er voor zorgen dat de native vlan een ongebruikte vlan is.
+
+```
+S1(config)# interface range fa0/21 - 24
+S1(config-if-range)# switchport mode trunk
+S1(config-if-range)# switchport nonegotiate 
+S1(config-if-range)# switchport trunk native vlan 999
+```
+
+##  DHCP Attacks tegengaan
+
+Je moet DHCP snooping aanzetten. DHCP snooping zet standaard poorten op **untrusted**. 
+
+> It then filters DHCP messages and rate-limits DHCP traffic from und sources.
+
+Dan zou je de trunk poorten op trusted kunnen zetten en alle access poorten op untrusted laten staan.
+
+> Use the following steps to enable DHCP snooping:
+>
+> **Step 1**. Enable DHCP snooping by using the **ip dhcp snooping** global configuration command.
+>
+> **Step 2**. On trusted ports, use the **ip dhcp snooping trust** interface configuration command.
+>
+> **Step 3**. Limit the number of DHCP discovery messages that can be received per second on untrusted ports by using the **ip dhcp snooping limit rate** interface configuration command.
+>
+> **Step 4**. Enable DHCP snooping by VLAN, or by a range of VLANs, by using the **ip dhcp snooping** *vlan* global configuration command.
+
+Voorbeeld:
+
+<img src="img/image-20200527161730170.png" alt="image-20200527161730170" width="50%;" />
+
+```
+S1(config)# ip dhcp snooping
+S1(config)# interface f0/1
+S1(config-if)# ip dhcp snooping trust
+S1(config-if)# exit
+S1(config)# interface range f0/5 - 24
+S1(config-if-range)# ip dhcp snooping limit rate 6  
+S1(config-if)# exit
+S1(config)# ip dhcp snooping vlan 5,10,50-52
+S1(config)# end
+```
+
+dan kan je `show ip dhcp snooping ` doen om het te verifiëren. En `show ip dhcp snooping binding` om te zien welke ip's aan welke mac-adressen zijn gelinkt.
+
+
+
+## ARP Attacks tegengaan
+
+Lees [dit](#arp-attacks) als je niet weet wat een ARP attack is. 
+
+Je moet DAI gebruiken, dit is wat het doet:
+
+> Dynamic ARP inspection (DAI) requires DHCP snooping and helps prevent ARP attacks by:
+>
+> - Not relaying invalid or gratuitous ARP Replies out to other ports in the same VLAN.
+> - Intercepting all ARP Requests and Replies on untrusted ports.
+> - Verifying each intercepted packet for a valid IP-to-MAC binding.
+> - Dropping and logging ARP Replies coming from invalid to prevent ARP poisoning.
+> - Error-disabling the interface if the configured DAI number of ARP packets is exceeded.
+
+Dit moet je doen om het aan te zetten:
+
+> - Enable DHCP snooping globally.
+> - Enable DHCP snooping on selected VLANs.
+> - Enable DAI on selected VLANs.
+> - Configure trusted interfaces for DHCP snooping and ARP inspection.
+
+Zo doe je dat:
+
+```
+S1(config)# ip dhcp snooping
+S1(config)# ip dhcp snooping vlan 10
+S1(config)# ip arp inspection vlan 10
+S1(config)# interface fa0/24
+S1(config-if)# ip dhcp snooping trust
+S1(config-if)# ip arp inspection trust
+```
+
+
+
+```
+ip arp inspection validate {[src-mac] [dst-mac] [ip]}
+```
+
+> is used to configure DAI to drop ARP packets when the IP addresses are invalid. It can be used when the MAC addresses in the body of the ARP packets do not match the addresses that are specified in the Ethernet header.
+
+Je kan *src-mac*, *dst-mac* en *ip* tegelijk aanzetten
+
+
+
+## STP attacks tegengaan
+
+Als je niet meer precies weet wat een STP attack precies is, klik [hier](#stp-attack)
+
+### PortFast
+
+Je moet op alle access ports **PortFast** zetten. 
+
+> PortFast immediately brings an interface configured as an access or trunk port to the forwarding state from a blocking state, bypassing the listening and learning states. Apply to all end-user ports. PortFast should only be configured on ports attached to end devices.
+
+Een poort op PortFast zetten:
+
+```
+S1(config)# interface fa0/1
+S1(config-if)# switchport mode access
+S1(config-if)# spanning-tree portfast
+```
+
+Op alle poorten PortFast zetten:
+
+```
+S1(config)# spanning-tree portfast default
+%Warning: this command enables portfast by default on all interfaces. You
+ should now disable portfast explicitly on switched ports leading to hubs,
+ switches and bridges as they may create temporary bridging loops.
+```
+
+Verifieren:
+
+`show running-config | begin span` of `show spanning-tree summary` om te zien of PortFast global aanstaat. 
+
+`show running-config interface [interface]` om te kijken of portfast op een interface aanstaat. 
+
+`show spanning-tree interface [type/number] detail` voor verificatie.
+
+
+
+### BPDU Guard
+
+> Even though PortFast is enabled, the interface will still listen for BPDUs. Unexpected BPDUs might be accidental, or part of an unauthorized attempt to add a switch to the network.
+
+Zo zet je BPDU guard aan
+
+```
+S1(config)# interface fa0/1
+S1(config-if)# spanning-tree bpduguard enable -- zet bpdu guard aan
+S1(config-if)# exit
+S1(config)# spanning-tree portfast bpduguard default --zet bpdu guard op alle PortFast poorten
+S1(config)# end
+S1# show spanning-tree summary --verificatie
+```
+
+
+
+## Commando's en tips
+
+Als je `switchport port-security mac-address sticky `gebruikt en perongeluk eerst een verkeerd apparaat laat pingen, kan je het sticky adres resetten met
+
+```
+no switchport port-security mac-address [mac-adres]
+```
 
