@@ -22,6 +22,7 @@ Je kan martipoints verdienen door iets toe te voegen aan de repo of door iets te
 | Karel Savonet        | 3             | 0           | 3          |               
 | Katerina Stavrinoudi | 3             | 0           | 3          |  
 | Axel Hamelryck       | 2             | 0           | 2          |    
+| Robbe De Bie         | 2             | 0           | 2          |  
 | Sander Van Thillo    | 2             | 0           | 2          |      
 | Jasper Vandenberghen | 1             | 0           | 1          |      
 | Bram Verbist         | 1             | 0           | 1          |  
@@ -29,7 +30,6 @@ Je kan martipoints verdienen door iets toe te voegen aan de repo of door iets te
 | Anderad Milanto      | 1             | 0           | 1          |  
 | Anouar Fayek         | 1             | 0           | 1          |  
 | Roel Sprimont        | 1             | 0           | 1          |  
-| Robbe De Bie         | 1             | 0           | 1          |  
 | Tibo De Clercq       | 1             | 0           | 1          |  
 
 
