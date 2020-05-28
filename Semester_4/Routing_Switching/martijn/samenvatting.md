@@ -121,8 +121,10 @@
          * [Configure a DHCP scope](#configure-a-dhcp-scope)
          * [Configure a WPA2 Enterprise WLAN](#configure-a-wpa2-enterprise-wlan)
       * [Troubleshooting](#troubleshooting)
+      * [Conclusie](#conclusie)
+   * [Module 14: Routing Concepts](#module-14-routing-concepts)
 
-<!-- Added by: martijn, at: Thu May 28 22:20:30 CEST 2020 -->
+<!-- Added by: martijn, at: Fri May 29 01:23:57 CEST 2020 -->
 
 <!--te-->
 
