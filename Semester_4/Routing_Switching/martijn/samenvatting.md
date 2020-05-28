@@ -226,6 +226,14 @@ Checken of je shit werkt:
 
 ## SSH oefening 1.3.6
 
+"Using the command prompt on PC1, Telnet to S1. The user EXEC and privileged EXEC password is cisco."
+
+Ga naar Command Prompt op de pc en typ:
+
+**telnet 10.10.10.2**
+
+Daarna vraagt ie voor een password, dit is "cisco". You're in (de switch weliswaar).
+
 Op de switch:
 
 **ip domain-name cisco.com**
