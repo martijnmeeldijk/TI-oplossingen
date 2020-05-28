@@ -2149,3 +2149,25 @@ Je moet ze niet zelf kunnen configureren voor deze cursus.
 
 echt de standaard shizzel. Check of je dicht genoeg bij de access point zit... blablabla
 
+Het labo is wel grappig, je moet vinden wat er mis is in het netwerk.
+
+
+
+## Conclusie
+
+Dit hoofdstuk was een beetje teleurstellend. De GUI's van de wireless rommel in Packet Tracer mogen echt aan mijn ballen likken.
+
+<img src="img/image-20200529010718874.png" alt="image-20200529010718874" width="30%;" />
+
+
+
+# Module 14: Routing Concepts
+
+Coming soon to theatres in your area
+
+Hier, omdat je als zo ver bent gekomen krijg je van mij een meme.
+
+![midicpp](img/midicpp.jpg)
+
+haha funny relatable hahaha XD rawr
+
