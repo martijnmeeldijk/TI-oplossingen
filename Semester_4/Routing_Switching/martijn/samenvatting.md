@@ -1386,7 +1386,7 @@ Je kan een vast mac adres toelaten op een poort:
 Switch(config-if)# switchport port-security mac-address mac-address
 ```
 
-En je kan de switch een mac adres dynamisch laten leren en dat adres dan in de running-config "plakt" (vandaar sticky):
+En je kan de switch een mac adres dynamisch laten leren en dat adres dan in de running-config (RAM) "plakt" (vandaar sticky):
 
 > Als je dan de running-config opslaat, wordt het adres ook echt opgeslagen in de NVRAM.
 
@@ -1655,3 +1655,38 @@ Als je `switchport port-security mac-address sticky `gebruikt en perongeluk eers
 no switchport port-security mac-address [mac-adres]
 ```
 
+
+
+
+
+# Module 12: WLAN Concepts
+
+We beginnen weer met een paar leuke afkortingen:
+
+**WPAN**: Wireless Personal-Area Networks bv. Bluetooth
+
+**WLAN**: Wireless LAN
+
+**WMAN**: Wireless MAN (Metropolitan area network) bv. WiMax (zoek maar op)
+
+**WWAN**: Wireless WAN (Wide Area Network)
+
+Je modem thuis is 3 apparaten tegelijk.
+
+> - **Access point** - This provides 802.11a/b/g/n/ac wireless access.
+> - **Switch** - This provides a four-port, full-duplex, 10/100/1000 Ethernet switch to interconnect wired devices.
+> - **Router** - This provides a default gateway for connecting to other network infrastructures, such as the internet.
+
+
+
+## WLAN Components
+
+Hier staat niet super veel in dat jullie nog niet weten. Je mag het altijd lezen als je zeker wilt zijn, maar verspil je tijd best niet. 
+
+#### Access Points
+
+**Autonomous Access Points**:
+
+Die moet je zelf configureren, nuttig in een klein netwerk
+
+**Controller based access points**: 
