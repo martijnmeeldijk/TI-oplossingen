@@ -114,8 +114,15 @@
       * [WLAN's beveiligen](#wlans-beveiligen)
             * [Authentication in the Enterprise](#authentication-in-the-enterprise)
    * [Module 13: WLAN Configuration](#module-13-wlan-configuration)
+      * [Remote site WLAN configuration](#remote-site-wlan-configuration)
+      * [Configure a basic WLAN on a WLC](#configure-a-basic-wlan-on-a-wlc)
+      * [Configure a WPA2 enterprise WLAN on the WLC](#configure-a-wpa2-enterprise-wlan-on-the-wlc)
+         * [Configure a new interface](#configure-a-new-interface)
+         * [Configure a DHCP scope](#configure-a-dhcp-scope)
+         * [Configure a WPA2 Enterprise WLAN](#configure-a-wpa2-enterprise-wlan)
+      * [Troubleshooting](#troubleshooting)
 
-<!-- Added by: martijn, at: Thu May 28 16:27:21 CEST 2020 -->
+<!-- Added by: martijn, at: Thu May 28 22:20:30 CEST 2020 -->
 
 <!--te-->
 
@@ -132,6 +139,7 @@ Epicccccccc
 * OSPF en *8.4.1.2 Packet Tracer - Skills Integration Challenge.pka*
 * Oefening op SLAAC en DHCPv6
 * Lijst maken van vragen en antwoorden van vorige examens + netacad examens (jullie mogen mij hier zeker mee helpen)
+* 13.4.5 afmaken
 
 ## Shortcuts
 
@@ -1215,7 +1223,7 @@ Nu moet je op de end-devices (en waarschijnlijk oo de switches) de default gatew
 
 Er zijn een heleboel systemen die je kan gebruiken om je netwerk te beveiligen. Er zijn ook heel wat aanvallen. Ik zal er hier een paar kort samenvatten/uitleggen (als ik ze interessant of noemenswaardig vind). Je kan misschien best even Module 10 op Netacad lezen als het je interesseert. Er zijn geen oefeningen voor deze module, gewoon veel info. Je kan misschien de quiz op Netacad maken als je je verveelt.
 
-## Vocabulaire
+<h2 id="lan-security">Vocabulaire</h2>
 
 **AAA**:  Authentication, Authorization, and Accounting
 
@@ -1995,4 +2003,149 @@ deze is dus beter.
 
 # Module 13: WLAN Configuration
 
-Oke we zijn er geraakt. 
+Oke we zijn er geraakt. We gaan leren hoe we een draadloos netwerk configureren.
+
+Nog wat leuke afkortingen:
+
+**RADIUS**: Remote Authentication Dial-In User Service
+
+**SNMP**: Simple Network Management Protocol
+
+## Remote site WLAN configuration
+
+`13.1` kan je eens lezen en als je zin hebt de oefening maken. Er komen geen IOS commando's bij kijken. Je moet een wifi router met een repeater instellen via een GUI.
+
+
+
+## Configure a basic WLAN on a WLC
+
+zie `13.6.2`. Het is weer configuratie via een GUI. Dat ga ik hier niet uitleggen.
+
+Ik ga de stapjes hier zetten voor het geval ze nodig zouden blijken:
+
+> **1. Create the WLAN**
+>
+> In the figure, the administrator is creating a new WLAN that will use **Wireless_LAN** as the name and service set identifier (SSID). The ID is an arbitrary value that is used to identify the WLAN in display output on the WLC.
+>
+> **2. Apply and Enable the WLAN**
+>
+> After clicking **Apply**, the network administrator must enable the WLAN before it can be accessed by users, as shown in the figure. The Enable checkbox allows the network administrator to configure a variety of features for the WLAN, as well as additional WLANs, before enabling them for wireless client access. From here, the network administrator can configure a variety of settings for the WLAN including security, QoS, policies, and other advanced settings.
+>
+> **3. Select the Interface**
+>
+> When you create a WLAN, you must select the interface that will carry the WLAN traffic. The next figure shows the selection of an interface that has already been created on the WLC. We will learn how to create interfaces later in this module.
+>
+> **4. Secure the WLAN**
+>
+> Click the Security tab to access all the available options for securing the LAN. The network administrator wants to secure Layer 2 with WPA2-PSK. WPA2 and 802.1X are set by default. In the Layer 2 Security drop down box, verify that **WPA+WPA2** is selected (not shown). Click PSK and enter the pre-shared key, as shown in the figure. Then click **Apply**. This will enable the WLAN with WPA2-PSK authentication. Wireless clients that know the pre-shared key can now associate and authenticate with the AP.
+>
+> **5. Verify the WLAN is Operational**
+>
+> Click **WLANs** in the menu on the left to view the newly configured WLAN. In the figure, you can verify that WLAN ID 1 is configured with **Wireless_LAN** as the name and SSID, it is enabled, and is using WPA2 PSK security.
+>
+> **6. Monitor the WLAN**
+>
+> Click the **Monitor** tab at the top to access the advanced **Summary** page again. Here you can see that the **Wireless_LAN** now has one client using its services, as shown in the figure.
+>
+> **7. View Wireless Client Details**
+>
+> Click **Clients** in the left menu to view more information about the clients connected to the WLAN, as shown in the figure. One client is attached to **Wireless_LAN** through AP1 and was given the IP address 192.168.5.2. DHCP services in this topology are provided by the router.
+
+
+
+Je kan oefening `13.2.7` doen, die duurt maar 5 minuten ofzo, en dan heb je het tenminste één keer gezien. Alles wordt er ook duidelijk in uitgelegd.
+
+
+
+## Configure a WPA2 enterprise WLAN on the WLC
+
+**SNMP en RADIUS** (zie [afkortingen](#Module-13:-WLAN-Configuration))
+
+**SNMP** is een protocol om je netwerk te **beheren**, het stuurt berichtjes (zogenaamde traps). Met allerlei nuttige info over je apparaat. Dat kan gaan van een simpele ping tot gedetailleerde info over het CPU gebruik van je apparaat. Je kan dus een **SNMP server** maken en zorgen dat alle apparaten hun **traps** naar die server sturen. Dan heb je alle loggegevens enzo op één plek.
+
+Je gebruikt een **RADIUS** server voor [AAA](#Module-10:-LAN-Security-Concepts). We willen ook op het netwerk inloggen met een username en password, in plaats van 1 password voor iedereen. Dan zal de RADIUS server voor ons deze gegevens verifiëren.
+
+Je moet ze niet zelf kunnen configureren voor deze cursus.
+
+:warning: **Ik ga hieronder weer wat stapjes uit de Netacad cursus plakken, moesten die nodig blijken.**
+
+### Configure a new interface
+
+> **1. Create a new interface.**
+>
+> To add a new interface, click **CONTROLLER > Interfaces > New...**, as shown in the figure.
+>
+> **2. Configure the VLAN name and ID.**
+>
+> In the figure, the network administrator configures the interface name as **vlan5** and the VLAN ID as **5**. Clicking **Apply** will create the new interface.
+>
+> **3. Configure the port and interface address.**
+>
+> On the **Edit** page for the interface, configure the physical port number. G1 in the topology is Port Number 1 on the WLC. Then configure the VLAN 5 interface addressing. In the figure, VLAN 5 is assigned IPv4 address 192.168.5.254/24. R1 is the default gateway at IPv4 address 192.168.5.1.
+>
+> **4. Configure the DHCP server address.**
+>
+> In larger enterprises, WLCs will be configured to forward DHCP messages to a dedicated DHCP server. Scroll down the page to configure the primary DHCP server as IPv4 address 192.168.5.1, as shown in the figure. This is the default gateway router address. The router is configured with a DHCP pool for the WLAN network. As hosts join the WLAN that is associated with the VLAN 5 interface, they will receive addressing information from this pool.
+>
+> **5. Apply and Confirm.**
+>
+> Scroll to the top and click **Apply**, as shown in the figure. Click **OK** for the warning message.
+>
+> **6. Verify Interfaces.**
+>
+> Click **Interfaces.** The new **vlan5** interface is now shown in the list of interfaces with its IPv4 address, as shown in the figure.
+
+### Configure a DHCP scope
+
+> **1. Create a new DHCP scope.**
+>
+> A DHCP scope is very similar to a DHCP pool on a router. It can include a variety of information including a pool of addresses to assign to DHCP clients, DNS server information, lease times, and more. To configure a new DHCP scope, click **Internal DHCP Server > DHCP Scope > New...**, as shown in the figure.
+>
+> **2. Name the DHCP scope.**
+>
+> On the next screen, name the scope. Because this scope will apply to the wireless management network, the network administrator uses **Wireless_Management** as the Scope Name and clicks **Apply**.
+>
+> **3. Verify the new DHCP scope.**
+>
+> You are returned to the **DHCP Scopes** page and can verify the scope is ready to be configured. Click the new Scope Name to configure the DHCP scope.
+>
+> **4. Configure and enable the new DHCP scope.**
+>
+> On the Edit screen for the **Wireless_Management** scope, configure a pool of addresses for the 192.168.200.0/24 network starting at .240 and ending at .249. The network address and subnet mask are configured. The default router IPv4 address is configured, which is the subinterface for R1 at 192.168.200.1. For this example, the rest of the scope is left unchanged. The network administrator selects **Enabled** from the Status drop down and clicks **Apply**.
+>
+> **5. Verify the enable DHCP scope**
+>
+> The network administrator is returned to the **DHCP Scopes** page and can verify the scope is ready to be allocated to a new WLAN.
+
+### Configure a WPA2 Enterprise WLAN
+
+> **1. Create a new WLAN.**
+>
+> Click the **WLANs** tab and then **Go** to create a new WLAN, as shown in the figure.
+>
+> **2. Configure the WLAN name and SSID.**
+>
+> Fill in the profile name and SSID. In order to be consistent with the VLAN that was previously configured, choose an ID of **5**. However, any available value can be used. Click **Apply** to create the new WLAN, as shown in the figure.
+>
+> **3. Enable the WLAN for VLAN 5.**
+>
+> The WLAN is created but it still needs to be enabled and associated with the correct VLAN interface. Change the status to **Enabled** and choose **vlan5** from the Interface/Interface Group(G) dropdown list. Click **Apply** and click **OK** to accept the popup message, as shown in the figure.
+>
+> **4. Verify AES and 802.1X defaults.**
+>
+> Click the **Security** tab to view the default security configuration for the new WLAN. The WLAN will use WPA2 security with AES encryption. Authentication traffic is handled by 802.1X between the WLC and the RADIUS server.
+>
+> **5. Configure the RADIUS server.**
+>
+> We now need to select the RADIUS server that will be used to authenticate users for this WLAN. Click the **AAA Servers** tab. In the dropdown box select the RADIUS server that was configured on the WLC previously. Apply your changes.
+>
+> **6. Verify that the new WLAN is available.**
+>
+> To verify the new WLAN is listed and enabled, click **Back** or the **WLANs** submenu on the left. Both the **Wireless_LAN** WLAN and the **CompanyName** WLAN are listed. In the figure, notice that both are enabled. **Wireless_LAN** is using WPA2 with PSK authentication. **CompanyNam**e is using WPA2 security with 802.1X authentication.
+
+
+
+## Troubleshooting
+
+echt de standaard shizzel. Check of je dicht genoeg bij de access point zit... blablabla
+
