@@ -1118,6 +1118,11 @@ Dus HSRP is een FHRP van Cisco.
 
 In de test van Netacad van deze module wordt er van je verwacht dat je alle eigenschappen van verschillende FHR protocollen kent (GLBP, HSRP, VRRPv2, VRRPv3, IRDP, ...) Ik weet niet of dit super nuttig is, maar ik heb het gezegd.
 
+**Default Gateway**: Dit apparaat routeert netwerkverkeer dat bestemd is voor de buitenwereld.
+**Virtual Router**: Dit apparaat geeft de illusie dat er maar 1 router is. Maar is eigenlijk deel van een groep routers.
+**Standby Router**: Deze router behoort tot de virtuele routergroep en heeft de rol van alternatieve gateway.
+**Forwarding router**: De router behoort tot de virtuele routergroep en heeft de rol van standaard gateway.
+
 ## Essentie
 
 ### FHRP
