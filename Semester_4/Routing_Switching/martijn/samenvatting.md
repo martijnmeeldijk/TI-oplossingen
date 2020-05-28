@@ -1674,6 +1674,10 @@ no switchport port-security mac-address [mac-adres]
 
 # Module 12: WLAN Concepts
 
+Kijk video 12.3.1 op netacad, die man is geestig.
+
+## Afkortingen
+
 We beginnen weer met een paar leuke afkortingen:
 
 **WPAN**: Wireless Personal-Area Networks bv. Bluetooth
@@ -1684,11 +1688,45 @@ We beginnen weer met een paar leuke afkortingen:
 
 **WWAN**: Wireless WAN (Wide Area Network)
 
+**MIMO**: Multiple input, multiple output
+
+**BSS**: Basic service set
+
+**BSA**: Basic service area
+
+**ESS**: Extended service set
+
+**ESA**: Extended service area 
+
+**CSMA/CA**: Carrier sense multiple access collision avoidance
+
+**RTS message**: Ready to send message
+
+**CTS message**: Clear to send message
+
+**IEEE (i triple e)**: Institute of Electrical and Electronics Engineers
+
+**WLC:** wireless lan controller
+
 Je modem thuis is 3 apparaten tegelijk.
 
 > - **Access point** - This provides 802.11a/b/g/n/ac wireless access.
 > - **Switch** - This provides a four-port, full-duplex, 10/100/1000 Ethernet switch to interconnect wired devices.
 > - **Router** - This provides a default gateway for connecting to other network infrastructures, such as the internet.
+
+## 802.11 Standards
+
+Ik zet ze er gewoon even bij, moest er een vraag over komen.
+
+| IEEE WLAN Standard | Radio Frequency | Description                                                  |
+| :----------------- | :-------------- | :----------------------------------------------------------- |
+| 802.11             | 2.4 GHz         | speeds of up to 2 Mbps                                       |
+| 802.11a            | 5 GHz           | speeds of up to 54 Mbpssmall coverage arealess effective at penetrating building structuresnot interoperable with the 802.11b and 802.11g |
+| 802.11b            | 2.4 GHz         | speeds of up to 11 Mbpslonger range than 802.11abetter able to penetrate building structures |
+| 802.11g            | 2.4 GHz         | speeds of up to 54 Mbpsbackward compatible with 802.11b with reduced bandwidth capacity |
+| 802.11n            | 2.4 GHz 5 GHz   | data rates range from 150 Mbps to 600 Mbps with a distance range of up to 70 m (230 feet)APs and wireless clients require multiple antennas using MIMO technologybackward compatible with 802.11a/b/g devices with limiting data rates |
+| 802.11ac           | 5 GHz           | provides data rates ranging from 450 Mbps to 1.3 Gbps (1300 Mbps) using MIMO technologyUp to eight antennas can be supportedbackwards compatible with 802.11a/n devices with limiting data rates |
+| 802.11ax           | 2.4 GHz 5 GHz   | released in 2019 - latest standardalso known as High-Efficiency Wireless (HEW)higher data ratesincreased capacityhandles many connected devicesimproved power efficiency1 GHz and 7 GHz capable when those frequencies become availableSearch the internet for Wi-Fi Generation 6 for more information |
 
 
 
@@ -1703,3 +1741,106 @@ Hier staat niet super veel in dat jullie nog niet weten. Je mag het altijd lezen
 Die moet je zelf configureren, nuttig in een klein netwerk
 
 **Controller based access points**: 
+
+Zijn access points met één centrale controller. Alle configuratie gebeurt via deze controller. Als je een access point wilt toevoegen is dit dus heel gemakkelijk. **Controller based access points** scalen dus veel beter bij grote netwerken.
+
+#### Antennas
+
+Dit is een beetje nutteloos...
+
+**Omnidirectional antennas**
+
+> Omnidirectional antennas such as the one shown in the figure provide 360-degree coverage and are ideal in houses, open office areas, conference rooms, and outside areas.
+
+**Directional antennas**
+
+> Directional antennas focus the radio signal in a given direction. This enhances the signal to and from the AP in the direction the antenna is pointing This provides a stronger signal strength in one direction and reduced signal strength in all other directions. Examples of directional Wi-Fi antennas include Yagi and parabolic dish antennas.
+
+**MIMO Antennas**
+
+> Multiple Input Multiple Output (MIMO) uses multiple antennas to increase available bandwidth for IEEE 802.11n/ac/ax wireless networks. Up to eight transmit and receive antennas can be used to increase throughput.
+
+
+
+## WLAN Operation
+
+Je kan op 3 manieren een WLAN hebben:
+
+* **Ad hoc mode**: p2p zoals Bluetooth:tm:
+
+* **Infrastructure mode**: Een access point voor een netwerk (zoals je wifi thuis)
+
+* **Tethering**: Eigenlijk Ad hoc + Infrastructure mode (een wifi hotspot op js gsm bijvoorbeeld)
+
+
+
+### BSS en ESS:
+
+> A BSS consists of a single AP interconnecting all associated wireless clients. Two BSSs are shown in the figure. The circles depict the coverage area for the BSS, which is called the Basic Service Area (BSA). If a wireless client moves out of its BSA, it can no longer directly communicate with other wireless clients within the BSA.
+
+<img src="img/image-20200528140645610.png" alt="image-20200528140645610" width="50%;" />
+
+> When a single BSS provides insufficient coverage, two or more BSSs can be joined through a common distribution system (DS) into an ESS. An ESS is the union of two or more BSSs interconnected by a wired DS. Each ESS is identified by a SSID and each BSS is identified by its BSSID.
+
+<img src="img/image-20200528140724569.png" alt="image-20200528140724569" width="50%;" />
+
+Een ESS is gewoon meerdere BSS'en. Je zou dan in de afbeelding hierboven gewoon met je laptop van de gele vlek links naar de gele vlek rechts kunnen lopen en verbonden blijven.
+
+
+
+### 802.11 Frame structure
+
+<img src="img/image-20200528141003721.png" alt="image-20200528141003721" width="50%;" />
+
+Effe for reference
+
+> All 802.11 wireless frames contain the following fields:
+>
+> - **Frame Control** - This identifies the type of wireless frame and contains subfields for protocol version, frame type, address type, power management, and security settings.
+> - **Duration** - This is typically used to indicate the remaining duration needed to receive the next frame transmission.
+> - **Address1** - This usually contains the MAC address of the receiving wireless device or AP.
+> - **Address2** - This usually contains the MAC address of the transmitting wireless device or AP.
+> - **Address3** - This sometimes contains the MAC address of the destination, such as the router interface (default gateway) to which the AP is attached.
+> - **Sequence Control** - This contains information to control sequencing and fragmented frames.
+> - **Address4** - This usually missing because it is used only in ad hoc mode.
+> - **Payload** - This contains the data for transmission.
+> - **FCS** - This is used for Layer 2 error control.
+
+ik betwijfel dat dit nuttige info is...
+
+
+
+### CSMA/CA
+
+zie [afkortingen](#afkortingen)
+
+Wat doet CSMA/CA?
+
+1. Luistert naar het kanaal (carrier) en checkt of het vrij is.
+2. Je apparaat stuurt een [RTS](#afkortingen) naar de access point om plaats te vragen op het draadloos netwerk.
+3. Je apparaat krijgt een [CTS](#afkortingen) van de access point die zegt dat hij mag beginnen met verzenden.
+4. Als je apparaat geen [CTS](#afkortingen) krijgt, dan wacht hij een arbitraire hoeveelheid tijd vooraleer de vorige stappen opnieuw doet.
+5. Wanneer je apparaat de [CTS](#afkortingen) krijgt, begint hij met zijn data te verzenden.
+6. Na elk deel van deze stappen krijgt je apparaat een ACK van de access point. Als hij dit niet krijgt begint hij terug van 1, want dan kan het dat er iets mis is (een collision waarschijnlijk). 
+
+### Wireless client and AP association
+
+<img src="img/image-20200528142203644.png" alt="image-20200528142203644" width="50%;" />
+
+Hier ga ik niks meer bij zeggen, zie `12.3.6` op Netacad.
+
+
+
+### Passive and Active Discover Mode
+
+**Passive**: De access point stelt zichzelf tentoon (zoals je wifi thuis). Zo kunnen apparaten zoals telefoons enzo hem gemakkelijk vinden. 
+
+> the AP openly advertises its service by periodically sending broadcast beacon frames containing the SSID, supported standards, and security settings.
+
+**Active**: Jouw apparaat moet het initiatief nemen. De access point adverteert zichzelf niet. Je moet dus handmatig de SSID en alle andere configuratierotzooi zelf ingeven.
+
+
+
+## CAPWAP
+
+
