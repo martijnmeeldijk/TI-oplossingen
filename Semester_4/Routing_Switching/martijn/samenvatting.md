@@ -2,7 +2,7 @@
 
 # Routing & Switching essentials
 
-> :warning: LEGAL:  Je mag deze guide niet lezen of delen, hij bevat gecopyrighted materiaal van Cisco. Deze guide is mijn persoonlijke samenvatting en dient niet geherdistribueert te worden. 
+> :warning: LEGAL:  Je mag deze guide niet lezen of delen, hij bevat gecopyrighted materiaal van Cisco. Deze guide is mijn persoonlijke samenvatting en dient niet geherdistribueert te worden. Deze tekst is geen substitutie voor het originele lesmateriaal op Netacad. 
 
 > :warning:  Ik maak dit voor mezelf. Het kan dat er erg onlogische dingen inzitten. 
 
@@ -93,8 +93,29 @@
          * [PortFast](#portfast)
          * [BPDU Guard](#bpdu-guard)
       * [Commando's en tips](#commandos-en-tips)
+   * [Module 12: WLAN Concepts](#module-12-wlan-concepts)
+      * [Afkortingen](#afkortingen)
+      * [802.11 Standards](#80211-standards)
+      * [WLAN Components](#wlan-components)
+            * [Access Points](#access-points)
+            * [Antennas](#antennas)
+      * [WLAN Operation](#wlan-operation)
+         * [BSS en ESS:](#bss-en-ess)
+         * [802.11 Frame structure](#80211-frame-structure)
+         * [CSMA/CA](#csmaca)
+         * [Wireless client and AP association](#wireless-client-and-ap-association)
+         * [Passive and Active Discover Mode](#passive-and-active-discover-mode)
+      * [CAPWAP](#capwap)
+         * [FlexConnect APs](#flexconnect-aps)
+         * [Frequency Channel Saturation](#frequency-channel-saturation)
+            * [Channel selection](#channel-selection)
+            * [Plan a WLAN deployment](#plan-a-wlan-deployment)
+      * [WLAN Threats](#wlan-threats)
+      * [WLAN's beveiligen](#wlans-beveiligen)
+            * [Authentication in the Enterprise](#authentication-in-the-enterprise)
+   * [Module 13: WLAN Configuration](#module-13-wlan-configuration)
 
-<!-- Added by: martijn, at: Wed May 27 17:26:40 CEST 2020 -->
+<!-- Added by: martijn, at: Thu May 28 16:27:21 CEST 2020 -->
 
 <!--te-->
 
@@ -1676,6 +1697,8 @@ no switchport port-security mac-address [mac-adres]
 
 Kijk video 12.3.1 op netacad, die man is geestig.
 
+Tis wel echt een kut hoofdstuk... Veel tekst. Weinig nuttige inhoud...
+
 ## Afkortingen
 
 We beginnen weer met een paar leuke afkortingen:
@@ -1843,4 +1866,133 @@ Hier ga ik niks meer bij zeggen, zie `12.3.6` op Netacad.
 
 ## CAPWAP
 
+<img src="img/image-20200528151657533.png" alt="image-20200528151657533" width="50%;" />
 
+Capwap zorgt ervoor dat één [WLC](#afkortingen) meerdere AP's en WLAN's kan beheren.
+
+> CAPWAP is based on LWAPP but adds additional security with Datagram Transport Layer Security (DTLS). CAPWAP establishes tunnels on User Datagram Protocol (UDP) ports. CAPWAP can operate either over IPv4 or IPv6, as shown in the figure, but uses IPv4 by default.
+
+De bedoeling van CAPWAP is om de verschillende MAC (media access control) functies op te splitsen tussen de access points en de controller.
+
+| **AP MAC Functions**                        | **WLC MAC Functions**                              |
+| :------------------------------------------ | :------------------------------------------------- |
+| Beacons and probe responses                 | Authentication                                     |
+| Packet acknowledgements and retransmissions | Association and re-association of roaming clients  |
+| Frame queueing and packet prioritization    | Frame translation to other protocols               |
+| MAC layer data encryption and decryption    | Termination of 802.11 traffic on a wired interface |
+
+CAPWAP gebruikt **DTLS** encyptie. Dit staat standaard aan op de **control channel** van CAPWAP. Je hebt een licentie nodig om de **data channel** te kunnen encrypteren met DTLS.
+
+
+
+### FlexConnect APs
+
+<img src="img/image-20200528152305096.png" alt="image-20200528152305096" width="50%;" />
+
+> FlexConnect is a wireless solution for branch office and remote office deployments. It lets you configure and control access points in a branch office from the corporate office through a WAN link, without deploying a controller in each office.
+
+> There are two modes of operation for the FlexConnect AP.
+>
+> - **Connected mode** - The WLC is reachable. In this mode the FlexConnect AP has CAPWAP connectivity with its WLC and can send traffic through the CAPWAP tunnel, as shown in the figure. The WLC performs all its CAPWAP functions.
+> - **Standalone mode** - The WLC is unreachable. The FlexConnect has lost or failed to establish CAPWAP connectivity with its WLC. In this mode, a FlexConnect AP can assume some of the WLC functions such as switching client data traffic locally and performing client authentication locally.
+>
+> The figure shows a CAPWAP tunnel formed between a FlexConnect AP at a branch office and a WLC at a corporate office. The branch office equipment consists of a laptop with a wireless connection to a FlexConnect AP which is connected to a switch which is connected to a router. The router is then connected to another router in the corporate office to which the WLC is connected. The WLC provides access into the corporate network and the Internet.
+
+
+
+### Frequency Channel Saturation
+
+Als er te veel apparaten op een bepaalde frequentie zitten, geraakt deze gesatureerd. Dat is niet goed...
+
+Er zijn 3 manieren om dit tegen te gaan: (netacad `12.5.1`voor meer info.)
+
+* **Direct-Sequence Spread Spectrum (DSSS)**
+* **Frequency-Hopping Spread Spectrum (FHSS)**
+* **Orthogonal Frequency-Division Multiplexing (OFDM)**
+
+
+
+#### Channel selection
+
+> We zullen even de lange uitleg van netacad in een paar zinnen samenvatten (als je me niet vertrouwt, check dan `12.5.2`)
+
+Er zijn verschillende frequentiebereiken waarop je je draadloze shizzle kan laten draaien. Sommig bereiken overlappen. Neem er dus die niet overlappen (Access Points doen dit meestal automatisch). Verder zien 5GHz frequentiebereiken er anders uit dan die van 2.4GHz. Ze zien er ook anders uit afhankelijk van de standaar die wordt gevolgd. Cool. De standaarden zijn in elk land/regio anders. 
+
+Dat is het zo een beetje.
+
+#### Plan a WLAN deployment
+
+Kort samengevat. Denkt na waar je de antenne zet om de beste *coverage* te hebben. Denk aan muren en kamers en interferentie enzo.
+
+
+
+## WLAN Threats
+
+Een aanvaller kan proberen je data te stelen (Man-in-the-middle), ervoor zorgen dat je niet kan verbinden (DoS) of ongeauthoriseerde toegang tot je netwerk proberen te krijgen.
+
+**DoS**: Door interferentie van andere draadloze apparaten (per ongeluk of met opzet) kan het dat je draadloos netwerk niet meer correct werkt.
+
+**Man-in-the-middle**: De aanvaller kan zijn eigen access point, een zogenaamde **rogue access point** aansluiten op het netwerk en jou ermee laten verbinden. Deze fake access zit dan gewoon tussen jou en de echt access point. Nu kan je zelf wel bedenken wat er allemaal kan gebeuren. Er bestaat dus ook software die constant checkt of er geen vreemde apparaten op het netwerk zijn.
+
+
+
+## WLAN's beveiligen
+
+Hier volgen een paar methodes om de draadloos netwerk te beveiligen.
+
+**SSID Cloaking**
+
+> APs and some wireless routers allow the SSID beacon frame to be disabled, as shown in the figure. Wireless clients must manually configure the SSID to connect to the network.
+
+**MAC Addresses Filtering**
+
+> An administrator can manually permit or deny clients wireless access based on their physical MAC hardware address. In the figure, the router is configured to permit two MAC addresses. Devices with different MAC addresses will not be able to join the 2.4GHz WLAN.
+
+**802.11 Original Authentication Methods**
+
+
+
+<img src="img/image-20200528161254753.png" alt="image-20200528161254753" width="50%;" />
+
+| **Authentication Method**          | **Description**                                              |
+| :--------------------------------- | :----------------------------------------------------------- |
+| **Wired Equivalent Privacy (WEP)** | The original 802.11 specification designed to secure the data using the Rivest Cipher 4 (RC4) encryption method with a static key. However, the key never changes when exchanging packets. This makes it easy to hack. WEP is no longer recommended and should never be used. |
+| **Wi-Fi Protected Access (WPA)**   | A Wi-Fi Alliance standard that uses WEP, but secures the data with the much stronger Temporal Key Integrity Protocol (TKIP) encryption algorithm. TKIP changes the key for each packet, making it much more difficult to hack. |
+| **WPA2**                           | WPA2 is the current industry standard for securing wireless networks. It uses the Advanced Encryption Standard (AES) for encryption. AES is currently considered the strongest encryption protocol. |
+| **WPA3**                           | The next generation of Wi-Fi security. All WPA3-enabled devices use the latest security methods, disallow outdated legacy protocols, and require the use of Protected Management Frames (PMF). However, devices with WPA3 are not yet readily available. |
+
+
+
+**WPA2 Personal**
+
+> Intended for home or small office networks, users authenticate using a pre-shared key (PSK). Wireless clients authenticate with the wireless router using a pre-shared password. No special authentication server is required.
+
+**WPA2 Enterprise**
+
+> Intended for enterprise networks but requires a Remote Authentication Dial-In User Service (RADIUS) authentication server. Although more complicated to set up, it provides additional security. The device must be authenticated by the RADIUS server and then users must authenticate using 802.1X standard, which uses the Extensible Authentication Protocol (EAP) for authentication.
+
+**TKIP (Temporal Key Integrity Protocol) encryptie**
+
+> TKIP is the encryption method used by WPA. It provides support for legacy WLAN equipment by addressing the original flaws associated with the 802.11 WEP encryption method. It makes use of WEP, but encrypts the Layer 2 payload using TKIP, and carries out a Message Integrity Check (MIC) in the encrypted packet to ensure the message has not been altered.
+
+**AES (advanced encryption standard)**
+
+> AES is the encryption method used by WPA2. It is the preferred method because it is a far stronger method of encryption. It uses the Counter Cipher Mode with Block Chaining Message Authentication Code Protocol (CCMP) that allows destination hosts to recognize if the encrypted and non-encrypted bits have been altered.
+
+deze is dus beter.
+
+#### Authentication in the Enterprise
+
+> - **RADIUS Server IP address** - This is the reachable address of the RADIUS server.
+> - **UDP port numbers** - Officially assigned UDP ports 1812 for RADIUS Authentication, and 1813 for RADIUS Accounting, but can also operate using UDP ports 1645 and 1646, as shown in the figure.
+> - **Shared key** - Used to authenticate the AP with the RADIUS server.
+
+
+
+**WPA3**: er is dus ook WPA3, het is nieuw en nog bijna niks ondersteunt het. Je kan `12.7.8` lezen.
+
+
+
+# Module 13: WLAN Configuration
+
+Oke we zijn er geraakt. 
