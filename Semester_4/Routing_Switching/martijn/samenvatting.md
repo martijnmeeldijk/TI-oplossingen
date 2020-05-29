@@ -17,6 +17,7 @@
       * [Initial Config­uration (Switches and Routers)](#initial-configuration-switches-and-routers)
       * [Router Commands](#router-commands)
       * [Keyboard Shortcuts](#keyboard-shortcuts)
+      * [Subnet mask cheat sheet](#subnet-mask-cheat-sheet)
       * [Translating domain server](#translating-domain-server)
       * [Command Hierarchy](#command-hierarchy)
       * [Port labels](#port-labels)
@@ -123,8 +124,28 @@
       * [Troubleshooting](#troubleshooting)
       * [Conclusie](#conclusie)
    * [Module 14: Routing Concepts](#module-14-routing-concepts)
+      * [Path determination](#path-determination)
+      * [Packet forwarding](#packet-forwarding)
+         * [Packet forwarding decision process](#packet-forwarding-decision-process)
+      * [Packet forwarding mechanisms](#packet-forwarding-mechanisms)
+      * [Router Configuratie](#router-configuratie)
+      * [IP routing table](#ip-routing-table)
+         * [Principes](#principes)
+         * [Routing table entries](#routing-table-entries)
+      * [Korte samenvatting](#korte-samenvatting)
+   * [Module 15: IP Static Routing](#module-15-ip-static-routing)
+      * [Static routes and how to configure them](#static-routes-and-how-to-configure-them)
+         * [Next-hop static route](#next-hop-static-route)
+         * [Directly connected static routes](#directly-connected-static-routes)
+         * [Fully specified static route](#fully-specified-static-route)
+         * [Default static routes](#default-static-routes)
+         * [Floating static routes](#floating-static-routes)
+         * [Static host routes](#static-host-routes)
+      * [Verificatie van static routes](#verificatie-van-static-routes)
+   * [Module 16: Troubleshoot Static and Default routes](#module-16-troubleshoot-static-and-default-routes)
+      * [Conclusie van dit hoofdstuk](#conclusie-van-dit-hoofdstuk)
 
-<!-- Added by: martijn, at: Fri May 29 01:23:57 CEST 2020 -->
+<!-- Added by: martijn, at: Fri May 29 20:42:34 CEST 2020 -->
 
 <!--te-->
 
@@ -138,11 +159,16 @@ Epicccccccc
 
 ## My to-do list
 
-* OSPF en *8.4.1.2 Packet Tracer - Skills Integration Challenge.pka*
-* Oefening op SLAAC en DHCPv6
-* Lijst maken van vragen en antwoorden van vorige examens + netacad examens (jullie mogen mij hier zeker mee helpen)
-* 13.4.5 afmaken
-* Voor elk apparaat een lijst met commando's voor de volledige configuratie
+- [ ] OSPF en *8.4.1.2 Packet Tracer - Skills Integration Challenge.pka*
+
+- [ ] Oefening op SLAAC en DHCPv6
+
+- [ ] Lijst maken van vragen en antwoorden van vorige examens + netacad examens (jullie mogen mij hier zeker mee helpen)
+
+- [ ] 13.4.5 afmaken
+
+- [ ] Voor elk apparaat een lijst met commando's voor de volledige configuratie
+- [ ] 16.3.1 afmaken
 
 ## Shortcuts
 
@@ -2404,7 +2430,7 @@ R1#
 
 ## Korte samenvatting
 
-Een router heeft een **routing table**, daar kunnen **entries** in zitten. Die entries kunnen er **statisch** ingezet zijn. Ze kunnen er ook ingezet zijn door een **dynamic routing protocol**. De router heeft ook een **default route**. Hier stuurt hij de pakketjes naartoe als ze met geen enkel van de andere entries matchen. Als er twee keer hetzelfde ip adres in de entries wilt komen (misschien omdat er twee verschillende protocollen draaien of je een static route wilt toevoegen voor een netwerk dat al in de router staat.) kiest die router die met de laagste **Administrative disctance** (een soort prioriteit/betrouwbaarheid).
+Een router heeft een **routing table**, daar kunnen **entries** in zitten. Die entries kunnen er **statisch** ingezet zijn. Ze kunnen er ook ingezet zijn door een **dynamic routing protocol**. De router heeft ook een **default route**. Hier stuurt hij de pakketjes naartoe als ze met geen enkel van de andere entries matchen. Als er twee keer hetzelfde ip adres in de entries wilt komen (misschien omdat er twee verschillende protocollen draaien of je een static route wilt toevoegen voor een netwerk dat al in de router staat.) kiest die router die met de laagste **Administrative distance** (een soort prioriteit/betrouwbaarheid).
 
 Een router kan met sommige protocollen ook aan **load balancing** doen. (alleen bij EIGRP)
 
@@ -2430,3 +2456,166 @@ Een router kan met sommige protocollen ook aan **load balancing** doen. (alleen 
 
 
 # Module 15: IP Static Routing
+
+Je kan veel doen met dynamic routing, maar soms zijn er dingen die je toch handmatig moet doen. 
+
+Soorten static routes:
+
+- Standard static route
+- Default static route
+- Floating static route
+- Summary static route
+
+Next-hop opties:
+
+- **Next-hop route** - Only the next-hop IP address is specified
+- **Directly connected static route** - Only the router exit interface is specified
+- **Fully specified static route** - The next-hop IP address and exit interface are specified
+
+```
+Router(config)# ip route network-address subnet-mask { ip-address | exit-intf [ip-address]} [distance]
+```
+
+```
+Router(config)# ipv6 route ipv6-prefix/prefix-length {ipv6-address | exit-intf [ipv6-address]} [distance]
+```
+
+> **Note**: The **ipv6 unicast-routing** global configuration command must be configured to enable the router to forward IPv6 packets.
+
+Dit commando maakt een static route. Exit-intf staat voor **exit interface**. Veel meer uileg is hier denk ik niet bij nodig.
+
+
+
+## Static routes and how to configure them
+
+### Next-hop static route
+
+```
+R1(config)# ip route 172.16.1.0 255.255.255.0 172.16.2.2
+```
+
+```
+R1(config)# ipv6 unicast-routing
+R1(config)# ipv6 route 2001:db8:acad:1::/64 2001:db8:acad:2::2
+```
+
+---
+
+### Directly connected static routes
+
+```
+R1(config)# ip route 172.16.1.0 255.255.255.0 s0/1/0
+```
+
+```
+R1(config)# ipv6 route 2001:db8:acad:1::/64 s0/1/0
+```
+
+Bij **directly connected static routes** geef je de interface mee waarnaar het pakketje gestuurd moet worden.
+
+> **Note**: Using a next-hop address is generally recommended. Directly connected static routes should only be used with point-to-point serial interfaces, as in this example.
+
+---
+
+### Fully specified static route
+
+```
+R1(config)# ip route 172.16.1.0 255.255.255.0 GigabitEthernet 0/0/1 172.16.2.2
+```
+
+```
+R1(config)# ipv6 route 2001:db8:acad:1::/64 fe80::2
+%Interface has to be specified for a link-local nexthop
+R1(config)# ipv6 route 2001:db8:acad:1::/64 s0/1/0 fe80::2
+```
+
+> The reason a fully specified static route must be used is because IPv6 link-local addresses are not contained in the IPv6 routing table. Link-local addresses are only unique on a given link or network. The next-hop link-local address may be a valid address on multiple networks connected to the router. Therefore, it is necessary that the exit interface be included.
+
+---
+
+### Default static routes
+
+```
+R1(config)# ip route 0.0.0.0 0.0.0.0 172.16.2.2
+```
+
+> Het ip adres en netmask zijn allebei 0.0.0.0
+
+```
+R1(config)# ipv6 route ::/0 2001:db8:acad:2::2
+```
+
+> Een ip adres met allemaal nullen betekent eender welk netwerk. Als je je het vorige hoofdstuk nog kan herinneren (dat met die bits matchen) dan weet je ook waarom deze route alleen als last resort wordt gekozen. Als je het niet meer weet, klik dan [hier](#path-determination)
+
+---
+
+### Floating static routes
+
+Dit is eigenlijk een backup route voor een primaire **static** of **dynamic** route. Je zorgt ervoor dat de route een hogere [administrative distance](#routing-table-entries) heeft dan de route waarvan hij de backup is. 
+
+```
+R1(config)# ip route 0.0.0.0 0.0.0.0 10.10.10.2 5
+```
+
+```
+R1(config)# ipv6 route ::/0 2001:db8:feed:10::2 5
+```
+
+> Die 5 erachter is de **administrative distance**. Die van static routes is standaard 1, die van OSPF = 110, EIGRP = 90, IS-IS = 115
+
+---
+
+### Static host routes
+
+```
+R1(config)# ip route 209.165.200.238 255.255.255.255 198.51.100.2
+```
+
+```
+R1(config)# ipv6 route 2001:db8:acad:2::238/128 2001:db8:acad:1::2
+```
+
+Een **host route** is een route naar een specifiek apparaat. Vandaar de volledige netmask. Als je een ip adres aan een interface geeft, maakt IOS vanzelf een **local host route**. (best logisch, want als je iets naar het ip adres van de router stuurt, moet hij het ook ontvangen)
+
+Je kan bij een **ipv6 static host route** ook een link-local adres als next hop meegeven, maar dan moet je ook wel zeggen op welke interface de pakketjes moeten worden doorgesluisd
+
+```
+R1(config)# ipv6 route 2001:db8:acad:2::238/128 serial 0/1/0 fe80::2
+```
+
+
+
+## Verificatie van static routes
+
+Along with **show ip route**, **show ipv6 route**, **ping** and **traceroute**, other useful commands to verify static routes include the following:
+
+- **show ip route static**
+- **show ip route** *network*
+- **show running-config | section ip route**
+- **show ip route static | begin Gateway**
+- **show run | include ip route**
+
+Replace **ip** with **ipv6** for the IPv6 versions of the command.
+
+
+
+# Module 16: Troubleshoot Static and Default routes
+
+Common IOS troubleshooting commands include the following:
+
+- **ping**
+- **traceroute**
+- **show ip route**
+- **show ip interface brief**
+- **show cdp neighbors detail**
+
+even wat verduidelijking bij de laatste (die je misschien nog niet kent)
+
+> The **show cdp neighbors** command provides a list of directly connected Cisco devices. This command validates Layer 2 (and therefore Layer 1) connectivity. For example, if a neighbor device is listed in the command output, but it cannot be pinged, then Layer 3 addressing should be investigated.
+
+## Conclusie van dit hoofdstuk
+
+Wees niet achterlijk.
+
+Ah ja en als er iets mis is, retrace your steps en gebruik **ping** om te zien waar het misloopt.
+
