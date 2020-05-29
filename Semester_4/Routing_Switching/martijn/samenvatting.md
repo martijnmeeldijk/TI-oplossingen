@@ -142,6 +142,7 @@ Epicccccccc
 * Oefening op SLAAC en DHCPv6
 * Lijst maken van vragen en antwoorden van vorige examens + netacad examens (jullie mogen mij hier zeker mee helpen)
 * 13.4.5 afmaken
+* Voor elk apparaat een lijst met commando's voor de volledige configuratie
 
 ## Shortcuts
 
@@ -208,6 +209,28 @@ In Cisco iOS kan je elk commando zo kort maken als je wilt, zolang het niet dubb
 | Ctrl+Z       | Applies current command & returns to priv. EXEC mode   |
 | Ctrl+U       | Erases anything on current prompt line                 |
 | Tab          | Completes abbrev­iated command                         |
+
+
+
+## Subnet mask cheat sheet
+
+|      | Addresses | Hosts | Netmask         | Amount of a Class C |
+| ---- | --------- | ----- | --------------- | ------------------- |
+| /30  | 4         | 2     | 255.255.255.252 | 1/64                |
+| /29  | 8         | 6     | 255.255.255.248 | 1/32                |
+| /28  | 16        | 14    | 255.255.255.240 | 1/16                |
+| /27  | 32        | 30    | 255.255.255.224 | 1/8                 |
+| /26  | 64        | 62    | 255.255.255.192 | 1/4                 |
+| /25  | 128       | 126   | 255.255.255.128 | 1/2                 |
+| /24  | 256       | 254   | 255.255.255.0   | 1                   |
+| /23  | 512       | 510   | 255.255.254.0   | 2                   |
+| /22  | 1024      | 1022  | 255.255.252.0   | 4                   |
+| /21  | 2048      | 2046  | 255.255.248.0   | 8                   |
+| /20  | 4096      | 4094  | 255.255.240.0   | 16                  |
+| /19  | 8192      | 8190  | 255.255.224.0   | 32                  |
+| /18  | 16384     | 16382 | 255.255.192.0   | 64                  |
+| /17  | 32768     | 32766 | 255.255.128.0   | 128                 |
+| /16  | 65536     | 65534 | 255.255.0.0     | 256                 |
 
 ## Translating domain server
 
@@ -2161,15 +2184,249 @@ Dit hoofdstuk was een beetje teleurstellend. De GUI's van de wireless rommel in 
 
 <img src="img/image-20200529010718874.png" alt="image-20200529010718874" width="30%;" />
 
-
-
-# Module 14: Routing Concepts
-
-Coming soon to theatres in your area
-
 Hier, omdat je als zo ver bent gekomen krijg je van mij een meme.
 
 ![midicpp](img/midicpp.jpg)
 
 haha funny relatable hahaha XD rawr
 
+
+
+
+
+# Module 14: Routing Concepts
+
+
+
+## Path determination
+
+Een router beslist waarnaar je pakketjes gestuurd gaan worden. Hij beschikt hiervoor over een **routing table**. Op de routing table staan ip adressen of ranges van ip adressen, met daarbij een interface. De router gaat beslissen naar welke interface hij het pakketje doorstuurt door het destination ip van het pakketje te vergelijken met de adressen/ranges in zijn tabel. Hij zal de **longest match** vinden en het pakketje doorsluizen naar de bijhorende interface.
+
+Longest match: de match die van links het meeste bits overeenkomt, in dit geval nummer 3. Er wordt alleen gekeken naar het netwerk-gedeelte van het ip adres.
+
+| Destination IPv4 Address | Address in Binary                       |
+| :----------------------- | :-------------------------------------- |
+| 172.16.0.10              | **10101100.00010000.00000000.00**001010 |
+
+| Route Entry | Prefix/Prefix Length | Address in Binary                       |
+| :---------- | :------------------- | :-------------------------------------- |
+| 1           | 172.16.0.0**/12**    | **10101100.0001**0000.00000000.00001010 |
+| 2           | 172.16.0.0**/18**    | **10101100.00010000.00**000000.00001010 |
+| 3           | 172.16.0.0**/26**    | **10101100.00010000.00000000.00**001010 |
+
+bij ipv6 ( address **2001:db8:c000**::99):
+
+| Route Entry | Prefix/Prefix Length            | Does it match?                   |
+| :---------- | :------------------------------ | :------------------------------- |
+| 1           | **2001:db8:c0**00::**/40**      | Match of 40 bits                 |
+| 2           | **2001:db8:c000**::**/48**      | Match of 48 bits (longest match) |
+| 3           | **2001:db8:c000**:5555::**/64** | Does not match 64 bits           |
+
+dit schetst het wel vrij duidelijk hoop ik.
+
+Hier:<img src="img/image-20200529130828836.png" alt="image-20200529130828836" width="50%;" />
+
+
+
+## Packet forwarding
+
+### Packet forwarding decision process
+
+Wanneer een router een pakketje binnenkrijgt kan hij er 3 dingen mee doen:
+
+1. **Forwards the Packet to a Device on a Directly Connected Network**
+
+   > Als de entry in de routing table zegt dat het adres zich in en rechtstreeks verbonden netwerk bevindt. Het pakketje kan dan rechtstreeks naar het juiste apparaat gestuurd worden. Dan gaat het dus in een ethernet frame gestoken worden. De router moet dus ook het MAC adres van het apparaat zien te vinden. (ARP voor ipv4, neighbor sollicitation bij ipv6)
+
+2. **Forwards the Packet to a Next-Hop Router**
+
+   > Als er in de routing table staat dat dat het ip adres zich op een verder gelegen netwerk bevindt, zal het pakketje doorgestuurd worden naar een next-hop router en herhaalt het proces zich.
+
+3. **Drops the Packet - No Match in Routing Table**
+
+   > Dit hoef ik hopelijk niet uit te leggen.
+
+Er is een leuke animatie op `14.2.2`. 
+
+
+
+## Packet forwarding mechanisms
+
+* Process switching (oud)
+
+  > Elk pakketje wordt door de cpu bekeken en behandeld
+
+* Fast switching (iets minder oud)
+
+  > Deze is de vorige met een cache (dus sneller)
+
+* Cisco Express Forwarding (CEF)
+
+  > Alle mogelijkheden worden op voorhand berekend. Er wordt een soort tabel gemaakt waar alle berekeningen al zijn gedaan. Als er iets verandert in het netwerk wordt de tabel herberekend (deze methode is duidelijk superieur)
+
+
+
+## Router Configuratie
+
+Hier de volledige configuratie van een router:
+
+```
+Router> enable
+Router# configure terminal
+Enter configuration commands, one per line. End with CNTL/Z.
+Router(config)# hostname R1
+R1(config)# enable secret class 
+R1(config)# line console 0  
+R1(config-line)# logging synchronous
+R1(config-line)# password cisco 
+R1(config-line)# login 
+R1(config-line)# exit 
+R1(config)# line vty 0 4 
+R1(config-line)# password cisco 
+R1(config-line)# login 
+R1(config-line)# transport input ssh telnet 
+R1(config-line)# exit 
+R1(config)# service password-encryption 
+R1(config)# banner motd #
+Enter TEXT message. End with a new line and the #
+***********************************************
+WARNING: Unauthorized access is prohibited!
+***********************************************
+#
+R1(config)# ipv6 unicast-routing
+R1(config)# interface gigabitethernet 0/0/0
+R1(config-if)# description Link to LAN 1
+R1(config-if)# ip address 10.0.1.1 255.255.255.0 
+R1(config-if)# ipv6 address 2001:db8:acad:1::1/64 
+R1(config-if)# ipv6 address fe80::1:a link-local
+R1(config-if)# no shutdown
+R1(config-if)# exit
+R1(config)# interface gigabitethernet 0/0/1
+R1(config-if)# description Link to LAN 2
+R1(config-if)# ip address 10.0.2.1 255.255.255.0 
+R1(config-if)# ipv6 address 2001:db8:acad:2::1/64 
+R1(config-if)# ipv6 address fe80::1:b link-local
+R1(config-if)# no shutdown
+R1(config-if)# exit
+R1(config)# interface serial 0/1/1
+R1(config-if)# description Link to R2
+R1(config-if)# ip address 10.0.3.1 255.255.255.0 
+R1(config-if)# ipv6 address 2001:db8:acad:3::1/64 
+R1(config-if)# ipv6 address fe80::1:c link-local
+R1(config-if)# no shutdown
+R1(config-if)# exit
+R1# copy running-config startup-config 
+Destination filename [startup-config]? 
+Building configuration...
+[OK]
+R1#
+```
+
+nog wat verificatiecommando's
+
+- **show ip interface brief**
+- **show running-config interface** *interface-type number*
+- **show interfaces**
+- **show ip interface**
+- **show ip route**
+- **ping**
+
+en filters:
+
+- **section** - This displays the entire section that starts with the filtering expression.
+- **include** - This includes all output lines that match the filtering expression.
+- **exclude** - This excludes all output lines that match the filtering expression.
+- **begin** - This displays all the output lines from a certain point, starting with the line that matches the filtering expression.
+
+voorbeelden van filters:
+
+```
+R1# show running-config | section line vty
+line vty 0 4
+ password 7 121A0C0411044C
+ login
+ transport input telnet ssh
+R1#
+R1# show ipv6 interface brief | include up
+GigabitEthernet0/0/0   [up/up]
+GigabitEthernet0/0/1   [up/up]
+Serial0/1/1            [up/up]
+R1#
+R1# show ip interface brief | exclude unassigned
+Interface              IP-Address      OK? Method Status                Protocol
+GigabitEthernet0/0/0   192.168.10.1    YES manual up                    up
+GigabitEthernet0/0/1   192.168.11.1    YES manual up                    up
+Serial0/1/1            209.165.200.225 YES manual up                    up
+R1#
+R1# show ip route | begin Gateway
+Gateway of last resort is not set
+      192.168.10.0/24 is variably subnetted, 2 subnets, 2 masks
+C        192.168.10.0/24 is directly connected, GigabitEthernet0/0/0
+L        192.168.10.1/32 is directly connected, GigabitEthernet0/0/0
+      192.168.11.0/24 is variably subnetted, 2 subnets, 2 masks
+C        192.168.11.0/24 is directly connected, GigabitEthernet0/0/1
+L        192.168.11.1/32 is directly connected, GigabitEthernet0/0/1
+      209.165.200.0/24 is variably subnetted, 2 subnets, 2 masks
+C        209.165.200.224/30 is directly connected, Serial0/1/1
+L        209.165.200.225/32 is directly connected, Serial0/1/1
+R1#
+```
+
+
+
+## IP routing table
+
+### Principes
+
+| **Routing Table Principle**                                  | **Example**                                                  |
+| :----------------------------------------------------------- | :----------------------------------------------------------- |
+| Every router makes its decision alone, based on the information it has in its own routing table. | R1 can only forward packets using its own routing table.R1 does not know what routes are in the routing tables of other routers (e.g., R2). |
+| The information in a routing table of one router does not necessarily match the routing table of another router. | Just because R1 has route in its routing table to a network in the internet via R2, that does not mean that R2 knows about that same network. |
+| Routing information about a path does not provide return routing information. | R1 receives a packet with the destination IP address of PC1 and the source IP address of PC3. Just because R1 knows to forward the packet out its G0/0/0 interface, doesn’t necessarily mean that it knows how to forward packets originating from PC1 back to the remote network of PC3. |
+
+### Routing table entries
+
+<img src="img/image-20200529161351054.png" alt="image-20200529161351054" width="50%;" />
+
+> 1. **Route source** - This identifies how the route was learned.
+> 2. **Destination network (prefix and prefix length)** - This identifies the address of the remote network.
+> 3. **Administrative distance** - This identifies the trustworthiness of the route source. Lower values indicate preferred route source.
+> 4. **Metric** - This identifies the value assigned to reach the remote network. Lower values indicate preferred routes.
+> 5. **Next-hop** - This identifies the IP address of the next router to which the packet would be forwarded.
+> 6. **Route timestamp** - This identifies how much time has passed since the route was learned.
+> 7. **Exit interface** - This identifies the egress interface to use for outgoing packets to reach their final destination.
+
+- **L** - Identifies the address assigned to a router interface. This allows the router to efficiently determine when it receives a packet for the interface instead of being forwarded.
+- **C** - Identifies a directly connected network.
+- **S** - Identifies a static route created to reach a specific network.
+- **O** - Identifies a dynamically learned network from another router using the OSPF routing protocol.
+- ***** - This route is a candidate for a default route.
+
+## Korte samenvatting
+
+Een router heeft een **routing table**, daar kunnen **entries** in zitten. Die entries kunnen er **statisch** ingezet zijn. Ze kunnen er ook ingezet zijn door een **dynamic routing protocol**. De router heeft ook een **default route**. Hier stuurt hij de pakketjes naartoe als ze met geen enkel van de andere entries matchen. Als er twee keer hetzelfde ip adres in de entries wilt komen (misschien omdat er twee verschillende protocollen draaien of je een static route wilt toevoegen voor een netwerk dat al in de router staat.) kiest die router die met de laagste **Administrative disctance** (een soort prioriteit/betrouwbaarheid).
+
+Een router kan met sommige protocollen ook aan **load balancing** doen. (alleen bij EIGRP)
+
+**Static routing** is gemakkelijk in een klein netwerk. Als je netwerk veel verandert en/of groot is, kan je beter **dynamic routing** gebruiken. 
+
+| Feature                  | Dynamic Routing                                     | Static Routing                          |
+| :----------------------- | :-------------------------------------------------- | :-------------------------------------- |
+| Configuration complexity | Independent of network size                         | Increases with network size             |
+| Topology changes         | Automatically adapts to topology changes            | Administrator intervention required     |
+| Scalability              | Suitable for simple to complex network topologies   | Suitable for simple topologies          |
+| Security                 | Security must be configured                         | Security is inherent                    |
+| Resource Usage           | Uses CPU, memory, and link bandwidth                | No additional resources needed          |
+| Path Predictability      | Route depends on topology and routing protocol used | Explicitly defined by the administrator |
+
+ Er zijn verschillende **dynamic routing protocollen**. 
+
+| **Routing Protocol**                                   | **Metric**                                                   |
+| :----------------------------------------------------- | :----------------------------------------------------------- |
+| **Routing Information Protocol (RIP)**                 | The metric is “hop count”.Each router along a path adds a hop to the hop count.A maximum of 15 hops allowed. |
+| **Open Shortest Path First (OSPF)**                    | The metric is “cost” which is the based on the cumulative bandwidth from source to destination.Faster links are assigned lower costs compared to slower (higher cost) links. |
+| **Enhanced Interior Gateway Routing Protocol (EIGRP)** | It calculates a metric based on the slowest bandwidth and delay values.It could also include load and reliability into the metric calculation. |
+
+
+
+# Module 15: IP Static Routing
