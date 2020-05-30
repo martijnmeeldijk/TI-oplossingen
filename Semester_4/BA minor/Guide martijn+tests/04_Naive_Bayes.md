@@ -69,7 +69,7 @@ Maak een excel file aan:
 
 Maak dan een prediction met naive bayes als classifier (met de excel file als data)
 
-
+NOTE: als je de widget Nomogram gebruikt hoef je geen Excel file aan te maken, daar kan je zelf selecteren wat nodig is.
 
 ## 9. Comparing the Naive Bayes learner to the KNN with k=100, which model would you choose and why?
 
