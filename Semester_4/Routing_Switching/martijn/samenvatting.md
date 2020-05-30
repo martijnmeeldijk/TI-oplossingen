@@ -1,5 +1,3 @@
-
-
 # Routing & Switching essentials
 
 > :warning: LEGAL:  Je mag deze guide niet lezen of delen, hij bevat gecopyrighted materiaal van Cisco. Deze guide is mijn persoonlijke samenvatting en dient niet geherdistribueert te worden. Deze tekst is geen substitutie voor het originele lesmateriaal op Netacad. 
@@ -2619,3 +2617,150 @@ Wees niet achterlijk.
 
 Ah ja en als er iets mis is, retrace your steps en gebruik **ping** om te zien waar het misloopt.
 
+
+
+# OSPF
+
+**OSPF** = Open Shortest Path First
+
+Een dynamic routing protocol. Door OSPF kan één router tegen de andere zeggen van "yow R2 ik ben verbonden aan deze netwerken bro, hmu als je iets moet sturen tis maar 10 euro broer" En dan kan een andere: "Wollah hayek dikke afrip matsko ik fix voor 5 wjow".
+
+Nu ken je OSPF in detail.
+
+> Open Shortest Path First (OSPF) is a link-state routing protocol for IP networks. OSPFv2 is defined for IPv4 networks, and OSPFv3 is defined for IPv6 networks. OSPF detects changes in the topology, such as link failures, and converges on a new loop-free routing structure very quickly. It computes each route using Dijkstra’s algorithm, a shortest path first algorithm.
+
+
+
+## Stappenplan IPV4 (OSPFv2)
+
+**Step 1: Configure OSPF on R1.**
+
+Use the router ospf command in global configuration mode to enable OSPF on R1.
+
+```
+R1(config)# router ospf 1
+```
+
+Configure the network statements for the networks on R1. Use an area ID of 0.
+
+```
+R1(config-router)# network 192.168.1.0 0.0.0.255 area 0
+R1(config-router)# network 192.168.12.0 0.0.0.3 area 0
+R1(config-router)# network 192.168.13.0 0.0.0.3 area 0
+```
+
+Verify
+
+```
+R1# show ip ospf neighbor
+R1# show ip route
+R1# show ip protocols
+R1# show ip ospf
+R1# show ip ospf interface brief
+```
+
+**Step 2: Change Router ID Assignments**
+
+> The OSPF router ID is used to uniquely identify the router in the OSPF routing domain. Cisco routers derive the router ID in one of three ways and with the following precedence: 
+>
+> 1. IP address configured with the OSPF router-id command, if present  
+> 2. Highest IP address of any of the router’s loopback addresses, if present 
+> 3. Highest active IP address on any of the router’s physical interfaces 
+>
+> Because no router IDs or loopback interfaces have been configured on the three routers, the router ID for each router is determined by the highest IP address of any active interface. In Step 2, you will change the OSPF router ID assignment using loopback addresses. You will also use the router-id command to change the router ID.
+
+```
+R1(config)# interface lo0
+R1(config-if)# ip address 1.1.1.1 255.255.255.255
+R1(config-if)# end
+```
+
+verify:
+
+```
+R1# show ip protocols
+R1# show ip ospf neighbor
+```
+
+```
+R1(config)# router ospf 1
+R1(config-router)# router-id 11.11.11.11
+Reload or use "clear ip ospf process" command, for this to take effect
+R1(config)# end
+```
+
+doe dat dan ook.
+
+**Step 3: Configure OSPF Passive Interfaces**
+
+> The passive-interface command prevents routing updates from being sent through the specified router interface. This is commonly done to reduce traffic on the LANs as they do not need to receive dynamic routing protocol communication. In Step 3, you will use the passive-interface command to configure a single interface as passive. You will also configure OSPF so that all interfaces on the router are passive by default, and then enable OSPF routing advertisements on selected interfaces.
+
+Long story short: routers moeten geen ospf shizzle sturen naar de pc van uw oma.
+
+```
+R1(config)# router ospf 1
+R1(config-router)# passive-interface g0/0
+```
+
+```
+R2(config)# router ospf 1
+R1(config-router)# passive-interface default --maakt alle interfaces default passive
+```
+
+```
+R2(config)# router ospf 1
+R2(config-router)# no passive-interface s0/0/0 --maakt een interface niet passive
+```
+
+**Step 4: Change OSPF Metrics**
+
+Change the reference bandwidth:
+
+> In Step 4, you will change OSPF metrics using the auto-cost reference-bandwidth command, the bandwidth command, and the ip ospf cost command.
+
+```
+R1(config)# router ospf 1
+R1(config-router)# auto-cost reference-bandwidth 10000
+% OSPF: Reference bandwidth is changed.
+ Please ensure reference bandwidth is consistent across all routers.
+```
+
+> Issue the **auto-cost reference-bandwidth 10000** command on R1 to change the default reference bandwidth setting. With this setting, 10Gb/s interfaces will have a cost of 1, 1 Gb/s interfaces will have a cost of 10, and 100Mb/s interfaces will have a cost of 100.
+
+> Note: A common misconception is to assume that the **bandwidth** command will change the physical bandwidth, or speed, of the link. The command modifies the bandwidth metric used by OSPF to calculate routing costs, and does not modify the actual bandwidth (speed) of the link.
+
+Change the route cost:
+
+> OSPF uses the bandwidth setting to calculate the cost for a link by default. However, you can override this calculation by manually setting the cost of a link using the **ip ospf cost** command. Like the **bandwidth** command, the **ip ospf cost** command only affects the side of the link where it was applied.
+
+```
+R1(config)# interface s0/0/1
+R1(config-if)# ip ospf cost 1565
+```
+
+
+
+## Stappenplan IPV6 (OSPFv3)
+
+```
+R1(config)# ipv6 router ospf 1
+R1(config-rtr)# router-id 1.1.1.1
+```
+
+Bij ospfv3 moet je de routing per interface doen, je moet dus ook geen netwerk meegeven.
+
+```
+R1(config)# interface g0/0
+R1(config-if)# ipv6 ospf 1 area 0
+R1(config-if)# interface s0/0/0
+R1(config-if)# ipv6 ospf 1 area 0
+R1(config-if)# interface s0/0/1
+R1(config-if)# ipv6 ospf 1 area 0
+```
+
+```
+R1(config)# ipv6 router ospf 1
+R1(config-rtr)# passive-interface g0/0
+```
+
+Voorde rest is alles zo ongeveer hetzelfde als OSPFv2, je moet gewoon **ip** vervangen door **ipv6** in de commando's
