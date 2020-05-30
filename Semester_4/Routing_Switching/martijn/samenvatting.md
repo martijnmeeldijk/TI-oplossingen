@@ -160,7 +160,7 @@ Epicccccccc
 
 ## My to-do list
 
-- [ ] OSPF en *8.4.1.2 Packet Tracer - Skills Integration Challenge.pka*
+- [x] OSPF en *8.4.1.2 Packet Tracer - Skills Integration Challenge.pka*
 
 - [ ] Oefening op SLAAC en DHCPv6
 
@@ -263,7 +263,7 @@ In Cisco iOS kan je elk commando zo kort maken als je wilt, zolang het niet dubb
 
 Oke boys ik heb de superieure fix gevonden als je vas zit op `Translating "azerqdfgfdgq"...domain server (255.255.255.255)` 
 
-<img src="img/Screenshot 2020-05-22 at 13.29.03.png" alt="Screenshot 2020-05-22 at 13.29.03" style="zoom:33%;" />
+<img src="img/Screenshot 2020-05-22 at 13.29.03.png" alt="Screenshot 2020-05-22 at 13.29.03" width="70%;" />
 
 Ram gewoon een paar keer op dit knopje (fast forward). Dan skip je die timeout van *translating...*
 
@@ -285,7 +285,7 @@ Dit vind ik altijd nuttig. Daarom zet ik het hier vanboven.
 
 ## Port labels
 
-<img src="img/image-20200521184003400.png" alt="image-20200521184003400" style="width:40%;" />
+<img src="img/image-20200521184003400.png" alt="image-20200521184003400" width="40%;" />
 
 Doe in je preferences **always show port labels** aan.
 
@@ -453,7 +453,7 @@ een hub vergroot **collision domains**
 
 Hier nog wat feitjes van netacad:
 
-<img src="img/image-20200522111939325.png" alt="image-20200522111939325" style="width:50%;" />
+<img src="img/image-20200522111939325.png" alt="image-20200522111939325" width="50%;" />
 
 **Een VLAN tag bevat het volgende** :
 
@@ -524,9 +524,9 @@ S3(config-if)# end
 
 ### Trunks
 
-Trunk poort maken**
+**Trunk poort maken**
 
-<img src="img/image-20200522111131162.png" alt="image-20200522111131162" style="width:50%;" />
+<img src="img/image-20200522111131162.png" alt="image-20200522111131162" width="50%;" />
 
 | **Task**                                                   | **IOS Command**                                              |
 | :--------------------------------------------------------- | :----------------------------------------------------------- |
@@ -539,7 +539,7 @@ Trunk poort maken**
 
 **Trunk verwijderen/resetten**
 
-<img src="img/image-20200522111243424.png" alt="image-20200522111243424" style="width:50%;" />
+<img src="img/image-20200522111243424.png" alt="image-20200522111243424" width="50%;" />
 
 **Trunk verifiëren**
 
@@ -574,7 +574,7 @@ S1(config-if)# switchport mode dynamic auto
 
 ## Legacy inter-vlan routing
 
-<img src="img/image-20200522223258396.png" alt="image-20200522223258396" style="width:50%;" />
+<img src="img/image-20200522223258396.png" alt="image-20200522223258396" width="50%;" />
 
 zo ziet dat eruit.
 
@@ -586,7 +586,7 @@ zo ziet dat eruit.
 
 ## Router-on-a-Stick Inter-VLAN Routing
 
-<img src="img/image-20200522223817196.png" alt="image-20200522223817196" style="width:50%;" />
+<img src="img/image-20200522223817196.png" alt="image-20200522223817196" width="50%;" />
 
 dat ziet er zo uit
 
@@ -610,7 +610,7 @@ doe oefening 4.2.7
 
 ## Inter-VLAN Routing on a Layer 3 Switch
 
-<img src="img/image-20200522224033400.png" alt="image-20200522224033400" style="width:50%;" />
+<img src="img/image-20200522224033400.png" alt="image-20200522224033400" width="50%;" />
 
 dat hebben we dan ook alweer gehad.
 
@@ -668,7 +668,7 @@ typo in netacad btw
 D1(config)# ip routing
 ```
 
-**Je moet ook routing configureren met volgens ospf**
+**Je moet ook routing kunnen configureren  volgens ospf**
 
 **OSPF**: Open Shortest Path First (een routing protocol)
 
@@ -2767,3 +2767,8 @@ R1(config-rtr)# passive-interface g0/0
 ```
 
 Voorde rest is alles zo ongeveer hetzelfde als OSPFv2, je moet gewoon **ip** vervangen door **ipv6** in de commando's
+
+
+
+
+
