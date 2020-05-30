@@ -25,7 +25,7 @@ Je kan martipoints verdienen door iets toe te voegen aan de repo of door iets te
 | Robbe De Bie         | 2             | 0           | 2          |  
 | Dennis Winnepenninckx| 2             | 0           | 2          |  
 | Sander Van Thillo    | 2             | 0           | 2          |      
-| Jasper Vandenberghen | 1             | 0           | 1          |      
+| Jasper Vandenberghen | 2             | 0           | 2          |      
 | Bram Verbist         | 1             | 0           | 1          |  
 | Anderad Milanto      | 1             | 0           | 1          |  
 | Anouar Fayek         | 1             | 0           | 1          |  
