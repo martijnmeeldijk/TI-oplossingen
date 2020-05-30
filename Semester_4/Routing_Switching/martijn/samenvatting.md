@@ -1422,7 +1422,7 @@ Jouw adres hetzelfde maken als een ander adres op het netwerk (ip of mac). Dan k
 
 ### STP Attack
 
-Hier probeert een anvaller de root bridge te worden. ([als je niet weet wat een root bridge is klik hier](#module-5:-stp-concepts)) Hij stuurt BPDU's uit met een hele lage priority, waardoor de switches in het netwerk hem verkiezen als root bridge. Nu kan hij aan al het verkeer in het domein.
+Hier probeert een anvaller de root bridge te worden. Als je niet weet wat een root bridge is klik [hier](#module-5-stp-concepts) . Hij stuurt BPDU's uit met een hele lage priority, waardoor de switches in het netwerk hem verkiezen als root bridge. Nu kan hij aan al het verkeer in het domein.
 
 > STP Attack: Threat actors manipulate STP to conduct an attack by spoofing the root bridge and changing the topology of a network. Threat actors make their hosts appear as root bridges; therefore, capturing all traffic for the immediate switched domain. This STP attack is mitigated by implementing BPDU Guard on all access ports
 
