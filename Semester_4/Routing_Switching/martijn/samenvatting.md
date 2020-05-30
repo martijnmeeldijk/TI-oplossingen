@@ -142,8 +142,11 @@
       * [Verificatie van static routes](#verificatie-van-static-routes)
    * [Module 16: Troubleshoot Static and Default routes](#module-16-troubleshoot-static-and-default-routes)
       * [Conclusie van dit hoofdstuk](#conclusie-van-dit-hoofdstuk)
+   * [OSPF](#ospf)
+      * [Stappenplan IPV4 (OSPFv2)](#stappenplan-ipv4-ospfv2)
+      * [Stappenplan IPV6 (OSPFv3)](#stappenplan-ipv6-ospfv3)
 
-<!-- Added by: martijn, at: Fri May 29 20:42:34 CEST 2020 -->
+<!-- Added by: martijn, at: Sat May 30 16:26:21 CEST 2020 -->
 
 <!--te-->
 
