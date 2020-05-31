@@ -2770,5 +2770,18 @@ Voorde rest is alles zo ongeveer hetzelfde als OSPFv2, je moet gewoon **ip** ver
 
 
 
+# Access Control Lists
+
+<img src="img/image-20200531114127413.png" alt="image-20200531114127413" width="50%;" />
+
+<img src="img/image-20200531114149633.png" alt="image-20200531114149633" width="50%;" />
 
 
+
+# Checklist examen
+
+- [ ] Ipv6 adressen van router-on-a-stick subinterfaces (en encapsulation dot1q [vlanid])
+- [ ] hostnames (van alles)
+- [ ] Ipv6 unicast-routing aan waar nodig
+- [ ] no shutdown op alle nodige interfaces
+- [ ] 
