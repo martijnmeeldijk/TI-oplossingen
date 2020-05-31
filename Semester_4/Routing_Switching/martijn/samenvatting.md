@@ -1059,7 +1059,7 @@ Mogelijke combinaties:
 
 ## Duplicate address detection
 
-Als je een random adres genereert kan het natuurlijk dat er iemand anders hetzelfde adres heeft. Weet maar gewoon dat het bestaat. Meer info vindt je [hier](https://lmgtfy.com/?q=duplicate+address+detection&iie=1)
+Als je een random adres genereert kan het natuurlijk dat er iemand anders hetzelfde adres heeft. Weet maar gewoon dat het bestaat. Meer info vind je [hier](https://lmgtfy.com/?q=duplicate+address+detection&iie=1)
 
 
 
@@ -1976,7 +1976,7 @@ Er zijn 3 manieren om dit tegen te gaan: (netacad `12.5.1`voor meer info.)
 
 > We zullen even de lange uitleg van netacad in een paar zinnen samenvatten (als je me niet vertrouwt, check dan `12.5.2`)
 
-Er zijn verschillende frequentiebereiken waarop je je draadloze shizzle kan laten draaien. Sommig bereiken overlappen. Neem er dus die niet overlappen (Access Points doen dit meestal automatisch). Verder zien 5GHz frequentiebereiken er anders uit dan die van 2.4GHz. Ze zien er ook anders uit afhankelijk van de standaar die wordt gevolgd. Cool. De standaarden zijn in elk land/regio anders. 
+Er zijn verschillende frequentiebereiken waarop je je draadloze shizzle kan laten draaien. Sommig bereiken overlappen. Neem er dus die niet overlappen (Access Points doen dit meestal automatisch). Verder zien 5GHz frequentiebereiken er anders uit dan die van 2.4GHz. Ze zien er ook anders uit afhankelijk van de standaard die wordt gevolgd. Cool. De standaarden zijn in elk land/regio anders. 
 
 Dat is het zo een beetje.
 
