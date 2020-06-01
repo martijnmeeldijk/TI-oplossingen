@@ -131,6 +131,7 @@
          * [Principes](#principes)
          * [Routing table entries](#routing-table-entries)
       * [Korte samenvatting](#korte-samenvatting)
+            * [RIP configureren](#rip-configureren)
    * [Module 15: IP Static Routing](#module-15-ip-static-routing)
       * [Static routes and how to configure them](#static-routes-and-how-to-configure-them)
          * [Next-hop static route](#next-hop-static-route)
@@ -145,8 +146,10 @@
    * [OSPF](#ospf)
       * [Stappenplan IPV4 (OSPFv2)](#stappenplan-ipv4-ospfv2)
       * [Stappenplan IPV6 (OSPFv3)](#stappenplan-ipv6-ospfv3)
+   * [Access Control Lists](#access-control-lists)
+   * [Checklist examen](#checklist-examen)
 
-<!-- Added by: martijn, at: Sat May 30 16:26:21 CEST 2020 -->
+<!-- Added by: martijn, at: Mon Jun  1 14:15:42 CEST 2020 -->
 
 <!--te-->
 
