@@ -2847,4 +2847,14 @@ Voorde rest is alles zo ongeveer hetzelfde als OSPFv2, je moet gewoon **ip** ver
 - [ ] hostnames (van alles)
 - [ ] Ipv6 unicast-routing aan waar nodig
 - [ ] no shutdown op alle nodige interfaces
-- [ ] 
+- [ ] Als je moet adressen excluden bij dhcp, moet je het netwerkadres en het broadcast adres niet excluden
+
+```
+R1(config)# ip dhcp excluded-address 192.168.10.1 192.168.10.9
+R1(config)# ip dhcp pool LAN-POOL-1
+R1(dhcp-config)# network 192.168.10.0 255.255.255.0
+R1(dhcp-config)# default-router 192.168.10.1
+R1(dhcp-config)# dns-server 192.168.11.5
+R1(dhcp-config)# domain-name example.com
+```
+
