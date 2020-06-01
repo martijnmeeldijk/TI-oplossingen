@@ -2455,6 +2455,69 @@ Een router kan met sommige protocollen ook aan **load balancing** doen. (alleen 
 | **Enhanced Interior Gateway Routing Protocol (EIGRP)** | It calculates a metric based on the slowest bandwidth and delay values.It could also include load and reliability into the metric calculation. |
 
 
+#### RIP configureren
+
+Dit komt waarschijnlijk niet op het examen. Maar het kwam voor in een voorbeeldexamen.
+
+**Enable & Disable RIP**
+
+```
+R1> enable
+R1# conf t
+R1(config)# router rip
+R1(config)# no router rip
+``` 
+
+**RIP versie 2**
+
+``` 
+R1> enable
+R1# conf t
+R1(config)# router rip
+R1(config)# no router rip
+```
+
+**RIP netwerk**
+
+```
+R1> enable
+R1# conf t
+R1(config)# router rip
+R1(config-router)# network 1.2.3.4
+```
+
+**RIP no auto-summary**
+
+```
+R1> enable
+R1# conf t
+R1(config)# router rip
+R1(config-router)# no auto-summary
+```
+
+**RIP default information originate**
+
+```
+R1> enable
+R1# conf t
+R1(config)# router rip
+R1(config-router)# default-information originate
+```
+
+**Rip passive interface**
+
+``` 
+R1> enable
+R1# conf t
+R1(config)# router rip
+R1(config-router)# default-information originat
+```
+
+Oké kings, dit is dus hoe je RIP moet implementeren. Hier is een plaatje van Maartijn die in packet tracer RIP implementeert op zijn routers. Onder de mensen is hij bekend als Martin Router King.
+
+<img src="https://i.kym-cdn.com/photos/images/original/001/548/116/85d.jpg" alt="King-Marti" width="40%;" />
+
+
 
 # Module 15: IP Static Routing
 
