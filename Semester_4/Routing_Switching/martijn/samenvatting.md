@@ -131,7 +131,7 @@
          * [Principes](#principes)
          * [Routing table entries](#routing-table-entries)
       * [Korte samenvatting](#korte-samenvatting)
-            * [RIP configureren](#rip-configureren)
+      * [RIP configureren (tibo)](#rip-configureren-tibo)
    * [Module 15: IP Static Routing](#module-15-ip-static-routing)
       * [Static routes and how to configure them](#static-routes-and-how-to-configure-them)
          * [Next-hop static route](#next-hop-static-route)
@@ -149,7 +149,7 @@
    * [Access Control Lists](#access-control-lists)
    * [Checklist examen](#checklist-examen)
 
-<!-- Added by: martijn, at: Mon Jun  1 14:15:42 CEST 2020 -->
+<!-- Added by: martijn, at: Mon Jun  1 14:18:42 CEST 2020 -->
 
 <!--te-->
 
@@ -2458,7 +2458,7 @@ Een router kan met sommige protocollen ook aan **load balancing** doen. (alleen 
 | **Enhanced Interior Gateway Routing Protocol (EIGRP)** | It calculates a metric based on the slowest bandwidth and delay values.It could also include load and reliability into the metric calculation. |
 
 
-#### RIP configureren
+## RIP configureren (tibo)
 
 Dit komt waarschijnlijk niet op het examen. Maar het kwam voor in een voorbeeldexamen.
 
@@ -2469,7 +2469,7 @@ R1> enable
 R1# conf t
 R1(config)# router rip
 R1(config)# no router rip
-``` 
+```
 
 **RIP versie 2**
 
