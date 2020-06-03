@@ -48,11 +48,17 @@ Er is ook iets, genaamd **long polling**. De client stuurt een request naar de s
 
 **Push** lost dit probleem redelijk goed op. Kort samengevat: de client blijft gewoon luisteren naar de server. De server kan dan gewoon iets sturen als dat nodig is.
 
+In een [paper](https://arxiv.org/pdf/0706.3984.pdf) waar ze push en pull vergelijken staat dit. 
+
+> Our experiment shows that if we want high data coherence and high network performance, we should choose the push approach. However, push brings some scalability issues; the server application CPU usage is 7 times higher as in pull. According to our results, the server starts to saturate at 350-500 users. For larger number of users, load balancing and server clustering techniques are unavoidable. With the pull approach, achieving total data coherence with high network performance is very difficult. If the pull interval is higher than the publish interval, some data miss will occur. If it is lower, network performance will suffer. Pull performs well only if the pull interval equals to publish interval. However, in order to achieve that, we need to know the exact publish interval beforehand. However, the publish interval is rarely static and predictable. This makes pull useful only in situations where the data is published frequently according to some pattern.
+
 ### Wat is een nadeel van push?
 
-to be continued, ik moet een bureau gaan halen bij de dreamland.
+Zie vorige vraag: **push** gebruikt meer resources. Als een site op een frequent interval geupdate wordt, kan je beter **pull** gebruiken en het pull-interval gelijkzetten aan het interval van de site. Ik weet niet of dit is wat Elke Steegmans wilt dat je vertelt, maar ik vind het een best goede uitleg.
 
 ### Wat is het voordeel aan een library zoals jQuery?
+
+Maakt javascipt programmeren een heel stuk gemakkelijker. Je kan veelvoorkomende taken doen in veel minder lijnen code. JQuery maakt het selecteren van elementen een stuk gemakkelijker en het is ook compatibel met heel veel browsers. 
 
 
 
@@ -60,11 +66,13 @@ to be continued, ik moet een bureau gaan halen bij de dreamland.
 
 ### Zou je chatten nog altijd met polling implementeren?
 
-Nee, met push.
+Nee, met push. Als je je chat window open hebt staan, moet er niet elke 5 seconden gecheckt worden of er nieuwe berichten zijn. Wie weet ben je heel eenzaam en krijg je op een hele dag maar 1 bericht van je mama. Dan zou het echt dikke verspilling zijn om geen push te gebruiken.
 
 
 
 ## Uitbreidingsvragen
 
 ### Leg stap voor stap uit welke code je moet toevoegen om de status en de naam in 1 request te kunnen aanpassen en tonen asynchroon
+
+(ik ken je code niet, sorry)
 
