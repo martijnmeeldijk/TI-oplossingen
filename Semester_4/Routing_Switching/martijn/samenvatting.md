@@ -695,7 +695,17 @@ D1(config-router)# network 10.10.10.0 0.0.0.3 area 0
 
 
 
-
+```
+ip dhcp excluded-address 10.51.1.254
+!
+ip dhcp pool LAN_POOL
+ network 10.51.1.0 255.255.255.0
+ default-router 10.51.1.254
+ dns-server 10.12.0.1
+ domain-name jynuper.local
+!
+!
+```
 
 
 
@@ -2716,6 +2726,14 @@ Configure the network statements for the networks on R1. Use an area ID of 0.
 R1(config-router)# network 192.168.1.0 0.0.0.255 area 0
 R1(config-router)# network 192.168.12.0 0.0.0.3 area 0
 R1(config-router)# network 192.168.13.0 0.0.0.3 area 0
+
+network 10.12.0.0 255.255.0.0 area 0 // network 10.12.0.0 0.0.255.255 area 0
+network 193.191.187.100 255.255.255.252 area 0 // network 193.191.187.100 0.0.0.3 area 0
+network 10.20.0.0 255.255.0.0 area 0 // network 10.20.0.0 0.0.255.255 area 0
+network 84.199.169.32 255.255.255.252 area 0 // network 84.199.169.32 0.0.0.3 area 0
+network 10.51.1.0 255.255.255.0 area 0 // e
+
+
 ```
 
 Verify
