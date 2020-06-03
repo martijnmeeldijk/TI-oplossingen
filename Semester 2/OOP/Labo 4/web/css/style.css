@@ -1,0 +1,221 @@
+        /*** ALL ***/
+*{
+    font-family: Helvetica,Arial,sans-serif;
+}
+a {
+    transition: color .4s;
+}
+
+body{
+    background-color: #111;
+}
+#header{
+    
+    position: fixed;
+    top: 0;
+    width: 100%;
+    
+}
+                    /** NAVIGATIE **/
+
+#nav{
+    width: 100vw;
+    height: 2em;
+    display: inline-flex;
+    justify-content: flex-start;
+    
+    
+}
+#currentlink{
+    
+    text-align: center;
+    list-style-type: none;
+    overflow: hidden;
+    font-size: 1.2rem;
+    margin-left: 10vw;
+    margin-bottom: auto;
+    margin-top: auto;
+    color: white;
+}
+#currentlink a{
+    padding: 1em;
+    text-decoration: none;
+    color: white;
+}
+
+.hoofd{
+    text-align: center;
+    list-style-type: none;
+    overflow: hidden;
+    font-size: 1rem;
+    margin-left: 10vw;
+    margin-bottom: auto;
+    margin-top: auto;
+}
+#logo{
+    margin-left: 0;
+}
+.hoofd a{
+    padding: 1em;
+    text-decoration: none;
+    color: #aaa;
+}
+.hoofd a:hover {
+    color: #666;
+}
+
+h1{
+    color: white;
+    
+}
+h2{
+    color: white;
+}
+
+                /** INDEX **/
+.series{
+    padding: 7vw;
+    margin: 3vw;
+    width: 30vw;
+    background-color: #222;
+}
+#indexBoth{
+    display: flex;
+    flex-direction: row;
+    height: 70vh;
+    width: 80vw;
+    
+}
+#indexLeft{
+}
+#indexRight{
+    padding: 18vw;
+    margin: 3vw;
+    background-image: url(../images/sad.jpg);
+    
+    background-size: cover;
+    
+}
+/**** OVERZICHT ****/
+
+table {
+    width: 70vw;
+    display: table;
+    border-collapse: collapse;
+    border-spacing: 0;
+    color: white;
+    margin: auto;
+    
+    
+   
+    
+}
+thead {
+    display: table-header-group;
+    vertical-align: middle;
+    border: solid #222 4px;
+    background-color: rgba(255, 0, 0, 0.4);
+}
+.tabel {
+    width: 80vw;
+    margin-left: auto;
+    left: auto;
+    right: auto;
+    line-height: 1.6;
+    font-size: 16px;
+    box-sizing: border-box;
+    padding: 3em;
+    min-height: 1px;
+    margin: auto;
+    margin-top: 20vh;
+    background-color: #222;
+    border-radius: 30px;
+
+}
+tr {
+    display: table-row;
+    vertical-align: inherit;
+
+}
+td, th {
+    padding: 15px 5px;
+    display: table-cell;
+    text-align: left;
+    vertical-align: middle;
+    border-radius: 25px;
+    background-color: rgba(255, 0, 0, 0.3);
+
+}
+table, th, td {
+    border: solid #222 10px;
+}
+td:hover{
+    background-color: rgba(255, 0, 0, 0.5);
+    transition: background-color 0.4s;
+
+}
+
+
+/**** FORM ****/
+
+form{
+    
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+    background-color: white;
+    padding: 1em;
+    margin-bottom: 2em;
+    
+}
+
+
+input[type=text],[type=number], select {
+  width: 100%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+input[type=submit]{
+    padding-top: 1em;
+    padding-bottom: 1em;
+    border-radius: 4px;
+    background: #FC0D1B;
+    color: #FFF;
+    
+}
+
+
+#form-content{
+    margin-top: 8em;
+    display: flex;
+    color: #000; 
+    flex-direction: column;
+    margin-bottom: 10em;
+    background-color: #FFF;
+    width: 30em;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    
+    
+   
+}
+
+#form-wrapper{
+    display: flex;
+    justify-content: center;
+    
+}
+#contacteer-header{
+    margin-top: 2em;
+    font-size: 1.5rem;
+    text-align: center;
+    color: black;
+}
+
+
+
+                    

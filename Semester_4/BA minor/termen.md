@@ -31,7 +31,7 @@ als iemand hier een duidelijke uitleg in kan plakken: 1:moneybag:
 
 in de slides is het niet echt duidelijk uitgelegd
 
-## Logistic regression
+#### Logistic regression
 
 Same
 
@@ -67,58 +67,74 @@ oke bedankt
 
 
 
+#### Instance-based learning
+
+> Instance-based learning refers to a family of techniques for [classification](https://doi.org/10.1007/978-0-387-30164-8_111) and [regression](https://doi.org/10.1007/978-0-387-30164-8_710), which produce a class label/predication based on the similarity of the query to its nearest neighbor(s) in the training set.
+
+
+
+## Afkortingen
+
+**MAE/MAED**: (Mean Absolute Error/Deviation)
+
+**MAPE**: (Mean Absolute Percentage Error)
+
+**RMSE**: (Root Mean Squared Error)
+
+**TSSE**: Total Sum of Squared Errors
+
 
 
 # Vocabulary (van Bertels)
 
-**Supervised learning**
+#### **Supervised learning**
 
 > the target is known (which class an instance belongs to) and a model is trained to predict that target, e.g. decision tree
 
-**Unsupervised learning**
+#### **Unsupervised learning**
 
 > the target is unknown (unknown class or even if any class structure exists) and the model seeks to uncover some hiddenclassification or structure, e.g. clustering
 
-**Sample**
+#### **Sample**
 
 > extract a portion or subset of the data
 
-**Oversampling**
+#### **Oversampling**
 
 > take multiple examples of a certain class, especially if that class is small
 
-**Stratified sampling**
+#### **Stratified sampling**
 
 > keeping the class ratios for each sample approximately equal to the original dataset
 
-**Discrete/Categorical**
+#### **Discrete/Categorical**
 
 > variable with a number of possible categories
 
-**Numerical/Continuous**
+#### **Numerical/Continuous**
 
 > variable that takes any value in a range of numbers
 
-**Outlier**
+#### **Outlier**
 
 > an instance which is very different from all other examples, can mean there is an error or an interesting rare event, can skew a model’s results
 
-**Normalize**
+#### **Normalize**
 
 > adjust the scale of a variable’s values so they can be more easily compared
 
-**Overfitting**
+#### **Overfitting**
 
 > training a model too closely to the training data, so it is not generalized enough to perform well on test or new data
 
-**Training set**
+#### **Training set**
 
 > subset of the data used to train or learn a model
 
-**Validation set**
+#### **Validation set**
 
 > subset of the data used to improve the performance on a model during training
 
-**Test set**
+#### **Test set**
 
 > subset of the data used to evaluate a model

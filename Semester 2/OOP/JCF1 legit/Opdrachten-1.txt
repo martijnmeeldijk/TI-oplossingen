@@ -1,0 +1,56 @@
+7	8^2	64	false	8*8	Wiskunde	Cris
+32	Wat trekt ons naar de aarde?	Zwaartekracht	false	Geen hint	Wetenschappen	Leentje
+3	Welk bier wordt enkel door Colruyt gemaakt?	Cara	true	meisjesnaam	Nederlands	Leentje
+35	Zet het decimaal getal om naar een percentage: 1/2	50	false	Geen hint	Wiskunde	Cris
+41	Met wat eindigde de prehistorie?    het schrift	false	false	het wiel	Wetenschappen	Karel
+23	Hoe lang is een Astronomische Eenheid(in km)?	150000000	false	in kilometer.	Wetenschappen	Leentje
+12	Wat is de hoofdstad van Spanje?	Madrid	true		Aardrijkskunde	Leentje
+38	Welke historische periode komt eerst?	De oudheid	false	Middeleeuwen	Wetenschappen	Karel
+31	Wat is de munteenheid in de Europese Unie?	Euro	false	Geen hint	Wetenschappen	Leentje
+18	3^3+2^2	31	false	Geen hint	Wiskunde	Aron
+43	In wat leeft een eskimo?	iglo	false	Het woord begint met een i	Aardrijkskunde	Aron
+4	Wat is de munteenheid van de USA	dollar	false		Aardrijkskunde	Leentje
+54	In welke zee mondt de IJzer uit?	Noordzee	false		Aardrijkdkunde	Karel
+47	Uit hoeveel landen bestaat de Europese Unie?	27	false	meer dan 20	Aardrijkskunde	Aron
+45	Wat is het hoogste gebergte in de wereld?	Mount Everest	true	De berg is 8850 meter hoog	Aardrijkskunde	Aron
+5	5 + 3^3 = ?	32	false	5 + 3*3*3	Wiskunde	Karel
+48	Welke stad wordt ook de big apple genoemd?	New York	false	Vrijheidsbeeld	Aardrijkskunde	Cris
+24	Wat is de naam van het hemellichaam dat Zich rond de Aarde beweegt?	Maan	true	is van kaas gemaakt.	Wetenschappen	Leentje
+26	Wat is de zon?	ster	false	Je kan ze overvloedig zien hangen in de lucht als het donker is.	Wetenschappen	Leentje
+36	Zet deze Romeinse cijfers om naar ons talstelsel: XXXII	32	false	Geen hint	Wiskunde	Cris
+49	In welke stad woont de paus?	Rome	false	Lijkt op room	Aardrijkskunde	Cris
+9	6/2	3	false		Wiskunde	Karel
+27	Welke planeet staat bekend als de rode planeet?	Mars	true	Buitenaardse wezens worden vaak <antwoord>mannetjes genoemd.	Wetenschappen	Leentje
+8	v244	12	false		Wiskunde	Cris
+10	Op welk continent ligt het land Brazilië?	Zuid-Amerika	true		Aardrijkskunde	Aron
+29	Hoeveel kleuren zijn er in een regenboog?	7	false	Geen hint	Wetenschappen	Leentje
+28	Hoeveel bulten heeft een dromedaris?	1	false	Geen hint	Wetenschappen	Leentje
+25	Wat is de naam van ons sterrenstelsel?	Melkweg	true	Nederlandse vertaling van een bepaalde chocoladereep.	Wetenschappen	Leentje
+21	7/4  van  28	49	false	Geen hint	Wiskunde	Aron
+37	grootste gemene deler van 30 en 20	10	false	Geen hint	Wiskunde	Cris
+53	Op welke pool leven ijsberen?	Noordpool	false	Niet Zuid	Aardrijkskunde	Cris
+52	Hoe heet de rivier die door Rome stroomt?	Tiber	false	Geen hint	Aardrijkskunde	Cris
+1	Wat is de kooktemperatuur van water?	100°C	false	10*10	Wetenschappen	Leentje
+17	Hoe heet het kat-achtig standbeeld in Egypte?	Sfinx	true		Wetenschappen	Karel
+30	Wat is de naam van de kleinste planeet in ons zonnenstelsel?	Mercurius	false	Geen hint	Wetenschappen	Leentje
+15	Welke land ontdekte Christoffel Columbus in 1492?	Amerika	true		Wetenschappen	Karel
+33	Hoeveel is de vierkantswortel  van 9?	3	false	Geen hint	Wiskunde	Cris
+11	Bereken de vierkantswortel van 25.	5	false		Wiskunde	Leentje
+44	In welke stad staat manneke pis?	Brussel	true	Het is de hoofdstad van België	Aardrijkskunde	Aron 
+16	Hoe heet de dokter die de slachtoffers van de zwarte dood verzorgde?	pestmeester	false		Wetenschappen	Cris
+20	5!	120	false	Geen hint	Wiskunde	Aron
+50	Welke rivier stroomt door London?	Thames	false	Lijkt op James	Aardrijkskunde	Cris
+6	150/15+32 = ?	42	false	Deling voor optelling	Wiskunde	Karel
+22	45,50 - 40,4	5,1	false	Geen hint	Wiskunde	Aron
+40	Wie was de dictator van italie in tijden WOII?	Mussolini	false	Stalin	Wetenschappen	Karel
+51	In welk continent ligt Australië	Oceanië	false	Oceaan	Aardrijkskunde	Cris
+14	In welk continent ligt de Himalaya?	Azië	true		Aardrijkskunde	Aron
+46	Wat is juist? aangifte-formulier of aangifteformulier	aangifteformulier	false	slechts een van beide is juist	Nederlands	Aron
+13	Welke rivier stroomt door Parijs?	Seine	true		Aardrijkskunde	Cris
+39	Wie won WOI?	de geallieerden	false	de centralen	Wetenschappen	Karel
+34	Bepaal de rest van 263/2?	1	false	Geen hint	Wiskunde	Cris
+42	Welke Romeinse keizer zette Rome in brand?	Nero	false	Caesar	Wetenschappen	Karel
+2	Wat is de grondsoort van het strand?	zand	false		Aardrijkskunde	Aron
+19	2/3+4/5	6/mei	false	Geen hint	Wiskunde	Aron
+55	In welke zee mondt de rivier de IJzer uit?	Noordzee	false		Aardrijkskunde	Karel
+56	In welke zeetje mondt de rivier de IJzer uit?	Noordzeetje	false		Aardrijkskunde	Karel

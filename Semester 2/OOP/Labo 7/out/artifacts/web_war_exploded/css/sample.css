@@ -1,0 +1,22 @@
+@CHARSET "UTF-8";
+
+html {
+	background-color: #444;
+}
+
+body {
+	background-color: #EEE;
+	color: #000;
+	width: 75%;
+	max-width: 600px;
+	padding: 20px;
+	margin: auto;
+}
+
+label, input {
+	display: block;
+}
+
+label {
+	padding: 5px 0 10px 0;
+}

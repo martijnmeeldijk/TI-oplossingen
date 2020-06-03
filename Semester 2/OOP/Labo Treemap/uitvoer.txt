@@ -1,0 +1,5 @@
+Calculated categories:
+0 - 10, 10 - 20, 20 - 30
+10 - 20 : Jan, Elke, Jonas, Frederick
+20 - 30 : Mieke
+
