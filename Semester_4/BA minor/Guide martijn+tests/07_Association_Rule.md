@@ -47,7 +47,7 @@ Als je dit resultaat wilt krijgen <img src="img/image-20200509223501822.png" alt
 
 en niet dit: <img src="img/image-20200509223553148.png" alt="image-20200509223553148" style="zoom:33%;" />
 
-Dan moet je de widget *select rows* in je workflow zetten en *survived* uit het target variable ding halen. Anders telt hij survived niet mee in de subsets.
+Dan moet je de widget *select columns* in je workflow zetten en *survived* uit het target variable ding halen. Anders telt hij survived niet mee in de subsets.
 
 ## 2. Titanic: Which are frequent 2-itemsets?
 
