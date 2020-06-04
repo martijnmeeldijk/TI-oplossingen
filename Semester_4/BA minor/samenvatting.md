@@ -137,3 +137,93 @@ We gaan op basis van een voorspellende variabele `X`, de waarde van een continue
 
 Als je op multiple linear regression zoekt op google images, vind je een foto van de slides die Bertels gebruikt.
 
+![New Aspects to consider while moving from Simple Linear Regression ...](https://miro.medium.com/max/1120/0*rGSfRsMjiQeG5jof.png)
+
+Hetzelfde als het vorige, maar er zijn meerdere variabelen (**predictor variables**) die bijdragen tot het model om de **target variable** te proberen te voorspellen.
+
+
+
+Als je te veel variabelen hebt, kan het dat je doet aan **overfitting**. Je moet dus maar een deel van de voorspellende variabelen gebruiken. Namelijk het deel dat 
+
+**Methods to choose the best subset of predictor variables**
+
+* first: reduce number of predictor variables by means of domain knowledge 
+* then: use algorithms 
+  * ’Exhaustive search’: try all predictor variables subsets 
+  * ’Forward selection’: start with 1 predictor variable, add each time the most significant one 
+  * ’Backward selection’: start with all predictor variables, remove each time the least significant one 
+
+
+
+### Errors
+
+<img src="img/image-20200604122507830.png" alt="image-20200604122507830" width="50%;" />
+
+:warning: Rule of thumb: number of observations n in training data equals at least 5(p+2)
+
+
+
+## Week 6 - Evaluation
+
+### Confusion matrix:
+
+<img src="img/image-20200604123018978.png" alt="image-20200604123018978" width="50%;" />
+
+Accuracy:
+$$
+\frac {True Positive + True Negative} {Total}
+$$
+Precision/Positive Predictive Value:
+$$
+\frac {True Positive} {All Positive Predictions}
+$$
+Recall/Sensitivity/True Positive Rate:
+$$
+\frac {True Positive} {All Actual Positives}
+$$
+
+
+Specificity/True Negative Rate:
+$$
+\frac {True Negative} {All Actual Negatives}
+$$
+
+
+### **Cross Validation**
+
+**K-Fold:**
+
+ 	Split data into training and test sets
+
+ 	Split training set into k subsets
+
+ 	Leave one subset for validation and train on all other sets
+
+​	 Repeat k times, always using a different validation set
+
+ 	Choose the best model
+
+ 	Evaluate “best” model on original test set
+
+**Leave One Out:**
+
+ 	k = number of instances
+
+ 	Leave one instance for validation and train on remaining training set
+
+​	 Repeat for all instances
+
+
+
+## Week 7 - Association rule
+
+Stel je voor, je bent in een eigenaar van een winkel. Je merkt dat mensen vaak bier een nootjes tesamen kopen. Je wilt weten of er nog producten zijn die mensen vaak tegelijk kopen, zodat je misschien een promotie kan doen, of de prijs van een bepaald product verhogen. 
+
+<img src="https://nextjournal.com/data/QmSf3DHu8WkV1f2qGpVrGQfW2KKQCd2yvSBnE2Futj8hoW?filename=association-rule-support-table.png&amp;content-type=image/png" alt="Filter association rules – Nextjournal" width="30%;" />
+
+Ik zal ook een paar woordjes verklaren:
+
+**Support count**: neem een set van spulletjes `I`. De support count van `I` is het aantal transacties dat exact deze set bevat. Bijvoorbeeld: support count `{appel, bier}` = 3
+
+**Support**: 
+
