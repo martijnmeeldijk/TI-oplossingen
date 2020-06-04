@@ -1,6 +1,40 @@
 # Business Analytics Minor
 
-[toc]
+## Inhoud
+
+ [Week 1 - Intro](#week-1---intro)
+
+ [Week 2 - Data Exploration](#week-2---data-exploration)
+
+ [Week 3 - KNN](#week-3---knn)
+
+ [Week 4 - Naive Bayes](#week-4---naive-bayes)
+
+ [Week 5 - Regression](#week-5---regression)
+
+​      [Simple Linear Regression](#simple-linear-regression)
+
+​      [Multiple Linear Legression](#multiple-linear-legression)
+
+​      [Errors](#errors)
+
+ [Week 6 - Evaluation](#week-6---evaluation)
+
+​        [Confusion matrix:](#confusion-matrix)
+
+​        [Cross Validation](#cross-validation)
+
+[Week 7 - Association rule](#week-7---association-rule)
+
+[Week 8 - Clustering](#week-8---clustering)
+
+[Week 9 - Decision tree](#week-9---decision-tree)
+
+[Week 10 - Logistic Regression](#week-10---logistic-regression)
+
+​      [Odds](#odds)
+
+---
 
 Nog even een korte intro.
 
@@ -221,9 +255,110 @@ Stel je voor, je bent in een eigenaar van een winkel. Je merkt dat mensen vaak b
 
 <img src="https://nextjournal.com/data/QmSf3DHu8WkV1f2qGpVrGQfW2KKQCd2yvSBnE2Futj8hoW?filename=association-rule-support-table.png&amp;content-type=image/png" alt="Filter association rules – Nextjournal" width="30%;" />
 
-Ik zal ook een paar woordjes verklaren:
+Ik zal ook een paar woordjes verklaren aan de hand van een voorbeeld:
 
-**Support count**: neem een set van spulletjes `I`. De support count van `I` is het aantal transacties dat exact deze set bevat. Bijvoorbeeld: support count `{appel, bier}` = 3
+**Support count**: neem een set van spulletjes `I`. De *support count* van `I` is het aantal transacties dat exact deze set bevat. Bijvoorbeeld: `support count({appel, bier})` = *3*
 
-**Support**: 
+**Support**: Het vorige, maar dan in verhouding met het totaal aantal transacties: dus `support({appel, bier})` = *3/8* 
+
+**Support threshold**: Een bepaalde limiet (die je zelf kan kiezen, bv. 50%). Alles boven deze limiet wordt gezien als *frequent itemset*. In dit geval is `{appel, bier}` geen *frequent itemset*.   `{appel}` , `{melk}` of `{bier, rijst}`, ... zijn dat wel.
+
+**Association rule**: Als een winkelkar `{appel}` bevat, bevat hij ook `{bier}`. 
+
+**Confidence**: is de kans dat een *association rule* klopt.
+$$
+confidence(A \Rightarrow B) = P(B|A) = \frac {support({A,B})} {support(A)}
+$$
+in dit geval dus:
+$$
+confidence(appel \Rightarrow bier) = P(bier|appel) =  \frac{\frac{3}{8}}{\frac{4}{8}} = \frac{3}{4}
+$$
+**Interestingness**: 
+
+Given association rule:
+$$
+i → j \\ 
+Interest = Confidence( j | i ) - Support( j )
+$$
+in dit geval dus:
+$$
+interest(appel \Rightarrow bier) = \frac{3}{4} - \frac{6}{8} = 0
+$$
+Interessant... Als je dit in het achterhoofd houdt:
+
+> Interest = 0: I has no influence on j 
+>
+> Interest > 0: I may cause the presence of j 
+>
+> Interest < 0: I discourages presence of j
+
+
+
+## Week 8 - Clustering
+
+**Clustering** = gelijkaardige objecten groeperen.
+
+Is ook **unsupervized**
+
+<img src="img/image-20200604152342953.png" alt="image-20200604152342953" width="50%;" />
+
+A good clustering method will produce clusters with
+
+**High** **intra-class** similarity: Heel gelijkaardig binnen dezelfde cluster.
+
+**Low** **inter-class** similarity: Veel verschillend tussen verschillende clusters.
+
+
+
+**Hiërarchisch clusteren**
+
+<img src="img/image-20200604153643215.png" alt="image-20200604153643215" width="50%;" />
+
+
+
+The distance between two clusters can be determined in several ways
+
+​	**Single link**: distance of two most similar instances: dist(cu, cv) = min{dist(a, b) | a∈cu, b∈cv}
+
+​	**Complete link**: distance of two least similar instances: dist(cu, cv) = max{dist(a, b) | a∈cu, b∈cv} 
+
+​	**Average link**: average distance between instances: dist(cu, cv) = avg{dist(a, b) | a∈cu, b∈cv}
+
+
+
+## Week 9 - Decision tree
+
+Dit is een decision tree:
+
+<img src="img/image-20200604154528962.png" alt="image-20200604154528962" width="50%;" />
+
+We gaan stap voor stap de data opsplitsen
+
+<img src="img/image-20200604154727840.png" alt="image-20200604154727840" width="50%;" />
+
+## Week 10 - Logistic Regression
+
+**Logistic regression** is zoals **linear regression**, maar je uitkomst is binair (0 of 1) of (ja of nee).
+
+### Odds
+
+[Source](https://stats.idre.ucla.edu/stata/faq/how-do-i-interpret-odds-ratios-in-logistic-regression/)
+
+> Let’s begin with probability. Probabilities range between 0 and 1. Let’s say that the probability of success is .8, thus
+>
+> **p = .8**
+>
+> Then the probability of failure is
+>
+> **q = 1 – p = .2**
+>
+> Odds are determined from probabilities and range between 0 and infinity. Odds are defined as the ratio of the probability of success and the probability of failure. The odds of success are
+>
+> **odds(success) = p/(1-p) or p/q = .8/.2 = 4,**
+>
+> that is, the odds of success are 4 to 1. The odds of failure would be
+>
+> **odds(failure) = q/p = .2/.8 = .25.**
+>
+> This looks a little strange but it is really saying that the odds of failure are 1 to 4. The odds of success and the odds of failure are just reciprocals of one another, i.e., 1/4 = .25 and 1/.25 = 4. Next, we will add another variable to the equation so that we can compute an odds ratio.
 
