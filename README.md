@@ -3,6 +3,7 @@
 
 
 > :warning: **NODIGE DISCLAIMER**: Deze oplossingen dienen gebruikt te worden als referentiemateriaal. Neem ze niet letterlijk over en denk zelf na. 
+> :warning: Als je hier durft tijdens een examen iets te posten kom ik je persoonlijk een rak geven.
 
 Ik hoop dat het goed met jullie gaat in deze moeilijke tijden.
 
