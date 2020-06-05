@@ -1,7 +1,5 @@
 # Examenvragen webontwikkeling 4
 
-(en mogelijke antwoorden)
-
 ## Theorievragen
 
 
@@ -16,6 +14,8 @@
 In de context van dit vak betekent asynchroon dus dat als er een verandering is die getoond moet worden aan een gebruiker, dat dan niet heel de webpagina herladen moet worden. Een stukje van de webpagina wordt dan vervangen door nieuwe data.
 
 ### Leg de 5 verschillende toestanden van het XMLHttpRequest object uit?
+
+Vraag nummertjes 0 tot 5
 
 ```
 UNSENT = 0; // initial state
@@ -60,7 +60,13 @@ Zie vorige vraag: **push** gebruikt meer resources. Als een site op een frequent
 
 Maakt javascipt programmeren een heel stuk gemakkelijker. Je kan veelvoorkomende taken doen in veel minder lijnen code. JQuery maakt het selecteren van elementen een stuk gemakkelijker en het is ook compatibel met heel veel browsers. 
 
+### Wat zit er in de body van het response bij synchroon request?
 
+Een hele webpagina
+
+### Wat zit er in de body van het response bij een asynchroon request?
+
+XML, JSON een string. Een klein stukje van een pagina.
 
 ## Reflectievragen
 
@@ -69,10 +75,4 @@ Maakt javascipt programmeren een heel stuk gemakkelijker. Je kan veelvoorkomende
 Nee, met push. Als je je chat window open hebt staan, moet er niet elke 5 seconden gecheckt worden of er nieuwe berichten zijn. Wie weet ben je heel eenzaam en krijg je op een hele dag maar 1 bericht van je mama. Dan zou het echt dikke verspilling zijn om geen push te gebruiken.
 
 
-
-## Uitbreidingsvragen
-
-### Leg stap voor stap uit welke code je moet toevoegen om de status en de naam in 1 request te kunnen aanpassen en tonen asynchroon
-
-(ik ken je code niet, sorry)
 
