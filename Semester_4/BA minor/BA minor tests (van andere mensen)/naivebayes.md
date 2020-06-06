@@ -11,6 +11,7 @@
 6)0.789 :true
 
 7)44.9075: false (32.57 is ook een mogelijkheid)
+  0.325: true  (57 rows / 175 rows)
 
 8)39.80: false
 
