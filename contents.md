@@ -22,6 +22,7 @@
   * [Samenvatting](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester%203/Samenvatting%20Besturingssystemen%202.docx)
 * Databanken 1 
   * [Samenvatting](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester%203/Samenvatting%20databanken%201_v2.pdf)
+  * [SQL Dropbox](https://github.com/Kwinnieprince/queries_databases)
 * Testing
   * [Samenvatting](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester%203/Samenvatting%20testing.docx)
 * Databanken 1
@@ -37,7 +38,9 @@
 * Business Analytics Major
   * [Pentaho Exercises](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester_4/Ba_Major/Pentaho_Exercises)
 * Databanken 2
-  * [Sql Dropbox](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester_4/DB2/DB2-sqldropbox.md)
+  * SQL Dropbox
+    * [Kwinnieprince](https://github.com/Kwinnieprince/queries_databases)
+    * [Martijn](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester_4/DB2/DB2-sqldropbox.md)
   * [Guides Labos](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester_4/DB2/DB2-Labos/01_lees_dit_eerst.md)
   * [Hoe maak ik een lokale databank](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester_4/DB2/DB2-Labos/hoe_maak_ik_een_lokale_databank.md)
   * [Oplossingen Labos Jasper](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester_4/DB2/DB2-Labos/jasper)
@@ -53,5 +56,6 @@
   * [Oplossingen Jonas](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester_4/Routing_Switching)
   * [Samenvatting Martijn](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester_4/Routing_Switching/martijn/samenvatting.md)
   * [Oefeningen Martijn](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester_4/Routing_Switching/martijn/oefeningen)
+  * [Examenoplossingen Kwinnieprince](https://github.com/Kwinnieprince/Routing-and-switching)
 
 
