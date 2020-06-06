@@ -13,6 +13,8 @@
   * [Oefeningen](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester%202/cnw2.pdf)
   * [Oplossingen monitoraat 2019](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester%202/oplossingen%20monitoraat%20cnw2.txt)
 * [OOP labos](https://github.com/martijnmeeldijk/TI-oplossingen/tree/master/Semester%202/OOP)
+* Dataquerying
+  * [SQL Dropbox](https://github.com/arnobarre/Databanken-Dataquerying)
 
 
 ### Semester 3
