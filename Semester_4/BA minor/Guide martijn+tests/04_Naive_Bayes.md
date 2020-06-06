@@ -23,7 +23,8 @@ komt goed, gewoon vermenigvuldigen
 
 ## 3. Which combinations are not present in the dataset?
 
-Als iemand weet hoe je dit kan laten tonen in orange zonder het handmatig op te moeten zoeken, mag dat gemeld worden (1 martipoint). 
+Vanuit je "file / data table " een "select rows" aanmaken, hierin de combinatie inzetten die je wilt (child, crew, male, survived) , dan een data table connecten en je ziet de output.
+
 
 ```
 All of the above
