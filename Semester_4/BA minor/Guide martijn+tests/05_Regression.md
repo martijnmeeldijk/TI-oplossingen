@@ -165,8 +165,4 @@ We zullen alles groter dan 0 dan maar yeeten voor deze vraag.
 
 Ik weet dat het true is. Ik weet niet waarom. Help. Me.
 
-
-
-
-
-1. 
+<img src="https://pasteboard.co/JbXe7cg.png" alt="distros"/>
