@@ -50,6 +50,8 @@ Als je de output van *logistic regression* in een *data table* stopt, zie je dat
 
 -- Thanks for coming to my Ted Talk
 
+NOTE: gewoon rank gebruiken hiervoor en naar de information gain kijken lijkt me iets minder omslachtig
+
 ## 5. True or False: These results are in line with what we've seen with other techniques.
 
 Oke hier kan je zelf wel een conclusie trekken.
