@@ -167,6 +167,4 @@ Ik weet dat het true is. Ik weet niet waarom. Help. Me.
 
 
 
-
-
-1. 
+<img src="img/distro.png" alt="image-20200508224906929" style="zoom: 33%;" />
