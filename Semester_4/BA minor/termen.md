@@ -26,6 +26,8 @@ Documentatie van Orange:
 Hetzelfde, gewoon meerdere variabelen.
 
 #### Regularization 
+~~als iemand hier een duidelijke uitleg in kan plakken: 1:moneybag: ~~
+Katerina heeft hier 1 :moneybag: verdiend
 > **Regularization** is the process of adding information in order to solve an ill-posed problem or to prevent overfitting.
 
 #### Ridge Regression
