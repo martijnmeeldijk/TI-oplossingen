@@ -37,6 +37,7 @@
 * Business Analytics minor
   * [Tests van andere mensen](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester_4/BA%20minor/BA%20minor%20tests%20(van%20andere%20mensen))
   * [Guides Martijn + tests](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester_4/BA%20minor/Guide%20martijn%2Btests/index.md)
+  * [Samenvatting Martijn](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester_4/BA%20minor/samenvatting.md)
 * Business Analytics Major
   * [Pentaho Exercises](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester_4/Ba_Major/Pentaho_Exercises)
 * Databanken 2
