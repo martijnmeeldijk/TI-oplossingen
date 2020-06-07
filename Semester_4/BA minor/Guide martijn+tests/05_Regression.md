@@ -74,9 +74,9 @@ Doe gewoon dit, maar dan met alle culumns geselecteerd.
 
 Okeeej hier moeten we het python script gebruiken.
 
-<img src="img/image-20200508223348981.png" alt="image-20200508223348981" style="zoom: 50%;" />![image-20200508223404958](img/image-20200508223404958.png)
+<img src="img/image-20200508223348981.png" alt="image-20200508223348981" width="50%;" />
 
-<img src="img/image-20200508223404958.png" alt="image-20200508223404958" style="zoom: 50%;" />
+<img src="img/image-20200508223404958.png" alt="image-20200508223404958" width="50%;" />
 
 Thomas ftw
 
@@ -165,4 +165,6 @@ We zullen alles groter dan 0 dan maar yeeten voor deze vraag.
 
 Ik weet dat het true is. Ik weet niet waarom. Help. Me.
 
-<img src="https://pasteboard.co/JbXe7cg.png" alt="distros"/>
+Bedankt Jonas:
+
+<img src="https://media.discordapp.net/attachments/712660212212957204/719150871962714162/distro.png" alt="img" width="60%;" />
