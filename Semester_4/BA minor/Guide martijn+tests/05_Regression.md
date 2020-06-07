@@ -12,9 +12,9 @@ Edit: Aimee heeft het met de hand verbeterd en me 6.75/9 gegeven. Dus eigenlijk 
 
 ## 1. What is the simple linear regression equation, with breast circumference as the predictive variable and fat percentage as the target variable? (in the form y = b0 + b1x1)
 
-<img src="img/image-20200508201303931.png" alt="image-20200508201303931" style="zoom: 33%;" />
+<img src="img/image-20200508201303931.png" alt="image-20200508201303931" width=" 33%;" />
 
-<img src="img/image-20200508201339281.png" alt="image-20200508201339281" style="zoom: 33%;" />
+<img src="img/image-20200508201339281.png" alt="image-20200508201339281" width=" 33%;" />
 
 bedankt lieve lectoren
 
@@ -24,13 +24,13 @@ bedankt lieve lectoren
 
 ## 2. What is the Root Mean Squared Error?
 
-<img src="img/image-20200508201946318.png" alt="image-20200508201946318" style="zoom: 33%;" />
+<img src="img/image-20200508201946318.png" alt="image-20200508201946318" width=" 33%;" />
 
 Nogmaals bedankt
 
 ## 3. What is the relationship between Root Mean Squared Error and Mean Squared Error?
 
-<img src="img/image-20200508202044592.png" alt="image-20200508202044592" style="zoom:33%;" />
+<img src="img/image-20200508202044592.png" alt="image-20200508202044592" width="33%;" />
 
 Dankjewel
 
@@ -42,7 +42,7 @@ Oke, in oefening 1 gebruikten ze maar 2 kolommen, selecteer ze nu gewoon allemaa
 
 Dit kreeg ik:
 
-<img src="img/image-20200508214956876.png" alt="image-20200508214956876" style="zoom: 33%;" />
+<img src="img/image-20200508214956876.png" alt="image-20200508214956876" width=" 33%;" />
 
 Dit zou je ook normaal moeten helpen met de volgende 8 vragen.
 
@@ -54,7 +54,7 @@ Ik verondestel dat ze RMSE bedoelt. (ik hoop dat ik niet iets heb gemist en er o
 
 Hier moet je denk ik het python script gebruiken dat ze in de slides tonen. Effe opzoeken...
 
-<img src="img/image-20200508215851879.png" alt="image-20200508215851879" style="zoom: 50%;" />
+<img src="img/image-20200508215851879.png" alt="image-20200508215851879" width=" 50%;" />
 
 Bedankt Thomas. Als iemand weet wie Thomas is en hem kan contacteren geef ik jou en Thomas een MartiPoint :moneybag:
 
@@ -64,7 +64,7 @@ Vergeet niet te restarten als je de addon hebt geïnstalleerd.
 
 :rage: je hebt het script toch niet nodig zo te zien.
 
-<img src="img/image-20200508220746127.png" alt="image-20200508220746127" style="zoom:50%;" />
+<img src="img/image-20200508220746127.png" alt="image-20200508220746127" width="50%;" />
 
 Doe gewoon dit, maar dan met alle culumns geselecteerd.
 
@@ -157,7 +157,7 @@ We zullen alles groter dan 0 dan maar yeeten voor deze vraag.
 
 ## 15. What is the RMSE of the resulting multiple linear regression?
 
-<img src="img/image-20200508224906929.png" alt="image-20200508224906929" style="zoom: 33%;" />
+<img src="img/image-20200508224906929.png" alt="image-20200508224906929" width=" 33%;" />
 
 *Vorige vraag*
 
