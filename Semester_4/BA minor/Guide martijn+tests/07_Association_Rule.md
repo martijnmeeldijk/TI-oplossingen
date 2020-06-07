@@ -49,6 +49,9 @@ en niet dit: <img src="img/image-20200509223553148.png" alt="image-2020050922355
 
 Dan moet je de widget *select rows* in je workflow zetten en *survived* uit het target variable ding halen. Anders telt hij survived niet mee in de subsets.
 
+(je kan ook in de file zelf aanduiden dat het geen target is maar een feature, bij mij werkte de select rows niet... vetgedrukt in het zwart op de afbeelding)
+<img src="https://i.imgur.com/4OotwRd.png" alt="4OotwRd.png" style="zoom:33%;" />
+
 ## 2. Titanic: Which are frequent 2-itemsets?
 
 Ja nu moet je gewoon naar het raamje kijken, dat moet wel lukken.
