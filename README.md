@@ -16,7 +16,7 @@ Je kan martipoints verdienen door iets toe te voegen aan de repo of door iets te
 
 | Naam                 | MartiPoints   | Ingewisseld | Tegoed
 | -------------        | ------------- |-------------|-------------
-| Jonas Berx           | 11            | 0           | 11         |      
+| Jonas Berx           | 12            | 0           | 12         |      
 | Maarten Pauwels      | 4             | 0           | 4          |
 | r0705835             | 4             | 0           | 4          |
 | Jonas Zegers         | 3.5           | 0           | 3.5        |  
