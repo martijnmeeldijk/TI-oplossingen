@@ -32,6 +32,7 @@ Je kan martipoints verdienen door iets toe te voegen aan de repo of door iets te
 | Tibo De Clercq       | 2             | 0           | 2          |  
 | Bram Verbist         | 1             | 0           | 1          |  
 | Roel Sprimont        | 1             | 0           | 1          |  
+| Luca Celea           | 1             | 0           | 1          |  
 
 
 
