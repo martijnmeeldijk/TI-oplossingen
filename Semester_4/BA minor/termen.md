@@ -25,11 +25,18 @@ Documentatie van Orange:
 
 Hetzelfde, gewoon meerdere variabelen.
 
-#### Lasso and ridge regression
+#### Regularization 
+> **Regularization** is the process of adding information in order to solve an ill-posed problem or to prevent overfitting.
 
-als iemand hier een duidelijke uitleg in kan plakken: 1:moneybag: 
+#### Ridge Regression
+> As the penalty is increased, all parameters are reduced while still remaining non-zero.
 
-in de slides is het niet echt duidelijk uitgelegd
+#### Lasso Regression
+> Increasing the penalty will cause more and more of the parameters to be driven to zero.
+
+#### Ridge vs Lasso 
+> The Lasso has an advantage over ridge regression, as driving parameters to zero deselects the features from the regression. Thus, Lasso automatically selects more relevant features and discards the others, whereas Ridge regression never fully discards any features.
+https://en.wikipedia.org/wiki/Least_squares#Lasso_method
 
 #### Logistic regression
 
