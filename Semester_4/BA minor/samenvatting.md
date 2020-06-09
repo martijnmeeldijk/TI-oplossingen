@@ -362,3 +362,11 @@ We gaan stap voor stap de data opsplitsen
 >
 > This looks a little strange but it is really saying that the odds of failure are 1 to 4. The odds of success and the odds of failure are just reciprocals of one another, i.e., 1/4 = .25 and 1/.25 = 4. Next, we will add another variable to the equation so that we can compute an odds ratio.
 
+
+
+### Ridge & Lasso regression
+
+
+
+
+
