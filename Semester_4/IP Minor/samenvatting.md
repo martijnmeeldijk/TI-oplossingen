@@ -2,31 +2,25 @@
 
 Hier wat (hopelijk) nuttige info voor op het examen.
 
-[Waarom is Spring nuttig?](#waarom-is-spring-nuttig)
+* [Waarom is Spring nuttig?](#waarom-is-spring-nuttig)
+  * [Frameworks in het algemeen](#frameworks-in-het-algemeen)
+  * [Spring boot](#spring-boot)
+  * [Spring MVC](#spring-mvc)
 
-​      [Frameworks in het algemeen](#frameworks-in-het-algemeen)
+* [CRUD](#crud)
 
-​      [Spring boot](#spring-boot)
+* [Validatie](#validatie)
 
-​      [Spring MVC](#spring-mvc)
+* [JPA](#jpa)
+  * [DTO's](#dtos)
 
-[CRUD](#crud)
+* [REST](#rest)
 
-[Validatie](#validatie)
+* [i18n](#i18n)
 
-[JPA](#jpa)
-
-​       [DTO's](#dtos)
-
-[REST](#rest)
-
-[i18n](#i18n)
-
-[Security](#security)
-
-​      [Authentication](#authentication)
-
-​      [Authorization](#authorization)
+* [Security](#security)
+  * [Authentication](#authentication)
+  * [Authorization](#authorization)
 
 ## Waarom is Spring nuttig?
 
