@@ -55,6 +55,8 @@
     * [Derde Reeks](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester_4/VGO%20-%20Frans/frans-antwoorden%20deel%203.md)
 * IP Major
   * [Guide Martijn](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester_4/IP%20Major/guide_martijn.md)
+* IP Minor 
+  * [Samenvatting Martijn](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester_4/IP%20Minor/samenvatting.md)
 * Routing & Switching
   * [Antwoorden cisco tests](https://itexamanswers.net/)
   * [Oplossingen Jonas](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester_4/Routing_Switching)
