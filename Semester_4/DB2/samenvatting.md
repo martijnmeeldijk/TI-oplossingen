@@ -1,10 +1,17 @@
 # Databanken 2
 
-<!--ts--> 
+<!--ts-->
+   * [Databanken 2](#databanken-2)
+      * [1. Introductie](#1-introductie)
+      * [2. Indexen &amp; Optimalisaties](#2-indexen--optimalisaties)
+         * [Wat is een index?](#wat-is-een-index)
+         * [Soorten indexen](#soorten-indexen)
+
+<!-- Added by: martijn, at: Thu Jun 11 15:06:52 CEST 2020 -->
 
 <!--te-->
 
-## 1. Introductie
+# 1. Introductie
 
 Een beetje herhaling van vorig jaar. Hoe maak je een databank, hoe schrijf je queries, hoe doe je een insert, ...
 
@@ -61,7 +68,11 @@ start transaction; sql code; rollback;
 
 
 
-## 2. Indexen & Optimalisaties
+# 2. Indexen & Optimalisaties
+
+
+
+## Indexen
 
 ### Wat is een index?
 
@@ -121,4 +132,121 @@ Standaard gebruik je een b-tree om een index aan te maken, er zijn ook andere ma
 * bevat, grote geclusterde data, kleine index maar ook niet heel sterk
 
 
+
+## Optimalisaties
+
+Je kan die snelheid en kostprijs en nog allemaal andere leuke dingen over je query zien als je `EXPLAIN`  `EXPLAIN ANALYZE` voor je query zet.
+
+Hoe kan je je queries nu zo efficient mogelijk maken?
+
+
+
+**Een paar vuistregels:**
+
+1. Vermijd de `OR`-operator
+
+   > Dan wordt de index niet gebruikt. Je kan hem vervangen door een conditie met `IN` of door 2 selects met `UNION`.
+   >
+   > ```sql
+   > where spelersnr in (15, 29, 55)
+   > ```
+
+2. Geen onnodig gebruik van `UNION`
+
+   > Door `UNION` overloop je dezelfde tabel meerdere keren. Herformuleer je query en stop al je al je voorwaarden in één `SELECT` (indien mogelijk).
+
+3. Vermijd de `NOT`-operator
+
+   > `NOT` gebruikt ook de index niet. Herformuleer je code zodat hij alleen de vergelijkingsoperatoren gebruikt (<, >, =, ...)
+
+4. Isoleer kolommen in condities
+
+   > ik zal het schetsen met een voorbeeld
+   >
+   > ```sql
+   > wherejaartoe + 10 = 1990 --omdat je die 10 erbij optelt wordt de index niet gebruikt
+   > where jaartoe = 1980 --doe dit
+   > ```
+
+5. Gebruik de `BETWEEN`-operator
+
+   > Want `AND` gebruikt de index meestal niet
+   >
+   > ```sql
+   > where jaartoe >= 1985 and jaartoe <= 1990 --niet zo goed
+   > where jaartoe between 1985 and 1990 --beter
+   > ```
+
+6. `LIKE` : index wordt niet gebruikt als patroon begint met % of _
+
+7. Redundante condities bij joins
+
+   > Om SQL te verplichten om een bepaald pad te kiezen
+   >
+   > ```sql
+   > where boetes.spelersnr = spelers.spelersnr 
+   > 	and boetes.spelersnr = 44
+   > 	
+   > where boetes.spelersnr = spelers.spelersnr --het is minder mooi, maar blijkbaar wel sneller
+   > 	and boetes.spelersnr = 44 and spelers.spelersnr = 44 
+   > ```
+
+8. Vermijd de `HAVING`-component
+
+   > `HAVING` gebruikt de index niet. Probeer indien mogelijk zo veel mogelijk condities in de `WHERE` te steken.
+
+9. Maak de `SELECT`-component zo compact mogelijk
+
+   > * Onnodige kolommen weglaten uit SELECT
+   > * Bij gecorreleerde subquery met exists gebruik je best één expressie bestaande uit één constante, zie hieronder.
+   >
+   > ```sql
+   > select spelersnr, naam
+   >  from spelers
+   >  where exists (select ‘1’
+   >  		from boetes
+   >  		where boetes.spelersnr = spelers.spelersnr)
+   > ```
+
+10. Vermijd `DISTINCT`
+
+    > Je kan het vaak weglaten. `DISTINCT` verlengt de verwerkingstijd.
+
+11. Gebruik de `ALL`-optie bij set operatoren
+
+    > Zonder `ALL` is het trager omdat de data gesorteerd moet worden om alle dubbels eruit te halen.
+    >
+    > ```sql
+    > Select naam, voorletters
+    > from spelers
+    > where spelersnr = 10
+    > union all
+    > select naam, voorletters
+    > from spelers
+    > where spelersnr = 18
+    > ```
+
+12. Kies outer-joins boven `UNION`
+
+    > `UNION` verlengt de verwerkingstijd. 
+
+13. Vermijd datatype-conversies
+
+14. Zet de grootste tabel als laatste
+
+15. Vermijd `ANY`- en `ALL`-operatoren
+
+    > `ANY` en `ALL` gebruiken de index niet.
+    >
+    > ```sql
+    > select spelersnr, naam, geb_datum
+    > from spelers
+    > where geb_datum <= all (select geb_datum from spelers)
+    > --kan je omvormen naar
+    > select spelersnr, naam, geb_datum
+    > from spelers
+    > where geb_datum = (select min(geb_datum) from spelers)
+    > ```
+    >
+    > je kan ze vervangen door `min` of `max`.
 
