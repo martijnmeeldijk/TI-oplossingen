@@ -42,6 +42,8 @@
 * Business Analytics Major
   * [Pentaho Exercises](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester_4/Ba_Major/Pentaho_Exercises)
 * Databanken 2
+  * [Vorige Examens](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester_4/DB2/vorige_examens.md)
+  * [Samenvatting](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester_4/DB2/samenvatting.md)
   * SQL Dropbox
     * [Kwinnieprince](https://github.com/Kwinnieprince/queries_databases)
     * [Martijn](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester_4/DB2/DB2-sqldropbox.md)
