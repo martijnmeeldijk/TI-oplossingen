@@ -204,6 +204,27 @@ Definitie van Wim:
 
 Hoe dat moet in Spring boot moeten we hopelijk niet kennen.
 
+## Testing + CI/CD
+
+Dixit Wim
+> As you should already know, one of the most important aspects of application development is **testing**.
+
+Test types:
+* Unit tests
+   * Tests die een klein stukje van de applicatie testen dat volledig onafhankelijk is van andere code.
+* Integration tests
+   * Tests die de samenhang van verschillende classes gaat testen (bv. Service Class)
+* UI tests
+   * Handmatige tests die worden uitgevoerd wanneer de applicatie werkende is.
+
+
+CI/CD = Continuous Integration and Continuous Deployment
+
+Een **CI process** zal wanneer er een nieuwe versie van de applicatie beschribaar is (via Git ofzo), deze applicatie builden en daarna automatisch alle tests uitvoeren.
+
+Een **CD process** gaat je applicatie automatisch builden en daarna runnen op bijvboorbeeld een testserver.
+
+Wij gebruiken hiervoer CircleCI...
 
 
 ## i18n
