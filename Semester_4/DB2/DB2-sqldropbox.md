@@ -104,6 +104,29 @@ from spelers s
 order by 1,2,3,4
 ```
 
+Geef van alle spelers het verschil tussen het jaar van toetreding en het geboortejaar, maar geef alleen die spelers waarvan dat verschil groter is dan 20. Sorteer van voor naar achter.
+Probeer zo goed of beter te doen dan "Sort (cost=17.20..17.37 rows=67 width=90)"
+
+```postgreSQL
+select spelersnr, naam, voorletters, toetredingsleeftijd
+from (select spelersnr, naam, voorletters,  jaartoe - extract(year from geb_datum) as toetredingsleeftijd from spelers) as a
+where toetredingsleeftijd > 20
+order by 1, 2, 3, 4
+```
+
+Geef alle spelers die alfabetisch (dus naam en voorletters, in deze volgorde) voor speler 8 staan. Sorteer van voor naar achter.
+Probeer zo goed of beter te doen dan "Sort (cost=24.31..24.47 rows=67 width=88)"
+
+```postgreSQL
+select spelersnr, naam, voorletters, geb_datum
+from (select spelersnr, naam, voorletters, geb_datum, ROW_NUMBER () OVER (ORDER BY naam, voorletters)
+from spelers) as b
+where ROW_NUMBER < (select ROW_NUMBER
+		    from (select spelersnr, naam, voorletters, geb_datum, ROW_NUMBER () OVER ( ORDER BY naam, voorletters)
+			  from spelers) as bb
+		    where bb.spelersnr = 8)
+order by 1, 2 ,3 , 4
+```
 
 
 ## Vensters
@@ -123,6 +146,20 @@ left outer join bezoeken b using(reisnr)
 
 order by 1,2,3,4,5,6
 ```
+Hoe lang was het geleden dat er nog een reis vertrokken was?
+Geef daarnaast de totale reisduur per jaar incrementeel in de tijd (hier genaamd jaar_duur).
+Sorteer op reisnr en de andere kolommen.
+
+```postgreSQL
+
+select  reisnr, lag(reisnr) OVER w1 as vorig_reisnr, vertrekdatum, vertrekdatum - lag(vertrekdatum) over w1 as tussen_tijd,
+reisduur, extract(year from vertrekdatum) as jaar, sum(reisduur) over w2 as jaar_duur
+from reizen
+window w1 as (order by vertrekdatum), 
+	w2 as (partition by extract(year from vertrekdatum)order by vertrekdatum)
+order by 1
+```
+
 
 ## Joins Extra
 
