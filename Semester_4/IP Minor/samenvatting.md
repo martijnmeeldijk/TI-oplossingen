@@ -275,6 +275,14 @@ en dit:
 
 
 
+### Interceptor
+
+i18n in spring maakt gebruik van een interceptor. Wat is dat? 
+
+Een interceptor is een object dat in de ketting zit de HTTP requests verwerkt. Als jij een interceptor configureert, zal Spring de requests eerst daardoor sturen, alvorens ze aan de controller door te geven. 
+
+Onze LocaleChangeInterceptor checkt in de querystring of er een andere locale is meegegeven. Als dat zo is, dan wordt de locale aangepast.
+
 ## Security
 
 ### Authentication
@@ -325,3 +333,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 
 Veel succes met je examen
+
+
+
+## Vragen
+
+1. Hoe werkt jpa
+
+Het is een abstractielaag tussen je OO code en je databank. 
+

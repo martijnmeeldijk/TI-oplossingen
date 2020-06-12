@@ -84,12 +84,15 @@ Bertels zegt allemaal shit, maar hij kan niet effe uitleggen wat een index nu ei
 
 **Nadeel**: index neemt opslagruimte & elke mutatie vraagt aanpassing van index waardoor de verwerking vertraagt
 
+:warning: een index can ook ineens corrupt worden blijkbaar. Dan krijg je ineens rare resultaten uit je query. Om het te fixen moet je je databank herindexeren.
+
 
 
 ### Soorten indexen
 
 > Wie weet is dit nuttig, het komt rechtstreeks uit de slides
->
+
+
 
 **Speciale indexvormen**
 
@@ -249,4 +252,100 @@ Hoe kan je je queries nu zo efficient mogelijk maken?
     > ```
     >
     > je kan ze vervangen door `min` of `max`.
+
+
+
+# 3. Explain
+
+Oh mijn fucking god *03_1_explain.pdf* is echt een teringzooi. Ik ga dit effe skippen want ik kan het niet aan.
+
+
+
+## Dedection and benchmarking
+
+### Statistieken
+
+Er is een tool, genaamd **pg_stat_statements** waarmee je statistieken van je databank kan bekijken.
+
+Als je hem wilt gebruiken moet je dit doen (in postgresql.conf):
+
+```sql
+# postgresql.conf
+shared_preload_libraries = 'pg_stat_statements'
+pg_stat_statements.max = 10000
+pg_stat_statements.track = all
+--- en dan 
+CREATE EXTENSION pg_stat_statements; -- in elke databank waar je het wilt gebruiken
+```
+
+### Benchmarking
+
+Je kan **pgbench** gebruiken om je databank te benchmarken.
+
+```sql
+pgbench -i probeer
+```
+
+https://www.postgresql.org/docs/current/static/pgstatstatements.html 
+
+https://www.postgresql.org/docs/current/static/pgbench.html
+
+
+
+# 4. Limiting result sets & lateral
+
+## Limiting result sets
+
+Deze slides zijn ook weer heel onduidelijk, maar ik zal m'n best doen om het uit te leggen. Het doel van deze les is niet echt duidelijk in de slides. Het is heel simpel. We hebben een query, maar we willen maar een deel van de uitvoer tonen. Dit kan je met `OFFSET` en `FETCH`.
+
+```sql
+SELECT
+FROM
+..
+ORDER BY
+OFFSET start { ROW | ROWS }
+FETCH { FIRST | NEXT } [ count ] { ROW | ROWS } ONLY
+```
+
+Stel je voor dat je alleen het derde tot het vijfde resultaat wilt tonen? 
+
+Dan kan je bijvoorbeeld dit doen:
+
+```sql
+SELECT playernumber, name, birth_date
+FROM players p
+ORDER by birth_date DESC
+OFFSET 2 ROWS
+FETCH FIRST 3 ROWS ONLY;
+```
+
+
+
+## Lateral joins
+
+```sql
+SELECT
+*,
+(SELECT
+sum(verblijfsduur),
+variance(verblijfsduur)
+FROM bezoeken b2
+WHERE b2.reisnr = r1.reisnr
+)
+FROM reizen r1;
+ERROR: subquery must return only one column
+```
+
+
+
+```sql
+SELECT *
+FROM reizen r1 LEFT JOIN LATERAL
+(SELECT
+sum(verblijfsduur),
+variance(verblijfsduur)
+FROM bezoeken b2
+WHERE b2.reisnr = r1.reisnr
+) AS sub ON true;
+```
 
