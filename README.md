@@ -23,20 +23,20 @@ Je kan martipoints verdienen door iets toe te voegen aan de repo of door iets te
 | Jonas Zegers         | 3.5           | 0           | 3.5        |  
 | Karel Savonet        | 3             | 0           | 3          |               
 | Anouar Fayek         | 3             | 0           | 3          |  
+| Abel Vanden Briel    | 3             | 0           | 3          |  
 | Jasper Vandenberghen | 3             | 0           | 3          |      
 | Anderad Milanto      | 2             | 0           | 2          |  
 | Axel Hamelryck       | 2             | 0           | 2          |    
 | Robbe De Bie         | 2             | 0           | 2          |  
 | Dennis Winnepenninckx| 2             | 0           | 2          |  
 | Sander Van Thillo    | 2             | 0           | 2          |      
+| Noa Andries          | 2             | 0           | 2          |  
 | Tibo De Clercq       | 2             | 0           | 2          |  
 | Bram Verbist         | 1             | 0           | 1          |  
 | Roel Sprimont        | 1             | 0           | 1          |  
 | Luca Celea           | 1             | 0           | 1          |  
 | Simon Germeau        | 1             | 0           | 1          |  
-| Noa Andries          | 1             | 0           | 1          |  
 | Kasper Vanderhulst   | 1             | 0           | 1          |  
-| Abel Vanden Briel    | 1             | 0           | 1          |  
 
 
  
