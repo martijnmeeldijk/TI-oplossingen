@@ -93,6 +93,40 @@ Met Analyse erbij wordt de query uitgevoerd en wordt de tijd gemeten. Eerst word
 
 2. Een vraag over een function maken die met een loop een aantal inserts doet op een databank. Best te doen met een LOOP in plpgsql.
 
+Voorbeeld query die LOOP gebruikt om data in tabel te steken:
+Eerst test_tabel gemaakt:
+```
+create table test_table(
+	test_value int primary key
+)
+```
+Dan function (ik heb return varchar zodat ik een bericht stuur dat de loop klaar is. Dit moet waarschijnlijk niet maar hij kloeg altijd over het feit dat ik niks returnde dus...):
+```
+Create or replace function loop_test(loop_start int, loop_end int) returns varchar as
+$$
+declare 
+	i int := loop_start;
+BEGIN
+	LOOP 
+		EXIT WHEN i = loop_end + 1; 
+		insert into test_table(test_value)
+		values (i);
+		i := i + 1;
+	END LOOP ;
+	RETURN 'Finished the loop';
+END;
+$$ language plpgsql
+```
+Werking:
+```
+select loop_test(3,5);
+select * from test_tabel;
+output:
+      test_value
+1    |         3
+2    |         4
+3    |         5
+
 
 
 ## Juni 2017 - 12/06 8u30
