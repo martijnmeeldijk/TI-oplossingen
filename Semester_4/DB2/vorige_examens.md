@@ -123,6 +123,25 @@ bv: tabel(k1 text,k2 integer)
    k2 integer
 ```
 
+CREATE OR REPLACE FUNCTION tabel_kolommen (tabelnaam varchar)
+RETURNS table(output varchar) AS $$
+   SELECT column_name || ' ' || data_type
+   from information_schema.columns
+   where table_name = tabelnaam;
+$$ LANGUAGE sql;
+
+Voorbeeld in schema 'ruimtereizen': 
+SELECT tabel_kolommen('bezoeken')
+Output:
+```
+   output:
+   1 reisnr numeric
+   2 objectnaam character varying
+   3 volgnr numeric
+   4 verblijfsduur numeric
+```
+
+
 3.  Wat is een dirty read ? Geef een voorbeeld hiervan met transaction. Maak ook een view met het gegeven voorbeeld waarbij alle geiten hun nummer en mogelijke aandoening getoond worden.
 
 4.  wat zijn de nadelen van ORDMS + geef telkens een voorbeeld.
