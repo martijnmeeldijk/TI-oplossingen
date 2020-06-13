@@ -15,9 +15,9 @@
    \* [Extra 4](#extra-4)
 
    \* [Extra 5](#extra-5)
-   
+
    \* [Venster XML](#venster-xml)
-   
+
    \* [JSON](#json)
 
 ## Subq 2 verbreding
@@ -70,7 +70,7 @@ where o.diameter >= all(select hemelobjecten.diameter from hemelobjecten)
 order by 3,1
 ```
 Maak een lijst van klanten die meer dan 2 keer een reis gemaakt hebben waarbij er geen bezoek was aan Jupiter.
-```postgresSQL
+```sql
 SELECT klantnr, naam || ' ' || vnaam as klantnaam, COUNT(reisnr) aantalreizen
 FROM deelnames INNER JOIN klanten USING(klantnr)
 WHERE NOT EXISTS (
@@ -84,7 +84,7 @@ HAVING COUNT(reisnr) > 2
 ```
 Geef de klantnr voor de klant met het meeste bezoeken aan de maan. Geef ook het aantal bezoeken.
 Gebruik geen limit of top.
-```postgresSQL
+```sql
 SELECT klantnr, COUNT(aantalbezoeken) AS count
 FROM deelnames JOIN (
 	SELECT reisnr, volgnr
@@ -129,7 +129,7 @@ order by 1,2,3,4
 
 Je kan per speler berekenen hoeveel boetes die speler heeft gehad en wat het totaalbedrag per speler is. Pas nu deze querie aan zodat per verschillend aantal boetes wordt getoond hoe vaak dit aantal boetes voorkwam. Sorteer van voor naar achter.
 Probeer gelijk of beter te doen dan "Sort (cost=46.39..46.89 rows=200 width=8)".
-```postgreSQL
+```sql
 SELECT b1.aantalboetes AS a, COUNT(spelersnr)
 FROM (SELECT spelersnr, COUNT(*) AS aantalboetes FROM boetes GROUP BY spelersnr) AS b1
 GROUP BY b1.aantalboetes
@@ -139,7 +139,7 @@ ORDER BY 1,2
 Geef van alle spelers het verschil tussen het jaar van toetreding en het geboortejaar, maar geef alleen die spelers waarvan dat verschil groter is dan 20. Sorteer van voor naar achter.
 Probeer zo goed of beter te doen dan "Sort (cost=17.20..17.37 rows=67 width=90)"
 
-```postgreSQL
+```sql
 select spelersnr, naam, voorletters, toetredingsleeftijd
 from (select spelersnr, naam, voorletters,  jaartoe - extract(year from geb_datum) as toetredingsleeftijd from spelers) as a
 where toetredingsleeftijd > 20
@@ -149,7 +149,7 @@ order by 1, 2, 3, 4
 Geef alle spelers die alfabetisch (dus naam en voorletters, in deze volgorde) voor speler 8 staan. Sorteer van voor naar achter.
 Probeer zo goed of beter te doen dan "Sort (cost=24.31..24.47 rows=67 width=88)"
 
-```postgreSQL
+```sql
 select spelersnr, naam, voorletters, geb_datum
 from (select spelersnr, naam, voorletters, geb_datum, ROW_NUMBER () OVER (ORDER BY naam, voorletters)
 from spelers) as b
@@ -182,7 +182,7 @@ Hoe lang was het geleden dat er nog een reis vertrokken was?
 Geef daarnaast de totale reisduur per jaar incrementeel in de tijd (hier genaamd jaar_duur).
 Sorteer op reisnr en de andere kolommen.
 
-```postgreSQL
+```sql
 
 select  reisnr, lag(reisnr) OVER w1 as vorig_reisnr, vertrekdatum, vertrekdatum - lag(vertrekdatum) over w1 as tussen_tijd,
 reisduur, extract(year from vertrekdatum) as jaar, sum(reisduur) over w2 as jaar_duur
@@ -242,7 +242,7 @@ order by 1,2,3,4,5
 
 
 Geef de volledige frequentietabel voor de diameters van de hemelobjecten (frequentie: hoeveel ojecten zijn er met de gegeven diameter, cumulatieve Frequentie, relatieve frequentie, Relatieve cumulatieve frequentie). Let op de datatypes en de precisie, gebruik CAST, rond niet af. Sorteer op diameter.
-```postgreSQL
+```sql
 SELECT diameter, COUNT(diameter) AS f, 
 SUM(COUNT(diameter)) OVER (PARTITION BY COUNT(diameter)/(SELECT COUNT(*) FROM hemelobjecten) ORDER BY diameter) AS cf,
 TO_CHAR(float8 (COUNT(diameter)*100::float/ (SELECT COUNT(*) FROM hemelobjecten)),'FM99.00') AS rf,
@@ -254,7 +254,6 @@ FROM hemelobjecten
 GROUP BY 1
 ORDER BY 1 ASC
 ```
-
 
 Geef voor elke reis het aantal klanten waarvan de naam niet met een 'G' begint en waarvan de periode van de geboortedatum van de klant tot de vertrekdatum van de reis overlapt met de huidige datum en 50 jaar verder (gebruik hiervoor de gepaste operator: OVERLAPS).
 Indien er op de reis hemelobjecten worden bezocht waarvan de tweede letter van het hemelobject voorkomt in de naam van het hemelobject waarvan dit bezocht hemelobject een satelliet is, dan wordt deze reis genegeerd.
@@ -438,7 +437,7 @@ order by 1
 
 Geef van elke speler die enkel wedstrijden gewonnen heeft voor team nr 1 en voor wie in totaal meer dan 100 euro aan boete betaald is, het spelersnummer, zijn naam, woonplaats en het totale boetebedrag.
 Dit resultaat moet aflopend geordend worden op het totale boetebedrag. Sorteer van voor naar achter.
-```postgreSQL
+```sql
 select spelersnr, naam, plaats, sum(distinct bedrag)
 from boetes
 inner join wedstrijden using(spelersnr)
@@ -454,7 +453,7 @@ order by 1,2,3,4
 
 Geef alle klanten waarbij de voorlaatste letter van de naam 1 van de letters uit het woord 'azerty' is.
 Gebruik geen OR operator, maar een andere ISO sql operator voor het vergelijken van patronen, sorteer van voor naar achter.
-```postgreSQL
+```sql
 SELECT klantnr, naam, vnaam, geboortedatum
 FROM klanten
 WHERE naam SIMILAR TO '%(a|z|e|r|t|y)_'
@@ -483,7 +482,7 @@ Geef enkel de 2 voorlaatste reizen terug. De positie van reizen wordt bepaalt do
 Ter vergelijking, als je de getallen 1 t/m 10 neemt,
 dan is dit 8 en 9. Sorteer van voor naar achter.
 Gebruik enkel ISO sql.
-```postgreSQL
+```sql
 select *
 from (	select reisnr, vertrekdatum, reisduur, prijs
 	from reizen
@@ -505,7 +504,7 @@ order by 1,2
 
 Geef alle klanten waarbij de 1 van de middenste letters van de naam uit het woord 'qwerty' komt.
 Gebruik geen OR operator, sorteer van voor naar achter.
-```postgreSQL
+```sql
 SELECT klantnr, naam, vnaam, geboortedatum
 FROM klanten
 WHERE naam SIMILAR TO '%(q|w|e|r|t|y)%'
@@ -516,7 +515,7 @@ ORDER BY 1,2,3,4
 ## JSON
 
 Gebruik JSON instructies. Genereer startende van een heterogene array de volgende output: [1, 2, "3", 4, 5]
-```postgreSQL
+```sql
 select * from json_build_array(1,2,'3',4,5)
 ```
 
@@ -565,6 +564,6 @@ SELECT '{"a": {"b":{"c": "foo"}, "c":{"5":"6"}}}'::json->'a'->'b'
 ```
 
 Gebruik JSON instructies. Selecteer in onderstaande json string '[{"1":"2"},{"4":"5"},"6"]' het derde object
-```postgreSQL
+```sql
 select '[{"1":"2"},{"4":"5"},"6"]'::json -> 2
 ```
