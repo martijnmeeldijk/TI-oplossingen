@@ -93,6 +93,41 @@ Met Analyse erbij wordt de query uitgevoerd en wordt de tijd gemeten. Eerst word
 
 2. Een vraag over een function maken die met een loop een aantal inserts doet op een databank. Best te doen met een LOOP in plpgsql.
 
+Voorbeeld query die LOOP gebruikt om data in tabel te steken:
+Eerst test_tabel gemaakt:
+```
+create table test_table(
+	test_value int primary key
+)
+```
+Dan function (ik heb return varchar zodat ik een bericht stuur dat de loop klaar is. Dit moet waarschijnlijk niet maar hij kloeg altijd over het feit dat ik niks returnde dus...):
+```
+Create or replace function loop_test(loop_start int, loop_end int) returns varchar as
+$$
+declare 
+	i int := loop_start;
+BEGIN
+	LOOP 
+		EXIT WHEN i = loop_end + 1; 
+		insert into test_table(test_value)
+		values (i);
+		i := i + 1;
+	END LOOP ;
+	RETURN 'Finished the loop';
+END;
+$$ language plpgsql
+```
+Werking:
+```
+select loop_test(3,5);
+select * from test_tabel;
+output:
+      test_value
+1    |         3
+2    |         4
+3    |         5
+```
+
 
 
 ## Juni 2017 - 12/06 8u30
@@ -122,6 +157,25 @@ bv: tabel(k1 text,k2 integer)
    k1 text
    k2 integer
 ```
+
+CREATE OR REPLACE FUNCTION tabel_kolommen (tabelnaam varchar)
+RETURNS table(output varchar) AS $$
+   SELECT column_name || ' ' || data_type
+   from information_schema.columns
+   where table_name = tabelnaam;
+$$ LANGUAGE sql;
+
+Voorbeeld in schema 'ruimtereizen': 
+SELECT tabel_kolommen('bezoeken')
+Output:
+```
+   output:
+   1 reisnr numeric
+   2 objectnaam character varying
+   3 volgnr numeric
+   4 verblijfsduur numeric
+```
+
 
 3.  Wat is een dirty read ? Geef een voorbeeld hiervan met transaction. Maak ook een view met het gegeven voorbeeld waarbij alle geiten hun nummer en mogelijke aandoening getoond worden.
 

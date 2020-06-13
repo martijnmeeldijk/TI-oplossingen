@@ -243,16 +243,15 @@ order by 1,2,3,4,5
 
 Geef de volledige frequentietabel voor de diameters van de hemelobjecten (frequentie: hoeveel ojecten zijn er met de gegeven diameter, cumulatieve Frequentie, relatieve frequentie, Relatieve cumulatieve frequentie). Let op de datatypes en de precisie, gebruik CAST, rond niet af. Sorteer op diameter.
 ```sql
-SELECT diameter, COUNT(diameter) AS f, 
-SUM(COUNT(diameter)) OVER (PARTITION BY COUNT(diameter)/(SELECT COUNT(*) FROM hemelobjecten) ORDER BY diameter) AS cf,
-TO_CHAR(float8 (COUNT(diameter)*100::float/ (SELECT COUNT(*) FROM hemelobjecten)),'FM99.00') AS rf,
-TO_CHAR(float8 (SUM(COUNT(diameter)*100::float/(SELECT COUNT(*) FROM hemelobjecten)) 
-				OVER (PARTITION BY COUNT(diameter)/(SELECT COUNT(*) FROM hemelobjecten) ORDER BY diameter))
-		,'FM999.00') AS crf
-
-FROM hemelobjecten
-GROUP BY 1
-ORDER BY 1 ASC
+select diameter, 
+       count(diameter) as f, sum(count(diameter)) over w1 as cf,
+       to_char(float8 (count(diameter)*100::float / (select count(diameter)  from hemelobjecten)), 'FM99.00') as rf,
+       to_char( float8 (sum(count(diameter)) over(order by diameter)*100::float / (select count(diameter)  from hemelobjecten)),
+       'FM990.90')  as crf
+from hemelobjecten
+group by diameter
+window w1 as ( order by diameter)
+order by 1
 ```
 
 Geef voor elke reis het aantal klanten waarvan de naam niet met een 'G' begint en waarvan de periode van de geboortedatum van de klant tot de vertrekdatum van de reis overlapt met de huidige datum en 50 jaar verder (gebruik hiervoor de gepaste operator: OVERLAPS).
