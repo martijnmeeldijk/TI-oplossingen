@@ -739,3 +739,168 @@ ORDER BY plaats NULLS LAST;
 
 # 8. CTEs en Beveiliging
 
+## CTEs
+
+**CTE**= common table expression
+
+Een CTE is een tijdelijke set van resultaten waarnaar je vanuit een andere SQL statement zoals `SELECT` of `INSERT` kan verwijzen. Hiervoor gebruik je het woordje `WITH`.
+
+```plsql
+WITH cte_name (column_list) AS (
+    CTE_query_definition 
+)
+--hier dan een query ofzo;
+```
+
+Met CTEs kan je complexe queries een stuk makkelijker maken. Je kan code-duplicatie vermijden en de leesbaarheid verbeteren. Nog iets leuks. Je kan er ook lussen mee maken.
+
+```plsql
+/*meer opties, boom tonen?*/
+WITH RECURSIVE kind_van(bijnaam, vader, moeder) AS (
+ SELECT bijnaam, vader, moeder
+ FROM familieboom
+ WHERE vader = 'vader'
+ UNION ALL
+ SELECT f.bijnaam, f.vader, f.moeder
+ FROM familieboom f, kind_van k
+ WHERE f.vader = k.bijnaam
+)
+SELECT bijnaam
+FROM kind_van;
+```
+
+Als iemand zin heeft om dit uit te leggen: 1:moneybag:
+
+
+
+### Oneindige lussen
+
+Omdat je lussen kan maken met **CTEs**, kunnen er dus oneindige lussen voorkomen. Stel je nu voor, het schema *ruimtereizen*. Dat kennen jullie allemaal hopelijk al redelijk goed. Als je nu bij de Zon `satellietvan = aarde` zou doen en dan een CTE maakt die van elke planeet de naam print en dan verder gaat met zijn ouder (satellietvan). Dan zou in dit geval de lus oneindig door blijven lopen.
+
+Er zijn **twee** om dit te voorkomen.
+
+**Teller**
+
+```plsql
+WITH RECURSIVE kind_van(bijnaam, vader, moeder, diepte) AS (
+  SELECT bijnaam, vader, moeder, 1
+  FROM familieboom
+  WHERE vader = 'vader'
+   UNION ALL
+  SELECT f.bijnaam, f.vader, f.moeder, diepte + 1 --teller incrementeren
+  FROM familieboom f, kind_van k
+  WHERE f.vader = k.bijnaam
+  AND k.diepte<7 --bij teller == 7 stopt de lus
+)
+SELECT *
+FROM kind_van;
+```
+
+**Lussen detecteren**
+
+```plsql
+WITH RECURSIVE kind_van(bijnaam, vader, moeder, pad, lus) AS (
+ SELECT bijnaam, vader, moeder, ARRAY[vader] as pad, false
+ FROM familieboom
+ WHERE vader = 'vader'
+ UNION ALL
+ SELECT f.bijnaam, f.vader, f.moeder,
+ CAST(k.pad || ARRAY[f.vader] as varchar(16)[]) as pad,
+ f.vader = ANY(pad)
+ FROM familieboom f, kind_van k
+ WHERE f.vader = k.bijnaam
+ AND NOT lus
+)
+SELECT *
+FROM kind_van;
+```
+
+Zie de guide van deze les voor een meer *in depth* uitleg.
+
+
+
+## Beveiliging
+
+Oke dus je moet altijd je software up-to-date houden enzo. Binnen SQL kan je gebruik maken van **User management** (roles), **Privileges** (grant / revoke) , **Views** en **Stored procedures** om je databank veiliger te maken.
+
+Je moet ook weten wat SQL injection is en hoe je je daartegen beschermt. 
+
+
+
+# 9. ODMS, DBMS en ORDBMS
+
+**ODBMS**: object(-oriented) database management system (is dit hetzelfde als ODMS?)
+
+**ORD(BMS)**: object-relational database management system
+
+**DBMS**: database management system
+
+
+
+## ORDBMS
+
+Je kan zelf types maken
+
+```sql
+CREATE type spelersnr AS integer;
+CREATE TABLE spelers
+(spelersnr spelersnr NOT null,
+… );
+DROP type spelersnr;
+```
+
+je kan ook machtigingen aan types geven
+
+```plsql
+revoke usage
+on type geldbedrag
+to Frank
+```
+
+je kan ook operator overloading doen
+
+```plsql
+bedrag1 + bedrag2 -- ongeldig
+decimal(bedrag1) + decimal(bedrag2) -- mag wel
+--je kan de '+' operator herdefineren om dit automatisch te doen.
+
+create function « + » (geldbedrag, geldbedrag)
+returns geldbedrag
+source « + » (decimal(), decimal())
+```
+
+Voor meer info kan je een kijkje nemen in *09_3_ORDBMS.pdf*
+
+Info over overerving en rules vind je ook hier.
+
+
+
+## NoSQL
+
+= Not only sql
+
+Grote systemen zoals google en facebook gebruiken vaak NoSQL. 
+
+> With NoSQL, you can:
+>
+> - Create documents without carefully defining their structure upfront
+> - Add fields to your database without changing the fields of existing documents
+> - Store documents that have their own unique structure
+> - Have multiple databases with different structures and syntax
+
+NoSQL is ook niet echt ACID compliant.
+
+> - Atomicity – each transaction either succeeds completely or is fully rolled back.
+> - Consistency – data written to a database must be valid according to all defined rules.
+> - Isolation – When transactions are run concurrently, they do not contend with each other, and act as if they were being run sequentially.
+> - Durability – Once a transaction has been committed to the database, it is considered permanent, even in the event of a system failure.
+
+Dan heb je ook het CAP-theorema. Ik weet niet echt hoe dit gelinkt wordt aan de leerstof, volgens Bertels worden 2 van de 3 voldaan door NoSQL.
+
+> - *[Consistency](https://en.wikipedia.org/wiki/Consistency_model)*: Every read receives the most recent write or an error
+> - *[Availability](https://en.wikipedia.org/wiki/Availability)*: Every request receives a (non-error) response, without the guarantee that it contains the most recent write
+> - *[Partition tolerance](https://en.wikipedia.org/wiki/Network_partitioning)*: The system continues to operate despite an arbitrary number of messages being dropped (or delayed) by the network between nodes
+
+
+
+# 10. XML en JSON
