@@ -81,7 +81,7 @@ Voorbeeld:
          1. Seq Scan on spelers  (cost=0.00..1.14 rows=14 width=82) (actual time=0.006..0.008 rows=14 loops=1)
          2. Planning Time: 0.044 ms
          3. Execution Time: 0.022 ms
- 
+
 In tegenstelling tot "Explain" voert Explain Analyse de query volledig uit. Explain geeft een geschatte "cost" van de query, en kijkt hoeveel rijen en kolommen opgezocht moeten worden en probeert daaruit te schatten of het eerdern een zware of lichte query is.
 
 Met Analyse erbij wordt de query uitgevoerd en wordt de tijd gemeten. Eerst wordt een plan gemaakt: "Hoe ga ik deze query uitvoeren" en dan wordt het effectief uitgevoerd.

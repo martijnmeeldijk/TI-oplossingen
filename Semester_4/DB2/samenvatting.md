@@ -2,17 +2,63 @@
 
 In dit document nemen we samen een duik in het hoofd van Wim Bertels. 
 
-Ik zal ook proberen zo veel mogelijk codevoorbeelden in het document te steken om te helpen bij heet oplossen van de vragen.
+Ik zal ook proberen zo veel mogelijk codevoorbeelden in het document te steken om te helpen bij het oplossen van de vragen.
 
 <!--ts-->
-
    * [Databanken 2](#databanken-2)
-      * [1. Introductie](#1-introductie)
-      * [2. Indexen &amp; Optimalisaties](#2-indexen--optimalisaties)
+   * [1. Introductie](#1-introductie)
+   * [2. Indexen &amp; Optimalisaties](#2-indexen--optimalisaties)
+      * [Indexen](#indexen)
          * [Wat is een index?](#wat-is-een-index)
          * [Soorten indexen](#soorten-indexen)
+      * [Optimalisaties](#optimalisaties)
+   * [3. Explain](#3-explain)
+      * [Dedection and benchmarking](#dedection-and-benchmarking)
+         * [Statistieken](#statistieken)
+         * [Benchmarking](#benchmarking)
+   * [4. Limiting result sets &amp; lateral](#4-limiting-result-sets--lateral)
+      * [Limiting result sets](#limiting-result-sets)
+      * [Lateral joins](#lateral-joins)
+   * [5. Procedurele SQL](#5-procedurele-sql)
+      * [PL/pgSQL](#plpgsql)
+      * [Functions vs Procedures](#functions-vs-procedures)
+      * [Functions](#functions)
+         * [Select into](#select-into)
+         * [Perform &amp; Found](#perform--found)
+         * [Exceptions](#exceptions)
+         * [Beveiliging](#beveiliging)
+         * [Immutability](#immutability)
+      * [Procedures](#procedures)
+      * [Triggers](#triggers)
+   * [6. GDPR](#6-gdpr)
+      * [Hoofdpunten](#hoofdpunten)
+      * [Database admins](#database-admins)
+      * [Info dissemination](#info-dissemination)
+      * [Application builders](#application-builders)
+      * [Data breaches](#data-breaches)
+   * [7. Vensterfuncties](#7-vensterfuncties)
+   * [8. CTEs en Beveiliging](#8-ctes-en-beveiliging)
+      * [CTEs](#ctes)
+         * [Oneindige lussen](#oneindige-lussen)
+      * [Beveiliging](#beveiliging-1)
+   * [9. ODMS, DBMS en ORDBMS](#9-odms-dbms-en-ordbms)
+      * [ORDBMS](#ordbms)
+         * [RULEs](#rules)
+      * [NoSQL](#nosql)
+         * [ACID](#acid)
+         * [CAP](#cap)
+   * [10. XML en JSON](#10-xml-en-json)
+      * [XML](#xml)
+         * [Voor- en nadelen](#voor--en-nadelen)
+      * [XML en postgres](#xml-en-postgres)
+      * [JSON](#json)
+         * [JSON en postgres](#json-en-postgres)
+      * [Andere types](#andere-types)
+   * [Replicatie](#replicatie)
+         * [Hoe doe je dat?](#hoe-doe-je-dat)
+      * [Buffers](#buffers)
 
-<!-- Added by: martijn, at: Thu Jun 11 15:06:52 CEST 2020 -->
+<!-- Added by: martijn, at: Sat Jun 13 18:41:25 CEST 2020 -->
 
 <!--te-->
 
@@ -636,7 +682,59 @@ zou hij hier echt vragen over stellen?
 
 Ik ga dit voor nu effe skippen.
 
+Volgens Abel moet het erin. Oke dan.
 
+## Hoofdpunten
+
+* If data is related to EU citizens, the GDPR is applicable, independent of physical data location (AWS, Google, FB, …) 
+
+* The right to have your personal data being erased completely 
+* Only data on purpose can be hold by an organisation: of no informed consent or alternative use of data => penalties 
+* Penalties can go up to max(20 mio€, 4% Annual Global Turnover) 
+* Data Protection Officer (DPO) comes into play 
+* It’s the organisation’s responsibility, not the one you outsourced your data to 
+* Data necessary to run your business is OK (e.g. UCLL & your points earned)
+
+## Database admins
+
+* Admins will have to redesign their databases 
+  * Privacy by Design & Default (PbD’s) 
+    * Only store what you really need AND 
+    * Give strict, (time) limited access to that data 
+    * Opt-in will be the default choice for apps, not opt-out 
+  * Make sure, one’s data can be erases quickly & completely 
+  * Make sure, you log all usages of the data of someone => tracking breaches
+
+## Info dissemination
+
+* Local community (scouts, football, ..) owing e-mail addresses for corresponding time schedules & invoices cannot be used by default to invite people to a BBQ to raise money… 
+* Informed consents ! 
+* Checkbox forms that allow people to selectively do an optin with respect to the possible use of their personal data
+
+
+
+## Application builders
+
+* Privacy by Design & Default (PbD’s) 
+  * Avoid use of personal data as much as possible on sites 
+  * Ask for informed consent when storing personal data with clear annotation about the intended usage. 
+  * Not only flowcharts for functionality, but also flowcharts to trace the personal data thru your app(lication): 
+    * What kind of data ? 
+    * Who got access ? 
+    * What is it used for ?
+
+## Data breaches
+
+Data breach = a breach of security leading to accidental or unlawful destruction, loss, alteration, unauthorised disclosure or, or access to, personal data transmitted, stored or otherwise processed
+
+* Automatic breach detection will become important since part of your Privacy by Design/Default 
+* Notification of a breach has to be done within 72 hours timespan after discovery 
+* More accurate reporting requested 
+* You have to prove your good behaviour hence logs/tracking of data & access 
+* You have to demonstrate the (limted) impact hence data flowcharts 
+* You need to possess a plan to remedy the breach
+
+Sorry, ik heb de slides gekopieerd. Als er nu een vraag komt, kan je dit als referentiemateriaal gebruiken.
 
 # 7. Vensterfuncties
 
@@ -875,6 +973,42 @@ Info over overerving en rules vind je ook hier.
 
 
 
+### RULEs
+
+> The **PostgreSQL rule** system allows one to define an alternative action to be performed on insertions, updates, or deletions in database tables. Roughly speaking, a **rule** causes additional commands to be executed when a given command on a given table is executed. 
+
+[bron](https://www.postgresql.org/docs/9.2/sql-createrule.html)
+
+Syntax:
+
+```plsql
+CREATE [ OR REPLACE ] RULE name AS ON event
+    TO table_name [ WHERE condition ]
+    DO [ ALSO | INSTEAD ] { NOTHING | command | ( command ; command ... ) }
+```
+
+Voorbeeld:
+
+```plsql
+CREATE RULE "NeKeerIetsAnders" AS
+  ON SELECT TO wedstrijden
+  WHERE spelersnr = 7
+  DO INSTEAD
+  SELECT 'eerst drie toerkes rond tafel
+  lopen en dan nog eens
+  proberen';
+```
+
+
+
+Wat is nu het verschil tussen een rule en een trigger?
+
+> A **trigger** is fired **for** any affected row once. A **rule** manipulates the query or generates an additional query. So if many rows are affected in one statement, a **rule** issuing one extra command is likely to be faster than a **trigger** that is called for **every single row** and must execute its operations many times.
+
+[bron](https://www.postgresql.org/docs/8.2/rules-triggers.html)
+
+Nu moet ik toch wel zeggen dat de postgreSQL docs echt nuttig zijn.
+
 ## NoSQL
 
 = Not only sql
@@ -888,12 +1022,21 @@ Grote systemen zoals google en facebook gebruiken vaak NoSQL.
 > - Store documents that have their own unique structure
 > - Have multiple databases with different structures and syntax
 
+### ACID
+
 NoSQL is ook niet echt ACID compliant.
 
 > - Atomicity – each transaction either succeeds completely or is fully rolled back.
 > - Consistency – data written to a database must be valid according to all defined rules.
 > - Isolation – When transactions are run concurrently, they do not contend with each other, and act as if they were being run sequentially.
 > - Durability – Once a transaction has been committed to the database, it is considered permanent, even in the event of a system failure.
+
+Abel zegt dit
+
+> Verband met NoSQL: NoSQL databanken zijn gemaakt om hoge beschikbaarheid te garanderen. Dit betekent dat ze vaak Consistency en Durability opofferen om dit te garanderen. Ze bieden wel Atomicity.
+> Ze zijn ook niet altijd gesynchroniseerd, waardoor ze niet altijd consistent zijn. Maar ze komen uiteindelijk wel in sync, dus ze bieden wel deels consistency.
+
+### CAP
 
 Dan heb je ook het CAP-theorema. Ik weet niet echt hoe dit gelinkt wordt aan de leerstof, volgens Bertels worden 2 van de 3 voldaan door NoSQL.
 
@@ -904,3 +1047,265 @@ Dan heb je ook het CAP-theorema. Ik weet niet echt hoe dit gelinkt wordt aan de 
 
 
 # 10. XML en JSON
+
+## XML
+
+= extensible markup language
+
+Jullie weten hopelijk al wat xml is.
+
+```xml
+<energie>
+  <gerecht>
+    <naam> frieten </naam>
+    <quotering> zeer wel </quotering>
+  </gerecht>
+  <gerecht>
+    <naam> sojapuddingzonderchoco </naam>
+    <quotering> twijfelachtig </quotering>
+  </gerecht>
+</energie>
+```
+
+> xml (data) vs html (vorm) 
+>
+> ​			(xsl vs css)
+
+Je kan ook metadata toevoegen in XML (bij dit voorbeeld de *type*)
+
+```xml
+<example type='music'> lalala.mp3 </example>
+```
+
+XML wordt voor verschillende dingen gebruikt:
+
+* Data uitwisselen tussen applicaties
+* Om de configuratie van je programma op te slaan
+* HTML is ook een soort XML
+
+### Voor- en nadelen
+
+| Voordelen                       | Nadelen                                                      |
+| ------------------------------- | ------------------------------------------------------------ |
+| ISO-standaard                   | redundantie tov relationeel model, dus niet misbruiken in die zin |
+| uitwisselbaarheid               | sequentieel, traag                                           |
+| eenvoud                         |                                                              |
+| geen hierarchische engine nodig |                                                              |
+
+
+
+## XML en postgres
+
+Ik ga hier gewoon wat XML functies en hun uitvoer droppen.
+
+Zie de [XML Functions](https://www.postgresql.org/docs/11/functions-xml.html) documentatie voor meer info.
+
+```sql
+SELECT xmlcomment('hallo');
+```
+
+```xml
+xmlcomment
+--------------
+<!--hallo-->
+```
+
+
+
+```sql
+SELECT xmlelement(name jos,
+ xmlattributes(current_date as ke), 'hal', 'lo');
+```
+
+```xml
+xmlelement
+-------------------------------------
+<jos ke="2014-01-26">hallo</jos>
+```
+
+
+
+```sql
+select xmlforest(divisie, teamnr) from teams; 
+```
+
+```xml
+xmlforest
+---------------------------------------------
+<divisie>ere </divisie><teamnr>1</teamnr>
+<divisie>tweede</divisie><teamnr>2</teamnr>
+```
+
+
+
+> The `xmlpi` expression creates an XML processing instruction. The content, if present, must not contain the character sequence `?>`.
+
+```sql
+SELECT xmlpi(name php, 'echo "Patat";');
+```
+
+```xml
+xmlpi
+-----------------------------
+<?php echo "Patat";?>
+```
+
+
+
+> The following functions map the contents of relational tables to XML values. They can be thought of as XML export functionality:
+
+```plsql
+table_to_xml(tbl regclass, nulls boolean, tableforest boolean, targetns text)
+query_to_xml(query text, nulls boolean, tableforest boolean, targetns text)
+cursor_to_xml(cursor refcursor, count int, nulls boolean, tableforest boolean, targetns text)
+```
+
+
+
+## JSON
+
+**JSON**: JavaScript Object Notation
+
+Persoonlijk vind json beter dan xml. JSON is eigenlijk een simpelere versie van xml, het is leesbaarder en veel cooler.
+
+<img src="https://pics.me.me/json-statham-62010142.png" alt="JSON Statham | Json Meme on ME.ME" width="30%;" />
+
+Haha funni meme.
+
+
+
+### JSON en postgres
+
+Operators
+
+| Operator | Right Operand Type | Return type       | Description                                                  | Example                                            | Example Result |
+| -------- | ------------------ | ----------------- | ------------------------------------------------------------ | -------------------------------------------------- | -------------- |
+| `->`     | `int`              | `json` or `jsonb` | Get JSON array element (indexed from zero, negative integers count from the end) | `'[{"a":"foo"},{"b":"bar"},{"c":"baz"}]'::json->2` | `{"c":"baz"}`  |
+| `->`     | `text`             | `json` or `jsonb` | Get JSON object field by key                                 | `'{"a": {"b":"foo"}}'::json->'a'`                  | `{"b":"foo"}`  |
+| `->>`    | `int`              | `text`            | Get JSON array element as `text`                             | `'[1,2,3]'::json->>2`                              | `3`            |
+| `->>`    | `text`             | `text`            | Get JSON object field as `text`                              | `'{"a":1,"b":2}'::json->>'b'`                      | `2`            |
+| `#>`     | `text[]`           | `json` or `jsonb` | Get JSON object at the specified path                        | `'{"a": {"b":{"c": "foo"}}}'::json#>'{a,b}'`       | `{"c": "foo"}` |
+| `#>>`    | `text[]`           | `text`            | Get JSON object at the specified path as `text`              | `'{"a":[1,2,3],"b":[4,5,6]}'::json#>>'{a,2}'`      | `3`            |
+
+er zijn er nog [meer](https://www.postgresql.org/docs/current/functions-json.html).
+
+Deze zijn ook misschien nuttig om JSON aan te maken
+
+* to_json(element) 
+* array_to_json(n-dim array) 
+* json_object (text[]) 
+* json_object (keys text[], values text[])
+*  …
+* jsonb_* functions as well
+
+Aggregatiefuncties:
+
+* json_agg(expression) aggregates values as JSON array 
+* json_object_agg(name, value) aggregates name/value pairs as a JSON object 
+* jsonb_* functions as well
+
+Specific processing functions
+
+* json_array_length(json) 
+* json_each(json) ~ pop 
+* json_extract_path(x json, path_elems text[]): get specific elements 
+* json_array_elements(json): array to values 
+*  … 
+* jsonb_* functions as well
+
+Voorbeeldje
+
+```sql
+select * from json_each('{"a":"foo", "b":"bar"}') 
+
+--uitvoer
+ key | value
+-----+-------
+   a | “foo”
+   b | “bar”
+```
+
+
+
+## Andere types
+
+Er zijn ook nog andere types zoals vierkanten, lijnen, ip adressen, samengestelde types, ranges van getallen, ...
+
+Als het echt nodig is kan je *10_3_OtherFormats.pdf* even lezen.
+
+
+
+# Replicatie
+
+> **Logical replication** is a method of **replicating** data objects and their changes, based upon their **replication** identity (usually a primary key). We use the term **logical** in contrast to physical **replication**, which uses exact block addresses and byte-by-byte **replication**.
+
+> Logical replication uses a *publish* and *subscribe* model with one or more *subscribers* subscribing to one or more *publications* on a *publisher* node. Subscribers pull data from the publications they subscribe to and may subsequently re-publish data to allow cascading replication or more complex configurations.
+
+[bron](https://www.postgresql.org/docs/10/logical-replication.html)
+
+Het het dus **replicatie** omdat je de shizzle op de databank wilt repliceren. Stel je nu voor dat je een tweede databank hebt? Je zou graag willen dat die databank dezelfde inhoud bevat als de eerste (voor het geval er eentje spontaan ontploft). Dan kan je best gebruik maken van replicatie.
+
+
+
+### Hoe doe je dat?
+
+Op de eerste server maak je een publicatie
+
+```plsql
+CREATE PUBLICATION
+```
+
+Op de tweede maak je een subscription, je zal wel zelf de tabellen nog moeten aanmaken op deze databank (met dezelfde namen als in de eerste)
+
+```sql
+ CREATE SUBSCRIPTION
+```
+
+
+
+**Voorbeeld**
+
+Op de eerste server (in dit geval databanken.ucll.be)
+
+```plsql
+ROLLBACK;
+BEGIN;
+CREATE schema replication_demo;
+GRANT usage on SCHEMA replication_demo TO public;
+SET search_path TO replication_demo;
+CREATE TABLE demo_users(
+ user_id serial PRIMARY KEY,
+ first_name varchar(32) NOT NULL,
+ last_name varchar(64)
+);
+GRANT select,insert ON demo_users TO public;
+CREATE PUBLICATION mypub FOR TABLE demo_users;
+--COMMIT;
+```
+
+Op de tweede (in dit geval jouw machine)
+
+```plsql
+CREATE schema replication_demo;
+GRANT usage on SCHEMA replication_demo TO public;
+SET search_path TO replication_demo;
+CREATE TABLE demo_users(
+ user_id serial PRIMARY KEY,
+ first_name varchar(32) NOT NULL,
+ last_name varchar(64)
+);
+CREATE SUBSCRIPTION mysub
+CONNECTION 'dbname=probeer host=databanken.ucll.be user=local_u0082489
+ port=51819 password=mypass sslmode=require' PUBLICATION mypub;
+```
+
+
+
+Ik leg dit normaal gezien uitvoerig uit in de guides
+
+## Buffers
+
+Bertels pull-up met de gepikte slides. Oh phew, gelukkig heeft hij de license erachter gezet. Ik had hem al bijna aangeklaagd.
+
+Er staat ook echt niks ~~nuttigs~~ begrijpbaars in. Ik zou ook echt niet weten wat hij hierover zou kunnen vragen. Aarzel niet om een uitleg toe te voegen als je dat nuttig lijkt (:moneybag:).
+
