@@ -6,6 +6,21 @@
 
 ***Mondeling***: ACID. Full form. Leg uit. Verband met NoSQL?
 
+ACID staat voor: Atomicity, Consistency, Isolation, Durability
+
+Atomicity: Alles of niets. Je gerandeerd dat als een transaction enkel door gaat als alle delen van de transactie slagen. Als maar een deel van de transactie slaagt en een deel faalt dan wordt niets van die transactie opgeslagen. 
+
+Consistency: De data is consistent. Alle data volgt de opgelegde regels, en is valide.
+
+Isolation: Elke transaction gebeurt los van andere transactions. Transactions hebben geen impact op elkaar. Een transaction mag bijvoorbeeld geen data lezen van een andere transaction die nog niet klaar is.
+
+Durability: Als een transaction is uitgevoerd blijven de veranderingen bestaan, ook als de database crashed en heropstart. Veranderingen zijn permanent. Als het systeem het bericht stuurt dat een transaction succesvol is uitgevoerd moet deze ook succesvol zijn uitgevoerd. 
+
+Verband NoSQL: NoSQL databanken zijn gemaakt om hoge beschikbaarheid te garanderen. Dit betekent dat ze vaak Consistency en Durability opofferen om dit te garanderen. Ze bieden wel Atomicity.
+Ze zijn ook niet altijd gesynchroniseerd, waardoor ze niet altijd consistent zijn. Maar ze komen uiteindelijk wel in sync, dus ze bieden wel deels consistency.
+
+Er zijn uitzonderingen. Sommige NoSQL databank makers zorgen ervoor dat hun databanken wel ACID compliant zijn.
+
 
 
 ***Theorie***: 
@@ -37,13 +52,39 @@ Op de R schijf zijn een schema en een script te vinden van de databank. Je kan d
 ***Theorie***:
 
 1. Wat is de engelse vertaling van AVG, wat op 25 mei 2018 gestart is?
+Nederlands: AVG - Algemene verordening gegevensbescherming
+
+Engels: GDPR - General Data Protection Regulation
+
+Alle data die bedrijven hebben van een individu moeten vernietigd worden indien een individu dat vraagt, en men moet weten welke data wordt opgeslagen alsook toestemming geven.
+Deze wet zorgt er ook voor dat de wetgeving over de hele EU hetzelfde is, vroeger had elk land zijn eigen regels en wetgeving, de GDPR normaliseert deze regels over de hele EU.
 
 2. En vallen gegevens van een Europeaan op een Canadese server onder deze wet? (Simpele ja/nee)
 
+Ja. Deze wet is overal geldig.
+
 3. Wat is een groot voordeel & nadeel van indexen? Leg beide uit met 2-3 zinnen.
+
+Voordeel: Indexeren versnelt de verwerking van veel queries. Dit komt omdat de index gebruikt kan worden als een soort "zoek tabel", waardoor de databank sneller weet waar de data die je nodig hebt gevonden kan worden.
+
+Nadeel: Indexes gebruiken veel opslagruimte. Mutaties zorgen ervoor dat de data helemaal opnieuw geindexeerd moet worden.
 
 4. Hoe krijg ik in PostgreSQL de execution time van een query? Leg ook uit wat dit qua informatie geeft.
 
+Met Explain Analyse krijg je de execution time van een query.
+Voorbeeld:
+      Explain Analyse
+      Select *
+      From spelers
+
+      Uitvoer: 
+         1. Seq Scan on spelers  (cost=0.00..1.14 rows=14 width=82) (actual time=0.006..0.008 rows=14 loops=1)
+         2. Planning Time: 0.044 ms
+         3. Execution Time: 0.022 ms
+ 
+In tegenstelling tot "Explain" voert Explain Analyse de query volledig uit. Explain geeft een geschatte "cost" van de query, en kijkt hoeveel rijen en kolommen opgezocht moeten worden en probeert daaruit te schatten of het eerdern een zware of lichte query is.
+
+Met Analyse erbij wordt de query uitgevoerd en wordt de tijd gemeten. Eerst wordt een plan gemaakt: "Hoe ga ik deze query uitvoeren" en dan wordt het effectief uitgevoerd.
 
 
 ***Praktijk***:
