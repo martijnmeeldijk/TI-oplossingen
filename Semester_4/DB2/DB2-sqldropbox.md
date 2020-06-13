@@ -24,7 +24,7 @@
 
 Geef de diameter van het grootste hemellichaam dat bezocht is op de vroegste reis waar klantnr 126 niet op meegegaan is.
 
-```postgreSQL
+```sql
 select  max(h.diameter) as grootste
 from hemelobjecten h
 inner join bezoeken b on(h.objectnaam = b.objectnaam)
@@ -41,7 +41,7 @@ Geef de deelnemers waarbij hun aantal reizen die ze ondernemen groter is dan all
 Geef de deelnemers met meer deelnames dan het grootste aantal bezoeken aan een hemelobject dat niet met de letter 'M' begint (:deze deelnemer meer deelnames heeft dan de "grootste" .. = deze deelnemer heeft meer deelnames dan "alle" ..)
 Sorteer op klantnr.
 
-```postgreSQL
+```sql
 select k.klantnr, k.vnaam, k.naam, (select count(*) from deelnames where deelnames.klantnr = k.klantnr) as aantaldeelnames
 from klanten k
 where (select count(*) from deelnames where deelnames.klantnr = k.klantnr) > all (
@@ -56,7 +56,7 @@ where (select count(*) from deelnames where deelnames.klantnr = k.klantnr) > all
 Geef alle niet-bezochte hemelobjecten, buiten het grootste hemellichaam.
 Sorteer op diameter en objectnaam.
 
-```postgresSQL
+```sql
 select o.objectnaam, o.afstand, o.diameter
 from hemelobjecten o
 left outer join bezoeken b using(objectnaam)
@@ -77,7 +77,7 @@ order by 3,1
 Geef een lijst met het spelersnummer en de naam van de speler die in Rijswijk wonen en die in 1980 een boete gekregen hebben van 25 euro. Sorteer van voor naar achter.
 Probeer gelijk of beter te doen dan "(cost=2.37..2.37 rows=1 width=68)".
 
-```postgreSQL
+```sql
 select s.spelersnr, s.naam
 from spelers s inner join boetes b using(spelersnr)
 where s.plaats = 'Rijswijk' and b.bedrag=25 and extract(year from b.datum) = 1980
@@ -87,7 +87,7 @@ order by 1,2
 Geef de naam en het spelersnummer van de spelers die ooit penningmeester geweest zijn van de club, die bovendien ooit een boete betaald hebben van meer dan 75 euro, en die ooit een wedstrijd gewonnen hebben met meer dan 2 sets verschil. Sorteer van voor naar achter.
 Probeer gelijk of beter te doen dan "Unique (cost=100.38..100.54 rows=21 width=68)".
 
-```postgreSQL
+```sql
 select s.naam, s.spelersnr
 from spelers s inner join boetes b on(b.spelersnr = s.spelersnr)
 inner join bestuursleden be on (be.spelersnr = s.spelersnr)
@@ -98,7 +98,7 @@ order by 1,2
 Geef van elke speler het spelersnr, de naam en het verschil tussen zijn of haar jaar van toetreding en het gemiddeld jaar van toetreding. Sorteer van voor naar achter.
 Probeer gelijk of beter te doen dan "Sort (cost=33.16..33.66 rows=200 width=86)"
 
-```postgreSQL
+```sql
 select s.spelersnr, s.naam, s.voorletters, (s.jaartoe - (select avg(spelers.jaartoe) from spelers)) as verschil
 from spelers s 
 order by 1,2,3,4
@@ -111,7 +111,7 @@ order by 1,2,3,4
 Geef per reis incrementeel de totale verblijfsduur volgens de volgorde waarin de hemelobjecten bezocht worden. Geef ook de totale verblijfsduur van alle reizen om alles in perspectief te zettten.
 Sorteer op reisnr, volgnr, objectnaam, verblijfsduur, de volgende kolommen.
 
-```postgreSQL
+```sql
 select r.reisnr, b.volgnr, b.objectnaam, b.verblijfsduur, sum(b.verblijfsduur)
 OVER(partition by
 r.reisnr
@@ -129,7 +129,7 @@ order by 1,2,3,4,5,6
 Hoeveel kilometers heeft iedereen in totaal gevlogen tot nu toe en hoeveel hebben ze hier in totaal voor betaald. Vermits we de posities van de planeten niet kennen, mag je de afstanden van de hemelobjecten direct gebruiken. Geef het totaal gespendeerde bedrag, de afgelegde kilometers, de prijs per kilometer en datum van hun laatste vlucht van al hun persoonlijke reizen. In het geval dat iemand niet op reis is geweest of geen kilometers gedaan heeft, toon je de boodschap 'veel geld voor niks of niet op reis geweest’ in de kolom prijs_per_kilometer.
 Sorteer van voor naar achter.
 
-```postgreSQL
+```sql
 select distinct k.klantnr, k.naam || ' ' || k.vnaam as naam, 
 	(select sum(reizen.prijs) from klanten
 	left outer join deelnames on(klanten.klantnr = deelnames.klantnr)
@@ -177,7 +177,7 @@ Geef voor elke reis het aantal klanten waarvan de naam niet met een 'G' begint e
 Indien er op de reis hemelobjecten worden bezocht waarvan de tweede letter van het hemelobject voorkomt in de naam van het hemelobject waarvan dit bezocht hemelobject een satelliet is, dan wordt deze reis genegeerd.
 Sorteer op reisnr.
 
-```postgreSQL
+```sql
 select r.reisnr, count(k.klantnr)
 from klanten k 
 inner join deelnames d on(k.klantnr = d.klantnr)
@@ -207,7 +207,7 @@ group by r.reisnr
 
 Maak een overzicht waarbij je voor de Maan en voor Mars aangeeft hoeveel ruimtereizen één of meer keer de betreffende bestemming bezocht hebben (d.w.z. erop geland zijn). Sorteer van voor naar achter.
 
-```postgreSQL
+```sql
 select h.objectnaam, 
 	(select count(distinct reizen.reisnr) from reizen
 	 inner join bezoeken using(reisnr)
@@ -222,7 +222,7 @@ order by 1,2
 
 Maak een lijst van de mensen die Mars wel bezocht hebben maar Io nog niet. Sorteer van voor naar achter.
 
-```postgreSQL
+```sql
 from klanten k
 
 where k.klantnr not in 
@@ -252,7 +252,7 @@ k.klantnr in
 
 Maak een overzicht waarbij je voor de Maan en voor Mars aangeeft hoeveel verschillende ruimtereizen er geweest zijn(d.w.z. erop geland zijn is voldoende). En enkel indien er meer dan 1 reis geweest is. Sorteer van voor naar achter
 
-```postgreSQL
+```sql
 select h.objectnaam, 
 	(select count(distinct reizen.reisnr) from reizen
 	 inner join bezoeken using(reisnr)
@@ -265,7 +265,7 @@ where h.objectnaam like 'Mars' or h.objectnaam like 'Maan'
 order by 1,2
 ```
 Geef de klant die het meest op de maan is geweest (+het aantal). Sorteer van voor naar achter.
-```postgreSQL
+```sql
 select klantnr, count(objectnaam)
 from deelnames d inner join bezoeken b on(b.reisnr = d.reisnr)
 where b.objectnaam = 'Maan'
@@ -275,7 +275,7 @@ FETCH FIRST ROW ONLY
 ```
 Maak een lijst met die mensen die meer dan 2 maal een reis ondernomen hebben waarin men geen enkele satelliet van Jupiter bezoekt !. Sorteer van voor naar achter.
 
-```postgreSQL
+```sql
 select d.klantnr ,k.naam || k.vnaam  as "volledige naam", count(d.reisnr) as "aantal ondernomen reizen"
 from deelnames d inner join klanten k on (d.klantnr = k.klantnr)
 where d.reisnr not in (
@@ -296,7 +296,7 @@ having count(d.reisnr)>2
 
 Geef de nummers van de wedstrijden gespeeld door een speler waarvan de naam begint met een B of D. Sorteer van voor naar achter.
 
-```postgreSQL
+```sql
 select wedstrijdnr
 from spelers s inner join wedstrijden 
 using(spelersnr)
@@ -306,7 +306,7 @@ order by 1
 
 Geef van elke speler die minstens 1 wedstrijd gewonnen heeft voor team nr 1 en voor wie in totaal meer dan 100 euro aan boete betaald is, het spelersnummer, zijn naam, woonplaats en het totale boetebedrag. Sorteer van voor naar achter.
 
-```postgreSQL
+```sql
 select s.spelersnr, s.naam, s.plaats, sum(b.bedrag)
 from spelers s
 inner join boetes b on (s.spelersnr = b.spelersnr)
@@ -321,7 +321,7 @@ order by 1,2,3,4
 
 Geef alle spelers voor wie meer boetes zijn betaald dan dat ze wedstrijden hebben gespeeld. Sorteer van voor naar achter
 
-```postgreSQL
+```sql
 select s.naam, s.voorletters, s.geb_datum
 from spelers s
 where (select count(*)
@@ -335,7 +335,7 @@ order by 1,2,3
 ```
 Geef de spelers (woonplaats, naam, geslacht, in volgorde van hun geslacht en naam) voor wie minstens één boete betaald werd maar die geen aanvoerder zijn van een team. Sorteer van voor naar achter. Geen dubbels.
 
-```postgreSQL
+```sql
 select geslacht, naam, plaats
 from boetes b left outer join teams t using (spelersnr)
 inner join spelers using (spelersnr)
@@ -344,7 +344,7 @@ group by spelersnr, geslacht, naam, plaats
 order by 1,2,3
 ```
 Geef de twee laagste bondnrs terug. (tip: dwz er zijn dus minder dan 2 bondsnr die kleiner zijn) Sorteer van voor naar achter.
-```postgreSQL
+```sql
 select s.bondsnr
 from spelers s
 where s.bondsnr is not null and ((select count(bondsnr) from spelers s1 where s1.bondsnr < s.bondsnr) =1
@@ -358,7 +358,7 @@ order by 1
 Geef voor elke een klant een overzicht aan uitgaven. Hoe? Geef voor elke klant een cumulatie overzicht van prijs van de reizen waar hij aan deelgenomen heeft. De volgorde, waarin er wordt cumulatief wordt opgeteld, wordt bepaald door de vertrekdatum van de reis. Sorteer van voor naar achter.
 Tip: vergelijk deze uitvoer met de uitvoer van een query die een gesorteerd overzicht geeft van de klanten en hun deelnames aan reizen.
 
-```postgreSQL
+```sql
 select k.klantnr, r.reisnr, sum(r.prijs)
 OVER(partition by
 k.klantnr
@@ -376,7 +376,7 @@ order by 1,2,3
 Toon in xmlformaat de objectnamen, afstand en diameter voor objecten die rond Neptunus draaien. Geef als eerste kolom de commentaar maan. Sorteer van voor naar achter.
 Tip: XML is gebaseerd op het datatype text.
 
-```postgreSQL
+```sql
 SELECT xmlcomment('maan')::text, xmlforest(objectnaam, afstand, diameter)::text
 from hemelobjecten
 where satellietvan like 'Neptunus'
@@ -388,39 +388,39 @@ order by 1,2
 
 Gebruik JSON instructies. Selecteer in onderstaande json string '{"a":[1,2,3],"b":[4,5,6]}' het tweede object
 
-```postgreSQL
+```sql
 SELECT '{"a":[1,2,3],"b":[4,5,6]}'::json->'b'
 ```
 
 Gebruik JSON instructies. Expandeer het buitenste JSON object uit de string '{"a":"foo", "b":"bar"}'.
 (dit staat letterlijk in de slides)
-```postgreSQL
+```sql
 SELECT *
  FROM json_each('{"a":"foo", "b":"bar"}')
 ```
 
 Gebruik JSON instructies. Selecteer in onderstaande json string '{"1":[1,2,3],"2":[4,5,6]}' het tweede object
-```postgreSQL
+```sql
  select '{"1":[1,2,3],"2":[4,5,6]}'::json->'2'
 ```
 
 
 Gebruik JSON instructies. Selecteer in onderstaande json string '{"1":[1,2,3],"2":[4,5,6]}' het eerste object
-```postgreSQL
+```sql
 select '{"1":[1,2,3],"2":[4,5,6]}'::json->'1'
 ```
 
 Gebruik JSON instructies. Selecteer in onderstaande json string '[{"1":"2"},{"4":"5"}]' het eerste object
-```postgreSQL
+```sql
 SELECT  '[{"1":"2"},{"4":"5"}]'::json->>0
 ```
 
 Gebruik JSON instructies. Selecteer uit onderstaande json string '{"a": {"b":{"c": "foo"}, "c":{"5":"6"}}}' het element "6"
-```postgreSQL
+```sql
 SELECT '{"a": {"b":{"c": "foo"}, "c":{"5":"6"}}}'::json->'a'->'c'->'5'
 ```
 
 Gebruik JSON instructies. Selecteer uit onderstaande json string '{"a": {"b":{"c": "foo"}, "c":{"5":"6"}}}' het element "{"c": "foo"}"
-```postgreSQL
+```sql
 SELECT '{"a": {"b":{"c": "foo"}, "c":{"5":"6"}}}'::json->'a'->'b'
 ```
