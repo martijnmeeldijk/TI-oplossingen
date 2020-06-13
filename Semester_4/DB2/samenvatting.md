@@ -1,6 +1,11 @@
 # Databanken 2
 
+In dit document nemen we samen een duik in het hoofd van Wim Bertels. 
+
+Ik zal ook proberen zo veel mogelijk codevoorbeelden in het document te steken om te helpen bij heet oplossen van de vragen.
+
 <!--ts-->
+
    * [Databanken 2](#databanken-2)
       * [1. Introductie](#1-introductie)
       * [2. Indexen &amp; Optimalisaties](#2-indexen--optimalisaties)
@@ -323,6 +328,10 @@ FETCH FIRST 3 ROWS ONLY;
 
 ## Lateral joins
 
+Als je een subquery gebruikt in het `FROM` gedeelte, kan je in deze subqueries niet verwijzen naar de voorgaande kolommen die je met  `FROM` hebt opgeroepen. Dit kan je oplossen door `LATERAL` voor je subquery te zetten.
+
+Zo werkt het dus niet:
+
 ```sql
 SELECT
 *,
@@ -333,10 +342,10 @@ FROM bezoeken b2
 WHERE b2.reisnr = r1.reisnr
 )
 FROM reizen r1;
-ERROR: subquery must return only one column
+-- ERROR: subquery must return only one column
 ```
 
-
+En zo wel:
 
 ```sql
 SELECT *
@@ -348,4 +357,385 @@ FROM bezoeken b2
 WHERE b2.reisnr = r1.reisnr
 ) AS sub ON true;
 ```
+
+
+
+# 5. Procedurele SQL
+
+## PL/pgSQL
+
+PL/pgSQL staat voor **Procedural Language/PostgreSQL**. Het is dus een procedurele programmeertaal (zoals Java) die je kan gebruiken in de databank.
+
+Je kan functies opslaan in de database
+
+```plsql
+CREATE FUNCTION dup(in int, out f1 int, out f2 text)
+ AS $$ SELECT $1, CAST($1 AS text) || ' is text' $$
+ LANGUAGE SQL;
+```
+
+Je kan ze ook oproepen:
+
+```sql
+SELECT * FROM dup(42);
+```
+
+Algemeen:
+
+```plsql
+CREATE FUNCTION foo( arg1,arg2, ...)
+RETURNS return_datatype
+AS --block of code
+LANGUAGE plpgsql;
+```
+
+Nog een simpel voorbeeld:
+
+```plsql
+CREATE OR REPLACE FUNCTION increment(i INT) RETURNS INT AS 
+$$
+  BEGIN
+  RETURN i + 1;
+  END;
+$$ LANGUAGE 'plpgsql';
+-- An example how to use the function:
+SELECT increment(10);
+```
+
+
+
+## Functions vs Procedures
+
+**Functies** geven een waarde terug, **procedures** niet. Het verschil is best vaag en hangt af van welke dbms je gebruikt. Ik zie het zo: Een functie is een stuk code dat een waarde geeft, een soort berekening. Terwijl een procedure echt letterlijk een procedure is, dus bijvoorbeeld iets in een tabel steken.
+
+| Functies                                 | Procedures                          |
+| ---------------------------------------- | ----------------------------------- |
+| return                                   | geen return                         |
+| Geen transacties                         | Wel transacties                     |
+| Berekeningen                             | Manipulaties                        |
+| Kan niet meerdere result sets teruggeven | Kan meerdere result sets teruggeven |
+|                                          |                                     |
+
+
+
+## Functions
+
+Ik denk dat veel dingen die ik hier zet bij functions ook toepasbaar zijn op procedures. 
+
+
+
+### Select into
+
+> The `SELECT INTO` statement copies data from one table into a new table.
+
+Dat kon Bertels niet even zeggen? Misschien moesten we dit al weten? Nou ja oké.
+
+```plsql
+create function som_boetes_speler(p_spelersnr integer) returns decimal(8,2) AS
+$eenderwat$
+ 	declare
+ 	som_boetes decimal(8,2);
+begin
+ 	select sum(bedrag)
+ 	into som_boetes
+ 	from boetes
+ 	where spelersnr = p_spelersnr;
+ 	return som_boetes ;
+end
+$eenderwat$ language ‘sql’;
+
+select som_boetes_speler (27) ;
+```
+
+
+
+### Perform & Found
+
+> Resultaten van een sql statement moeten opgevangen worden, bv via `INTO` variabele. `PERFORM` is een alternatief voor `SELECT` waarbij het resultaat niet wordt opgevangen
+
+```plsql
+PERFORM spelersnr FROM spelers ;
+IF FOUND THEN .. END IF ;
+```
+
+
+
+### Exceptions
+
+Je kan exceptions vangen en opgooien.
+
+Vangen met `EXCEPTION`
+
+```plsql
+BEGIN
+ -- code
+ RAISE DEBUG 'A debug message % ', variable_that_will_replace_percent;
+EXCEPTION
+ -- welke fout, bv
+ WHEN unique_violation THEN
+ -- code
+ WHEN division_by_zero THEN
+ RAISE -- eventueel omzetten naar unique_violation;
+ WHEN others THEN
+ -- ?
+ NULL;
+END 
+```
+
+Opgooien met `RAISE`
+
+```plsql
+RAISE division_by_zero
+--of
+RAISE DEBUG/INFO/..
+  SET client_min_messages TO debug;
+--of
+RAISE USING
+ ERRCODE = 'unique_violation',
+ HINT = 'suggestie voor de reden voor de gebruiker',
+ DETAIL = 'meer detail fout',
+ MESSAGE = 'gedrag van de unique_violation';
+```
+
+
+
+### Beveiliging
+
+Je kan kiezen wie jouw functie mag aanpassen of uitvoeren.
+
+```plsql
+GRANT EXECUTE ON haha() TO jomeke ;
+```
+
+
+
+```plsql
+CREATE OR REPLACE FUNCTION haha() RETURNS text AS
+  $code$
+    BEGIN
+    DROP TABLE ola();
+    RETURN ‘pola’;
+    END
+  $code$
+LANGUAGE plpgsql
+EXTERNAL SECURITY DEFINER;
+```
+
+In plaats van `DEFINER` kan je ook invoker zetten. 
+
+> `SECURITY INVOKER` indicates that the function is to be executed with the privileges of the user that calls it. That is the default. `SECURITY DEFINER` specifies that the function is to be executed with the privileges of the user that created it.
+>
+> The key word `EXTERNAL` is allowed for SQL conformance, but it is optional since, unlike in SQL, this feature applies to all functions not only external ones.
+
+[bron](https://www.postgresql.org/docs/9.5/sql-createfunction.html)
+
+
+
+### Immutability
+
+```plsql
+CREATE FUNCTION add(integer, integer) RETURNS integer
+ AS 'select $1 + $2;'
+ LANGUAGE SQL
+ IMMUTABLE
+ RETURNS NULL ON NULL INPUT;
+```
+
+> `IMMUTABLE` indicates that the function cannot modify the database and always returns the same result when given the same argument values; that is, it does not do database lookups or otherwise use information not directly present in its argument list. If this option is given, any call of the function with all-constant arguments can be immediately replaced with the function value.
+>
+> `STABLE` indicates that the function cannot modify the database, and that within a single table scan it will consistently return the same result for the same argument values, but that its result could change across SQL statements. This is the appropriate selection for functions whose results depend on database lookups, parameter variables (such as the current time zone), etc. (It is inappropriate for `AFTER` triggers that wish to query rows modified by the current command.) Also note that the `current_timestamp` family of functions qualify as stable, since their values do not change within a transaction.
+>
+> `VOLATILE` indicates that the function value can change even within a single table scan, so no optimizations can be made. Relatively few database functions are volatile in this sense; some examples are `random()`, `currval()`, `timeofday()`. But note that any function that has side-effects must be classified volatile, even if its result is quite predictable, to prevent calls from being optimized away; an example is `setval()`.
+
+
+
+## Procedures
+
+Algemeen:
+
+```plsql
+CREATE OR REPLACE PROCEDURE
+<procedure_name>( <arguments> )
+AS <block-of-code>
+LANGUAGE <implementation-language>;
+```
+
+Voorbeeldje:
+
+```plsql
+CREATE OR REPLACE PROCEDURE voorbeeld(invoer text )
+AS $code$
+	BEGIN
+  IF invoer = ‘niet doen’ THEN
+  RAISE WARNING 'Abort, the ship is sinking';
+  ROLLBACK;
+  IF invoer = ‘doen’ THEN
+  RAISE INFO 'Gaon met die banaan';
+  COMMIT;
+	END IF;
+END $code$ LANGUAGE plpgsql;
+CALL voorbeeld(‘doen’);
+```
+
+
+
+## Triggers
+
+Een **trigger** zorgt ervoor dat er bij een bepaalde gebeurtenis in de databank een stuk code opgeroepen wordt. Je kan bijvoorbeeld een kolom maken met een nummertje en elke keer dat er een insert wordt gedaan in je databank iets optellen bij dat nummertje.
+
+Je kan triggers ook **functies** en **procedures** op laten roepen.
+
+Algemeen, uit de [documentatie](https://www.postgresql.org/docs/9.1/sql-createtrigger.html):
+
+```plsql
+CREATE [ CONSTRAINT ] TRIGGER name { BEFORE | AFTER | INSTEAD OF } { event [ OR ... ] }
+    ON table
+    [ FROM referenced_table_name ]
+    [ NOT DEFERRABLE | [ DEFERRABLE ] { INITIALLY IMMEDIATE | INITIALLY DEFERRED } ]
+    [ FOR [ EACH ] { ROW | STATEMENT } ]
+    [ WHEN ( condition ) ]
+    EXECUTE PROCEDURE function_name ( arguments )
+
+where event can be one of:
+    INSERT
+    UPDATE [ OF column_name [, ... ] ]
+    DELETE
+    TRUNCATE
+```
+
+
+
+```plsql
+create trigger gebjaartoe
+   before insert, update(geb_datum, jaartoe) of spelers
+   for each row
+   when (year(new.geb_datum) >= new.jaartoe)
+   begin
+   	rollback work ;
+ end ;
+```
+
+Deze trigger checkt of de speler geboren is voor het jaar dat hij bij de tennisclub kwam. Als dat niet zo is voegt hij hem niet toe aan de tabel.
+
+```plsql
+create trigger delete_spelers
+   after delete on spelers for each row
+   begin
+   delete from spelers_wed
+   where spelersnr = old.spelersnr;
+ end ;
+```
+
+Als er bij deze trigger een speler wordt verwijderd uit de tabel `spelers`, dan worden ook alle records met zijn nummer verwijderd uit de tabel `spelers_wed`.
+
+
+
+# 6. GDPR
+
+zou hij hier echt vragen over stellen?
+
+Ik ga dit voor nu effe skippen.
+
+
+
+# 7. Vensterfuncties
+
+Vensterfuncties worden [hier](https://www.postgresql.org/docs/9.1/tutorial-window.html) best goed uitgelegd. Dan hoef ik het zelf niet te doen. Ik heb de stukken die ik nuttig vond hieronder geplakt. Als je een vraag krijgt hierover, raad ik aan om code uit *07_1_venster_functies.nld.pdf* te halen en wat aan te passen.
+
+> A *window function* performs a calculation across a set of table rows that are somehow related to the current row. This is comparable to the type of calculation that can be done with an aggregate function. But unlike regular aggregate functions, use of a window function does not cause rows to become grouped into a single output row — the rows retain their separate identities. Behind the scenes, the window function is able to access more than just the current row of the query result.
+
+```sql
+SELECT depname, empno, salary, avg(salary) OVER (PARTITION BY depname) FROM empsalary;
+```
+
+```
+	depname  | empno | salary |          avg          
+-----------+-------+--------+-----------------------
+ develop   |    11 |   5200 | 5020.0000000000000000
+ develop   |     7 |   4200 | 5020.0000000000000000
+ develop   |     9 |   4500 | 5020.0000000000000000
+ develop   |     8 |   6000 | 5020.0000000000000000
+ develop   |    10 |   5200 | 5020.0000000000000000
+ personnel |     5 |   3500 | 3700.0000000000000000
+ personnel |     2 |   3900 | 3700.0000000000000000
+ sales     |     3 |   4800 | 4866.6666666666666667
+ sales     |     1 |   5000 | 4866.6666666666666667
+ sales     |     4 |   4800 | 4866.6666666666666667
+(10 rows)
+```
+
+> The first three output columns come directly from the table `empsalary`, and there is one output row for each row in the table. The fourth column represents an average taken across all the table rows that have the same `depname` value as the current row. (This actually is the same function as the regular `avg` aggregate function, but the `OVER` clause causes it to be treated as a window function and computed across an appropriate set of rows.)
+
+> A window function call always contains an `OVER` clause directly following the window function's name and argument(s). This is what syntactically distinguishes it from a regular function or aggregate function. The `OVER` clause determines exactly how the rows of the query are split up for processing by the window function. The `PARTITION BY` list within `OVER` specifies dividing the rows into groups, or partitions, that share the same values of the `PARTITION BY` expression(s). For each row, the window function is computed across the rows that fall into the same partition as the current row.
+
+> You can also control the order in which rows are processed by window functions using `ORDER BY` within `OVER`. (The window `ORDER BY` does not even have to match the order in which the rows are output.) Here is an example:
+
+Nog een voorbeeld van Bertels
+
+```sql
+SELECT row_number() OVER(ORDER BY spelersnr),
+plaats, spelersnr
+FROM spelers
+WHERE geslacht = 'M'
+ORDER BY plaats NULLS FIRST;
+```
+
+Dit geeft elke rij in de tabel een rijnummer volgens het spelersnr. Dus de speler met het laagste nummer krijgt 0, de volgende 1, ...
+
+
+
+**RANK** geeft de cumulatieve frequentie. Kijk maar gewoon naar de uitvoer en dan snap je wel ongeveer wat het doet.
+
+```sql
+SELECT rank() OVER(ORDER BY plaats),
+plaats
+FROM spelers
+WHERE geslacht = 'M'
+ORDER BY plaats NULLS LAST;
+```
+
+```
+  rank | plaats
+ ------+----------
+     1 | Den Haag
+     1 | Den Haag
+     1 | Den Haag
+     1 | Den Haag
+     1 | Den Haag
+     1 | Den Haag
+     1 | Den Haag
+     8 | Rijswijk
+     9 | Voorburg
+(9 rows)
+```
+
+**DENSE RANK** (kijk maar gewoon)
+
+```sql
+SELECT dense_rank()
+OVER(ORDER BY plaats),
+plaats
+FROM spelers
+WHERE geslacht = 'M'
+ORDER BY plaats NULLS LAST;
+```
+
+```
+  dense_rank | plaats
+ ------------+----------
+           1 | Den Haag
+           1 | Den Haag
+           1 | Den Haag
+           1 | Den Haag
+           1 | Den Haag
+           1 | Den Haag
+           1 | Den Haag
+           2 | Rijswijk
+           3 | Voorburg
+(9 rows)
+```
+
+
+
+# 8. CTEs en Beveiliging
 
