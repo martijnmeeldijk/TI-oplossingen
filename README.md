@@ -36,6 +36,7 @@ Je kan martipoints verdienen door iets toe te voegen aan de repo of door iets te
 | Simon Germeau        | 1             | 0           | 1          |  
 | Noa Andries          | 1             | 0           | 1          |  
 | Kasper Vanderhulst   | 1             | 0           | 1          |  
+| Abel Vanden Briel    | 1             | 0           | 1          |  
 
 
  
