@@ -69,8 +69,31 @@ from hemelobjecten o
 where o.diameter >= all(select hemelobjecten.diameter from hemelobjecten)
 order by 3,1
 ```
-
-
+Maak een lijst van klanten die meer dan 2 keer een reis gemaakt hebben waarbij er geen bezoek was aan Jupiter.
+```postgresSQL
+SELECT klantnr, naam || ' ' || vnaam as klantnaam, COUNT(reisnr) aantalreizen
+FROM deelnames INNER JOIN klanten USING(klantnr)
+WHERE NOT EXISTS (
+	SELECT reisnr
+	FROM bezoeken
+	WHERE objectnaam = 'Jupiter'
+	AND deelnames.reisnr = bezoeken.reisnr
+) 
+GROUP BY klantnr, klantnaam
+HAVING COUNT(reisnr) > 2
+```
+Geef de klantnr voor de klant met het meeste bezoeken aan de maan. Geef ook het aantal bezoeken.
+Gebruik geen limit of top.
+```postgresSQL
+SELECT klantnr, COUNT(aantalbezoeken) AS count
+FROM deelnames JOIN (
+	SELECT reisnr, volgnr
+	FROM bezoeken
+	WHERE objectnaam = 'Maan'
+	GROUP BY reisnr, volgnr) AS aantalbezoeken USING (reisnr)
+GROUP BY klantnr
+HAVING COUNT(reisnr) > 3
+```
 
 ## Optim
 
@@ -102,6 +125,15 @@ Probeer gelijk of beter te doen dan "Sort (cost=33.16..33.66 rows=200 width=86)"
 select s.spelersnr, s.naam, s.voorletters, (s.jaartoe - (select avg(spelers.jaartoe) from spelers)) as verschil
 from spelers s 
 order by 1,2,3,4
+```
+
+Je kan per speler berekenen hoeveel boetes die speler heeft gehad en wat het totaalbedrag per speler is. Pas nu deze querie aan zodat per verschillend aantal boetes wordt getoond hoe vaak dit aantal boetes voorkwam. Sorteer van voor naar achter.
+Probeer gelijk of beter te doen dan "Sort (cost=46.39..46.89 rows=200 width=8)".
+```postgreSQL
+SELECT b1.aantalboetes AS a, COUNT(spelersnr)
+FROM (SELECT spelersnr, COUNT(*) AS aantalboetes FROM boetes GROUP BY spelersnr) AS b1
+GROUP BY b1.aantalboetes
+ORDER BY 1,2
 ```
 
 Geef van alle spelers het verschil tussen het jaar van toetreding en het geboortejaar, maar geef alleen die spelers waarvan dat verschil groter is dan 20. Sorteer van voor naar achter.
@@ -208,6 +240,20 @@ group by 1,2, 3
 order by 1,2,3,4,5
 ```
 
+
+Geef de volledige frequentietabel voor de diameters van de hemelobjecten (frequentie: hoeveel ojecten zijn er met de gegeven diameter, cumulatieve Frequentie, relatieve frequentie, Relatieve cumulatieve frequentie). Let op de datatypes en de precisie, gebruik CAST, rond niet af. Sorteer op diameter.
+```postgreSQL
+SELECT diameter, COUNT(diameter) AS f, 
+SUM(COUNT(diameter)) OVER (PARTITION BY COUNT(diameter)/(SELECT COUNT(*) FROM hemelobjecten) ORDER BY diameter) AS cf,
+TO_CHAR(float8 (COUNT(diameter)*100::float/ (SELECT COUNT(*) FROM hemelobjecten)),'FM99.00') AS rf,
+TO_CHAR(float8 (SUM(COUNT(diameter)*100::float/(SELECT COUNT(*) FROM hemelobjecten)) 
+				OVER (PARTITION BY COUNT(diameter)/(SELECT COUNT(*) FROM hemelobjecten) ORDER BY diameter))
+		,'FM999.00') AS crf
+
+FROM hemelobjecten
+GROUP BY 1
+ORDER BY 1 ASC
+```
 
 
 Geef voor elke reis het aantal klanten waarvan de naam niet met een 'G' begint en waarvan de periode van de geboortedatum van de klant tot de vertrekdatum van de reis overlapt met de huidige datum en 50 jaar verder (gebruik hiervoor de gepaste operator: OVERLAPS).
@@ -390,7 +436,31 @@ group by s.bondsnr
 order by 1
 ```
 
+Geef van elke speler die enkel wedstrijden gewonnen heeft voor team nr 1 en voor wie in totaal meer dan 100 euro aan boete betaald is, het spelersnummer, zijn naam, woonplaats en het totale boetebedrag.
+Dit resultaat moet aflopend geordend worden op het totale boetebedrag. Sorteer van voor naar achter.
+```postgreSQL
+select spelersnr, naam, plaats, sum(distinct bedrag)
+from boetes
+inner join wedstrijden using(spelersnr)
+inner join spelers using(spelersnr)
+where teamnr = 1
+and gewonnen > verloren
+group by spelersnr, naam, plaats
+having sum(distinct bedrag) > 100
+order by 1,2,3,4
+```
+
 ## Venster XML
+
+Geef alle klanten waarbij de voorlaatste letter van de naam 1 van de letters uit het woord 'azerty' is.
+Gebruik geen OR operator, maar een andere ISO sql operator voor het vergelijken van patronen, sorteer van voor naar achter.
+```postgreSQL
+SELECT klantnr, naam, vnaam, geboortedatum
+FROM klanten
+WHERE naam SIMILAR TO '%(a|z|e|r|t|y)_'
+ORDER BY 1,2,3,4
+```
+
 
 Geef voor elke een klant een overzicht aan uitgaven. Hoe? Geef voor elke klant een cumulatie overzicht van prijs van de reizen waar hij aan deelgenomen heeft. De volgorde, waarin er wordt cumulatief wordt opgeteld, wordt bepaald door de vertrekdatum van de reis. Sorteer van voor naar achter.
 Tip: vergelijk deze uitvoer met de uitvoer van een query die een gesorteerd overzicht geeft van de klanten en hun deelnames aan reizen.
@@ -409,6 +479,19 @@ inner join reizen r on(r.reisnr = d.reisnr)
 order by 1,2,3
 ```
 
+Geef enkel de 2 voorlaatste reizen terug. De positie van reizen wordt bepaalt door het reisnummer.
+Ter vergelijking, als je de getallen 1 t/m 10 neemt,
+dan is dit 8 en 9. Sorteer van voor naar achter.
+Gebruik enkel ISO sql.
+```postgreSQL
+select *
+from (	select reisnr, vertrekdatum, reisduur, prijs
+	from reizen
+	order by reisnr desc
+	offset 1 row
+	fetch first 2 rows only ) t
+order by reisnr
+```
 
 Toon in xmlformaat de objectnamen, afstand en diameter voor objecten die rond Neptunus draaien. Geef als eerste kolom de commentaar maan. Sorteer van voor naar achter.
 Tip: XML is gebaseerd op het datatype text.
@@ -420,8 +503,22 @@ where satellietvan like 'Neptunus'
 order by 1,2
 ```
 
+Geef alle klanten waarbij de 1 van de middenste letters van de naam uit het woord 'qwerty' komt.
+Gebruik geen OR operator, sorteer van voor naar achter.
+```postgreSQL
+SELECT klantnr, naam, vnaam, geboortedatum
+FROM klanten
+WHERE naam SIMILAR TO '%(q|w|e|r|t|y)%'
+ORDER BY 1,2,3,4
+```
+
 
 ## JSON
+
+Gebruik JSON instructies. Genereer startende van een heterogene array de volgende output: [1, 2, "3", 4, 5]
+```postgreSQL
+select * from json_build_array(1,2,'3',4,5)
+```
 
 Gebruik JSON instructies. Selecteer in onderstaande json string '{"a":[1,2,3],"b":[4,5,6]}' het tweede object
 
@@ -452,6 +549,11 @@ Gebruik JSON instructies. Selecteer in onderstaande json string '[{"1":"2"},{"4"
 SELECT  '[{"1":"2"},{"4":"5"}]'::json->>0
 ```
 
+Gebruik JSON instructies. Selecteer in onderstaande json string '[{"1":"2"},{"4":"5"}]' het tweede object
+```postgreSQL
+SELECT '[{"1":"2"},{"4":"5"}]'::json -> 1
+```
+
 Gebruik JSON instructies. Selecteer uit onderstaande json string '{"a": {"b":{"c": "foo"}, "c":{"5":"6"}}}' het element "6"
 ```postgreSQL
 SELECT '{"a": {"b":{"c": "foo"}, "c":{"5":"6"}}}'::json->'a'->'c'->'5'
@@ -460,4 +562,9 @@ SELECT '{"a": {"b":{"c": "foo"}, "c":{"5":"6"}}}'::json->'a'->'c'->'5'
 Gebruik JSON instructies. Selecteer uit onderstaande json string '{"a": {"b":{"c": "foo"}, "c":{"5":"6"}}}' het element "{"c": "foo"}"
 ```postgreSQL
 SELECT '{"a": {"b":{"c": "foo"}, "c":{"5":"6"}}}'::json->'a'->'b'
+```
+
+Gebruik JSON instructies. Selecteer in onderstaande json string '[{"1":"2"},{"4":"5"},"6"]' het derde object
+```postgreSQL
+select '[{"1":"2"},{"4":"5"},"6"]'::json -> 2
 ```
