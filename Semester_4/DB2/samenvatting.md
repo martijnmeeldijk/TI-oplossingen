@@ -615,6 +615,7 @@ AS $code$
   IF invoer = ‘niet doen’ THEN
   RAISE WARNING 'Abort, the ship is sinking';
   ROLLBACK;
+  END IF;
   IF invoer = ‘doen’ THEN
   RAISE INFO 'Gaon met die banaan';
   COMMIT;

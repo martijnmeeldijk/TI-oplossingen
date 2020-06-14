@@ -26,6 +26,26 @@ Er zijn uitzonderingen. Sommige NoSQL databank makers zorgen ervoor dat hun data
 ***Theorie***: 
 
 1. Geef conceptueel uitvoering van [Select](https://examenwiki.diana.be/index.php?title=Select&action=edit&redlink=1) statement. 
+
+Select statement wordt alsvolgt uitgevoerd:
+From > Where > Group By > Having > Select > Distinct (indien aanwezig) > Order By > Limit / Offset (indien aanwezig).
+
+From: Logisch dat dit de eerste is. Voor je data gaat filteren en selecteren moet je natuurlijk weten welke data je totaal nodig hebt om daarna te filteren.
+
+Where: Filter de data volgens de gegeven constraints. Als een row niet voldoet wordt die weggehaald.
+
+Group By: Groepeer de overblijvende rows op basis van een gemeenschappelijke waarde in die row. Nodig als je aggregatie functies gaat gebruiken.
+
+Having: Zoals we ondertussen al weten: Aggregatie functies kunnen niet in de where, ze kunnen enkel bij Having. Natuurlijk moet je eerst data groeperen alvorens je op basis van aggregatie functies gaat filteren.
+
+Select: Alle kolommen / aggregatie functies / etc. die je in de select hebt opgevraagd worden nu geselecteerd van de data.
+
+Distinct: Van de overblijvende rijen worden nu alle rijen met dubbele waardes in de kolom die je hebt gemarkeerd met distinct verwijderd.
+
+Order By: De rijen worden geordend volgens de gespecifieerde regels.
+
+Limit / Offset: Indien opgegeven worden enkel de rijen getoond die je hebt opgegeven in de Limit of Offset.
+
 2. Tijdens Uitnormalizatie moet vreemnde sleutel gebruik maken van primary sleutel. Ja/Nee. Leg uit. 
 3. Meerkeuze vraag over Select snelste is. ( keuze tussen select statements met - id, hash, datum)
 
@@ -35,8 +55,33 @@ Er zijn uitzonderingen. Sommige NoSQL databank makers zorgen ervoor dat hun data
 
 1 a. Schrijf een script die een nieuw kol (bedrag en teken) aanmaakt aan [table](https://examenwiki.diana.be/index.php?title=Table&action=edit&redlink=1) en data toevoegt met betreffende data (maak gebruikt van andere kol in tabel). b. Wat is probleem met zo'n manier van data toevoegen? c. Create view van twee tabellen zonder joins te gebruiken.
 
-\2. Update table(in_uitgave) wanner een uitgave wordt gedaan door 'Griet' (van eigenaar) naar inkomen. a. Geef bericht "This is normal.... bla bla....., bug fixed" wanner update gedaan is. b. Geeft bericht bij insert "are you sure".
+\2. Update table(in_uitgave) wanner een uitgave wordt gedaan door 'Griet' (van eigenaar) naar inkomen. 
+a. Geef bericht "This is normal.... bla bla....., bug fixed" wanner update gedaan is. 
 
+
+b. Geeft bericht bij insert "are you sure".
+Als ik de vraag goed heb verstaan moet je gewoon dat bericht sturen. Het is zover ik weet niet mogelijk om de gebruiker effectief ja of nee te laten kiezen bij een insert...
+
+Als je ook hier moet kijken dat de gebruiker Griet is:
+```
+CREATE OR REPLACE FUNCTION are_you_sure() RETURNS TRIGGER AS
+$$
+BEGIN
+	IF (NEW.eigenaar = 'Griet') THEN
+   		RAISE NOTICE 'Are you sure?';
+	END IF;
+	RETURN NEW;
+END;
+$$
+LANGUAGE 'plpgsql';
+```
+```
+CREATE TRIGGER trigger_are_you_sure
+  BEFORE INSERT
+  ON table_name
+  FOR EACH ROW
+  EXECUTE PROCEDURE are_you_sure();
+```
 
 
 ## Juni 2018 - 15/06 13u00
@@ -157,17 +202,18 @@ bv: tabel(k1 text,k2 integer)
    k1 text
    k2 integer
 ```
-
+```
 CREATE OR REPLACE FUNCTION tabel_kolommen (tabelnaam varchar)
 RETURNS table(output varchar) AS $$
    SELECT column_name || ' ' || data_type
    from information_schema.columns
    where table_name = tabelnaam;
 $$ LANGUAGE sql;
-
+```
 Voorbeeld in schema 'ruimtereizen': 
 SELECT tabel_kolommen('bezoeken')
 Output:
+
 ```
    output:
    1 reisnr numeric
