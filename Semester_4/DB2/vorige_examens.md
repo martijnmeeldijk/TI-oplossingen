@@ -26,6 +26,26 @@ Er zijn uitzonderingen. Sommige NoSQL databank makers zorgen ervoor dat hun data
 ***Theorie***: 
 
 1. Geef conceptueel uitvoering van [Select](https://examenwiki.diana.be/index.php?title=Select&action=edit&redlink=1) statement. 
+
+Select statement wordt alsvolgt uitgevoerd:
+From > Where > Group By > Having > Select > Distinct (indien aanwezig) > Order By > Limit / Offset (indien aanwezig).
+
+From: Logisch dat dit de eerste is. Voor je data gaat filteren en selecteren moet je natuurlijk weten welke data je totaal nodig hebt om daarna te filteren.
+
+Where: Filter de data volgens de gegeven constraints. Als een row niet voldoet wordt die weggehaald.
+
+Group By: Groepeer de overblijvende rows op basis van een gemeenschappelijke waarde in die row. Nodig als je aggregatie functies gaat gebruiken.
+
+Having: Zoals we ondertussen al weten: Aggregatie functies kunnen niet in de where, ze kunnen enkel bij Having. Natuurlijk moet je eerst data groeperen alvorens je op basis van aggregatie functies gaat filteren.
+
+Select: Alle kolommen / aggregatie functies / etc. die je in de select hebt opgevraagd worden nu geselecteerd van de data.
+
+Distinct: Van de overblijvende rijen worden nu alle rijen met dubbele waardes in de kolom die je hebt gemarkeerd met distinct verwijderd.
+
+Order By: De rijen worden geordend volgens de gespecifieerde regels.
+
+Limit / Offset: Indien opgegeven worden enkel de rijen getoond die je hebt opgegeven in de Limit of Offset.
+
 2. Tijdens Uitnormalizatie moet vreemnde sleutel gebruik maken van primary sleutel. Ja/Nee. Leg uit. 
 3. Meerkeuze vraag over Select snelste is. ( keuze tussen select statements met - id, hash, datum)
 
