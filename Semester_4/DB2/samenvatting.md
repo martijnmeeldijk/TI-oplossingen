@@ -740,6 +740,8 @@ Sorry, ik heb de slides gekopieerd. Als er nu een vraag komt, kan je dit als ref
 
 Vensterfuncties worden [hier](https://www.postgresql.org/docs/9.1/tutorial-window.html) best goed uitgelegd. Dan hoef ik het zelf niet te doen. Ik heb de stukken die ik nuttig vond hieronder geplakt. Als je een vraag krijgt hierover, raad ik aan om code uit *07_1_venster_functies.nld.pdf* te halen en wat aan te passen.
 
+[hier](https://www.postgresql.org/docs/9.3/functions-window.html) is een lijst van vensterfuncties en wat ze doen.
+
 > A *window function* performs a calculation across a set of table rows that are somehow related to the current row. This is comparable to the type of calculation that can be done with an aggregate function. But unlike regular aggregate functions, use of a window function does not cause rows to become grouped into a single output row — the rows retain their separate identities. Behind the scenes, the window function is able to access more than just the current row of the query result.
 
 ```sql

@@ -92,8 +92,26 @@ FROM deelnames JOIN (
 	WHERE objectnaam = 'Maan'
 	GROUP BY reisnr, volgnr) AS aantalbezoeken USING (reisnr)
 GROUP BY klantnr
-HAVING COUNT(reisnr) > 3
+HAVING COUNT(reisnr) > 3 --coole oplossing man
 ```
+
+> de manier waar je het syteem niet cheezet
+
+```sql
+select k.klantnr, aantalbezoeken.count
+from klanten k inner join (
+	select deelnames.klantnr, count(deelnames.klantnr)
+	from deelnames inner join bezoeken on (deelnames.reisnr = bezoeken.reisnr)
+	where bezoeken.objectnaam = 'Maan'
+	group by deelnames.klantnr
+	) as aantalbezoeken using(klantnr)
+where aantalbezoeken.count >= all(select count(deelnames.klantnr)
+	from deelnames inner join bezoeken on (deelnames.reisnr = bezoeken.reisnr)
+	where bezoeken.objectnaam = 'Maan'
+	group by klantnr)
+```
+
+
 
 ## Optim
 
@@ -136,6 +154,13 @@ GROUP BY b1.aantalboetes
 ORDER BY 1,2
 ```
 
+```sql
+select count as a, count(count)
+from (select spelersnr, count(*) from boetes  group by spelersnr) as a
+group by count
+order by 1,2 --je kan alle namen weglaten, zodat het moeilijker is om te verbeteren
+```
+
 Geef van alle spelers het verschil tussen het jaar van toetreding en het geboortejaar, maar geef alleen die spelers waarvan dat verschil groter is dan 20. Sorteer van voor naar achter.
 Probeer zo goed of beter te doen dan "Sort (cost=17.20..17.37 rows=67 width=90)"
 
@@ -144,6 +169,13 @@ select spelersnr, naam, voorletters, toetredingsleeftijd
 from (select spelersnr, naam, voorletters,  jaartoe - extract(year from geb_datum) as toetredingsleeftijd from spelers) as a
 where toetredingsleeftijd > 20
 order by 1, 2, 3, 4
+```
+
+```sql
+select spelersnr, naam, voorletters, jaartoe - extract(year from geb_datum) as toetredingsleeftijd
+from spelers
+where (jaartoe - extract(year from geb_datum) ) > 20
+order by 1,2,3,4 --het kan zonder subquery, de cost is wel exact hetzelfde
 ```
 
 Geef alle spelers die alfabetisch (dus naam en voorletters, in deze volgorde) voor speler 8 staan. Sorteer van voor naar achter.
@@ -159,6 +191,16 @@ where ROW_NUMBER < (select ROW_NUMBER
 		    where bb.spelersnr = 8)
 order by 1, 2 ,3 , 4
 ```
+
+> Goed geprobeerd, maar het kan makkelijker: als je twee strings met '<' vergelijkt in postgres wordt de uitkomst bepaald door hun alphabetische positie (het is ook efficiënter)
+
+```sql
+select spelersnr, naam, voorletters, geb_datum
+from spelers 
+where naam || voorletters < (select naam || voorletters from spelers where spelersnr = 8 )
+order by 1,2,3,4
+```
+
 
 
 ## Vensters
@@ -191,6 +233,20 @@ window w1 as (order by vertrekdatum),
 	w2 as (partition by extract(year from vertrekdatum)order by vertrekdatum)
 order by 1
 ```
+
+> ik had het gedaan zonder die windows echt te definieren (bedankt, nu heb ik iets bijgeleerd)
+
+```plsql
+select reisnr, lag(reisnr) over (order by vertrekdatum) as vorig_reisnr, 
+vertrekdatum, 
+vertrekdatum - lag(vertrekdatum) over (order by vertrekdatum) as tussen_tijd,
+reisduur,
+extract(year from vertrekdatum) as jaar,
+sum(reisduur) over (partition by extract(year from vertrekdatum) order by vertrekdatum ) as jaar_duur
+from reizen
+order by 1,2,3,4,5,6,7
+```
+
 
 
 ## Joins Extra
@@ -346,13 +402,13 @@ where h.objectnaam like 'Mars' or h.objectnaam like 'Maan'
 order by 1,2
 ```
 Geef de klant die het meest op de maan is geweest (+het aantal). Sorteer van voor naar achter.
-```sql
+```plsql
 select klantnr, count(objectnaam)
 from deelnames d inner join bezoeken b on(b.reisnr = d.reisnr)
 where b.objectnaam = 'Maan'
 group by klantnr
 order by 2 desc
-FETCH FIRST ROW ONLY
+FETCH FIRST ROW ONLY --je kan ook 'LIMIT 1' doen
 ```
 Maak een lijst met die mensen die meer dan 2 maal een reis ondernomen hebben waarin men geen enkele satelliet van Jupiter bezoekt !. Sorteer van voor naar achter.
 
@@ -369,6 +425,22 @@ where satellietvan = 'Jupiter')
 )
 group by d.klantnr, k.naam, k.vnaam
 having count(d.reisnr)>2
+```
+
+> andere manier
+
+```sql
+select k.klantnr, k.naam || k.vnaam as "volledige naam", count(klantnr) as "aantal ondernomen reizen"
+from klanten k inner join deelnames using(klantnr)
+where reisnr not in
+(
+	select distinct reisnr from reizen
+	inner join bezoeken b using(reisnr)
+	inner join hemelobjecten h on (h.objectnaam = b.objectnaam and satellietvan = 'Jupiter')
+) 
+group by 1,2
+having count(klantnr) >2
+order by 1,2,3
 ```
 
 
@@ -434,6 +506,15 @@ group by s.bondsnr
 order by 1
 ```
 
+> Kan beetje korter (Het voorbeeld hierboven is een beetje gehardcoded. Als je nu de 10 laagste bondnummers zou willen, moeten daar nog 8 condities bij.)
+
+```sql
+select b.bondsnr 
+from spelers b
+where 2 > (select count(bondsnr) from spelers where bondsnr < b.bondsnr) and b.bondsnr is not null
+order by 1
+```
+
 Geef van elke speler die enkel wedstrijden gewonnen heeft voor team nr 1 en voor wie in totaal meer dan 100 euro aan boete betaald is, het spelersnummer, zijn naam, woonplaats en het totale boetebedrag.
 Dit resultaat moet aflopend geordend worden op het totale boetebedrag. Sorteer van voor naar achter.
 ```sql
@@ -447,6 +528,21 @@ group by spelersnr, naam, plaats
 having sum(distinct bedrag) > 100
 order by 1,2,3,4
 ```
+
+> je kan het ook met een subquery (is ook een klein beetje efficiënter) ik denk dat dat komt doordat je geen joins doet
+
+```sql
+select spelersnr, naam, plaats, sum(bedrag)
+from spelers inner join boetes using(spelersnr)
+where spelersnr in (
+	select spelersnr from wedstrijden
+	where teamnr = 1 and gewonnen > verloren
+)
+group by 1,2,3
+having sum(bedrag) > 100
+```
+
+
 
 ## Venster XML
 
@@ -487,8 +583,20 @@ from (	select reisnr, vertrekdatum, reisduur, prijs
 	from reizen
 	order by reisnr desc
 	offset 1 row
-	fetch first 2 rows only ) t
+	fetch first 2 rows only ) t --is dit iso?
 order by reisnr
+```
+
+> het hoofdstuk heet vensters XML, dus hier is een oplossing met vensters
+
+```sql
+select reisnr, vertrekdatum, reisduur, prijs
+from reizen r 
+inner join 
+	(select row_number() OVER( ORDER BY reisnr desc), reisnr from reizen
+	) as goeie using(reisnr)
+where goeie.row_number between 2 and 3
+order by 1,2,3,4
 ```
 
 Toon in xmlformaat de objectnamen, afstand en diameter voor objecten die rond Neptunus draaien. Geef als eerste kolom de commentaar maan. Sorteer van voor naar achter.
@@ -560,6 +668,12 @@ SELECT '{"a": {"b":{"c": "foo"}, "c":{"5":"6"}}}'::json->'a'->'c'->'5'
 Gebruik JSON instructies. Selecteer uit onderstaande json string '{"a": {"b":{"c": "foo"}, "c":{"5":"6"}}}' het element "{"c": "foo"}"
 ```sql
 SELECT '{"a": {"b":{"c": "foo"}, "c":{"5":"6"}}}'::json->'a'->'b'
+```
+
+> je kan ook het pad meegeven
+
+```sql
+select '{"a": {"b":{"c": "foo"}, "c":{"5":"6"}}}'::json#>'{a,b}'
 ```
 
 Gebruik JSON instructies. Selecteer in onderstaande json string '[{"1":"2"},{"4":"5"},"6"]' het derde object
