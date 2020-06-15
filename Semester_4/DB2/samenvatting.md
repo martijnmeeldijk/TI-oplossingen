@@ -856,6 +856,17 @@ WITH cte_name (column_list) AS (
 Met CTEs kan je complexe queries een stuk makkelijker maken. Je kan code-duplicatie vermijden en de leesbaarheid verbeteren. Nog iets leuks. Je kan er ook lussen mee maken.
 
 ```plsql
+WITH RECURSIVE t(n) AS (
+    VALUES (1)
+  UNION ALL
+    SELECT n+1 FROM t WHERE n < 100
+)
+SELECT sum(n) FROM t;
+```
+
+beetje moeilijker
+
+```plsql
 /*meer opties, boom tonen?*/
 WITH RECURSIVE kind_van(bijnaam, vader, moeder) AS (
  SELECT bijnaam, vader, moeder
@@ -916,7 +927,7 @@ SELECT *
 FROM kind_van;
 ```
 
-Zie de guide van deze les voor een meer *in depth* uitleg.
+Zie de [guide](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester_4/DB2/DB2-Labos/08_3_CTEs_oefeningen.md) van deze les voor een meer *in depth* uitleg.
 
 
 
@@ -1304,7 +1315,7 @@ CONNECTION 'dbname=probeer host=databanken.ucll.be user=local_u0082489
 
 
 
-Ik leg dit normaal gezien uitvoerig uit in de guides
+Ik leg dit normaal gezien uitvoerig uit in de [guide](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester_4/DB2/DB2-Labos/11_4_logical_replication_oefening.md)
 
 ## Buffers
 
