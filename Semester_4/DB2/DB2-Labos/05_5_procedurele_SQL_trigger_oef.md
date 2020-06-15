@@ -23,7 +23,7 @@ ik heb op het 20 jaar oude php forum het volgende gevonden:
 
 ```
 CREATE OR REPLACE FUNCTION check_reservering() RETURNS TRIGGER AS
-
+$$
 BEGIN
   IF( NEW.datum_aankomst > NEW.datum_vertrek ) THEN
     RAISE EXCEPTION ''Aankomstdatum moet voor vertrekdatum liggen'';
@@ -31,7 +31,7 @@ BEGIN
   
   RETURN NEW;
 END;
-
+$$
 LANGUAGE 'plpgsql';
 ```
 
