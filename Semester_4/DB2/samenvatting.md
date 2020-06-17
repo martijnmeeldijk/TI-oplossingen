@@ -310,7 +310,15 @@ Hoe kan je je queries nu zo efficient mogelijk maken?
 
 Oh mijn fucking god *03_1_explain.pdf* is echt een teringzooi. Ik ga dit effe skippen want ik kan het niet aan.
 
+`EXPLAIN` geeft een soort voorspelling van de kostprijs en de verwerkingstijd van een query.
 
+Als je `EXPLAIN ANALYSE` doet, wordt de query effectief uitgevoerd. 
+
+Abel:
+
+> In tegenstelling tot "Explain" voert Explain Analyse de query volledig uit. Explain geeft een geschatte "cost" van de query, en kijkt hoeveel rijen en kolommen opgezocht moeten worden en probeert daaruit te schatten of het eerdern een zware of lichte query is.
+>
+> Met Analyse erbij wordt de query uitgevoerd en wordt de tijd gemeten. Eerst wordt een plan gemaakt: "Hoe ga ik deze query uitvoeren" en dan wordt het effectief uitgevoerd.
 
 ## Dedection and benchmarking
 
@@ -362,7 +370,7 @@ Stel je voor dat je alleen het derde tot het vijfde resultaat wilt tonen?
 
 Dan kan je bijvoorbeeld dit doen:
 
-```sql
+```plsql
 SELECT playernumber, name, birth_date
 FROM players p
 ORDER by birth_date DESC
@@ -402,6 +410,48 @@ variance(verblijfsduur)
 FROM bezoeken b2
 WHERE b2.reisnr = r1.reisnr
 ) AS sub ON true;
+```
+
+
+
+Bertels:
+
+> LATERAL 
+>
+> Subqueries appearing in FROM can be preceded by the key word LATERAL. This allows them to reference columns provided by preceding FROM items. (Without LATERAL, each subquery is evaluated independently and so cannot cross-reference any other FROM item.)
+>
+> LATERAL DETAIL 
+>
+> Via LATERAL kunnen we verwijzen naar een eerdere referentie uit de FROM-komponent 
+>
+> * naar een eerdere tabelreferentie 
+>
+> * naar een eerdere subquery 
+>
+> * naar een eerdere functie die een verzameling teruggeeft (SRF) 
+>   * In dit geval wordt een LATERAL gedrag door de standaard bepaalt, je kan dus LATERAL weglaten in dit geval
+>
+> When a FROM item contains LATERAL cross-references, evaluation proceeds as follows: for each row of the FROM item providing the cross-referenced column(s), or set of rows of multiple FROM items providing the columns, the LATERAL item is evaluated using that row or row set's values of the columns. The resulting row(s) are joined as usual with the rows they were computed from. This is repeated for each row or set of rows from the column source table(s). > Cartesisch product gedraagt zich hier als een foreach lus
+>
+> 
+>
+> Gebruik geen RIGHT JOIN LATERAL of FULL JOIN LATERAL The column source table(s) must be INNER or LEFT joined to the LATERAL item, else there would not be a well-defined set of rows from which to compute each set of rows for the LATERAL item. 
+
+Nog wat code:
+
+```sql
+SELECT *
+FROM nummers, LATERAL
+(SELECT generate_series(1,max_num)) AS max_lijst;
+```
+
+```sql
+/* Toon per klant de leeftijd */
+SELECT *
+FROM klanten k
+LEFT JOIN LATERAL
+(SELECT age(k.geboortedatum) as leeftijd) AS l
+ON (leeftijd=age(k.geboortedatum));
 ```
 
 
