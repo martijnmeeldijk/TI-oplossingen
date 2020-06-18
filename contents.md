@@ -2,35 +2,35 @@
 
 ### Semester 1
 * Computersystemen
-  * [Oefeningen](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester%201/computersystemen)
-  * [Samenvatting Axelele](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester%201/computersystemen/Computersystemen_axelele_2019.pdf)
+  * [Oefeningen](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester_1/computersystemen)
+  * [Samenvatting Axelele](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester_1/computersystemen/Computersystemen_axelele_2019.pdf)
 * ComputerNetwerken 1
-  * [Samenvatting Axelele](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester%201/Computernetwerken%201/Computernetwerken_axelele_2019.pdf)
+  * [Samenvatting Axelele](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester_1/Computernetwerken%201/Computernetwerken_axelele_2019.pdf)
 
 
 ### Semester 2
-* [Computernetwerken 2](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester%202)
-  * [Oefeningen](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester%202/cnw2.pdf)
-  * [Oplossingen monitoraat 2019](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester%202/oplossingen%20monitoraat%20cnw2.txt)
-* [OOP labos](https://github.com/martijnmeeldijk/TI-oplossingen/tree/master/Semester%202/OOP)
+* [Computernetwerken 2](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester_2)
+  * [Oefeningen](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester_2/cnw2.pdf)
+  * [Oplossingen monitoraat 2019](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester_2/oplossingen%20monitoraat%20cnw2.txt)
+* [OOP labos](https://github.com/martijnmeeldijk/TI-oplossingen/tree/master/Semester_2/OOP)
 * Dataquerying
   * [SQL Dropbox](https://github.com/arnobarre/Databanken-Dataquerying)
 
 
 ### Semester 3
 * IT en Management
-  * [Samenvatting](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester%203/SAMENVATTING%20IT%26M.docx)
+  * [Samenvatting](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester_3/SAMENVATTING%20IT%26M.docx)
 * Besturingssystemen 2
-  * [Samenvatting](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester%203/Samenvatting%20Besturingssystemen%202.docx)
+  * [Samenvatting](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester_3/Samenvatting%20Besturingssystemen%202.docx)
 * Databanken 1 
-  * [Samenvatting](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester%203/Samenvatting%20databanken%201_v2.pdf)
+  * [Samenvatting](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester_3/Samenvatting%20databanken%201_v2.pdf)
   * [SQL Dropbox](https://github.com/Kwinnieprince/queries_databases)
 * Testing
-  * [Samenvatting](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester%203/Samenvatting%20testing.docx)
+  * [Samenvatting](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester_3/Samenvatting%20testing.docx)
 * Databanken 1
-  * [Examenoplossingen](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester%203/databanken-examenopl-2.txt)
+  * [Examenoplossingen](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester_3/databanken-examenopl-2.txt)
 * Webontwikkeling 3
-  * [Samenvatting](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester%203/samenvatting%20Webontwikkeling%203.pdf)
+  * [Samenvatting](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester_3/samenvatting%20Webontwikkeling%203.pdf)
   
 
 ### Semester 4
