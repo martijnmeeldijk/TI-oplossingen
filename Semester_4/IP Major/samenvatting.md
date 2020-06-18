@@ -100,7 +100,7 @@ De router kijkt naar het request en stuurt het naar de juiste controller/actie. 
 
 **<u>Controller</u>**
 
-Normaal gezien weten jullie wel ongeveer wat een controller zoal doet. Een controller voorziet functies (zogenaamde **actions**) om requestst af te handelen. Je controller kan bijvoorbeeld data voorbereiden om het daarna te tonen in een view. Of zeggen welke view geladen moet worden. Je kan er hopelijk zelf nog wel een aantal bedenken.
+Normaal gezien weten jullie wel ongeveer wat een controller zoal doet. Een controller voorziet functies (zogenaamde **actions**) om requests af te handelen. Je controller kan bijvoorbeeld data voorbereiden om het daarna te tonen in een view. Of zeggen welke view geladen moet worden. Je kan er hopelijk zelf nog wel een aantal bedenken.
 
 
 
@@ -110,7 +110,7 @@ Normaal gezien weten jullie wel ongeveer wat een controller zoal doet. Een contr
 
 > Phoenix views act as the presentation layer. For example, we expect the output of rendering "index.html" to be a complete HTML page. To make our lives easier, we often use templates for creating those HTML pages.
 
-De view zorgen ervoor dat je templates gerendered worden. Je kan er ook **helper functies** in steken om de data te decoreren. (in mijn project heb ik bijvoorbeeld een helper functie geschreven om de links te verbergen waarvoor de gebruiker toch niet geauthoriseerd is om te bezoeken). 
+De views zorgen ervoor dat je templates gerendered worden. Je kan er ook **helper functies** in steken om de data te decoreren. (in mijn project heb ik bijvoorbeeld een helper functie geschreven om de links te verbergen waarvoor de gebruiker toch niet geauthoriseerd is om te bezoeken). 
 
 
 
