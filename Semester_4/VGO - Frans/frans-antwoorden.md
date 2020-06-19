@@ -99,7 +99,7 @@ Tu peux trouver toutes ces infos SUR Internet.
 Question 20
 0 out of 1 points
 
-Quand j étais plus jeune, j ai joué pendant trois ans (niet 'au') basket.
+Quand j étais plus jeune, j ai joué pendant trois ans (niet 'au') basket. [au zou weldegelijk correct moeten zijn]
 Question 21
 1 out of 1 points
 
