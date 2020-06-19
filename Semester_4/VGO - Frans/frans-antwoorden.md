@@ -69,9 +69,9 @@ Question 12
 
 Je travaille DANS une boulangerie tous les samedis.
 Question 13
-0 out of 1 points
+1 out of 1 points
 
-J écoute beaucoup (niet 'de la' blijkbaar) musique.
+J écoute beaucoup de musique.
 Question 14
 1 out of 1 points
 
