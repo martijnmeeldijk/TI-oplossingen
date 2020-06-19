@@ -6,7 +6,7 @@
 
 Bij het gebruik van deze oplossingenlijst gaat u automatisch akkoord met de volgende voorwaarden:
 
-1. U moet geabboneerd zijn op 'King Marti' op soundcloud https://soundcloud.com/kingmarti/tracks
+1. U moet geabonneerd zijn op 'King Marti' op soundcloud https://soundcloud.com/kingmarti/tracks
 2. U moet tijdens het gebruik van deze lijst luisteren naar muziek van 'King Marti'
 3. Kom genoeg buiten (ga lopen ofzo)
 4. Was je handen na gebruik van deze lijst
