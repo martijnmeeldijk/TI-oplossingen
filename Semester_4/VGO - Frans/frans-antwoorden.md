@@ -105,9 +105,9 @@ Question 21
 
 J ai choisi D' étudier l informatique appliquée.
 Question 22
-0 out of 1 points
+1 out of 1 points
 
-J adore jouer (??) la Playstation.
+J adore jouer à la Playstation.
 Question 23
 1 out of 1 points
 
