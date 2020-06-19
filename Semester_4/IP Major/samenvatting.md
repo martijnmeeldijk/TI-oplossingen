@@ -20,7 +20,7 @@ De commando's `mix phx.new application name (- - no-html, - - database)`, `mix r
 
 ## Umbrella
 
-Bij de les *IP Minor* hebben ze ons een **umbrella** project laten maken. Dit is niet de default in phoenix. Bij een normaal phoenix project heb je maar 1 'applicatie'. Waardoor als je code toevoegd, je app kan groeien tot een extreem grote, moeilijk te onderhouden **monolith**. Daarom leren ze ons direct hoe we **umbrella** moeten gebruiken. In plaats van één enkele, grote monoliet van een app te maken, kan je met umbrella je applicatie in kleinere **deelapplicaties** splitsen (meerdere opgesplitste **contexts**). Het is een skere **microservices** oplossing. **Dependencies** tussen de verschillende applicaties moet je ook expliciet aangeven.
+Bij de les *IP Minor* hebben ze ons een **umbrella** project laten maken. Dit is niet de default in phoenix. Bij een normaal phoenix project heb je maar 1 'applicatie'. Waardoor als je code toevoegt, je app kan groeien tot een extreem grote, moeilijk te onderhouden **monolith**. Daarom leren ze ons direct hoe we **umbrella** moeten gebruiken. In plaats van één enkele, grote monoliet van een app te maken, kan je met umbrella je applicatie in kleinere **deelapplicaties** splitsen (meerdere opgesplitste **contexts**). Het is een skere **microservices** oplossing. **Dependencies** tussen de verschillende applicaties moet je ook expliciet aangeven.
 
 <u>Conclusie</u>: umbrella zorgt voor een bepaald niveau van **separation**, maar de verschillende deelapplicaties staan toch niet helemaal los van elkaar.
 
