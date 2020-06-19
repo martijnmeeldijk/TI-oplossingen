@@ -17,6 +17,7 @@ Je kan martipoints verdienen door iets toe te voegen aan de repo of door iets te
 | Naam                 | MartiPoints   | Ingewisseld | Tegoed
 | -------------        | ------------- |-------------|-------------
 | Jonas Berx           | 12            | 0           | 12         |      
+| Frédéric Vogels      | 9             | 0           | 9          |
 | Katerina Stavrinoudis| 6             | 0           | 6          |  
 | Maarten Pauwels      | 4             | 0           | 4          |
 | Abel Vanden Briel    | 4             | 0           | 4          |  
@@ -37,7 +38,6 @@ Je kan martipoints verdienen door iets toe te voegen aan de repo of door iets te
 | Luca Celea           | 1             | 0           | 1          |  
 | Simon Germeau        | 1             | 0           | 1          |  
 | Kasper Vanderhulst   | 1             | 0           | 1          |  
-| Frédéric Vogels      | 1             | 0           | 1          |
 
  
 
