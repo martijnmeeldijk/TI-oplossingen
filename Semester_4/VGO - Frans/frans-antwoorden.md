@@ -153,7 +153,7 @@ Question 33
 
 Mon anniversaire, c'est LE 18 décembre.
 
-[geupdate versie, 43 vragen]
+[geüpdatete versie, 43 vragen]
 
 1. en
 
