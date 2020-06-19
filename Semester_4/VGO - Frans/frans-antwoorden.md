@@ -37,9 +37,9 @@ Question 4
 
 Elle est fabriquée à Pékin.
 Question 5
-0 out of 1 points
+1 out of 1 points
 
-Ma copine vient (niet 'de' blijkbaar) Limbourg.
+Ma copine vient du Limbourg.
 Question 6
 1 out of 1 points
 
