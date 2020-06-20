@@ -1,6 +1,8 @@
 # C++ Cheat Sheet
 
-Stukjes tekst uit de oefeningen die misschien kunnen helpen bij de quiz.
+Stukjes tekst uit de oefeningen/dingen van op het internet die misschien kunnen helpen bij de quiz.
+
+
 
 ## Inheritance & Constructors
 
@@ -84,7 +86,28 @@ int main ()
 
 ### Functions
 
-//TODO
+> Non-modifying functions should be suffixed with `const`, telling the compiler these do not change the object
+>
+> `const` version called if accessed through const variable
+>
+> non`const` version called if through nonconst variable
+
+You can't call a non`const` function on something that's `const`:
+
+```c++
+class int_array {
+	int* ns;
+public:
+	int& at(int index)
+	{
+		return ns[index ];
+	}
+};
+const int_array arr;
+int x = arr.at(0); //this is illegal
+```
+
+
 
 ## Bitwise operators
 
