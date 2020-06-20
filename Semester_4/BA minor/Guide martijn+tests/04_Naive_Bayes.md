@@ -12,7 +12,7 @@ Er zijn heel veel groene auto's en de kans dat de getuige het fout heeft op een 
 
 ## 2. Based on the Titanic dataset, how many different combinations can you make with the 4 variables?
 
-- yes/no 
+- yes/no
 - first/second/third/crew
 - Adult/child
 - Male/female
@@ -34,7 +34,7 @@ All of the above
 
 
 
-Can you? 
+Can you?
 
 Kunnen kinderen crewleden zijn denk je?
 
@@ -54,7 +54,7 @@ ik heb dit gedaan:
 
 
 
-Je moet dus de select rows widget gebruiken, daarna kan je die shizzle in een boxplot gooien en de kans berekenen. 
+Je moet dus de select rows widget gebruiken, daarna kan je die shizzle in een boxplot gooien en de kans berekenen.
 
 
 
@@ -62,11 +62,11 @@ Je moet dus de select rows widget gebruiken, daarna kan je die shizzle in een bo
 
 Maak een excel file aan:
 
-<img src="img/image-20200508153837335.png" alt="image-20200508153837335" style="zoom:50%;" />
+<img src="img/image-20200508153837335.png" alt="image-20200508153837335" width="50%" />
 
 
 
-<img src="img/image-20200508153819399.png" alt="image-20200508153819399" style="zoom:50%;" />
+<img src="img/image-20200508153819399.png" alt="image-20200508153819399" width="50%" />
 
 Maak dan een prediction met naive bayes als classifier (met de excel file als data)
 

@@ -16,14 +16,14 @@ Ik ben niet 100% zeker waarom het juist is, maar ik denk dat jullie de RMSE moet
 Bron: https://stats.stackexchange.com/questions/56302/what-are-good-rmse-values
 
 ```
-KNN regression (k=5) using only the same variables as with the statistically significant selected multiple linear regression. 
+KNN regression (k=5) using only the same variables as with the statistically significant selected multiple linear regression.
 ```
 
 ## 2. Daily Demand Forecasting. What is the average amount of orders?
 
 Orange documentatie
 
-<img src="img/image-20200509160649988.png" alt="image-20200509160649988" style="zoom:50%;" />
+<img src="img/image-20200509160649988.png" alt="image-20200509160649988" width="50%" />
 
 ```
 309.147 volgens haar file
@@ -107,7 +107,7 @@ Klik op test and score man.
 
 ## 11. What is the relationship between the equation of the handmade model using the urgent/non-urgent feature and the residuals you calculated?
 
-Dit is niet echt duidelijk, kijk misschien in exercises.pdf 
+Dit is niet echt duidelijk, kijk misschien in exercises.pdf
 
 > *Why isn’t urgent combined with non_urgent a perfect match for the target?*
 >
@@ -126,7 +126,7 @@ Dit is niet echt duidelijk, kijk misschien in exercises.pdf
 
 
 ```
-I don't think that every single order falls in urgent or non-urgent. 
+I don't think that every single order falls in urgent or non-urgent.
 
 The residual error is there because there are also fiscal orders.
 ```
@@ -148,7 +148,7 @@ Day of the week is significant
 ## 13. How would you interpret the significant coefficients for Day of the Week and Day of the Month?
 
 ```
-With day of the week: p<0.05, this is not the case with week of the month. 
+With day of the week: p<0.05, this is not the case with week of the month.
 
 I seems pretty logical that the day of the week would be better to predict the total orders.
 

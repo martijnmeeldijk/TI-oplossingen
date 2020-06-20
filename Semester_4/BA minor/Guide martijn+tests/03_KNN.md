@@ -32,7 +32,7 @@ Zorg dat je het juist verbindt
 
 voeg KNN toe (met number of neighbors (n)  = 1)
 
-<img src="img/image-20200507191429216.png" alt="image-20200507191429216" style="zoom:50%;" />
+<img src="img/image-20200507191429216.png" alt="image-20200507191429216" width="50%" />
 
 klik nu op **Test en Score** en dan op het bolletje **Test on train data** en je zult het wel vinden
 

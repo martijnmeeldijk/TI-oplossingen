@@ -52,4 +52,4 @@ Druk op **restore**. Als alles goed is verlopen heb je nu je eigen kopie van de 
 
 This tutorial is:
 
-<img src="img/bretels-certified.png" alt="bretels-certified" style="zoom:50%;" />
+<img src="img/bretels-certified.png" alt="bretels-certified" width="50%" />
