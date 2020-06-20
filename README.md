@@ -20,7 +20,7 @@ Je kan martipoints verdienen door iets toe te voegen aan de repo of door iets te
 | Frédéric Vogels      | 9             | 0           | 9          |
 | Katerina Stavrinoudis| 6             | 0           | 6          |  
 | Maarten Pauwels      | 4             | 0           | 4          |
-| Abel Vanden Briel    | 4             | 0           | 4          |  
+| Abel Van den Briel   | 4             | 0           | 4          |  
 | Dennis Winnepenninckx| 4             | 0           | 4          |  
 | Thomas Nelen         | 4             | 0           | 4          |
 | Jonas Zegers         | 3.5           | 0           | 3.5        |  
