@@ -9,11 +9,11 @@ Check zeker *07_2_titanic_exercises.pdf* in de repo van BA minor. Daar leggen ze
 
 ## 1. Titanic: Which are the frequent 1-itemsets (>60%)?
 
-:rage: Oke ik moet hier even mijn aggressie uiten. 
+:rage: Oke ik moet hier even mijn aggressie uiten.
 
-<img src="img/image-20200509220428260.png" alt="image-20200509220428260" style="zoom: 25%;" />
+<img src="img/image-20200509220428260.png" alt="image-20200509220428260" width="50%" />
 
-Volgens de pdf moet je de slider op 60% zetten maar dat vervelende kankerding springt de hele tijd tussen 61% en 59%. Ik heb weliswaar vreselijk veel zin om iets kapot te slaan 
+Volgens de pdf moet je de slider op 60% zetten maar dat vervelende kankerding springt de hele tijd tussen 61% en 59%. Ik heb weliswaar vreselijk veel zin om iets kapot te slaan
 
 ...
 
@@ -21,13 +21,13 @@ Het is ondertussen al 5 minuten later en het lukt npg steeds niet. Als ik ook ma
 
 ...
 
-*Nog enkele minuten later.* Ik heb het opgegeven. Ik ben één geworden met buddha en het universum. Woede en haat brengt ons niet verder. Soms moet je in het leven gewoon accepteren dat je die slider op 59% moet laten. 
+*Nog enkele minuten later.* Ik heb het opgegeven. Ik ben één geworden met buddha en het universum. Woede en haat brengt ons niet verder. Soms moet je in het leven gewoon accepteren dat je die slider op 59% moet laten.
 
 ...
 
 Nee, sike ik ga het hier niet bij laten. Ik heb een issue aangemaakt op de repo van orange3-associate: https://github.com/biolab/orange3-associate/issues/32
 
-Als jullie hetzelfde probleem hebben mogen jullie ook klagen. 
+Als jullie hetzelfde probleem hebben mogen jullie ook klagen.
 
 ...
 
@@ -41,11 +41,11 @@ Oke, terug naar de oefening
 
 
 
-Als je dit resultaat wilt krijgen <img src="img/image-20200509223501822.png" alt="image-20200509223501822" style="zoom:33%;" />
+Als je dit resultaat wilt krijgen <img src="img/image-20200509223501822.png" alt="image-20200509223501822" width="50%" />
 
 
 
-en niet dit: <img src="img/image-20200509223553148.png" alt="image-20200509223553148" style="zoom:33%;" />
+en niet dit: <img src="img/image-20200509223553148.png" alt="image-20200509223553148" width="50%" />
 
 Dan moet je de widget *select rows* in je workflow zetten en *survived* uit het target variable ding halen. Anders telt hij survived niet mee in de subsets.
 
@@ -66,7 +66,7 @@ Conditional probability: `P(A|B) = P(A∩B) / P(A)`
 
 Oke nee laat dat maar zitten. Het is hier niet de bedoeling dat we met de hand dingen gaan uitrekenen he.
 
-<img src="img/image-20200509224917813.png" alt="image-20200509224917813" style="zoom:33%;" />
+<img src="img/image-20200509224917813.png" alt="image-20200509224917813" width="50%" />
 
 Doe dit maar in orange. En --> *confidence = conditional probability*
 

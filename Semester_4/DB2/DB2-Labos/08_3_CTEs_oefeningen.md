@@ -16,7 +16,7 @@ Een CTE is een *Common table expression*. Met een CTE kan een tijdelijke resulta
 
 ```postgreSQL
 WITH cte_name (column_list) AS (
-    CTE_query_definition 
+    CTE_query_definition
 )
 statement;
 ```
@@ -25,14 +25,14 @@ statement;
 
 ```postgreSQL
 WITH cte_film AS (
-    SELECT 
-        film_id, 
+    SELECT
+        film_id,
         title,
-        (CASE 
+        (CASE
             WHEN length < 30 THEN 'Short'
             WHEN length < 90 THEN 'Medium'
             ELSE 'Long'
-        END) length    
+        END) length
     FROM
         film
 )
@@ -40,12 +40,12 @@ SELECT
     film_id,
     title,
     length
-FROM 
+FROM
     cte_film
 WHERE
     length = 'Long'
-ORDER BY 
-    title; 
+ORDER BY
+    title;
 ```
 
 
@@ -122,7 +122,7 @@ Wat ook kan is dat hij wilt dat je ervoor zorgt dat hemelobjecten geen lussen ku
 
 In de volgende vraag zegt onze lieve Bertels ook dat er 2 manieren zijn om dit te doen.
 
-In de slides staat dit: 
+In de slides staat dit:
 
 ```postgreSQL
 /*Optie 1, teller voor de maximum diepte*/
@@ -194,7 +194,7 @@ Welke kies je? Waarom?
 
    Ik kijk effe en wtf kom ik hier tegen
 
-   <img src="img/image-20200516141505956.png" alt="image-20200516141505956" style="zoom:50%;" />
+   <img src="img/image-20200516141505956.png" alt="image-20200516141505956" width="50%" />
 
    Ik ben razend. Wie heeft dit gedaan???????
 
@@ -212,21 +212,21 @@ Welke kies je? Waarom?
    	(value1, value2, …);
    ```
 
-   
+
 
 2. ***Verander 1 rij in een tabel naar keuze uit dit schema.***
 
-   
+
 
    Syntax:
 
    ```postgreSQL
-   UPDATE table_name  
-   SET column1 = value1, column2 = value2...., columnN = valueN  
-   WHERE [condition];  
+   UPDATE table_name
+   SET column1 = value1, column2 = value2...., columnN = valueN
+   WHERE [condition];
    ```
 
-   
+
 
 3. ***Verwijder 1 rij uit een tabel naar keuze uit dit schema.***
 
@@ -243,14 +243,14 @@ Welke kies je? Waarom?
 
 4. ***Schrijf een querie die alle satellieten van een zelf gekozen hemelobject toont. (bv de zon indien aanwezig in de tabel). Zorg ervoor dat de hele hierarchie wordt getoond. (cf CTEs)***
 
-   > *Voorbeeld op het schema ruimtereizen, alle satellieten van de zon en dieper:* 
+   > *Voorbeeld op het schema ruimtereizen, alle satellieten van de zon en dieper:*
 
    ```
-   (order by 1,2) 
-   "Aarde";"Zon" 
-   "Adrastea";"Jupiter" 
-   .. 
-   "Venus";"Zon" 
+   (order by 1,2)
+   "Aarde";"Zon"
+   "Adrastea";"Jupiter"
+   ..
+   "Venus";"Zon"
    (70 rijen)
    ```
 
@@ -266,7 +266,7 @@ Welke kies je? Waarom?
 
 7. ***Werk binnen een transactie die je bij voorkeur niet bestendigd maar ongedaan maakt.***
 
-   
+
 
    1. ***Voer eerste de querie oplossing van oefening 4.4 of 4.5 uit.***
 
@@ -276,9 +276,9 @@ Welke kies je? Waarom?
 
       Vraag 4.3
 
-      > *Ik krijg een permission denied als ik iets probeer te verwijderen.* 
+      > *Ik krijg een permission denied als ik iets probeer te verwijderen.*
 
-   3. ***Begrijp je wat onderstaande code betekent?*** 
+   3. ***Begrijp je wat onderstaande code betekent?***
 
       ```
       CONSTRAINT bezoeken_objectnaam_fkey FOREIGN KEY (objectnaam) REFERENCES ruimtereizen.hemelobjecten (objectnaam) MATCH SIMPLE ON UPDATE NO ACTION ON DELETE NO ACTION
