@@ -5,19 +5,19 @@ typora-copy-images-to: ./img
 
 # Clustering
 
-In de video van Orange:tm: legt onze lieve vrouw best goed uit hoe je clustering kan toepassen in orange. 
+In de video van Orange:tm: legt onze lieve vrouw best goed uit hoe je clustering kan toepassen in orange.
 
 Voor de personen die geen zin hebben om de video te kijken:
 
-<img src="img/image-20200510115617683.png" alt="image-20200510115617683" style="zoom:33%;" />
+<img src="img/image-20200510115617683.png" alt="image-20200510115617683" width="50%" />
 
-Dit was zowat het nuttigste. 
+Dit was zowat het nuttigste.
 
 
 
 ## 1. Online Retail: What other technique have we seen that might be used to recommend other products to a customer?
 
-Open je *ba_minor_exercises.pdf* maar al. Je kan ook de pdf over clustering lezen, maar die helpt niet echt bij deze oefeningen zo te zien. 
+Open je *ba_minor_exercises.pdf* maar al. Je kan ook de pdf over clustering lezen, maar die helpt niet echt bij deze oefeningen zo te zien.
 
 Ik denk bij deze vraag aan het vorige labo. Waar ging dat ook alweer over?
 
@@ -27,11 +27,11 @@ Ik denk bij deze vraag aan het vorige labo. Waar ging dat ook alweer over?
 
 Je moet zien dat je dit krijgt:
 
-<img src="img/image-20200510135647247.png" alt="image-20200510135647247" style="zoom:33%;" />
+<img src="img/image-20200510135647247.png" alt="image-20200510135647247" width="50%" />
 
-En niet dit: 
+En niet dit:
 
-<img src="img/image-20200510135945484.png" alt="image-20200510135945484" style="zoom:33%;" />
+<img src="img/image-20200510135945484.png" alt="image-20200510135945484" width="50%" />
 
 Dit kan je bekomen door in de *distances* widget *culmuns* te selecteren i.p.v. *rows*.
 
@@ -59,15 +59,15 @@ Moet je hiervoor zelfs orange openen?
 
 ## 7. Zoo: Use k-means to make 4 clusters. Which of the following animals is clustered as a bird, but doesn't have feathers?
 
-Oke dit heeft even geduurd om te begrijpen. Je kan best de oplossing *solutions/10_clustering_zoo.ows* openen. Zet de *K-means* widget op *fixed: 5* 
+Oke dit heeft even geduurd om te begrijpen. Je kan best de oplossing *solutions/10_clustering_zoo.ows* openen. Zet de *K-means* widget op *fixed: 5*
 
-<img src="img/image-20200510152720523.png" alt="image-20200510152720523" style="zoom:33%;" />
+<img src="img/image-20200510152720523.png" alt="image-20200510152720523" width="50%" />
 
 Als je deze settings gebruikt worden alle dieren met veren gemarkeerd met x. Dit geeft niet veel inzicht in de vraag die wordt gesteld, maar we zien wel dat de vogels zich in dit geval waarschijnlijk in cluster `C3` bevinden.
 
-<img src="img/image-20200510153057228.png" alt="image-20200510153057228" style="zoom:33%;" />
+<img src="img/image-20200510153057228.png" alt="image-20200510153057228" width="50%" />
 
-Achter de *scatterplot* heb ik een *select rows* gezet. Met als conditie `cluster is C3` als je nu kijkt zie je dat er één dier tussen zit zonder veren. 
+Achter de *scatterplot* heb ik een *select rows* gezet. Met als conditie `cluster is C3` als je nu kijkt zie je dat er één dier tussen zit zonder veren.
 
 Je zou natuurlijk ook nog een conditie kunnen toevoegen, maar dat is niet echt nodig.
 

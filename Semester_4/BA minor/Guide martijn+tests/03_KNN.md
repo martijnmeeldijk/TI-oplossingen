@@ -20,13 +20,13 @@ To divide the data into equal sized subsets
 
 doe dit
 
-<img src="img/image-20200507190441308.png" alt="image-20200507190441308" style="zoom:33%;" />
+<img src="img/image-20200507190441308.png" alt="image-20200507190441308" width="50%" />
 
 
 
 Zorg dat je het juist verbindt
 
-<img src="img/image-20200507190521553.png" alt="image-20200507190521553" style="zoom: 33%;" />
+<img src="img/image-20200507190521553.png" alt="image-20200507190521553" width="50%" />
 
 ## 4. How much is the average classification accuracy for training set using KNN with k=1?
 

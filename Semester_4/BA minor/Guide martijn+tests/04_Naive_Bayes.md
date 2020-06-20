@@ -50,7 +50,7 @@ nou
 
 ik heb dit gedaan:
 
-<img src="img/image-20200508143425492.png" alt="image-20200508143425492" style="zoom: 33%;" />
+<img src="img/image-20200508143425492.png" alt="image-20200508143425492" width="50%" />
 
 
 
@@ -74,7 +74,7 @@ NOTE: als je de widget Nomogram gebruikt hoef je geen Excel file aan te maken, d
 
 ## 9. Comparing the Naive Bayes learner to the KNN with k=100, which model would you choose and why?
 
-<img src="img/image-20200508154114132.png" alt="image-20200508154114132" style="zoom: 50%;" />
+<img src="img/image-20200508154114132.png" alt="image-20200508154114132" width="50%" />
 
 Vergelijk nu de uitkomsten van test and score.
 
