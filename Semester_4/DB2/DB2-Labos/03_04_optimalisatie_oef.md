@@ -2,7 +2,7 @@
 
 1. *Maak een lijst met alle hemelobjecten waar ons reisbureau nog niet op bezoek geweest is of gepasseerd is en die een diameter hebben van meer dan 100.000 km. Sorteer de lijst aflopend volgens de grootte van de diameter*
 
-   
+
 
 ```postgreSQL
 -- je kan het
@@ -26,7 +26,7 @@ and b.objectnaam is null
 
 deze vraag is:
 
-<img src="img/bretels-certified.png" alt="bretels-certified" style="zoom:25%;" />
+<img src="img/bretels-certified.png" alt="bretels-certified" width="25%" />
 
 
 
@@ -38,7 +38,7 @@ deze vraag is:
    -- spelers_xxl bevat al 1000000 rijen, doe aub geen query op spelers_xxxl behalve als ge -- 10 minuten van uw leven kwijt wilt
    ```
 
-   
+
 
 Ik zie ook goe geen indexen op eender welk van die tabellen. Ben ik blind? Lemme know.
 
@@ -57,18 +57,18 @@ Ik zie ook goe geen indexen op eender welk van die tabellen. Ben ik blind? Lemme
    -- dat moet wel lukken
    ```
 
-   
+
 
 8. *Pas de vorige query zodanig aan dat ook de ruimtereizen waarvoor (nog) geen deelnemers zijn ingeschreven, in het overzicht verschijnen .*
 
    ```postgreSQL
    --je kan dit oplossen met een gecorreleerde subquery die...
    --oke ik ging een uitleg schrijven maar ik heb geen zin meer. Hier is de query:
-   select r.reisnr, 
+   select r.reisnr,
    	(select count(distinct klanten.klantnr) from klanten
    	inner join deelnames on (deelnames.klantnr = klanten.klantnr)
-   	where deelnames.reisnr = r.reisnr) 
+   	where deelnames.reisnr = r.reisnr)
    from reizen r
    ```
 
-   
+

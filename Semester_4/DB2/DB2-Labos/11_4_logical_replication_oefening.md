@@ -8,11 +8,11 @@ de oefening staat onderaan in *11_4_logical_replication_oefening.pdf*
 
 
 
-## Oefening voor elke student 
+## Oefening voor elke student
 
 > Voorwaarde om de oefening te kunnen maken:
 >
->  Je gebruiker moet het attribuut REPLICATION hebben, dit kan je instellen op fuji in de databank administration via: 
+>  Je gebruiker moet het attribuut REPLICATION hebben, dit kan je instellen op fuji in de databank administration via:
 >
 
 ```
@@ -21,7 +21,7 @@ SELECT user_administration.get_replication();
 
 Je moet op deze server zijn:
 
-<img src="img/image-20200517151411425.png" alt="image-20200517151411425" style="zoom:33%;" />
+<img src="img/image-20200517151411425.png" alt="image-20200517151411425" width="50%" />
 
 en dan je query tool openen op de databank *administration*
 
@@ -29,7 +29,7 @@ Opdat het werkt moet je eerst een lokale kopie hebben van het schema **chinook**
 
 [Zo doe je dat](hoe_maak_ik_een_lokale_databank.md)
 
-> Schrijf je in op de publicatie db2_pub op machine fuji.ucll.be poort 51920. Dit is een andere server dan databanken.ucll.be. 
+> Schrijf je in op de publicatie db2_pub op machine fuji.ucll.be poort 51920. Dit is een andere server dan databanken.ucll.be.
 >
 
 Syntax:
@@ -47,7 +47,7 @@ CONNECTION 'dbname=db2 host=fuji.ucll.be user=[rnummer]
  port=51920 password=***** sslmode=require' PUBLICATION db2_pub;
 ```
 
-dit maakt een subscription voor **chinook** 
+dit maakt een subscription voor **chinook**
 
 doe dit op **fuji** om te checken of het heeft gewerkt
 

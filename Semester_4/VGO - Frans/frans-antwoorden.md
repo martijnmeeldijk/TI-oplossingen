@@ -1,12 +1,12 @@
 
 
-# Frans antwoorden voor de boys
+# Frans antwoorden voor de boys en girls
 
 ## Algemene voorwaarden
 
 Bij het gebruik van deze oplossingenlijst gaat u automatisch akkoord met de volgende voorwaarden:
 
-1. U moet geabboneerd zijn op 'King Marti' op soundcloud https://soundcloud.com/kingmarti/tracks
+1. U moet geabonneerd zijn op 'King Marti' op soundcloud https://soundcloud.com/kingmarti/tracks
 2. U moet tijdens het gebruik van deze lijst luisteren naar muziek van 'King Marti'
 3. Kom genoeg buiten (ga lopen ofzo)
 4. Was je handen na gebruik van deze lijst
@@ -37,9 +37,9 @@ Question 4
 
 Elle est fabriquée à Pékin.
 Question 5
-0 out of 1 points
+1 out of 1 points
 
-Ma copine vient (niet 'de' blijkbaar) Limbourg.
+Ma copine vient du Limbourg.
 Question 6
 1 out of 1 points
 
@@ -69,9 +69,9 @@ Question 12
 
 Je travaille DANS une boulangerie tous les samedis.
 Question 13
-0 out of 1 points
+1 out of 1 points
 
-J écoute beaucoup (niet 'de la' blijkbaar) musique.
+J écoute beaucoup de musique.
 Question 14
 1 out of 1 points
 
@@ -99,15 +99,15 @@ Tu peux trouver toutes ces infos SUR Internet.
 Question 20
 0 out of 1 points
 
-Quand j étais plus jeune, j ai joué pendant trois ans (niet 'au') basket.
+Quand j étais plus jeune, j ai joué pendant trois ans (niet 'au') basket. [au zou weldegelijk correct moeten zijn]
 Question 21
 1 out of 1 points
 
 J ai choisi D' étudier l informatique appliquée.
 Question 22
-0 out of 1 points
+1 out of 1 points
 
-J adore jouer (??) la Playstation.
+J adore jouer à la Playstation.
 Question 23
 1 out of 1 points
 
@@ -153,7 +153,7 @@ Question 33
 
 Mon anniversaire, c'est LE 18 décembre.
 
-[geupdate versie, 43 vragen]
+[geüpdatete versie, 43 vragen]
 
 1. en
 

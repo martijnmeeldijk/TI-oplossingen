@@ -12,7 +12,7 @@ Er zijn heel veel groene auto's en de kans dat de getuige het fout heeft op een 
 
 ## 2. Based on the Titanic dataset, how many different combinations can you make with the 4 variables?
 
-- yes/no 
+- yes/no
 - first/second/third/crew
 - Adult/child
 - Male/female
@@ -34,7 +34,7 @@ All of the above
 
 
 
-Can you? 
+Can you?
 
 Kunnen kinderen crewleden zijn denk je?
 
@@ -50,11 +50,11 @@ nou
 
 ik heb dit gedaan:
 
-<img src="img/image-20200508143425492.png" alt="image-20200508143425492" style="zoom: 33%;" />
+<img src="img/image-20200508143425492.png" alt="image-20200508143425492" width="50%" />
 
 
 
-Je moet dus de select rows widget gebruiken, daarna kan je die shizzle in een boxplot gooien en de kans berekenen. 
+Je moet dus de select rows widget gebruiken, daarna kan je die shizzle in een boxplot gooien en de kans berekenen.
 
 
 
@@ -62,11 +62,11 @@ Je moet dus de select rows widget gebruiken, daarna kan je die shizzle in een bo
 
 Maak een excel file aan:
 
-<img src="img/image-20200508153837335.png" alt="image-20200508153837335" style="zoom:50%;" />
+<img src="img/image-20200508153837335.png" alt="image-20200508153837335" width="50%" />
 
 
 
-<img src="img/image-20200508153819399.png" alt="image-20200508153819399" style="zoom:50%;" />
+<img src="img/image-20200508153819399.png" alt="image-20200508153819399" width="50%" />
 
 Maak dan een prediction met naive bayes als classifier (met de excel file als data)
 
@@ -74,7 +74,7 @@ NOTE: als je de widget Nomogram gebruikt hoef je geen Excel file aan te maken, d
 
 ## 9. Comparing the Naive Bayes learner to the KNN with k=100, which model would you choose and why?
 
-<img src="img/image-20200508154114132.png" alt="image-20200508154114132" style="zoom: 50%;" />
+<img src="img/image-20200508154114132.png" alt="image-20200508154114132" width="50%" />
 
 Vergelijk nu de uitkomsten van test and score.
 

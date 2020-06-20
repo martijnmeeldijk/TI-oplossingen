@@ -18,12 +18,12 @@ niks man, probeer het misschien zelf is
 
 Bretels certified vraag
 
-<img src="img/bretels-certified.png" alt="bretels-certified" style="zoom:33%;" />
+<img src="img/bretels-certified.png" alt="bretels-certified" width="50%" />
 
 ## 4. Kies 1 tabel van jouw persoonlijk project en maak een overeenkomstig document dat minstens de eerste twee records/instanties van die tabel bevat.
 
 ```
-select xmlforest(spelersnr, naam) from spelers; 
+select xmlforest(spelersnr, naam) from spelers;
 ```
 
 

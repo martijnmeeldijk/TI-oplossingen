@@ -12,19 +12,19 @@ Bertels vraagt je waarschijnlijk vaak om dingen toe te voegen aan je lokale data
 
 Kies een schema naar keuze, right-click en selecteer backup.
 
-<img src="img/stap1.png" alt="stap1" style="zoom:33%;" />
+<img src="img/stap1.png" alt="stap1" width="50%" />
 
 ## Stap 2
 
 Selecteer 'tar' als formaat (dat werkte toch bij mij) en geef het bestand een naam. Ik denk dat je eender welk formaat kan nemen.
 
-<img src="img/stap2.png" alt="stap2" style="zoom:33%;" />
+<img src="img/stap2.png" alt="stap2" width="50%" />
 
 ## Stap 3
 
 Zorg dat je bij dump options alles van **owners en privileges uitzet**, anders is de admin van jouw lokale databank 'Wim' en dan is alles naar de klote. Zet ook alles van **data** aan. De rest kiest je zelf.
 
-<img src="img/stap3.png" alt="stap3" style="zoom:33%;" />
+<img src="img/stap3.png" alt="stap3" width="50%" />
 
 ## Stap 4
 
@@ -34,17 +34,17 @@ Nu hoop ik dat je postgres op je pc geinstalleerd hebt en in PGadmin hebt gestok
 
 Maak een nieuw schema aan op je lokale databank.
 
-<img src="img/stap4.png" alt="stap4" style="zoom:33%;" />
+<img src="img/stap4.png" alt="stap4" width="50%" />
 
 Druk op **restore**
 
-<img src="img/stap4_1.png" alt="stap4_1" style="zoom:33%;" />
+<img src="img/stap4_1.png" alt="stap4_1" width="50%" />
 
 ## Stap 5
 
 Selecteer het bestand dat je hebt opgeslagen. De restore options zijn hetzelfde als de dump options bij stap 3. Je hoeft ze normaal gezien niet aan te passen, maar een kijkje nemen kan geen kwaad.
 
-<img src="img/stap5.png" alt="stap5" style="zoom:33%;" />
+<img src="img/stap5.png" alt="stap5" width="50%" />
 
 Druk op **restore**. Als alles goed is verlopen heb je nu je eigen kopie van de gekozen databank. Je kan er nu lekker zelf aan prutsen enzo. Geweldig!!!
 
@@ -52,4 +52,4 @@ Druk op **restore**. Als alles goed is verlopen heb je nu je eigen kopie van de 
 
 This tutorial is:
 
-<img src="img/bretels-certified.png" alt="bretels-certified" style="zoom:50%;" />
+<img src="img/bretels-certified.png" alt="bretels-certified" width="50%" />
