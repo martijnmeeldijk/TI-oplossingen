@@ -2,7 +2,7 @@
 
 Stukjes tekst uit de oefeningen die misschien kunnen helpen bij de quiz.
 
-## Inheritance
+## Inheritance & Constructors
 
 > A subclass constructor will call its superconstructor prior to execute its own body.
 
@@ -10,13 +10,44 @@ Stukjes tekst uit de oefeningen die misschien kunnen helpen bij de quiz.
 
 > Each object must have a destructor. If you don't define one, the compiler generates one for you that will call the destructor of each member variable and then calls the superdestructor.
 
+### Constructor order
 
+Superconstructor -> Member variables -> Constructor body
 
 ### **Destructor order** 
 
 Executing its body. -> Destroying `Bar`'s member variables. -> Calling the superdestructor.
 
 ### Copy Constructor
+
+```c++
+class Foo {
+public:
+	Foo(const Foo &) { std :: cout << ’C’; }
+};
+void bar(Foo f) { }
+Foo f; // default constructor
+Foo g(f); // prints C
+Foo g = f; // alternative syntax , prints C
+bar(foo); // Call by value , copies foo, therefore prints C (not by reference or pointer)
+```
+
+### Implicit casts
+
+```c++
+class Foo {
+public:
+	Foo(int) { std :: cout << "U"; } //If you put 'explicit' in front of Foo, bar(5) will give an error
+};
+
+void bar(Foo) { }
+
+int main ()
+{
+	bar(5); // prints U, implicit cast
+  bar (( Foo) 5);// prints U, explicit cast
+}
+```
 
 
 
@@ -53,7 +84,7 @@ Executing its body. -> Destroying `Bar`'s member variables. -> Calling the super
 
 ### Functions
 
-
+//TODO
 
 ## Bitwise operators
 
@@ -68,6 +99,20 @@ Executing its body. -> Destroying `Bar`'s member variables. -> Calling the super
 **>> (right shift)**
 
 **~ (bitwise NOT)** 
+
+
+
+## Automatic generation
+
+### Default Constructor
+
+* Simplified rule: compiler generates default constructor for you if you don’t provide any constructors yourself 
+
+* Once you provide any constructor, no default constructor is generated 
+
+* Generated default constructor calls default constructor for all member variables 
+
+* Generated default constructor does not initialise member variables to 0
 
 
 
