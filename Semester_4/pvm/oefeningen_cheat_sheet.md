@@ -288,3 +288,7 @@ int main() {
 ```
 
 Omdat `qux()` een parameter van het type `Foo` verwacht, wordt dus ook de copy constructor van Foo gebruikt om dit object te maken.
+
+### Function removeGreaterThan
+
+<img src="https://imgur.com/dSfrYBo">
