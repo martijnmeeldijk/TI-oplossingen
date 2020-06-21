@@ -160,6 +160,31 @@ int* maximum(const std::vector<int> ns);
 
 ## (Enkele) Oefeningen van de oefentests
 
+### Inheritance 1
+
+```c++
+#include <iostream> 
+#define P(x) std::cout << x
+struct Foo {
+    Foo(){ P('a'); } 
+    Foo(const Foo&){ P('b'); } 
+    ~Foo(){ P('c'); }
+}; 
+struct Bar : Foo {
+    Bar(){ P('d'); } 
+    Bar(const Bar&){ P('e'); } 
+    ~Bar(){ P('f'); }
+}; 
+void qux(Foo foo) {} 
+int main() {
+    Bar bar;
+    P('['); qux(bar); P(']'); 
+} // ad[bc]fc
+
+```
+
+Omdat `qux()` slechts een object van het type `Foo` nodig heeft, roept hij alleen de copy constructor van `Foo` op.
+
 ### Inheritance 3
 
 ```c++
