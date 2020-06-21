@@ -34,6 +34,8 @@ Foo g = f; // alternative syntax , prints C
 bar(foo); // Call by value , copies foo, therefore prints C (not by reference or pointer)
 ```
 
+When the copy constructor of a subclass is called, the body of the superconstructor will be exectuted before the body of the copy constructor.
+
 ### Implicit casts
 
 ```c++
@@ -78,11 +80,11 @@ int main ()
 
 [bron](https://www.geeksforgeeks.org/difference-between-const-int-const-int-const-and-int-const/)
 
-**int const\*** is pointer to constant integer
+**int const\*** is pointer to constant integer = **const int* **
 
 **int \*const** is a constant pointer to integer
 
-**const int\* const** is a constant pointer to constant integer
+**const int\* const** is a constant pointer to constant integer = **int const* const**
 
 ### Functions
 
@@ -149,4 +151,83 @@ int x = arr.at(0); //this is illegal
 
 
 
+
+
+## Oefeningen van de oefentests
+
+### Inheritance 3
+
+```c++
+#include <iostream> 
+#define P(x) std::cout << x
+struct Foo { 
+    Foo() { P('a'); } 
+    Foo(const Foo&){ P('b'); } 
+    ~Foo() { P('c'); } 
+};
+struct Bar : Foo 
+{ 
+    Bar(){ P('d'); } 
+    Bar(const Bar&){ P('e'); } 
+    ~Bar(){ P('f');}
+}; 
+void qux(Bar bar) { } 
+int main(){
+    Bar bar; 
+    P('['); qux(bar); P(']'); 
+} 
+// ad[aefc]fc 
+```
+
+De copy constructor roept de superconstructor op alvorens zijn body uit te voeren (blijkbaar).
+
+### Inheritance 4
+
+```c++
+#include <iostream> 
+#define P(x) std::cout << x
+struct Foo { 
+    Foo() { P('a'); } 
+    Foo(const Foo&){ P('b'); } 
+    ~Foo() { P('c'); } 
+};
+struct Bar : Foo 
+{ 
+    Bar(){ P('d'); } 
+    Bar(const Bar&){ P('e'); } 
+    ~Bar(){ P('f');}
+}; 
+void qux(Bar& bar) { } 
+int main(){
+    Bar *bar = new Bar; 
+    P('['); qux(*bar); P(']'); 
+} // ad[]
+```
+
+`qux()` wordt by reference opgeroepen, dus de copy constructor wordt niet gebruikt. Doordat er `new Bar` wordt gedaan, wordt de destructor ook niet opgeroepen.
+
+
+
+### Inheritance 6
+
+```c++
+#include <iostream> 
+#define P(x) std::cout << x
+struct Foo { 
+    Foo() { P('a'); } 
+    Foo(const Foo&){ P('b'); } 
+    ~Foo() { P('c'); } 
+};
+struct Bar : Foo 
+{ 
+    Bar(){ P('d'); } 
+    Bar(const Bar&){ P('e'); } 
+    ~Bar(){ P('f');}
+}; 
+void qux(Bar bar) { } 
+int main(){
+    Bar *bar = new Bar; 
+    P('['); qux(*bar); P(']'); 
+} // ad[aefc]
+```
 
