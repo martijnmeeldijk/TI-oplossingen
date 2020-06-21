@@ -109,6 +109,11 @@ const int_array arr;
 int x = arr.at(0); //this is illegal
 ```
 
+```c++
+int* maximum(const std::vector<int> ns); 
+// if you'd like to return a reference to an element of ns, this would be wrong
+```
+
 
 
 ## Bitwise operators
@@ -153,7 +158,7 @@ int x = arr.at(0); //this is illegal
 
 
 
-## Oefeningen van de oefentests
+## (Enkele) Oefeningen van de oefentests
 
 ### Inheritance 3
 
@@ -231,3 +236,30 @@ int main(){
 } // ad[aefc]
 ```
 
+### Inheritance 7
+
+Deze is best interessant
+
+```c++
+#include <iostream> 
+#define P(x) std::cout << x
+struct Foo {
+	Foo(){ P('a'); } 
+	Foo(const Foo&){ P('b'); } 
+	~Foo(){ P('c'); }
+}; 
+struct Bar : Foo {
+	Bar(){ P('d'); } 
+	Bar(const Bar&){ P('e'); } 
+	~Bar(){ P('f'); }
+}; 
+void qux(Foo foo) {} 
+
+int main() {
+	Bar *bar = new Bar; 
+	P('['); qux(*bar); P(']'); 
+} // ad[bc]
+
+```
+
+Omdat `qux()` een parameter van het type `Foo` verwacht, wordt dus ook de copy constructor van Foo gebruikt om dit object te maken.
