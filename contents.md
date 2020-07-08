@@ -45,8 +45,7 @@
   * [Vorige Examens](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester_4/DB2/vorige_examens.md)
   * [Samenvatting](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester_4/DB2/samenvatting.md)
   * SQL Dropbox
-    * [Kwinnieprince](https://github.com/Kwinnieprince/queries_databases)
-    * [Martijn](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester_4/DB2/DB2-sqldropbox.md)
+    * ~~[Martijn](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester_4/DB2/DB2-sqldropbox.md)~~ dit is illegaal
   * [Guides Labos](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester_4/DB2/DB2-Labos/01_lees_dit_eerst.md)
   * [Hoe maak ik een lokale databank](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester_4/DB2/DB2-Labos/hoe_maak_ik_een_lokale_databank.md)
   * [Oplossingen Labos Jasper](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Semester_4/DB2/DB2-Labos/jasper)
