@@ -96,7 +96,7 @@ Crew members cannot be children. That seems pretty logical. Children also get re
 
 0.32571428571
 
-0.80 // fout
+0.633
 
 Laatste
 
