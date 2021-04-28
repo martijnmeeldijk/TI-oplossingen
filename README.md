@@ -41,6 +41,7 @@ Je kan martipoints verdienen door iets toe te voegen aan de repo of door iets te
 | Kasper Vanderhulst   | 1             | 0           | 1          |  
 | Aimée Lynn Backiel   | 1             | 0           | 1          |  
 | Yenthe Bruynseels    | 1             | 0           | 1          |  
+| Lars Lemmens         | 1             | 0           | 1          |  
 
  
 
