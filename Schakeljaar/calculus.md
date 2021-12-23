@@ -49,13 +49,6 @@ $$
 \int \left[ c f(x)\right] dx = c \int f(x) \, dx
 $$
 
-## Binomial expansions
-
-### x + y
-
-$$
-{\displaystyle {\begin{aligned}(x+y)^{0}&=1,\\[8pt](x+y)^{1}&=x+y,\\[8pt](x+y)^{2}&=x^{2}+2xy+y^{2},\\[8pt](x+y)^{3}&=x^{3}+3x^{2}y+3xy^{2}+y^{3},\\[8pt](x+y)^{4}&=x^{4}+4x^{3}y+6x^{2}y^{2}+4xy^{3}+y^{4},\\[8pt](x+y)^{5}&=x^{5}+5x^{4}y+10x^{3}y^{2}+10x^{2}y^{3}+5xy^{4}+y^{5},\\[8pt](x+y)^{6}&=x^{6}+6x^{5}y+15x^{4}y^{2}+20x^{3}y^{3}+15x^{2}y^{4}+6xy^{5}+y^{6},\\[8pt](x+y)^{7}&=x^{7}+7x^{6}y+21x^{5}y^{2}+35x^{4}y^{3}+35x^{3}y^{4}+21x^{2}y^{5}+7xy^{6}+y^{7},\\[8pt](x+y)^{8}&=x^{8}+8x^{7}y+28x^{6}y^{2}+56x^{5}y^{3}+70x^{4}y^{4}+56x^{3}y^{5}+28x^{2}y^{6}+8xy^{7}+y^{8}.\end{aligned}}}
-$$
 
 ## Factorization
 
@@ -65,5 +58,19 @@ a^2 + b^2 = (a + b)^2 - 2ab\\
 a^3 – b^3 = (a – b)(a^2 + ab + b^2)\\
 a^3 + b^3 = (a + b)(a^2 – ab + b^2)\\
 (a + b + c)^2 = a^2 + b^2 +c^2 + 2ab + 2ac + 2bc
+$$
+
+## Powers
+
+$$
+
+\def\arraystretch{1.5} \begin{array} { c | c }\text{ Rule name} & \text{ Rule } \\ \hline \text{Product Rule} & a^m \times a^n = a^{ m + n } \\ & a ^n \times b^n = (a \times b)^ n \\ \hline \text{Quotient Rule} & a^n / a^m = a^ { n - m } \\ & a^n / b^n = (a/b) ^ n \\ \hline \text{Negative Exponent} & a^ {-n} = 1/a^n \\ \hline \text{Power Rule} & (a^n)^m = a^ { n \times m } \\ \hline \text{Tower Rule}& a ^ { n^ m } = a ^ { \left ( n^ m \right) } \\ \hline \text{Fraction Rule} & a ^ {1/n} = \sqrt[n]{a } \\ & \sqrt[m]{ a^n} = a^ { n/m} \\ \hline \text{Zero Rule} & a^0 = 1 \\ & 0^ a = 0 \text{ for } a > 0 \\ \hline \text{One Rule} & a^1 = a \\ & 1^a = 1 \\ \end{array}
+ 
+$$
+
+## Taylor series
+
+$$
+\begin{aligned} e^{x} & = \sum\limits_{n=0}^{\infty} \frac{x^{n}}{n!} \\ \sin(x) & = \sum\limits_{n=0}^{\infty} \frac{(-1)^{n}}{(2n+1)!} x^{2n+1} \\ \, \cos(x) & = \sum\limits_{n=0}^{\infty} \frac{(-1)^{n}}{(2n)!} x^{2n} \end{aligned}
 $$
 
