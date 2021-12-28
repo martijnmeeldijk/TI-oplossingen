@@ -71,5 +71,4 @@
 
 
 ### Schakeljaar
- * Signalen & Systemen
-   * [Samenvatting](/Schakeljaar/sisy.html)
+ * [Schakeljaar](/Schakeljaar/inhoud)
