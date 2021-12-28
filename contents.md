@@ -71,4 +71,4 @@
 
 
 ### Schakeljaar
- * [Schakeljaar](/Schakeljaar/inhoud)
+ * [Schakeljaar](Schakeljaar/inhoud.md)
