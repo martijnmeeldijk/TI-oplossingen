@@ -71,4 +71,4 @@
 
 
 ### Schakeljaar
- * [Schakeljaar](/TI-oplossingen/Schakeljaar/inhoud.md)
+ * [Schakeljaar](/TI-oplossingen/Schakeljaar/inhoud)
