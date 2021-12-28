@@ -481,7 +481,7 @@ $$
 Als $x(t)$ reëel is, wat betekent dat $x(t) = \bar{x}(t)$, met  $\bar{x}(t)$ het complex toegevoegde, dan geldt:
 $$
 x(t) = \sum_{k=-\infty}^{+\infty}c_ke^{jk\omega_0t}  = 
-\sum_{k=-\infty}^{+\infty}\bar{c}_ke^{jk\omega_0t}
+\sum_{k=-\infty}^{+\infty}\bar{c}_ke^{-jk\omega_0t}
 \xrightarrow[]{}
 \bar{c_k} = c_{-k}
 $$
@@ -504,7 +504,7 @@ $$
 
 als x(t) reëel is, dan zijn $a_k$ en $b_k$ ook reëel en
 $$
-a_k = 2Re[c_k] \quad b_k = 2Im[c_k]
+a_k = 2Re[c_k] \quad b_k = -2Im[c_k]
 $$
 Als $x(t)$ even is: $b_k$ = 0 -> alleen cosinustermen
 
@@ -583,8 +583,10 @@ $$
 \text{Parseval} \xrightarrow[\quad]{} \int_{-\infty}^{+\infty}\abs{x(t)}^2dt = 
 \frac{1}{2\pi}\int_{-\infty}^{+\infty}\abs{X(\omega)}^2d\omega \quad \text{= energie van een signaal} \newline
 \text{Dualiteit} \xrightarrow[\quad]{} x(t)\xrightarrow[F]{}X(\omega)
-\xLeftrightarrow[]{}x(t)\xrightarrow[F]{}2\pi.x(-\omega)
+\xLeftrightarrow[]{}X(t)\xrightarrow[F]{}2\pi.x(-\omega)
 $$
+
+
 
 ### Fourier-analyse van systemen
 
@@ -634,4 +636,17 @@ We kunnen een ideale reconstructie doen met de **Shannon-filter**, maar dan moet
 #### De Zero Order Hold (ZOH)
 
 > Dit is het wiskundig model voor de praktische reconstructie uitgevoerd door een Digitaal naar Analoog Convertor (DAC). De waarde van elke sample wordt eenvoudigweg vastgehouden gedurende Ts tot aan de volgende sample. Men bekomt aldus een stuksgewijs constant signaal.
+
+
+
+
+
+## Examen 
+
+### Mogelijke examenvragen
+
+* Sowieso Bode diagram
+* Gegeven impulsantwoord, bereken systeemfunctie
+* Teken simulatieschema van gegeven differentiaalvergelijking
+* 
 
