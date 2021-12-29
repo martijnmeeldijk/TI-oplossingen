@@ -18,6 +18,8 @@ Als je deze samenvattingen gebruikt moet je [King Marti](https://open.spotify.co
 
 [Wiskunde 1](wiskunde1.html)
 
+[Gedistribueerde Gegevensverwerking](gdv.html)
+
 
 
 enjoy :wink:
