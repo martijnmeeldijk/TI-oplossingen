@@ -1,6 +1,6 @@
 # Discrete wiskunde
 
-
+Deze samenvatting is iets meer low effort sorry. 
 
 # H1 - Verzamelingen, relaties en functies
 
@@ -146,6 +146,8 @@ De relatie 'heeft dezelfde absolute waarde' is een equivalentierelatie. De relat
 
 # H2 - Modulorekenen
 
+De Zeef van Eratosthenes?
+
 ### Fundamentele stelling van de rekenkunde
 
 Elk geheel getal groter dan 1 kan op een unieke manier geschreven worden als een product van priemgetallen
@@ -217,4 +219,299 @@ Een **Lehmer pseudorandomgenerator** heeft als $m$ een priemgetal of een macht v
 
 ## Elementaire vergelijklingen bij modulorekenen
 
-We skippen effe vergelijkingen van de vorm $a + x \stackrel{n}{=} b$. Die hoef ik hopelijk niet uit te leggen.
+Vergelijkingen van de vorm $a + x \stackrel{n}{=} b$.
+
+<img src="img/image-20211230102625351.png" alt="image-20211230102625351" style="zoom: 33%;" /> 
+
+
+
+
+
+## Lineaire congruentie
+
+Vergelijkingen van de vorm: <img src="img/image-20211230102700381.png" alt="image-20211230102700381" style="zoom:33%;" />
+
+Voor een gegeven getal $x$: zoek diens multiplicatief inverse $y$ zodat:<img src="img/image-20211230102737088.png" alt="image-20211230102737088" style="zoom:33%;" />
+
+We willen bewijzen dat er maar één getal getal bestaat waarvoor dit geldt. We kunnen bewijzen dat er ten minste één is, en dat er ten hoogste één is:
+
+<u>Ten minste één:</u>
+
+<img src="img/image-20211230103350568.png" alt="image-20211230103350568" style="zoom:33%;" /> 
+
+<u>Ten hoogste één:</u>
+
+<img src="img/image-20211230103421078.png" alt="image-20211230103421078" style="zoom:33%;" /> 
+
+
+
+### Zoeken van een invers element
+
+We nemen bijvoorbeeld $5$ mod $13$. We zoeken een inverse $x$ zodat $x.5$ mod $13 = 1$.
+
+Via het uitgebreide algoritme van Euclides vinden we: $ggd(5, 13) = 1 = 8 ⋅ 5 − 3 ⋅ 13$
+
+De gezochte inverse is dus $8$ mod $13$
+
+
+
+### Kleine stelling van Fermat
+
+<img src="img/image-20211230104447846.png" alt="image-20211230104447846" style="zoom:33%;" /> 
+
+<img src="img/image-20211230104459363.png" alt="image-20211230104459363" style="zoom:33%;" /> (Beide leden vermenigvuldigen met $a$)
+
+<img src="img/image-20211230104516963.png" alt="image-20211230104516963" style="zoom:33%;" /> 
+
+<img src="img/image-20211230104529205.png" alt="image-20211230104529205" style="zoom:33%;" /> 
+
+<img src="img/image-20211230104739343.png" alt="image-20211230104739343" style="zoom: 33%;" /> Bij de 3de stap valt $a.x$ weg want $a.x = 1$ (inverse)
+
+
+
+### Oplossen lineaire congruenties
+
+<img src="img/image-20211230105336158.png" alt="image-20211230105336158" style="zoom:33%;" /> 
+
+**Bewijs**
+
+<img src="img/image-20211230105359235.png" alt="image-20211230105359235" style="zoom:33%;" /> 
+
+<img src="img/image-20211230105413840.png" alt="image-20211230105413840" style="zoom:33%;" /> 
+
+<img src="img/image-20211230105432353.png" alt="image-20211230105432353" style="zoom:33%;" /> 
+
+
+
+## Lineaire diofantische vergelijkingen
+
+Een lineaire diofantische vergelijking in twee onbekenden $x, y$ ∈ ℤ is van de vorm
+$$
+ax + by = c
+$$
+met $a, b, c$ ∈ ℤ
+
+Het is dus een vergelijking waarvoor we **enkel gehele oplossingen** zoeken:
+
+<img src="img/image-20211230105820660.png" alt="image-20211230105820660" style="zoom:33%;" /> 
+
+Voorveeld:
+
+<img src="img/image-20211230115332364.png" alt="image-20211230115332364" style="zoom:33%;" /> 
+
+## Stelsels van lineaire congruenties
+
+Het stelsel:
+
+<img src="img/image-20211230105955640.png" alt="image-20211230105955640" style="zoom:33%;" />
+
+<img src="img/image-20211230110017882.png" alt="image-20211230110017882" style="zoom:33%;" /> 
+
+**<u>Bewijs</u>**
+
+<img src="img/image-20211230110054684.png" alt="image-20211230110054684" style="zoom:33%;" /> 
+
+<img src="img/image-20211230110114139.png" alt="image-20211230110114139" style="zoom:33%;" /> 
+
+<img src="img/image-20211230110136385.png" alt="image-20211230110136385" style="zoom:33%;" /> 
+
+<img src="img/image-20211230110156792.png" alt="image-20211230110156792" style="zoom:33%;" /> 
+
+
+
+### Residutalstelsels
+
+<img src="img/image-20211230114046546.png" alt="image-20211230114046546" style="zoom:33%;" /> 
+
+
+
+
+
+# H3 - Eindige velden
+
+$\mathbb{Z}_n$ is een veld $\xLeftrightarrow{}$ $n$ is priem
+
+<img src="img/image-20211230114453641.png" alt="image-20211230114453641" style="zoom: 33%;" /> 
+
+
+
+## Een eindig veld maken
+
+Om de één of andere reden willen we een eindig veld van orde  $q = p^k$ maken. 
+
+<img src="img/image-20211230120131330.png" alt="image-20211230120131330" style="zoom:33%;" /> 
+
+
+
+### Voortbrengende veelterm
+
+<img src="img/image-20211230120712852.png" alt="image-20211230120712852" style="zoom:33%;" /> 
+
+Je kan elke veelterm monisch maken door hem te vermenigvuldigen met de inverse van de coëfficiënt van de hoogstegraadsterm.
+
+### Irreducibele veelterm
+
+<img src="img/image-20211230120957698.png" alt="image-20211230120957698" style="zoom:33%;" /> 
+
+
+
+### Het Galoisveld van orde $q=p^k$
+
+<img src="img/image-20211230121212340.png" alt="image-20211230121212340" style="zoom:33%;" /> 
+
+<img src="img/image-20211230121241770.png" alt="image-20211230121241770" style="zoom:33%;" /> 
+
+Hoe kunnen we nu die irreducibele veelteerm vinden?
+
+<img src="img/image-20211230121523161.png" alt="image-20211230121523161" style="zoom:33%;" /> 
+
+
+
+### Rabin test voor ondeelbaarheid
+
+<img src="img/image-20211230122002265.png" alt="image-20211230122002265" style="zoom:33%;" /> 
+
+<img src="img/image-20211230122059900.png" alt="image-20211230122059900" style="zoom:33%;" /> 
+
+### Eenvoudige rabin test 
+
+<img src="img/image-20211230122323456.png" alt="image-20211230122323456" style="zoom:33%;" /> 
+
+<img src="img/image-20211230122338220.png" alt="image-20211230122338220" style="zoom:33%;" /> 
+
+
+
+### BCH codes
+
+<img src="img/image-20211230122404601.png" alt="image-20211230122404601" style="zoom:33%;" /> 
+
+Hier is ooit een examenvraag over geweest
+
+
+
+
+
+# H4 - Logica
+
+| Naam                                                         | Waarheidstabel                                               |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| Negatie (not)                                                | <img src="img/image-20211230122540376.png" alt="image-20211230122540376" style="zoom:33%;" /> |
+| Disjunctie (or)                                              | <img src="img/image-20211230122559011.png" alt="image-20211230122559011" style="zoom:33%;" /> |
+| Exclusieve disjunctie (xor)                                  | <img src="img/image-20211230122619972.png" alt="image-20211230122619972" style="zoom:33%;" /> |
+| Conjunctie (and)                                             | <img src="img/image-20211230122646571.png" alt="image-20211230122646571" style="zoom:33%;" /> |
+| Implicatie ($p$ is nodige voorwaarde, $q$ is vodoende voorwaarde) | <img src="img/image-20211230122704866.png" alt="image-20211230122704866" style="zoom:33%;" /> |
+| Wederzijdse implicatie                                       | <img src="img/image-20211230122821949.png" alt="image-20211230122821949" style="zoom:33%;" /> |
+|                                                              |                                                              |
+
+
+
+### Regels
+
+1. Haakjes hebben voorrang 
+2. Alle ¬ evalueren 
+3. Daarna ∨, ∧ en ⊕ 
+4. Tot slot ⇒ en ⇔
+
+
+
+### Tautologie, contradictie, eventualiteit
+
+**Tautologie** 
+
+Een propositie die altijd waar is, ongeacht de waarden van de gebruikte logische variabelen Bijv. **p ∨ ¬p** is altijd waar, onafhankelijk van **p**
+
+**Contradictie** 
+
+Een propositie die altijd vals is, ongeacht de waarden van de gebruikte logische variabelen Bijv. **p ∧ ¬p** is altijd vals, onafhankelijk van **p**
+
+**Eventualiteit** 
+
+Een propositie die geen tautologie of contradictie is Bijv. **¬p** kan waar of vals zijn, afhankelijk van **p**
+
+
+
+### Logische equivalentie
+
+<img src="img/image-20211230123148202.png" alt="image-20211230123148202" style="zoom:33%;" /> 
+
+
+
+## Boole algebras
+
+Bij alle oefeningen hierover staat dat ze niet te kennen zijn dus ik ga dit effe overslaan
+
+
+
+## Vereenvoudigen van logische uitdrukkingen
+
+<img src="img/image-20211230133823555.png" alt="image-20211230133823555" style="zoom:33%;" /> 
+
+
+
+## Predikatenlogica
+
+<img src="img/image-20211230133950904.png" alt="image-20211230133950904" style="zoom:33%;" /> 
+
+elke propositie is een predikaat, niet elk predikaat is een propositie
+
+
+
+## Kwantificatie
+
+<img src="img/image-20211230134111004.png" alt="image-20211230134111004" style="zoom:33%;" /> 
+
+<img src="img/image-20211230134155097.png" alt="image-20211230134155097" style="zoom:33%;" /> 
+
+<img src="img/image-20211230134212525.png" alt="image-20211230134212525" style="zoom:33%;" /> 
+
+<img src="img/image-20211230134305035.png" alt="image-20211230134305035" style="zoom:33%;" /> 
+
+
+
+## Bewijsstrategieën
+
+
+
+### Inductie en deductie
+
+**Deductieve redenering** (van groot naar klein)
+
+Vanuit een algemene stelling komt men tot een meer specifiek besluit Bijvoorbeeld: Uit “Het is altijd mooi weer aan de zee” volgt “Het is morgen mooi weer aan de zee” 
+
+**Inductieve redenering** (van klein naar groot)
+
+Vanuit een of meerdere bijzonder gevallen trekt men algemene besluiten Bijvoorbeeld: Experimenten in de natuurkunde, scheikunde… leiden tot ‘wetmatigheden’
+
+Eigenlijk is alleen deductie wiskundig correct
+
+
+
+### Rechtstreeks bewijs
+
+Te bewijzen: p ⇒ q
+
+We zetten gewoon p om totdat we aan q komen
+
+
+
+### Bewijs door gevallenonderzoek
+
+We splitsen het probleem op in alle mogelijke gevallen 
+
+<img src="img/image-20211230134722744.png" alt="image-20211230134722744" style="zoom:33%;" /> 
+
+### Contrapositie
+
+<img src="img/image-20211230134842479.png" alt="image-20211230134842479" style="zoom:33%;" /> 
+
+
+
+### Bewijs uit het ongerijmde
+
+<img src="img/image-20211230135037124.png" alt="image-20211230135037124" style="zoom:33%;" /> 
+
+
+
+### Wiskundige inductie
+
+<img src="img/image-20211230135304666.png" alt="image-20211230135304666" style="zoom:33%;" /> 
