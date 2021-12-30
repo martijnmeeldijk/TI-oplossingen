@@ -1,8 +1,247 @@
 # Wiskunde 1
 
+# Complexe getallen
+
+$$
+z.\bar{z} = (a+bj)(a-bj) = a^2 + b^2 \\\
+cos\theta + jsin\theta = e^{j\theta}
+$$
+
+Omzetting:
+$$
+\begin{equation}
+    \begin{cases}
+     x= rcos\theta \\
+     y= rsin\theta
+      
+    \end{cases}\,
+\end{equation}
+$$
+
+$$
+\begin{equation}
+    \begin{cases}
+     tan\theta = \frac{b}{a} \\
+     r = \sqrt{a^2+b^2}
+      
+    \end{cases}\,
+\end{equation}
+$$
+
+k-de machtswortel
+$$
+w_k = \sqrt[n]{r}e^{j\frac{1}{n}(\theta +2k\pi)} = \sqrt[n]{r}(cos\frac{1}{n}(\theta +2k\pi) + jsin\frac{1}{n}(\theta +2k\pi))
+$$
+Eigenschappen:
+
+Veelterm van de n-de graad met complexe coëfficiënten: n complexe nulpunten
+
+Veelterm met reële coëfficiënten met niet reëel nulpunt $z$: $\bar{z}$ is ook een nulpunt
+
+Veelterm van oneven graad met reële coëfficiënten heeft ten minste één reëel nulpunt.
 
 
-# Integratietechnieken
+
+# Vectoren
+
+### Scalair product
+
+$$
+\vec{a}//\vec{b} \xRightarrow{} \vec{a} = \vec{0} \text{ of } \vec{b} = k.\vec{a} \\
+\norm{\vec{a} \pm \vec{b}} = \sqrt{\norm{\vec{a}}^2 + \norm{\vec{b}}^2 \pm 2\norm{\vec{a}}\norm{\vec{b}}cos\theta} \quad ,\theta \text{ hoek tussen a en b} \\
+\vec{a}.\vec{b} = a_xb_x + a_yb_y + a_zb_z = \norm{\vec{a}}.\norm{\vec{b}}.cos\theta \\
+\vec{a}.\vec{b} = 0 \xRightarrow{} \vec{a} \perp \vec{b} \text{ of } \vec{a} = \vec{0}
+\text{ of } \vec{b} = \vec{0} \\
+\norm{\vec{a}}  = \sqrt{\vec{a}.\vec{a}}
+$$
+
+### Projectie
+
+Loodrechte projectie van vector op richting $e_u$:
+$$
+\vec{p} = (\vec{a}.\vec{e_u})\vec{e_u}
+$$
+
+### Vectorieel product
+
+$$
+\vec{a} \times \vec{b} = 0 \xRightarrow{} \vec{a} // \vec{b} \text{ of } \vec{a} = \vec{0}
+\text{ of } \vec{b} = \vec{0} \\
+\norm{\vec{a} \times \vec{b}} = \norm{\vec{a}}.\norm{\vec{b}}\abs{sin\theta} 
+= \text{oppervlakte parallelogram} 
+\\
+\frac{1}{2} \norm{\vec{a} \times \vec{b}} = \text{oppervlakte driehoek}
+\\
+\vec{a} \times \vec{a} = 0
+$$
+
+### Gemengd product
+
+kan je doorschuiven: $\vec{a}.(\vec{b} \times \vec{c}) = \vec{b}.(\vec{c} \times \vec{a}) = \vec{c}.(\vec{a} \times \vec{b})$
+$$
+\abs{\vec{a}.(\vec{b} \times \vec{c})} = \text{inhoud parallellepipedum} \\
+\frac{1}{6}\abs{\vec{a}.(\vec{b} \times \vec{c})} = \text{inhoud tetraëder} \\
+\abs{\vec{a}.(\vec{b} \times \vec{c})} \xRightarrow{} \text{vectoren zijn coplanair}
+$$
+
+# Tweedegraadskrommen en -oppervlakken
+
+Dit ga ik effe laten maar er komt sowieso 1 vraag waar je moet zeggen welke kromme de vergelijking is.
+
+
+
+# Functies
+
+Nogmaals, ik schrijf alleen de dingen op die ik moeilijk kan onthouden
+
+### Logaritmen
+
+$$
+log_bx = log_ba.log_ax
+$$
+
+### Areaalfuncties
+
+$$
+shx = \frac{e^x - e^{-x}}{2} \\
+chx = \frac{e^x + e^{-x}}{2}
+$$
+
+# Continuïteit
+
+Een functie $f$ is continu over $[a,b]$ indien:
+
+- $f$ rechts continu is in $a$
+- $\forall x \in ]a,b[$, $f$ is continu in $x$
+- $f$ is links continu in $b$
+
+
+
+### Limieten
+
+$$
+\lim_{x\to 0}(1+x)^\frac{1}{x} = \lim_{x\to \infty}(1+\frac{1}{y})^y= e \\
+\lim_{x\to 0} \frac{sinx}{x} = 1 \\
+\lim_{x\to 0} \frac{tanx}{x} = 1 \\
+\lim_{x\to a}u^v = e^{\lim_{x\to a}(v\ln u)}
+$$
+
+# Afgeleiden
+
+$f$ afleidbaar in $a \xRightarrow{}$ $f$ continu in a (niet speciaal andersom, een typische examenvraag is om dit toe te passen)
+
+Sommige afgeleiden die ik vaak vergeet of door elkaar haal
+$$
+(Arcsinx)' = \frac{1}{\sqrt{1-x^2}} \\
+(Arccosx)' = \frac{-1}{\sqrt{1-x^2}} \\
+(Arctanx)' = \frac{1}{1+x^2} \\
+(log_ax)' = \frac{1}{(\ln a)x } \\
+(a^x)' = (\ln a)a^x \\
+$$
+Impliciet afleiden:
+
+* leid de uitdrukking term per term af naar x
+* voor factoren afhankelijk van y, kettingregel gebruiken: $\frac{dg(y)}{dx} = \frac{dg(y)}{dy} \frac{dy}{dx} = \frac{dg(y)}{dy}.y'$
+
+### l'Hopital
+
+Alleen gebruiken bij $\frac{0}{0}$ of $\frac{\infty}{\infty}$
+
+### Raaklijn en normaal in een punt
+
+$$
+y-y_p = y'_p(x-x_p) \xRightarrow{} \text{ raaklijn} \\
+y-y_p = \frac{1}{y'_p}(x-x_p) \xRightarrow{} \text{ normaal}
+$$
+
+### Kromtestraal
+
+$$
+k = \frac{y''}{(1+y'^2)^{\frac{3}{2}}} \text{ en } R =  \frac{(1+y'^2)^{\frac{3}{2}}}{\abs{y''}}
+$$
+
+bereken de eerste en tweede afgeleide *in het punt* waarin je de kromtestraal of kromming moet berekenen en vul dan in in de formule.
+
+# Functieonderzoek
+
+Niet verticale asymptote:
+$$
+y = \omega x + b \\
+\omega = \lim_{x \to \infty}\frac{f(x)}{x} \\
+b = \lim_{x \to \infty}(f(x)  - \omega x)
+$$
+
+# Poolcoördinaten
+
+Rechte in poolcoordinaten:
+$$
+r\cos (\theta - \theta_0) = d_0 \xRightarrow{} \text{ rechte door } p_0:(d_0,\theta_0)
+$$
+// TODO afgeleiden, en cirkel in poolcoordinaten
+
+
+
+# Parameterkrommen
+
+$$
+y' = \frac{\frac{dy}{dt}}{\frac{dx}{dt}} \\
+x' = \frac{\frac{dy'}{dt}}{\frac{dx}{dt}} \\
+$$
+
+### Verticale asymptoot
+
+Zoek waar de $y$ naar oneindig gaat. De limiet daarnaartoe bij x is de verticale asymptoot
+
+### Niet-verticale asymptoot
+
+Zoek waar de $x$ naar oneindig gaat
+$$
+y = \omega x + b \\
+\omega = \lim_{t \to t_0}\frac{y}{x} \\
+b = \lim_{t \to t_0}(y  - \omega x)
+$$
+
+### Bijzondere poolkrommen
+
+Cycloïde
+
+![img](img/Cycloid_f.gif)
+$$
+{\begin{aligned}x&=r(t-\sin t)\\y&=r(1-\cos t)\end{aligned}}
+$$
+Epicycloïde
+
+<img src="https://upload.wikimedia.org/wikipedia/commons/a/ae/EpitrochoidOn3-generation.gif" alt="img" style="zoom: 50%;" />
+$$
+{\displaystyle x(\theta )=(R+r)\cos \theta \ -r\cos \left({\frac {R+r}{r}}\theta \right)}
+$$
+Cardioïde
+
+<img src="https://upload.wikimedia.org/wikipedia/commons/d/d0/Cardiod_animation.gif" alt="img" style="zoom:50%;" />
+$$
+\begin{equation}
+    \begin{cases}
+     x= r(2\cos t- \cos 2t) \\
+     y= r(2 \sin t - \sin 2t)
+      
+    \end{cases}\,
+\end{equation}
+$$
+Astroïde
+
+<img src="img/HypotrochoidOn4.gif" alt="img" style="zoom:50%;" />
+$$
+\begin{equation}
+    \begin{cases}
+     x= r \cos^3 t \\
+     y= r \sin^3 t
+      
+    \end{cases}\,
+\end{equation}
+$$
+
+
+# Onbepaalde integralen
 
 ## Standaardintegralen
 
@@ -137,3 +376,97 @@ $\boxed{\int R(x, \sqrt{a^2+x^2})dx}$ : stel $x = a.sh(t)$
 $\boxed{\int R(x, \sqrt{a^2-x^2})dx}$ : stel $x = a.sin(t)$ of $x = a.cos(t)$
 
 $\boxed{\int R(x, \sqrt{x^2 - a^2})dx}$ : stel $x = a.ch(t)$
+
+
+
+
+
+# Bepaalde integralen
+
+Oppervlakte vlak gebied in poolcoordinaten:
+$$
+S = \frac{1}{2}\int_{\theta_1}^{\theta_2}r^2d\theta
+$$
+
+### Booglengte vlakke kromme 
+
+Carthesisch:
+$$
+L = \int_{x_1}^{x_2}\sqrt{1 + y'^2}dx \\
+= \int_{y_1}^{y_2}\sqrt{1 + x'^2}dy \\
+= \int_{t_1}^{t_2}\sqrt{(\frac{dx}{dt})^2 + (\frac{dy}{dt})^2} dt
+$$
+Poolcoordinaten:
+$$
+L = \int_{\theta_1}^{\theta_2}\sqrt{r'^2 + r^2}d\theta
+$$
+
+### Volume van omwentelingslichamen
+
+**Schijfmethode**
+$$
+V_a = \pi \int_{x_1}^{x_2}r^2dx
+$$
+hier formule van oppervlakte cirkel, stel je allemaal cirkeltjes voor die opgestapeld worden
+
+**Schilmethode**
+$$
+V_a = 2\pi \int_{x_1}^{x_2}rf(x)dx
+$$
+hier gebruiken ze de omtrek van de cirkel, dus we nemen telkens een grotere cylinder en stapelen die op
+
+
+
+### Zijdelingse oppervlakte van omwentelingslichamen
+
+$$
+S_x = 2\pi\int_{x_1}^{x_2} \abs{y} \sqrt{1 + y'^2}dx \\
+S_y = 2\pi\int_{y_1}^{y_2} \abs{x} \sqrt{1 + x'^2}dy \\
+S_x = 2\pi \int_{t_1}^{t_2} \abs{g(t)} \sqrt{(\frac{dx}{dt})^2 + (\frac{dy}{dt})^2} dt
+\quad \quad \text{met} 
+\begin{equation}
+    \begin{cases}
+     x= f(t) \\
+     y= g(t)
+      
+    \end{cases}\,
+\end{equation}
+
+\\
+S_{poolas} = 2\pi\int_{\theta_1}^{\theta_2} r \abs{\sin \theta} \sqrt{r^2 + r'^2}d\theta
+$$
+
+### Traagheidsmoment, statisch moment en zwaartepunt
+
+**Traagheidsmoment**
+$$
+I_x = \int_{(p)}^{(q)}y^2ds \quad I_y = \int_{(p)}^{(q)}x^2ds
+$$
+**Statisch moment**
+$$
+M_x = \int_{(p)}^{(q)}yds \quad M_y = \int_{(p)}^{(q)}xds
+$$
+**Zwaartepunt van een homogene boog**
+$$
+\bar{x} = \frac{M_y}{L} \quad \quad \bar{y} = \frac{M_x}{L} \quad \quad z = (\bar{x}, \bar{y})
+$$
+**Stellingen van guldin**
+
+(voor dit deel stonden geen formules in de cursus, dus ik heb wat verzonnen schiet me niet neer als het niet klopt)
+
+Zijdelingse oppervlakte = L * omtrek van de cirkel die door het zwaartefpunt van de boog beschreven wordt.
+$$
+S_x = 2\pi (a - \bar{y}).L \\
+\text{rond rechte } y = a
+\\
+S_y = 2\pi (a - \bar{x}).L \\
+\text{rond rechte } x = a
+$$
+Inhoud omwentelingsoppervlak
+$$
+V_x = \pi (a - \bar{y})^2.Opp_{figuur} \\
+\text{rond rechte } y = a
+\\
+V_y = \pi (a - \bar{x})^2.Opp_{figuur} \\
+\text{rond rechte } x = a
+$$
