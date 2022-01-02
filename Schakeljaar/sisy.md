@@ -548,9 +548,9 @@ een periodiek signaal heeft een Fourierreeks als het aan een bepaald aantal voor
 
 ### Amplitude- en fasespectrum
 
-//TODO
+Het uitzetten van de gewichtsfactoren van de verschillende sinusoidale termen die bijdragen tot ons signaal in functie van de pulsatie
 
-
+Wat is dat? We kijken per pulsatie wat de gewichtsfactor is die we nodig hebben voor die sinusoidale met die pulsatie om samengeteld te worden tot ons signaal. Elk reeel signaal heeft een **even** amplitudespectrum en een **oneven** fasespectrum.
 
 ### Vermogen
 
@@ -586,19 +586,47 @@ $$
 \xLeftrightarrow[]{}X(t)\xrightarrow[F]{}2\pi.x(-\omega)
 $$
 
+Voorbeeldje van dualiteit (je moet een beetje omgekeerd denken)
 
+<img src="img/image-20220101230008455.png" alt="image-20220101230008455" style="zoom:33%;" />
 
 ### Fourier-analyse van systemen
 
+<img src="img/image-20220101181339647.png" alt="image-20220101181339647" style="zoom: 33%;" />
 $$
 H(\omega) = Y(\omega)/X(\omega) = F\{h(t)\} = \text{frequentieantwoord}
 $$
+
+<img src="img/image-20220101181405333.png" alt="image-20220101181405333" style="zoom: 33%;" />
+
+Wat wil dit zeggen? Als een sinusoidaal signaal door een systeem gaat, is de uitgang ook een sinusoidaal signaal met dezelfde frequentie. Het enige wat verandert is de amplitude en de fase. (hoe sterk het signaal is en hoe veel hij opschuift). 
+
+Wat ik ook niet begreep is wat die $\abs{H(\omega)}$ nu eigenlijk betekent. Maar het is echt gewoon de absolute waarde, of in dit geval ($H(\omega)$ is complex), de modulus: $\sqrt{Re(H(\omega))^2 + Im(H(\omega))^2}$. Verder nog: $\varphi_h(\omega) = Arctan(\frac{Re(H(\omega))}{Im(H(\omega))})$
+
+
 
 Nog een klein dingetje:
 
 <img src="img/image-20211223202330264.png" alt="image-20211223202330264" style="zoom:50%;" />
 
 Ik zou dit eens bekijken, het werd op een examen van een vorig jaar letterlijk gevraagd.
+
+
+
+### Bandbreedte
+
+Meest gebruikte definitie = **3dB-bandbreedte** (half power bandwidth) = positieve frequentie bij dewelke het amplitudespectrum $\abs{H(\omega)}$ gedaald is tot een waarde $\frac{\abs{H(0)}}{\sqrt{2}}$.
+
+Dit heet de half power bandwidth omdat het vermogen $P = H^2$. Dus als je het vermogen gedeelt door twee, kom je dus bij die $\sqrt{2}$. We gaan dus eigenlijk vanaf het punt dat we aan de helft van het vermogen zitten, hogere frequenties niet meer meetellen.
+
+<img src="img/image-20220101234049177.png" alt="image-20220101234049177" style="zoom: 33%;" />
+$$
+dB = 20\log_{10}\abs{H} = 10\log_{10}P
+$$
+
+### Frequentieantwoorden tekenen
+
+
 
 ## H5 - Sampling
 
@@ -645,8 +673,54 @@ We kunnen een ideale reconstructie doen met de **Shannon-filter**, maar dan moet
 
 ### Mogelijke examenvragen
 
-* Sowieso Bode diagram
-* Gegeven impulsantwoord, bereken systeemfunctie
-* Teken simulatieschema van gegeven differentiaalvergelijking
-* 
+Deze vragen zijn ofwel op een vorig examen geweest, of onze Jan heeft gezegd dat hij ze waarschijnlijk gaat stellen op het examen.
 
+
+
+
+
+**1. Gegeven een tekening (amplitudespectrum en fasespectrum) van het frequentieantwoord van een systeem. Bepaal de uitgang. Ingang x(t) = cos(50t)**
+
+<img src="img/image-20220101175742291.png" alt="image-20220101175742291" style="zoom:50%;" />
+
+Deze oefening is poepsimpel. De eerste grafiek toont de amplitudewijziging die het signaal ondergaat wanneer hij door het systeem gaat. 2 dus ($\omega$ = 50). Je moet het signaal vermenigvuldigen met 2. De tweede tekening toont de faseverschuiving die het signaal ondergaat wanneer hij door het systeem gaat. ($-\frac{\pi}{2}$ Bij $\omega$ = 50). Het uitgangssignaal is dus $2\cos(50t - \frac{\pi}{2})$. Je hoeft nieteens te rekenen.
+
+
+
+**2. Gegeven een impulsantwoord h(t), zoek de systeemfunctie H(s). Geef de differentiaalvergelijking die de dynamica van dit systeem beschrijft.**
+
+Om de systeemfunctie H(t) te vinden neem je de Laplacegetransformeerde van h(t). Om de differentiaalvergelijking te vinden gebruik je $H(s) = \frac{Y(s)}{X(s)}$ . Zet alles met $Y(s)$ links en alles met X(s) rechts. Vervang ten slotte $Y(s)$ door $y(t)$, $sY(s)$ door $\frac{dy}{dt}$, $s^2Y(s)$ door $\frac{d^2y}{dt^2}$, ... idem ditto voor $X(t)$.
+
+ 
+
+**3. Teken een simulatieschema voor een systeem op basis van integratoren**
+
+Dit dus tekenen vanuit die differentiaalvergelijking. Ik ga dit niet uitleggen, maak gewoon wat oefeningen.
+
+<img src="img/image-20220101192134832.png" alt="image-20220101192134832" style="zoom:50%;" />
+
+**4. Gegeven een simulatieschema. Geef de systeemfunctie**
+
+Dus je moet eerst de differentiaalvergelijking uit het simulatieschema halen (omgekeerde van vraag 3). Daarna kan je met $H(s) = \frac{Y(s)}{X(s)}$ het omgekeerde doen van in vraag 2.
+
+
+
+**5. Gegeven een tekening van een filter, welke filter is dit.**
+
+En dan moet je zeggen: laagdoorlaat of hoogdoorlaat of één van die. Leer dit maar vanbuiten, er zijn er maar 4. 
+
+<img src="img/image-20211223202330264.png" alt="image-20211223202330264" style="zoom: 25%;" />
+
+Oké, een trucje om het te onthouden. $\omega$ is de pulsatie. Als je naar het eerste figuurtje kijkt, zit ons vierkantje op de lage pulsaties. We gaan dus alleen lage frequenties doorlaten. De bandpass laat maar een bepaald deel van de frequenties door (pass). En de bandstop stopt een deel van de frequenties (die gaatjes).
+
+
+
+**Gegeven een systeemfunctie H(s), teken het bodediagram.**
+
+Deze komt sowieso op het examen (heeft hij gezegd in de les). Maak er gewoon een paar en alles komt goed.
+
+
+
+**Gegeven een signaal. Wat is het amplitudespectrum en het fasespectrum.**
+
+H4, slide 11 en 12 //TODO

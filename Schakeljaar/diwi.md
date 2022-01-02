@@ -515,3 +515,14 @@ We splitsen het probleem op in alle mogelijke gevallen
 ### Wiskundige inductie
 
 <img src="img/image-20211230135304666.png" alt="image-20211230135304666" style="zoom:33%;" /> 
+
+
+
+
+
+# To do
+
+hammingafstand
+
+private key encryptie
+
