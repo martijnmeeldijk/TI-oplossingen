@@ -624,9 +624,35 @@ $$
 dB = 20\log_{10}\abs{H} = 10\log_{10}P
 $$
 
-### Frequentieantwoorden tekenen
+### BODE-diagrammen
+
+King marti's ez guide to bodediagrammen :tm:
+
+**Stap 1**
+
+Je krijgt een systeemfunctie gegeven. Omdat een bodediagram logaritmisch is, kunnen we gewoon elke factor afzonderlijk tekenen en daarna alle grafiekjes optellen. Maak een lijstje van alle factoren (bv. $(s+10), \frac{1}{s+1}$ enz.)
+
+**Stap 2**
+
+Voor elk type factor ziet de grafiek er hetzelfde uit. Er zijn maar een paar mogelijkheden, dus hier een handig overzicht.
+
+| Type            | Magnitude \|H\|                                              | Fase $\varphi_h$                                            |
+| --------------- | ------------------------------------------------------------ | ----------------------------------------------------------- |
+| $s+a$           | $20\log(a)$ tot $a$, daarna +20dB per dec                    | 45° op $a$, 0° op vorige dec, 90° op volgende dec :warning: |
+| $\frac{1}{s+a}$ | $-20\log(a)$ tot $a$, daarna -20dB per dec (hetzelfde als $s+a$ spiegelen t.o.v de y-as) | (hetzelfde als $s+a$ spiegelen t.o.v de y-as)               |
+| $s$             | 0 op $\omega = 1$, altijd +20dB per dec                      | altijd 90°                                                  |
+| $\frac{1}{s}$   | 0 op $\omega = 1$, altijd -20dB per dec                      | altijd -90°                                                 |
+| $a$             | altijd $20\log(a)$                                           | altijd 0°                                                   |
+
+:warning: Je moet een beetje oppassen bij $s+a$ als je de fase wilt tekenen. Kijk naar de tekening: $j\omega + a$ komt overeen met $s + a$ en gaat dus van 0° naar 90°. Bij $s-a$ gaan we van 180° naar 90°, want $a$ is negatief. Hetzelfde voor de rest.
+
+<img src="img/image-20220103130654153_copy.jpg" alt="image-20220103130654153" style="zoom:50%;" />
 
 
+
+**Stap 3**
+
+Nu moet je gewoon de som maken van je grafiekjes voor $\abs{H}$ en $\varphi_h$.
 
 ## H5 - Sampling
 
@@ -683,7 +709,7 @@ Deze vragen zijn ofwel op een vorig examen geweest, of onze Jan heeft gezegd dat
 
 <img src="img/image-20220101175742291.png" alt="image-20220101175742291" style="zoom:50%;" />
 
-Deze oefening is poepsimpel. De eerste grafiek toont de amplitudewijziging die het signaal ondergaat wanneer hij door het systeem gaat. 2 dus ($\omega$ = 50). Je moet het signaal vermenigvuldigen met 2. De tweede tekening toont de faseverschuiving die het signaal ondergaat wanneer hij door het systeem gaat. ($-\frac{\pi}{2}$ Bij $\omega$ = 50). Het uitgangssignaal is dus $2\cos(50t - \frac{\pi}{2})$. Je hoeft nieteens te rekenen.
+Deze oefening is poepsimpel. De eerste grafiek toont de amplitudewijziging die het signaal ondergaat wanneer hij door het systeem gaat. 2 dus ($\omega$ = 50). Je moet het signaal vermenigvuldigen met 2. De tweede tekening toont de faseverschuiving die het signaal ondergaat wanneer hij door het systeem gaat. ($-\frac{\pi}{2}$ Bij $\omega$ = 50). Het uitgangssignaal is dus $2\cos(50t - \frac{\pi}{2})$. Je hoeft nieteens te rekenen. We maken gebruik van [Eigenschap amplitude- en fasewijziging](#Fourier-analyse van systemen)
 
 
 
@@ -711,16 +737,38 @@ En dan moet je zeggen: laagdoorlaat of hoogdoorlaat of één van die. Leer dit m
 
 <img src="img/image-20211223202330264.png" alt="image-20211223202330264" style="zoom: 25%;" />
 
-Oké, een trucje om het te onthouden. $\omega$ is de pulsatie. Als je naar het eerste figuurtje kijkt, zit ons vierkantje op de lage pulsaties. We gaan dus alleen lage frequenties doorlaten. De bandpass laat maar een bepaald deel van de frequenties door (pass). En de bandstop stopt een deel van de frequenties (die gaatjes).
+Oké, geheugensteuntje. $\omega$ is de pulsatie. Als je naar het eerste figuurtje kijkt, zit ons vierkantje op de lage pulsaties. We gaan dus alleen lage frequenties doorlaten. De bandpass laat maar een bepaald deel van de frequenties door (pass). En de bandstop stopt een deel van de frequenties (die gaatjes). 
 
 
 
-**Gegeven een systeemfunctie H(s), teken het bodediagram.**
+**6. Gegeven een systeemfunctie H(s), teken het bodediagram.**
 
-Deze komt sowieso op het examen (heeft hij gezegd in de les). Maak er gewoon een paar en alles komt goed.
+Deze komt sowieso op het examen (heeft Jan gezegd in de les). Maak er gewoon een paar en alles komt goed.
+
+[stappenplan](#BODE-diagrammen)
 
 
 
-**Gegeven een signaal. Wat is het amplitudespectrum en het fasespectrum.**
+**7. Gegeven een signaal. Wat is het amplitudespectrum en het fasespectrum.**
 
 H4, slide 11 en 12 //TODO
+
+
+
+**8. $H(s) = \frac{1}{1-s}$ Wat is het gedrag van $\varphi(\omega)$**
+
+Kan eender welke vorm zijn van $1+s$, zie [tekening](#BODE-diagrammen). 
+
+
+
+**9. Een wiel draait aan $x$ toeren per seconden, een scherm flitst $y$ keer per seconde, wat is het schijnbare toerental?**
+
+ik vind het gemakkelijk om bij deze opdracht gewoon een aantal frames te tekenen. dan weet je al direct in welke richting het wiel lijkt te draaien. Deel $x$ door $y$ om te weten hoe veel toeren per frame er gebeuren. Als het wiel tussen een halve en een hele toer per frame doet, lijkt het omgekeerd te gaan. 
+
+*Voorbeeld*
+
+Een wiel draait aan -9 toeren per seconde. Een scherm flitst 12 keer per seconde. Wat is het schijnbare toerental van het wiel?
+
+* $\frac{-9}{12}$ toeren per frame = $\frac{-3}{4}$, dit is tussen 0.5 en 1
+* Het wiel lijkt dus $\frac{1}{4}$ toeren per frame te doen
+* Vermenigvuldig dit met het aantal frames per seconde om het schijnbare toerental te krijgen = 3 toeren/sec
