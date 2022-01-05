@@ -1368,10 +1368,199 @@ Dit gezegd zijnde, komen we tot het einde van deze monsterlijk grote samenvattin
 
 # Examenvragen
 
-Een handige compilatie van dingen die onze Bruno heeft vermeld in de les als mogelijke examenvragen, lichtjes aangerijkt met mijn fantasie.
+Een handige compilatie van dingen die onze Bruno heeft vermeld in de les als mogelijke examenvragen, lichtjes aangerijkt met mijn fantasie. Je kan op de driehoekjes klikken om het antwoord te tonen.
 
 
 
-**Wat zijn de 3 voornaamste eigenschappen van een goed systeem?**
+**Wat zijn de 3 voornaamste eigenschappen van een goed systeem? Geef een korte verklaring.**
 
-Reliability, scalability, maintainability
+<details><summary>Antwoord</summary><small>Reliability: het systeem moet correct blijven werken, zelfs er er zich *faults* voordoen
+<br>Scalability: er moeten manieren voorzien zijn om ermee om te kunnen gaan als de grootte van ons systeem toeneemt <br>Maintainability: het systeem moet gemakkelijk zijn om draaiende te houden, gemakkelijk zijn om te begrijpen, en gemakkelijk zijn om in de toekomst veranderingen in aan te brengen</small></details>
+
+**Wanneer zou ik kiezen voor een relationeel of een document datamodel?**
+
+<details><summary>Antwoord</summary><small>Document: als de data veel one-to-many relaties bevat (in een boom die typisch volledig gevuld is)<br>Relationeel: als de data many-to-many relaties bevat</small></details>
+
+**Maak een schets van de extract-transform-load procedure in een datacenter, duid de stappen aan op de tekening.**
+
+<details><summary>Antwoord</summary><small><img src="img/FIoXu8j0e-7BMIhdIwoIzPE5MaA90bSbT0BQ9LNAlkOuEfPnXuaniQjdmm-VUf-hVHYrfRCbhyhDK8IRRQBFurPyxowW-Vm4Lo7iWniR7aVEYpXMajp05XrzWv9OLiCGzAfbmHnj-1304657.png" alt="img" style="zoom: 33%;" /></small></details>
+
+**Gegeven deze figuur van de data flow in een data warehouse. Leg uit.**
+
+<img src="img/1aL3F0rn5ho6H5xbSCdtff4YCl1wmGJo3IKqXGOSw7663mwszTalnM-tFb3PngMa11vRbQc3vf6mTu_xWtp4CH1JrP-CvfvFtu7bJ7i_d9RQ-VeNJPOfFEy6GVl8t3j0n5xptvCm-1304663.png" alt="img" style="zoom: 33%;" />
+
+<details><summary>Antwoord</summary><small>DQ: Data quality tools <br>Definieren quality rules en passen deze toe op data om fouten te vinden en te verbeteren
+Zo wordt enkel data van goeie kwaliteit opgenomen
+ETL: Extract-transform-load<br>MDM: Master data management systemen<br>Maakt een master list voor alle entiteiten (klanten, producten, ...), detecteert wanneer meerdere records dezelfde identiteit zijn en fixt dubbelzinnigheden.
+OLAP: Online analytical processing tools<br>BI: Business intelligence</small></details>
+
+**Geef 3 use-cases van metadata in een data warehouse.**
+
+<details><summary>Antwoord</summary><small>Data assets vinden
+<br>Weten waar data vandaan komt
+<br>Impactanalyse: we kunnen zien welke data assets afhangen van een bepaald veld alvorens een beslissing te maken</small></details>
+
+**Leg het sterrenschema uit.**
+
+<details><summary>Antwoord</summary><small>Data warehouses gebruiken vaak een star schema. Deze heeft de vorm van een ster, met in het midden een fact table en er rond dimensions.<br><br>Fact table<br>
+Elke rij beschrijft een gebeurtenis op een bepaalde tijd
+<br>Kan heel groot worden
+<br>Sommige kolommen zijn attributen, zoals prijs ofzo
+<br>Sommige kolommen zijn foreign keys naar dimensions
+<br><br>Dimensions
+<br>een dimensie kan bijvoorbeeld het product zijn dat is verkocht (in de foto hieronder)
+<br>datum en tijd worden vaak in dimensietabellen gezet, je kan dan bijvoorbeeld extra velden zoals is_holiday toevoegen om queries te vergemakkelijken. (de dimensietabellen voegen dus echt dimensie toe aan de data)</small></details>
+
+**Geef een voorbeeld van een slowly changing dimension.**
+
+<details><summary>Antwoord</summary><small>De naam van een klant</small></details>
+
+**We vergelijken een data lake met een data warehouse, vul aan.**
+
+| Data Warehouse | vs         | Data Lake |
+| -------------- | ---------- | --------- |
+|                | DATA       |           |
+|                | PROCESSING |           |
+|                | STORAGE    |           |
+|                | AGILITY    |           |
+|                | SECURITY   |           |
+|                | USERS      |           |
+
+<details><summary>Antwoord</summary><small>| Structured, processed             | DATA       | Structured/semi-structured/unstructured/raw       |<br>
+| Schema-on-write                   | PROCESSING | Schema-on-read                                    |<br>
+| Duur voor grote datavolumes       | STORAGE    | Gemaakt voor goedkope opslag                      |<br>
+| Niet flexibel, vaste configuratie | AGILITY    | Heel flexibel, gemakkelijk configuratie aanpassen |<br>
+| Mature                            | SECURITY   | Maturing                                          |<br>
+| Business pros                     | USERS      | Data scientists                                   |</small></details>
+
+**Gegeven volgende figuur van de organisatie van een data lake. Leg uit.**
+
+<img src="img/yKm1thqRfvshhEVCrTKy_bKOXLv-H4CIp3NBVtC--oysNhb9aUqeS302fMy6FWZCC6bebMoyf7bKNDhduOJF7KW2kZq6lRv5d6nE7nv5jw1W6bSsyvXcuQJ0Ac8qZ0tM2mAO3mgX-20211229113344950.png" alt="A drawing of a face  Description automatically generated" style="zoom:33%;" />
+
+<details><summary>Antwoord</summary><small>Landing zone (raw zone): hier komt ruwe data toe en we willen die data zou dicht mogelijk bij de originele staat houden<br>
+Gold zone (production zone): hier wordt clean, processed data gehouden<br>
+Work zone (dev zone): hier wordt door devs en data scientists gewerkt aan de data. Als analytics van hier klaar zijn voor productie, worden ze naar de gold zone verplaatst<br>
+Sensitive zone: bevat gevoelige data</small></details>
+
+**Waarom is het nuttig om te doen aan replicatie?**
+
+<details><summary>Antwoord</summary><small>Door data te repliceren verlagen we de latency, en verhogen we de availability en throughput. </small></details>
+
+**Vergelijk synchrone met asynchrone replicatie aan de hand van een tekening**.
+
+<details><summary>Antwoord</summary><small><img src="img/jjzx71iO5Gr6-jYLBXxLsIkr5ABJNehE9AFmX8KnIWAM1yamGHpN9SBPE2VxS0D0LViI3lI2Vu-TzMDB5q4OZF6DoFysaqDJpl-r5qeWVuhxF-knsIwh56epVs-jgUhlMtaQWDDZ-1304685.png" alt="img" style="zoom:33%;"/> <br><br>
+Synchrone replicatie<br>
+leader wacht op een oke van de follower alvorens aan de user door te geven dat de write geslaagd is<br>
+Het is dus gegarandeerd dat de follower up to date is<br>
+Als de follower niet antwoordt ben je genaaid<br><br>
+Asynchrone replicatie<br>de leader wacht niet op bevestiging van de follower<br>
+als de leader kapot gaat, zijn de writes die nog niet doorgevoerd zijn verloren<br>
+de leader kan wel blijven writes verwerken, ookal lopen de followers achter<br></small></details>
+
+**Waarom hebben we bij replicatie read after write consistency nodig?**
+
+<details><summary>Antwoord</summary><small><img src="img/XLHokZKZuniq9WaDr1Zmvy-qeS350Uck1FygvMVhVS6YrLrLyjBt8BuHi0TWjMd8e4zdwRHkeHXtgAIEy3rPmsg5ase3W8nGQQ2tzCHxw2W1eMqSD8xFzWTFAhmI__Y6gxd_xWWH-1304689.png" alt="img" style="zoom:33%;"/><br>Als je je eigen write wilt lezen, kan het dat deze nog niet is doorgevoerd naar de follower waar je dit record opvraagt. We hebben dus read after write consistency nodig. Als een user een verandering maakt, moeten we ervoor zorgen dat als hij iets opvraagt dat hij heeft verandert ook direct wordt weergegeven. De client houdt een timestamp bij van wanneer hij de write heeft gedaan. Wanneer hij dan de write opvraagt, wordt gecheckt of de followers al aan die timestamp zitten, anders haalt hij de data bij de leader. Dit wordt nog moeilijker wanneer de user meerdere devices gebruikt (gsm, laptop, smart fridge)</small></details>
+
+**Wat is een monotonic read?**
+
+<details><summary>Antwoord</summary><small>Wanneer een user twee reads achter elkaar doet, maar het request van de tweede read terechtkomt bij een follower die achter zit. De user kijkt bij de tweede read dus in het verleden.</small></details>
+
+**Wat gaat er mis in dit systeem? Welke voorziening moeten we implementeren om dit te voorkomen?**
+
+<img src="img/ncVuXNXit94Eyjj2edol-_L0WiXxnqMpwSc_KBqjGxfQ0QJl6nY-7JArRATtiSt4LXug5EUDt3UFuTxVtxFp58GWaju4GKMkMqvDVhc_Hmlv2GUxUwNFCOzBGpduYActakBdiW2v-1304696.png" alt="img" style="zoom:33%;" />
+
+<details><summary>Antwoord</summary><small>Doordat de follower van partition één achter loopt, leest de observer de berichten in de foute volgorde. We moeten zorgen voor consistent prefix reads
+<br>= ervoor zorgen dat reads in dezelfde volgorde als writes gebeuren.</small></details>
+
+**Hoe gaan we bij leaderless replication om met het uitvallen van een node. Verduidelijk met een schets.**
+
+<details><summary>Antwoord</summary><small><img src="img/fcOSzxpOKCzrBUDgVHbS0dIRVrSZN4eNyP2_meevoAS4WfJkrlv3aB9WFCNmE3dN69i_QQFgf1UBwTUZ5XXjsS5bb822MSrxkyShR0RWhiiOZ2i7ZIuttlYMDDPBpJYM0jjAA1Zr-1304704.png" alt="img" style="zoom:33%;"/><br>De read wordt naar 3 nodes gestuurd waarvan eentje down is. Als de client nu leest van replica 3 gaat hij oude data krijgen. We gaan dus de client ook van meerdere replicas laten lezen. </small></details>
+
+**Geef een voobeeld van een strategie die we kunnen gebruiken om een gepartitioneerd systeem te rebalancen.**
+
+<details><summary>Antwoord</summary><small>Niet hashen met mod n, want als n verandert moeten we heeeel veel data verplaasen<br><br>
+Veel meer partities maken dan nodes, dus meerdere partities per node<br>
+als er een nieuwe node komt kan hij een paar partities van iedereen overnemen<br><br>
+Dynamic partitioning<br>
+Wanneer een partitie groeit, hem splitsen als hij te groot wordt (omgekeerd als hij krimpt)<br><br>
+Partitioning proportionally to nodes<br>
+Vast aantal partities per node<br>
+als een nieuwe node komt, splitst hij een vast aantal random partities en neemt hij die helft voor zich</small></details>
+
+**Wat wilt deze tabel zeggen?**
+
+<img src="img/image-20211229154225422.png" alt="image-20211229154225422" style="zoom:50%;" />
+
+<details><summary>Antwoord</summary><small>Mapreduce is nuttig wanneer we één keer schrijven en dan heel vaak moeten lezen. Relationele databanken zijn beter als je constant dingen moet updaten. Bij mapreduce is het schema ook niet zo strict als bij een relationele databank. Nog stuff (mmm misschien is dit niet zo een goeie vraag)</small></details>
+
+**Leg uit hoe we MapReduce kunnen gebruiken aan de hand van een voorbeeld.**
+
+<details><summary>Antwoord</summary><small>We hebben een set van items en een bepaalde functie. We willen bijvoorbeeld alle items die dezelfde waarde hebben voor de functie samen opslaan.<br>
+De Mapper berekent de functie voor elk item en geeft de uitkomst als key en het item zelf als value. <br>De Reducer ontvangt alle items gegroepeerd per functiewaarde en slaat ze op.</small></details>
+
+**Wat toont deze tekening? Leg elke stap uit.**
+
+<img src="img/bmVMrxsB_5h9oKq9Qi0_ZVsS6Q-1cTEE1uUILW1akLRGsA4e9r_8D9N22hk3GShG4dQWTAE2US-se88hPaa23vOwSP4T3udCF6yh3wuPB-VlndexwH5B6pv2awj45pchCwSo258N-1304724.png" alt="img" style="zoom:33%;" />
+
+<details><summary>Antwoord</summary><small>Een client leest data uit hdfs<br><br>Client opent file
+<br>NameNode weet locatie van de blokken van het bestand en rangschikt ze op afstand
+<br>Client ontvangt een inputstream object (om abstractie te maken van het lezen van verschillende nodes)</small></details>
+
+**We vergelijken Spark met Hadoop MapReduce. Vul aan.**
+
+| Spark | vs              | Hadoop MapReduce |
+| ----- | --------------- | ---------------- |
+|       | Processing      |                  |
+|       | Jobs            |                  |
+|       | Fault tolerance |                  |
+|       | Streaming       |                  |
+|       | Beter voor      |                  |
+
+<details><summary>Antwoord</summary><small>| In-memory (is sneller, maar wel duurder want ram is duur)    | Processing      | On disk                                                      |<br>
+| Beter voor iteratieve taken                                  | Jobs            | Beter voor one-pass big data jobs                            |<br>
+| RDD herberekenen voor gefaalde partitie                      | Fault tolerance | Intermediate files worden als checkpoints gebruikt           |<br>
+| Spark streaming                                              | Streaming       |     /                                                         |<br>
+| Real-time in memory processing voor datasets waarbij dat nodig is | Beter voor      | Voor gedistribueerde bestandssystemen en het processen van grote, statische datasets (bv. Extract-transform-load) |</small></details>
+
+**Wat is een message broker?**
+
+<details><summary>Antwoord</summary><small>Een message broker is een soort manager die die de rol van een queue aanneemt om orde te maken in chaos. Als er te veel berichten zijn worden ze typisch in een queue gezet (niet gedropt). Je kan messages dan gaan opslaan in een log (een append-only sequentie van records op een disk). De producer voegt dingen toe op het einde van de log en de consumer leest de log sequentieel uit.</small></details>
+
+**Leg het verschil uit tussen at least once, exactly once en at most once delivery. Geef voor elk van de drie een framework als voorbeeld.**
+
+<details><summary>Antwoord</summary><small>
+  At least once: elk bericht wordt mogelijk meerdere keren door het systeem gestuurd, zodat het ten minste één keer doorgevoerd wordt (apache storm)<br>
+  Exactly once: elk bericht gaat exact één keer door ons systeem, meestal wel een beetje hogere latency (trident) <br>
+  At most once: we weten dat elk bericht maximaal één keer verwerkt wordt (Apache Heron, maar die kan ze eigenlijk alle drie)
+  </small></details>
+
+**War vertelt deze figuur ons over Apache Heron?**
+
+<img src="img/r-Dt104M2k0n6wReP8_KNQSjFG1xbrUbrCPUoUEBgaXFeB1XRfys6M3-dDYOTXco4w1T0XmxGIfqUXoIC8KeyV59CKiAJbzwMAranQsFZ4ercKjZkCEEFQTrWPDf4Y_d1XUBzjv6-20220104145908944.png" alt="img" style="zoom: 33%;" />
+
+<details><summary>Antwoord</summary><small>Dit weet ik niet goed. Ik denk dat wanneer een user een bepaalde topologie maakt en doorgeeft aan de scheduler, de scheduler dan zelf containers alloceert op basis van resources enzo.</small></details>
+
+**Leg de Lambda-architectuur uit aan de hand van een tekening. Waarom wordt deze architectuur in de praktijk niet meer gebruikt?**
+
+<details><summary>Antwoord</summary><small><img src="https://lh5.googleusercontent.com/Zwl3Xc0GDSPgXuaWkl6RRLy5bzRAsJMXmNELszN2ct_bgWSpf-02LQHsDbT6SKOKaZX7zjMIivM5E2XBiGqqeXU95mdNX-ZKOtTeJmFLbEK6JxbT2EzZHWSgA5vSe1qIzaevTkG7" alt="img" style="zoom:50%;" /><br>De streaming layer (speed layer) handelt alle requests af waarvoor lage latency vereist is en werkt alleen met recente data om een real-time view te voorzien. Zijn output wordt typisch in een NoSQL db opgeslagen. De views op deze laag zijn niet zo accuraat en volledig als die van de batch layer. <br><br>
+  De batch layer beheert de master dataset (met alle data dus). Deze is typisch een gedistribueerde, raw, append-only dataset. In deze laag wordt alle data verwerkt om een view te produceren, die dan weggeschreven wordt naar een read-only db. <br><br>De serving layer geeft ons dan output (d.m.v. queries) van zowel de streaming als de batch layer.<br><br>We moeten eigenlijk dubbel werk doen, want in onze serving layer moet code geschreven worden om zowel de streaming als de batch layer te ondersteunen. Verder is het ook gewoon moeilijk om twee complexe gedistribueerde systemen te onderhouden. </small></details>
+
+**Wat zijn de 4 pilaren van de Kappa-architectuur?**
+
+<details><summary>Antwoord</summary><small>Data is immutable <br>
+Everything is a stream<br>
+Single stream engine is used<br>
+Data can be replayed</small></details>
+
+**Wat staat er centraal in de Zeta-architectuur? Wat zijn de 7 hoofdcomponenten?**
+
+<details><summary>Antwoord</summary><small>Global resource management<br><br>
+  Enterprise applications<br>
+Solution architecture<br>
+Compute model / execution engine<br>
+Distributed file system<br>
+Real-time data storage<br>
+Container system<br>
+Global Resource Management
+  </small></details>
+
