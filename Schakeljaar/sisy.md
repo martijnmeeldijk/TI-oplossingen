@@ -727,7 +727,7 @@ Dit dus tekenen vanuit die differentiaalvergelijking. Ik ga dit niet uitleggen, 
 
 **4. Gegeven een simulatieschema. Geef de systeemfunctie**
 
-Dus je moet eerst de differentiaalvergelijking uit het simulatieschema halen (omgekeerde van vraag 3). Daarna kan je met $H(s) = \frac{Y(s)}{X(s)}$ het omgekeerde doen van in vraag 2.
+Dus je moet eerst de differentiaalvergelijking uit het simulatieschema halen (omgekeerde van vraag 3). Daarna kan je door de Laplacegetransformeerde van de differentiaalvergelijking te berekenen met $H(s) = \frac{Y(s)}{X(s)}$ het omgekeerde doen van in vraag 2.
 
 
 

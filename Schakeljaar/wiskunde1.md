@@ -383,6 +383,8 @@ $\boxed{\int R(x, \sqrt{x^2 - a^2})dx}$ : stel $x = a.ch(t)$
 
 # Bepaalde integralen
 
+// TODO bepaalde integralen in parameterkrommen
+
 Oppervlakte vlak gebied in poolcoordinaten:
 $$
 S = \frac{1}{2}\int_{\theta_1}^{\theta_2}r^2d\theta

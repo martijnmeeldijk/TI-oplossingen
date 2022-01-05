@@ -4,6 +4,10 @@ Mijn persoonlijke samenvatting van GDV. Er staat ook telkens bij geschreven of o
 
 
 
+Het tekstje hierboven heb ik een paar dagen geleden geschreven. Onder tussen is deze samenvatting een textbook voorbeeld geworden van scope creep. Op het moment dat ik dit schrijf zitten we aan 8800 woorden. Oeps.
+
+
+
 # H1 - Data and data preprocessing
 
 ## Data
@@ -423,7 +427,7 @@ Vroeger werden dezelfde databanken gebruikt voor OLAP en OLTP. Nu dus niet meer.
 
 We gaan een **Extract-Transform-Load** (ETL) doen om alle data in een data warehouse te steken, die dan een read-only kopie van onze data bevat. OLAP queries kunnen dan op de data warehouse uitgevoerd worden zonder de performantie van de OLTP queries te verminderen.
 
-<img src="https://lh3.googleusercontent.com/FIoXu8j0e-7BMIhdIwoIzPE5MaA90bSbT0BQ9LNAlkOuEfPnXuaniQjdmm-VUf-hVHYrfRCbhyhDK8IRRQBFurPyxowW-Vm4Lo7iWniR7aVEYpXMajp05XrzWv9OLiCGzAfbmHnj" alt="img" style="zoom:50%;" />
+<img src="img/FIoXu8j0e-7BMIhdIwoIzPE5MaA90bSbT0BQ9LNAlkOuEfPnXuaniQjdmm-VUf-hVHYrfRCbhyhDK8IRRQBFurPyxowW-Vm4Lo7iWniR7aVEYpXMajp05XrzWv9OLiCGzAfbmHnj-1304657.png" alt="img" style="zoom:50%;" />
 
 (dit moet je blijkbaar in grote lijnen kunnen tekenen op het examen)
 
@@ -441,7 +445,7 @@ Een data mart voorziet snelle toegang tot een subset van de data en verlicht de 
 
 (in een data warehouse) je moet dit kunnen tekenen op het examen btw
 
-<img src="https://lh3.googleusercontent.com/1aL3F0rn5ho6H5xbSCdtff4YCl1wmGJo3IKqXGOSw7663mwszTalnM-tFb3PngMa11vRbQc3vf6mTu_xWtp4CH1JrP-CvfvFtu7bJ7i_d9RQ-VeNJPOfFEy6GVl8t3j0n5xptvCm" alt="img" style="zoom: 33%;" />
+<img src="img/1aL3F0rn5ho6H5xbSCdtff4YCl1wmGJo3IKqXGOSw7663mwszTalnM-tFb3PngMa11vRbQc3vf6mTu_xWtp4CH1JrP-CvfvFtu7bJ7i_d9RQ-VeNJPOfFEy6GVl8t3j0n5xptvCm-1304663.png" alt="img" style="zoom: 33%;" />
 
 * DQ: **Data quality tools**
   * Definieren *quality rules* en passen deze toe op data om fouten te vinden en te verbeteren
@@ -491,7 +495,7 @@ In het hart van de data warehouse wordt meestal een relationele databank gebruik
 
 Data warehouses gebruiken een star schema. Deze heeft de vorm van een ster, met in het midden een **fact table** en er rond **dimensions**. Examenvraag: leg het sterrenschema uit
 
-<img src="https://www.guru99.com/images/1/022218_0758_StarandSnow1.png" alt="Star and Snowflake Schema in Data Warehouse with Model Examples" style="zoom: 50%;" />
+<img src="img/022218_0758_StarandSnow1-1304667.png" alt="Star and Snowflake Schema in Data Warehouse with Model Examples" style="zoom: 50%;" />
 
 * Fact table
   * Elke rij beschrijft een gebeurtenis op een bepaalde tijd
@@ -502,7 +506,7 @@ Data warehouses gebruiken een star schema. Deze heeft de vorm van een ster, met 
   * een dimensie kan bijvoorbeeld het product zijn dat is verkocht (in de foto hieronder)
   * datum en tijd worden vaak in dimensietabellen gezet, je kan dan bijvoorbeeld extra velden zoals `is_holiday` toevoegen om queries te vergemakkelijken. (de dimensietabellen voegen dus echt dimensie toe aan de data)
 
-<img src="https://lh6.googleusercontent.com/pBU6_Au4TsPMRNTkiGlF2EWJwU3LItY8hqh9Eiu7LubzVS4byEysfLrLkLLVBALwbf1o8z1HM-ym7h4B71oykxwFMOSVpOMIpNEF9CBm2sK7QusGy3eN2ky_EgDb3fXUez3nHs79" alt="img" style="zoom:33%;" />
+<img src="img/pBU6_Au4TsPMRNTkiGlF2EWJwU3LItY8hqh9Eiu7LubzVS4byEysfLrLkLLVBALwbf1o8z1HM-ym7h4B71oykxwFMOSVpOMIpNEF9CBm2sK7QusGy3eN2ky_EgDb3fXUez3nHs79-1304673.png" alt="img" style="zoom:33%;" />
 
 ### Slowly changing dimensions
 
@@ -669,7 +673,7 @@ Hiervoor gebruiken we:
 
 (Op het examen wordt sowieso één van deze figuren gevraagd)
 
-<img src="https://lh6.googleusercontent.com/Y1QFnTlu0Qm2VOBfNSBtYe9d4oLZCWCCTCMjvFdAtOj2MG9oI6OrdgLqrCuzobLd9b_gqqDr7Tnh7zG29K5YDYOIFDLNCQrAeRbtwveSVN1oiHw3BD9J-6BdpCj9dCsAWtorNtiW" alt="img" style="zoom: 33%;" />
+<img src="img/Y1QFnTlu0Qm2VOBfNSBtYe9d4oLZCWCCTCMjvFdAtOj2MG9oI6OrdgLqrCuzobLd9b_gqqDr7Tnh7zG29K5YDYOIFDLNCQrAeRbtwveSVN1oiHw3BD9J-6BdpCj9dCsAWtorNtiW-1304680.png" alt="img" style="zoom: 33%;" />
 
 De leader neemt writes aan en voert deze dan door aan de followers. Op de followers kan je alleen reads doen.
 
@@ -677,7 +681,7 @@ De leader neemt writes aan en voert deze dan door aan de followers. Op de follow
 
 Op het examen kan je gevraagd worden om synchrone en asynchrone replicatie te tekenen of om uit te leggen wat er gebeurt in de figuur. Hij kan je ook vragen om dit toe te passen op een voorbeeld. Stel je voor, je wilt Netflix kijken en je klikt op een film. Als netflix gebruik maakt van asynchrone replicatie kan het dat de film net is verwijderd, maar nog steeds op je home screen staat. Netflix maakt bewust de keuze om niet direct de UI te updaten om resources te sparen, met de kans dat dat heel af en toe een gebruiker teleurgesteld gaat zijn.
 
-<img src="https://lh6.googleusercontent.com/jjzx71iO5Gr6-jYLBXxLsIkr5ABJNehE9AFmX8KnIWAM1yamGHpN9SBPE2VxS0D0LViI3lI2Vu-TzMDB5q4OZF6DoFysaqDJpl-r5qeWVuhxF-knsIwh56epVs-jgUhlMtaQWDDZ" alt="img" style="zoom:33%;" />
+<img src="img/jjzx71iO5Gr6-jYLBXxLsIkr5ABJNehE9AFmX8KnIWAM1yamGHpN9SBPE2VxS0D0LViI3lI2Vu-TzMDB5q4OZF6DoFysaqDJpl-r5qeWVuhxF-knsIwh56epVs-jgUhlMtaQWDDZ-1304685.png" alt="img" style="zoom:33%;" />
 
 * Synchrone replicatie
   * leader wacht op een oke van de follower alvorens aan de user door te geven dat de write geslaagd is
@@ -719,7 +723,7 @@ Om een nieuwe follower toe te voegen nemen we een snapshot uit het verleden (om 
 
 (dit moet je blijk baar ook kunnen uitleggen op het examen)
 
-<img src="https://lh3.googleusercontent.com/XLHokZKZuniq9WaDr1Zmvy-qeS350Uck1FygvMVhVS6YrLrLyjBt8BuHi0TWjMd8e4zdwRHkeHXtgAIEy3rPmsg5ase3W8nGQQ2tzCHxw2W1eMqSD8xFzWTFAhmI__Y6gxd_xWWH" alt="img" style="zoom:33%;" />
+<img src="img/XLHokZKZuniq9WaDr1Zmvy-qeS350Uck1FygvMVhVS6YrLrLyjBt8BuHi0TWjMd8e4zdwRHkeHXtgAIEy3rPmsg5ase3W8nGQQ2tzCHxw2W1eMqSD8xFzWTFAhmI__Y6gxd_xWWH-1304689.png" alt="img" style="zoom:33%;" />
 
 Als je je eigen write wilt lezen, kan het dat deze nog niet is doorgevoerd naar de follower waar je dit record opvraagt. We hebben dus **read after write consistency** nodig. Als een user een verandering maakt, moeten we ervoor zorgen dat als hij iets opvraagt dat hij heeft verandert ook direct wordt weergegeven. De client houdt een *timestamp* bij van wanneer hij de write heeft gedaan. Wanneer hij dan de write opvraagt, wordt gecheckt of de followers al aan die timestamp zitten, anders haalt hij de data bij de leader. Dit wordt nog moeilijker wanneer de user meerdere devices gebruikt (gsm, laptop, smart fridge)
 
@@ -727,13 +731,13 @@ Als je je eigen write wilt lezen, kan het dat deze nog niet is doorgevoerd naar 
 
 We moeten ervoor zorgen dat als een user meerdere reads maakt, hij niet terug in de tijd leest door de tweede read bij een follower te doen die nog meer achter zit. We moeten er dus voor zorgen dat elke user van dezelfde replica blijft lezen.
 
-<img src="https://lh5.googleusercontent.com/R56Jf1U31XU5bhnE3wuNnkz6ka8NCNpUj_ddTqeiYAN9DrnOhyLWLDjsew8DmP8xiPO6C2JEZdD0V92zXC53JN5ObKecpBJgCu7PeSA98iOJYvXyNm0uCpeqwwAzzLjQHpAecBUG" alt="img" style="zoom:33%;" />
+<img src="img/R56Jf1U31XU5bhnE3wuNnkz6ka8NCNpUj_ddTqeiYAN9DrnOhyLWLDjsew8DmP8xiPO6C2JEZdD0V92zXC53JN5ObKecpBJgCu7PeSA98iOJYvXyNm0uCpeqwwAzzLjQHpAecBUG-1304693.png" alt="img" style="zoom:33%;" />
 
 **Consistent prefix reads**
 
 = ervoor zorgen dat reads in dezelfde volgorde als writes gebeuren. De afbeelding toont hoe het fout kan gaan.
 
-<img src="https://lh3.googleusercontent.com/ncVuXNXit94Eyjj2edol-_L0WiXxnqMpwSc_KBqjGxfQ0QJl6nY-7JArRATtiSt4LXug5EUDt3UFuTxVtxFp58GWaju4GKMkMqvDVhc_Hmlv2GUxUwNFCOzBGpduYActakBdiW2v" alt="img" style="zoom:33%;" />
+<img src="img/ncVuXNXit94Eyjj2edol-_L0WiXxnqMpwSc_KBqjGxfQ0QJl6nY-7JArRATtiSt4LXug5EUDt3UFuTxVtxFp58GWaju4GKMkMqvDVhc_Hmlv2GUxUwNFCOzBGpduYActakBdiW2v-1304696.png" alt="img" style="zoom:33%;" />
 
 
 
@@ -749,7 +753,7 @@ We moeten ervoor zorgen dat als een user meerdere reads maakt, hij niet terug in
 | Gevoelig aan problemen in de verbinding tussen datacenters, want writes moeten synchroon naar de leader gestuurd worden | Netwerkproblemen | Tijdelijke netwerkproblemen voorkomen niet dat writes naar de lokale leader geschreven worden |
 | basically alles hierboven                                    | Nadelen          | Write conflicts, als dezelfde data in twee datacenters aangepast wordt, hebben we een probleem. Multi-leader is ook gewoon ingewikkelder. |
 
-<img src="https://lh5.googleusercontent.com/9AzyGT8U6FrdkWFYl2ePcbRYbZL9kxce0Sk1W5yC8kcszkHxdMjTdrXYjq_qW5ORC9P16C_nc4OSYepcM-7E-spTfewh6pmpFj-A3rTx-Wnqyn2n8TmhgG3i4uX77mSKPzV_M7CM" alt="img" style="zoom:33%;" />
+<img src="img/9AzyGT8U6FrdkWFYl2ePcbRYbZL9kxce0Sk1W5yC8kcszkHxdMjTdrXYjq_qW5ORC9P16C_nc4OSYepcM-7E-spTfewh6pmpFj-A3rTx-Wnqyn2n8TmhgG3i4uX77mSKPzV_M7CM-1304700.png" alt="img" style="zoom:33%;" />
 
 Manieren van multi-leader infrastructuren te organiseren
 
@@ -761,7 +765,7 @@ Ook gekend als **Dynamo style**. De write wordt door de client of een coördinat
 
 Wanneer een node offline gaat:
 
-<img src="https://lh5.googleusercontent.com/fcOSzxpOKCzrBUDgVHbS0dIRVrSZN4eNyP2_meevoAS4WfJkrlv3aB9WFCNmE3dN69i_QQFgf1UBwTUZ5XXjsS5bb822MSrxkyShR0RWhiiOZ2i7ZIuttlYMDDPBpJYM0jjAA1Zr" alt="img" style="zoom:33%;" />
+<img src="img/fcOSzxpOKCzrBUDgVHbS0dIRVrSZN4eNyP2_meevoAS4WfJkrlv3aB9WFCNmE3dN69i_QQFgf1UBwTUZ5XXjsS5bb822MSrxkyShR0RWhiiOZ2i7ZIuttlYMDDPBpJYM0jjAA1Zr-1304704.png" alt="img" style="zoom:33%;" />
 
 De read wordt naar 3 nodes gestuurd waarvan eentje down is. Als de client nu leest van *replica 3* gaat hij oude data krijgen. We gaan dus de client ook van meerdere replicas laten lezen. (deze foto is ooit op een examen gevraagd)
 
@@ -769,7 +773,7 @@ De read wordt naar 3 nodes gestuurd waarvan eentje down is. Als de client nu lee
 
 ### Read repair en anti entropy
 
-<img src="https://lh5.googleusercontent.com/fcOSzxpOKCzrBUDgVHbS0dIRVrSZN4eNyP2_meevoAS4WfJkrlv3aB9WFCNmE3dN69i_QQFgf1UBwTUZ5XXjsS5bb822MSrxkyShR0RWhiiOZ2i7ZIuttlYMDDPBpJYM0jjAA1Zr" alt="img" style="zoom:33%;" />
+<img src="img/fcOSzxpOKCzrBUDgVHbS0dIRVrSZN4eNyP2_meevoAS4WfJkrlv3aB9WFCNmE3dN69i_QQFgf1UBwTUZ5XXjsS5bb822MSrxkyShR0RWhiiOZ2i7ZIuttlYMDDPBpJYM0jjAA1Zr-20220104145827351.png" alt="img" style="zoom:33%;" />
 
 Als een uitgevallen node terug online komt moeten we zorgen dat hij terug up-to-date raakt. Dit kan op twee manieren:
 
@@ -806,7 +810,7 @@ Soms zoeken we een record niet op primary key, maar op iets anders. Deze zitten 
 
 Een secundaire index per partitie. Je moet dan de query sturen naar alle partities en de resultaten samenvoegen.
 
-<img src="https://lh5.googleusercontent.com/aO4s_uOd1H-V-CDDZkgzWkYXItJpuzMohbvjxg7lBrnUEyORrNuwC1nhV5_m2nzaUa-jDJNGcH0HgpwxjhFavRQpN8BWq-pKTMJp5fEZdVA1dNGX2uG1BF2D1Z7HVnMIe5PIZbVs" alt="img" style="zoom:33%;" />
+<img src="img/aO4s_uOd1H-V-CDDZkgzWkYXItJpuzMohbvjxg7lBrnUEyORrNuwC1nhV5_m2nzaUa-jDJNGcH0HgpwxjhFavRQpN8BWq-pKTMJp5fEZdVA1dNGX2uG1BF2D1Z7HVnMIe5PIZbVs-1304711.png" alt="img" style="zoom:33%;" />
 
 of met:
 
@@ -903,7 +907,7 @@ Volgt vaste stappen:
 
 De master node coordineert de hele boel en stuurt pings naar nodes om failures te detecteren.
 
-<img src="https://lh5.googleusercontent.com/QucV1h0-5w7rGf6S4R24WyZ1CclJdsl6MlF9oNT70muQFFus-PA8r82Yx_6Xm3Q7f22cweH3Gyn5QsMiVbG0sDIUexJVdBEvbfxwkykrxLLUmJXlc1E_H_J2pMoVlg5XHuSvmm_H" alt="img" style="zoom:33%;" />
+<img src="img/QucV1h0-5w7rGf6S4R24WyZ1CclJdsl6MlF9oNT70muQFFus-PA8r82Yx_6Xm3Q7f22cweH3Gyn5QsMiVbG0sDIUexJVdBEvbfxwkykrxLLUmJXlc1E_H_J2pMoVlg5XHuSvmm_H-1304715.png" alt="img" style="zoom:33%;" />
 
 
 
@@ -935,7 +939,7 @@ uit de slides:
 
 Hadoop Distributed File System
 
-<img src="https://lh3.googleusercontent.com/UGPD71vk7gtBwgv_FaFSbMUkypPfdA3FM37HmD6oM37KyExxJ79iorQ3kWSMafWVYi9HAlbjAw-__DdN8EzzitIrITATZrUeNR4lm_7pzFq1QdkWmSCGxzLLomzhhZV-EgS8Ay8z" alt="img" style="zoom:33%;" />
+<img src="img/UGPD71vk7gtBwgv_FaFSbMUkypPfdA3FM37HmD6oM37KyExxJ79iorQ3kWSMafWVYi9HAlbjAw-__DdN8EzzitIrITATZrUeNR4lm_7pzFq1QdkWmSCGxzLLomzhhZV-EgS8Ay8z-1304719.png" alt="img" style="zoom:33%;" />
 
 Data wordt in chunks opgedeeld en verdeeld over meerdere servers. Dit wordt veel gebruikt bij grote datasets waar niet veel wordt geüpdatet. Een master node (**NameNode**) houdt metadata bij over waar data te vinden valt.
 
@@ -945,7 +949,7 @@ Data wordt in chunks opgedeeld en verdeeld over meerdere servers. Dit wordt veel
 
 
 
-<img src="https://lh6.googleusercontent.com/bmVMrxsB_5h9oKq9Qi0_ZVsS6Q-1cTEE1uUILW1akLRGsA4e9r_8D9N22hk3GShG4dQWTAE2US-se88hPaa23vOwSP4T3udCF6yh3wuPB-VlndexwH5B6pv2awj45pchCwSo258N" alt="img" style="zoom:33%;" />
+<img src="img/bmVMrxsB_5h9oKq9Qi0_ZVsS6Q-1cTEE1uUILW1akLRGsA4e9r_8D9N22hk3GShG4dQWTAE2US-se88hPaa23vOwSP4T3udCF6yh3wuPB-VlndexwH5B6pv2awj45pchCwSo258N-1304724.png" alt="img" style="zoom:33%;" />
 
 
 
@@ -957,7 +961,7 @@ Data wordt in chunks opgedeeld en verdeeld over meerdere servers. Dit wordt veel
 
 **Schrijven naar HDFS**:
 
-<img src="https://lh5.googleusercontent.com/byic2JIlau-QuikcQDMBqW9EehICI1LWNArYRty5Xx4L3N9XoSYsIL5HMCOlEIAnBL9fFpTGwch0QK--n50jBPZYusgAAETocXElxHaZMXONhgOUeMolLpdVr-5Ck5D_RTCGIZIz" alt="img" style="zoom:33%;" />
+<img src="img/byic2JIlau-QuikcQDMBqW9EehICI1LWNArYRty5Xx4L3N9XoSYsIL5HMCOlEIAnBL9fFpTGwch0QK--n50jBPZYusgAAETocXElxHaZMXONhgOUeMolLpdVr-5Ck5D_RTCGIZIz-1304729.png" alt="img" style="zoom:33%;" />
 
 * Client maakt file door *create* op te roepen
 * NameNode maakt een record van nieuwe file
@@ -975,7 +979,7 @@ Soms maken sommige delen van het systeem een taak traag. We kunnen om de taak sn
 
 ### Combiners
 
-<img src="https://lh5.googleusercontent.com/A_tXeitR2llBjPfSX4HsuPdc8zcTwYZCDcECTqYmeMNwpNq9CcBmmbaDbkVBV5-_62_vMvvg8yrEfKeojqiVoGVKLWT5Iq3GCfIqyMqK6WQuhdzuAEy8vFtxh6PzrebQPPm-j8Ta" alt="img" style="zoom:33%;" />
+<img src="img/A_tXeitR2llBjPfSX4HsuPdc8zcTwYZCDcECTqYmeMNwpNq9CcBmmbaDbkVBV5-_62_vMvvg8yrEfKeojqiVoGVKLWT5Iq3GCfIqyMqK6WQuhdzuAEy8vFtxh6PzrebQPPm-j8Ta-1304733.png" alt="img" style="zoom:33%;" />
 
 Een combiner kan bandbreedte sparen door na de map-stap eigenlijk al een beetje van de reduce uit te voeren op de node waar de map op wordt uitgevoerd. 
 
@@ -1023,3 +1027,351 @@ Jullie hebben allemaal met spark gewerkt.
 
 (ep het examen moet je het verschil tussen de twee kunnen uitleggen)
 
+
+
+# H6 - Stream Processing
+
+## Stream processing
+
+Stream processing zit een beetje tussen online en offline batch processing. Het consumeert een inputs en levert outputs. De focus ligt op het real-time gebeuren. In tegenstelling tot batch processing, hebben we met stream processing typisch een lage latency. Er komt continu data binnen, die snel, 24/7 gedistribueerd verwerkt kan worden.
+
+
+
+### Use-cases
+
+* Verkeersvoorspelling
+* Beveiliging
+  * Real-time sim kaart fraudedetectie
+* Industrie
+  * Real-time analyse en voorspellingen voor productie en problemen
+* ...
+
+
+
+
+
+## Messaging
+
+Bij streaming wordt een **event** gegenereerd bij een **producer**, en vervolgens verwerkt door mogelijk meerdere **consumers.** Het event wordt dus gepushed naar een bepaalde **topic** (een logisch kanaal om events te groeperen) zodat de juiste consumers berichten kunnen ontvangen op die topic. Hoe het systeem geïmplementeerd wordt hangt af van twee vragen.
+
+* Wat gebeurt er als producers sneller sturen dan de consumers aankunnen?
+  * Droppen
+  * In een queue zetten
+  * Backpressure (tegen producer zeggen van yo mattie doe rustig)
+
+* Wat als nodes crashen, messages kwijt?
+  * Als we dit willen voorkomen moeten we replicatie enzo doen
+  * Als het niet echt boeit als we is een paar events kwijt zijn, kunnen we door dit niet te doen de snelheid hoog houden
+
+### Direct messaging systems
+
+Veel messaging systemen gebruiken een directe internetverbinding tussen producers en consumers. Sommige frameworks gebruiken udp multicast, sommigen tcp of ip multicast. Als een consumer openstaat op een netwerk, kunnen producers typisch rechtstreeks een request sturen wanneer ze een event genereren. Dit noemt men het **webhook** patroon. 
+
+### Message broker
+
+(op het examen kan gevraagd worden om een broker uit te leggen)
+
+Een alternatief voor direct messaging. Een message broker is een soort manager die die de rol van een queue aanneemt om orde te maken in chaos. Als er te veel berichten zijn worden ze typisch in een queue gezet (niet gedropt). Je kan messages dan gaan opslaan in een **log** (een append-only sequentie van records op een disk). De producer voegt dingen toe op het einde van de log en de consumer leest de log sequentieel uit. Als onze log niet op één disk past, kunnen we gaan **partitioneren**. Dit maakt bijgevolg ons systeem ook sneller. 
+
+<img src="img/HYgn6HZBQwqd79-Wx388gw4PFnnHS_vzUcFyHjqPc5c6yjDXQ_uaBdO6UV0X9SEavNeNXNXrVUZZfPc56VSnPAsuhqnaCrMqp2AYTPC4O5QIyJnsT0aW-eCwItyforF2NNEgNKpG.jpeg" alt="A close up of text on a white background  Description automatically generated" style="zoom:50%;" />
+
+(deze afbeelding moet je ook kunnen voor op het examen) Zo te zien worden onze topic niet alleen gepartitioneerd, maar ook **gerepliceerd.**
+
+
+
+
+
+## Apache Kafka
+
+**kafkaiaans** - *Bijvoeglijk naamwoord*
+
+1. [lijkend](https://www.ensie.nl/wiktionary/lijkend) op het [gevoel](https://www.ensie.nl/wiktionary/gevoel) en de [sfeer](https://www.ensie.nl/wiktionary/sfeer) in de [boeken](https://www.ensie.nl/wiktionary/boeken) van [w](https://www.ensie.nl/wiktionary/w):Franz Kafka|Franz Kafka; met een zinloze, desoriënterende en nachtmerrieachtige complexiteit
+   ♢ *Hij voelt zich de onvrijwillige hoofdrolspeler in een **kafkaiaans** drama.*
+
+Deze afbeelding toont vrij duidelijk wat Kafka doet:
+
+<img src="img/image-20220104113912215.png" alt="image-20220104113912215" style="zoom:50%;" />
+
+### Onderdelen van Kafka
+
+Het voornaamste aan Kafka is dat het gewoon super snel en betrouwbaar is. Je kan duizenden writes per seconde verwerken op een enkele node. Je gaat Kafka typisch draaien op een cluster, dus dan kan je echt gekke dingen beginnen doen.
+
+**Topics** zijn logische categorieën die een stream van records bevatten van de vorm (key, value, timestamp). Als we Kafka goed willen gebruiken, splitsen we de topics op in gerangschikte *commit logs*, genaamd **partitions.** De volgorde wordt enkel gegarandeerd binnen een partitie (oplossen door één consumer per partitie aan te stellen). Kafka topics geven wel een aantal leuke **garanties**. Berichten verzonden door een producer worden aan de topic toegevoegd in de **volgorde** waarin ze verstuurd zijn. Bij $n$ replicaties kunnen $n-1$ nodes uitvallen **zonder dataverlies**. Partitiereplicas blijven in sync (of toch niet te ver) met de partition leader.
+
+**Producers** genereren een stream van records en *pushen* die naar een topic. We kunnen het werk verdelen door records op basis van hun key te verdelen over de hiervoor aangehaalde *topic partitions*, want we willen ervoor zorgen dat de consumer altijd mee is om het gebeuren zo real-time mogelijk te houden.
+
+**Consumers** verwerken de berichten van de producers door te *subscriben* op een topic. Meerdere consumers kunnen van dezelfde topic lezen.
+
+**Connectors** verbinden de topics met bestaande applicaties of systemen. Zo kan je bijvoorbeeld een RDB die alle veranderingen opslaat verbinden met een connector. 
+
+**Stream Processors** verwerken input stream vanuit één of meerdere topics en sturen een output naar één of meerdere topics. een **stream** is een onbegrensde dataset die continu wordt geupdate. Een stream processor doet typisch één bepaalde operatie op de input alvorens hem door te sturen.
+
+**Kafka streams**
+
+| Voordelen                                           | Nadelen                                                      |
+| --------------------------------------------------- | ------------------------------------------------------------ |
+| Heel lightweight, good voor microservices en IoT    | Ligt nauw samen met Kafka                                    |
+| Exactly once*                                       | Relatief nieuw                                               |
+| Heeft alle goede eigenschappen van Kafka            | Niet goed voor zware data processing zoals Spark Streaming of Flink |
+| Ondersteunt stream joins en kan een state bijhouden |                                                              |
+
+\* in tegenstelling tot *at least once* of *at most once* (lijkt me een goede examenvraag om het verschil uit te leggen)
+
+
+
+## Apache Storm
+
+Apache Storm werkt met tuples en is ook weer snel, betrouwbaar, schaalbaar en fault tolerant. Een stream in Storm is dus gewoon een sequentie van tuples. 
+
+
+
+De **Spout** is de bron van de streams. (Kan bv. kafka zijn). Een **Bolt** ontvangt een tuple en verwerkt hem. Bolts kunnen lezen en schijven uit data stores en berekeningen uitvoeren. Spouts en bolts zijn individuele taken en kunnen **parallel** op verschillende machines draaien.
+
+<img src="img/image-20220104121708340.png" alt="image-20220104121708340" style="zoom:50%;" />
+
+Storm heeft een aantal ingebouwde betrouwbaarheidsmaatregelen. Als een tuple niet wordt gemarkeerd als verwerkt binnen een bepaalde time-out, begint de tuple opnieuw bij de spout. We zijn zeker dat elke tuple minstens één keer wordt verwerkt. (at least once processing)
+
+### Apache storm trident
+
+Een micro-batch systeem gebouwd bovenop Storm met support voor vensterfuncties en aggregaties. Trident doet aan exactly-once processing, en heeft bijgevolg wel een hogere latency dan Storm op zichzelf.
+
+
+
+### Storm voor- en nadelen
+
+| Voordelen                                                  | Nadelen                                                     |
+| ---------------------------------------------------------- | ----------------------------------------------------------- |
+| Lage latency, true streaming, is 'mature' en hoge doorvoer | Er kan niet eenvoudig een state bijgehouden worden          |
+| Heel goed voor simpele streaming use-cases                 | Geen advanced features zoals vensterfuncties en aggregaties |
+|                                                            | Alleen at least once garantie                               |
+
+
+
+## Apache Heron
+
+Is de opvolger van Apache Storm en introduceert een paar verbeteringen. Er is ingebouwde ondersteuning voor **back pressure**, debuggen is makkelijker. Heron gebruikt ook veel minder resources dan Storm. Een belangrijke verbetering is dat je nu kan kiezen tussen at *most once, at least once en exactly once* processing.
+
+<img src="img/r-Dt104M2k0n6wReP8_KNQSjFG1xbrUbrCPUoUEBgaXFeB1XRfys6M3-dDYOTXco4w1T0XmxGIfqUXoIC8KeyV59CKiAJbzwMAranQsFZ4ercKjZkCEEFQTrWPDf4Y_d1XUBzjv6-20220104145908944.png" alt="img" style="zoom: 33%;" />
+
+Blijkbaar moet je dit kunnen uitleggen op het examen. Hoe? Geen idee.
+
+Heron applicaties kan je op verschillende manieren schrijven
+
+* Low-level API: rechtstreeks procedureel spouts en bolts schrijven
+* Mid-level API: functioneel programmeren met maps, flat maps, transform en windows
+* High-level API: met een declaratieve taal zoals SQL zeggen 'wat', dan maakt het systeem zich zorgen om de 'hoe'.
+
+
+
+## Apache Spark Streaming
+
+Spark Streaming verdeelt een stream in **microbatches** per interval. Elke microbatch wordt behandeld als een RDD (resilient distributed dataset). Het coole is dat je alle functionaliteit van spark hierop kan gebruiken.
+
+Examenvraag: Spark Streaming vs Storm
+
+| Spark Streaming                                              | Storm                                                        |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| Events per microbatch, gegroepeerd per interval (dus geen true streaming) | Streaming per event (micobatch gaat met trident)             |
+| Exactly once                                                 | at least once (exactly once met trident)                     |
+| Voor fault-tolerance en betrouwbaarheid heb je een HDFS-backed data source nodig (geeft latency). Network data sources zijn kwetsbaar voor data loss als een node uitvalt. | Betrouwbaarheid hangt af van de spouts. Als die goed zijn verliezen we geen data. (best Kafka gebruiken voor spouts) |
+| Performance hangt af per geval. Typische latency in seconden. | Performance hangt af per geval. Typische latency in tientallen milliseconden. |
+| Kan gedeployed worden op YARN of Kubernetes                  | Kan gedeployed worden op YARN of Mesos (kubernetes gaat ook maar dan gebruik je best Heron) |
+
+nogmaals:
+
+> **At least once** delivery means that for each message handed to the mechanism potentially multiple attempts are made at delivering it, such that at least one succeeds. Messages may be duplicated but not lost. 
+>
+> **Exactly once** delivery means that for each message handed to the mechanism exactly one delivery is made to the recipient, the message can neither be lost nor duplicated.
+
+
+
+### Spark streaming voor- en nadelen
+
+| Voordelen                                | Nadelen                                                      |
+| ---------------------------------------- | ------------------------------------------------------------ |
+| Hoge throughput                          | Geen true streaming, dus niet goed als je lage latency nodig hebt |
+| Fault tolerance                          | Veel parameters die je moet afstellen                        |
+| High leven APIs                          | Stateless                                                    |
+| Grote community met snelle uitbreidingen | Loopt achter op apache flink in advanced features            |
+| Exactly once                             |                                                              |
+
+
+
+## Apache Flink
+
+Distributed streaming met *exactly once* reliability. Flink werkt met streams en transformations. **Streams** kunnen bounded (met begin en einde) of **unbounded** (enkel start) zijn. **Transformations** nemen één of meerdere streams als input en produceren één of meerdere output streams. Noemenswaardig is dat Flink **stateful** is, met hoge fault tolerance door het gebruik van lightweight gedistribueerde checkpoints.
+
+### Flink voor- en nadelen
+
+| Voordelen                                                    | Nadelen                                                      |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| Leader of innovation in open source streaming                | Een laatkomer in het streaming gebeuren, daardoor initieel minder gebruikt |
+| True streaming framework met advanced features               | Kleinere community dan spark                                 |
+| Auto-adjusting and niet te veel parameters die je moet afstellen |                                                              |
+| Exactly once                                                 |                                                              |
+| Grote operationele deployments (Uber, Alibaba)               |                                                              |
+
+
+
+## Spring cloud data flow
+
+Spring cloud data flow is een processing pipeline die gebruik maakt van Spring boot microservices. Elke microservice neemt een bericht en produceert een bericht met de data die je aan het verwerken bent.
+
+Kleine rant, ik krijg echt de tering van spring boot. 
+
+
+
+### Data processing pipeline
+
+We willen zelf een data processing pipeline maken. We nemen als voorbeeld een systeem dat het gebruik van hashtags in real-time bijhoudt. Hoe doen we dat?
+
+Eerst moeten we de **source data** begrijpen, wat zit er in één message (een tweet dus). We moeten de **functie** van onze pipeline begrijpen (de hashtags uit een tweet filteren). We moeten begrijpen **wat** we willen **meten** (real-time analytics op wat trending is). Wat is de **output**? (het aantal keren dat elke hashtag wordt gebruikt per seconde). Wat is het **resultaat** van onze metingen? (Real time streaming analytics om geïnformeerde beslissingen te maken en een grafiek die de snelheid van elke tweet en zijn hashtags over tijd toont)
+
+<img src="img/9ad1CAUzFZr-zY58i1xoV01YQV0ldrXZw8iarNK3VhYP8CUQP8fOY5KJx9Dzxip_CUrDHcXUIgDKGv679fq0wJvJ73gphg5LHo8RyXExhFhklz-DO-k1GcGdoURzgBvZkHq9nuO7-20220104145913982.png" alt="img" style="zoom:33%;" />
+
+* **Tweet source** (data): we halen data van verschillende bronnen (HDFS, REST API, ...) en transformeren deze tot een discrete stream van messages en sturen deze naar een output channel.
+* **Filter**: doet wat het betekent en filtert *noise* om de kwaliteit van metingen in de volgende modules te verbeteren
+
+* **Processor**: neemt gefilterde stream van messages en kan meerdere outputs genereren. (voor elke tweet voor elke hashtag een message bv)
+* **Counter**: geeft een increment op meerdere buckets als output en slaat het resultaat op in een sink (bv. Database)
+
+We kunnen de services in de pipeline omhoog en omlaag stalen afhankelijk van de belasting van het systeem:
+
+<img src="https://lh3.googleusercontent.com/bWZAuZ5Z1gy2JlO08Twz0dqyWNq7GvGYUx6uuWD9eBCyN8A82DKzw96jdJ3a6lgUBePvE46VXwy-I9KtnQ9AiS0VMcpUaknTfb5DaAyO4SvtIQtIJDl_S2IrRqZqwuIrfZCziEvQ" alt="img" style="zoom:33%;" />
+
+## Apache beam
+
+Eén platform om batch en streaming te kunnen doen. Dan zit je niet vast (platform lock-in).
+
+
+
+## Apache Nifi
+
+Web-based visueel beheer van data flows.
+
+<img src="https://lh5.googleusercontent.com/c_bqAOHTh3iKTGtyAKyFMqjQoKrv7f0saVhnDlbxVq6hLfKO5ceOeGe_gkJWkU54gtQXB4hfEgf-OGFJadxA27IsiGQKpAew3iFtPKNpiwG1fxIWHd6Xm_cxMItu2fQplr2p0W4r" alt="img" style="zoom:33%;" />
+
+
+
+## Hoe kies ik het juiste framework?
+
+* Hangt af van de use-case 
+* Hou rekening met de toekomst
+  * Storm weet niks af van *state*
+  * Heb je misschien meet geavanceerde features nodig? (aggregatie, ...)
+* Wat gebruikt je al?
+  * Kafka?
+    * Dan is Kafka streams makkelijk te implementeren
+  * Spark?
+    * Spark streaming
+
+
+
+# H7 - Data processing architectures
+
+
+
+## Lambda architectuur
+
+Je moet deze figuur zeker kennen voor op het examen.
+
+<img src="https://lh5.googleusercontent.com/Zwl3Xc0GDSPgXuaWkl6RRLy5bzRAsJMXmNELszN2ct_bgWSpf-02LQHsDbT6SKOKaZX7zjMIivM5E2XBiGqqeXU95mdNX-ZKOtTeJmFLbEK6JxbT2EzZHWSgA5vSe1qIzaevTkG7" alt="img" style="zoom:50%;" />
+
+
+
+De **streaming layer** (speed layer) handelt alle requests af waarvoor lage latency vereist is en werkt alleen met recente data om een real-time view te voorzien. Zijn output wordt typisch in een NoSQL db opgeslagen. De views op deze laag zijn niet zo accuraat en volledig als die van de batch layer. De **batch layer** beheert de master dataset (met alle data dus). Deze is typisch een gedistribueerde, raw, append-only dataset. In deze laag wordt alle data verwerkt om een view te produceren, die dan weggeschreven wordt naar een read-only db. De **serving layer** geeft ons dan output (d.m.v. queries) van zowel de streaming als de batch layer.
+
+We zien al direct een paar dingen die mislopen. We moeten eigenlijk dubbel werk doen, want in onze serving layer moet code geschreven worden om zowel de streaming als de batch layer te ondersteunen. Verder is het ook gewoon moeilijk om twee complexe gedistribueerde systemen te onderhouden. We onthouden dus dat de lambda architectuur **niet meer gebruikt** wordt en dient als voorbeeld, waaruit later betere architecturen uit zijn voortgebracht.
+
+
+
+**Spring XD** maakte gebruik van de lambda architectuur, maar is nu discontinued. Zijn opvolger is de eerder vermelde Spring Cloud Data Flow.
+
+
+
+## Kappa Architectuur
+
+Ik ben bijna 100% zeker dat onze Bruno ons één van deze architecturen gaat laten uitleggen op het examen.
+
+<img src="https://lh6.googleusercontent.com/YoTgGwTjsjWHEg94NjTTW35YHKGH-Dn6f4hN30ertRRhf42xaK7Qix0JE229KIMJC1iNTpCC8Vc7BVS4hYKZy4H58y6sSOYSWnXPpS3CMtzKigrdU1tA-JGdnOn7I5hVqgVlJVmL" alt="img" style="zoom:50%;" />
+
+De **kappa architectuur** is een versimpeling van de lambda architectuur. Kortaf, we yeeten het batch processing gedeelte en we zorgen ervoor dat onze streaming layer ook kan werken met **historische data**. We gaan onze data typisch weeral in een append only immutable log steken (zoals Kafka ofzo), zodat we alles bijhouden. Dan doen we onze streaming met Apache Storm, Spark Streaming, ... We moeten dus geen meerdere (streaming) codebases onderhouden door het weglaten van de batch processing.
+
+Als we data willen **reprocessen**, starten we gewoon een stream processing job, maar vanaf het begin van onze data. Wanneer deze de oude job inhaalt kunnen we gewoon switchen en de oude ditchen (hihi dat rijmt).
+
+De Kappa architectuur heeft **4 pilaren**:
+
+* Data is immutable
+* Everything is a stream
+* Single stream engine is used
+* Data can be replayed
+
+Je moet alleen maar aan reprocessing doen als je de processing code hebt gewijzigd. Dit neemt dan wel even wat meer geheugen in beslag.
+
+
+
+### Apache Samza
+
+Maakt gebruik van de Kappa architectuur en is gemaakt voor snelle, bijna real-time processing. Samza heeft ook ingebouwde ondersteuning voor het bijhouden van een *state*, is super schaalbaar, fault tolerant en heeft APIs op meerdere niveaus.
+
+| Voordelen                                                    | Nadelen                                                      |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| Goed in grote *states* van informatie bijhouden (nuttig om streams te joinen) | Nauw gebonden met kafka en yarn                              |
+| Fault tolerant en hoge performantie dankzij kafka            | At least once                                                |
+| Is de natuurlijke keuze als je al yarn en kafka gebruikt     | Geen advanced streaming shizzle zoals watermarks en triggers enzo |
+| Low latency, hoge doorvoer, mature en getest op grote schaal |                                                              |
+
+
+
+
+
+## Zeta architectuur
+
+<img src="https://lh3.googleusercontent.com/NcayIqPyLSNSd1CZ9ylyFmN50gLzklNmvKgENUm3oeTSEJJNQatz_yRgDsIofWGGN-1G_obTk_RbVuskw4jDLrQ6hDEoRuFpmF-_J54q6Qduv-nY058Cm7nhDvAFpzt6kdcaG9N_" alt="Hexagon-Filled_sized" style="zoom: 50%;" />
+
+Zeta is 7 in het grieks, we hebben dus 7 hoofdcomponenten (die je flink op het examen gaat opnoemen met de tekening):
+
+* Enterprise applications
+* Solution architecture
+* Compute model / execution engine
+* Distributed file system
+* Real-time data storage
+* Container system
+* Global Resource Management
+
+Alle servers worden overzien door de **global resource management**, ze doen ook allemaal mee in de **distributed filesystem**, waardoor we onze data van eender waar in de cluster kunnen halen. Het alloceren van resources (meer web servers starten, big data analytics) gebeurt **dynamisch**. Verder is in Zeta **data lokaliteit** een belangrijk punt, we gaan de data processen waar hij aangemaakt wordt. Door deze **versimpelde** architectuur kunnen we beter gebruik maken van onze resources en geld uitsparen. We maken van gebruik van containers om **herhaalbaarheid** tussen environments (dev, prod, ...) te creëren .
+
+
+
+### MAPR
+
+Maakt gebruik van de Zeta architectuur en kan blijkbaar 15 miljard 100 byte records sorteren in 59 seconden. Het doel van dit framework is ondersteuning voor batch, interactive streaming en real-time applicaties te combineren.
+
+
+
+## Wat doen de grote bedrijven?
+
+* Google cloud dataflow
+* Microsoft Azure HDInsight
+* Microsoft Azure stream analytics
+* Microsoft data lake store
+* Amazon EMR (elastic mapreduce)
+* Amazon kinesis
+* Amazon lambda - serverless architecture
+* Hortonworks + Cloudera
+
+Je moet gewoon oppassen dat je jezelf niet vastzet in een proprietaire oplossing. Als je iets schijft dat werkt met azure kan je zeker wezen dat microsoft je tot de laatste cent gaat uitmelken.
+
+Dit gezegd zijnde, komen we tot het einde van deze monsterlijk grote samenvatting. 
+
+
+
+# Examenvragen
+
+Een handige compilatie van dingen die onze Bruno heeft vermeld in de les als mogelijke examenvragen, lichtjes aangerijkt met mijn fantasie.
+
+
+
+**Wat zijn de 3 voornaamste eigenschappen van een goed systeem?**
+
+Reliability, scalability, maintainability
