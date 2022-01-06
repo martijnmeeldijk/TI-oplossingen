@@ -227,7 +227,7 @@ Vergelijkingen van de vorm $a + x \stackrel{n}{=} b$.
 
 
 
-## Lineaire congruentie
+## Lineaire congruenties
 
 Vergelijkingen van de vorm: <img src="img/image-20211230102700381.png" alt="image-20211230102700381" style="zoom:33%;" />
 
@@ -525,4 +525,32 @@ We splitsen het probleem op in alle mogelijke gevallen
 hammingafstand
 
 private key encryptie
+
+
+
+# Examen
+
+Hier wat dingen die ik zeker wil onthouden voor het examen.
+
+
+
+## Lineaire congruenties oplossen
+
+$a.x \stackrel{n}{=} b$
+
+* Kijk of je a, b of n kan delen door een gemeenschappelijke deler
+* Zoek de ggd(a, n), als je b daar niet door kan delen houdt het verhaal op en zijn er geen oplossingen
+* Je hebt nu al de ggd(a, n) gezeocht, nu kan je de bezoutcoefficienten gebruiken om de inverse van a te berekenen en beide leden ermee te vermenigvuldigen. Bada bing bada boom opgelost.
+
+
+
+## Diofantische vergelijkingen oplossen
+
+$a.x + b.y = c$
+
+* Ggd(a, b) = deler van c: herleid
+* Ggd(a, b) = geen deler van c: geen oplossingen
+* Ggd(a, b) = 1: oneindig veel oplossingen
+
+Dan kan je omzetten naar $a.x \stackrel{n}{=} b$, deze oplossen naar $x$ en invullen in de originele vergelijking (niet vergeten dat de oplossing van de lineaire congruentie $x + t.n$ is)
 

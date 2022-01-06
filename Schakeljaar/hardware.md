@@ -684,9 +684,95 @@ Werking:
 
 * $T_1$
   * Cpu zet adres van het woord dat hij wilt op de adreslijn
-  * Wanneer ge adreslijn stabiel is, worden RD en MREQ geactiveerd om aan te geven dat het om een read gaat op het geheugen
+  * Wanneer de adreslijn stabiel is, worden $\overline{RD}$ en $\overline{MREQ}$ geactiveerd om aan te geven dat het om een read gaat op het geheugen
 * $T_2$ 
-  * Omdat het 15 nsec duurt om 
+  * Omdat het 15 nsec duurt voordat het stabiel is (al deels in $T_1$) kan de gevraagde data nog niet voorzien worden in $T_2$, de $\overline{wait}$ line wordt geactiveerd en plaatst **wait states** totdat het geheugen klaar is.
+* $T_3$
+  * Wanneer hij zeker is dat hij de data zal hebben, zet het geheugen $\overline{wait}$ uit. 
+  * Het geheugen zet de data op de datalijnen
+  * De cpu leest de datalijnen en zet de waarden op een intern register
+
+
+
+## Vraag 24
+
+> Gegeven volgende synchrone bus: Maak van deze bus een asynchrone bus. Welke signaallijnen moeten weg en welke komen erbij? Bespreek de werking van de door jou voorgestelde asynchrone bus. (pagina 194-196)
+
+<img src="img/image-20220102220349213.png" alt="image-20220102220349213" style="zoom: 33%;" />
+
+**Maak van deze bus een asynchrone bus**
+
+<img src="img/image-20220106101626329.png" alt="image-20220106101626329" style="zoom: 33%;" />
+
+**Welke signaallijnen moeten weg?**
+
+De klok ($\phi$) en de $\overline{wait}$-lijn.
+
+**Welke komen erbij?**
+
+$\overline{MSYN}$ en $\overline{SSYN}$ 
+
+**Bespreek de werking van de door jou voorgestelde asynchrone bus.**
+
+* De master bus zet het adres op de adreslijn.
+*  $\overline{RD}$ (read of write) en $\overline{MREQ}$ (I/O of geheugen), worden aangezet 
+* Master bus zet $\overline{MSYN}$ (master synchronisation) aan, wanneer de slave dit ziet werkt hij zo snel hij kan
+* Wanneer de slave klaar is zet hij $\overline{SSYN}$ aan, als de master dit ziet, weet hij dat de data klaar is.
+* De master maakt de adreslijnen leeg en zet  $\overline{RD}$, $\overline{MREQ}$ en  $\overline{MSYN}$ uit.
+* Wanneer de slave ziet dat $\overline{MSYN}$ uit is, zet hij $\overline{SSYN}$ uit een zitten we terug bij het begin.
+
+
+
+## Vraag 25
+
+> Maak een schets van een gecentraliseerde bus arbiter gebruikmakend van daisy chaining met twee prioriteitsniveaus. Wat bedoelt men met een gecentraliseerde arbiter? Op welke manier kan een device een aanvraag indienen? Hoe kan je er voor zorgen dat het verkiezingsproces voor het volgende device reeds kan starten terwijl een ander device de bus gebruikt? Waar zou je de CPU plaatsen in deze schakeling? (pagina 196-197)
+
+<img src="img/image-20220106104333977.png" alt="image-20220106104333977" style="zoom:50%;" />
+
+**Wat bedoelt men met een gecentraliseerde arbiter?**
+
+In tegenstelling tot gedecentraliseerde busarbitratie hebben we één apparaat (de arbiter) dat op aanvragen voor toegang tot de bus antwoordt en beslist welk apparaat de bus mag gebruiken.
+
+**Op welke manier kan een device een aanvraag indienen?**
+
+Door de requestlijn te activeren (in dit geval zijn er wel meerdere). Op elke requestlijn zitten de devices in wired-OR aangesloten. De arbiter weet dus niet welk van de devices het request heeft gedaan. De cpu stuurt een grant op de grant lijn, die dan eerst langs apparaat 1 gaat, dan 2, ... Het eerste apparaat in de rij dat effectief een grant heeft aangevraagd, zal hem dan ontvangen en toegang tot de bus krijgen. Dit noemt men **daisy chaining**.
+
+**Hoe kan je er voor zorgen dat het verkiezingsproces voor het volgende device reeds kan starten terwijl een ander device de bus gebruikt?**
+
+Door **een derde lijn** toe te voegen die apparaten kunnen activeren wanneer ze de grant geaccepteerd hebben en toegang krijgen tot de bus. Dan kunnen apparaten toegang tot de bus vragen terwijl het eerste apparaat hem nog gebruikt. Tegen de tijd dat het eerst apparaat klaar is, zal de volgende bus master al geselecteerd zijn en kan de volgende ronde beginnen.
+
+**Waar zou je de CPU plaatsen in deze schakeling? **
+
+Op de laagste prioriteit, want de CPU kan altijd wachten, veel I/O devices met draaiende onderdelen kunnen dit niet.
+
+##  Vraag 26
+
+> Wat is de meest eenvoudige manier om zonder daisy chaining aan gedecentraliseerde busarbitrage te doen? (pagina 198)
+
+Als we voor elke device een request line maken. Alle devices luisteren ook naar de request lines van de andere devices, dus op het einde van elke buscyclus weet het het apparaat dat een request stuurt of hij de requester is met de hoogste prioriteit. Voor deze methode hebben we meer buslijnen nodig, maar geen arbiter. Het aantal devices is ook beperkt door het aantal buslijnen
+
+
+
+## Vraag 27
+
+> Bespreek stap voor stap hoe een interrupt afgehandeld wordt op de 80x86 m.b.v. de 8259A prioriteitsinterruptcontroller. Begin vanaf het moment dat een device via een IRQlijn interrupt geeft en stop van zodra de CPU aan de 8259A meldt dat hij afgehandeld is. Waarvoor dienen de andere signaallijnen zoals A0, RD, WR,… van de 8259A? (pagina 200)
+
+<img src="img/image-20220106120356824.png" alt="image-20220106120356824" style="zoom:50%;" />
+
+**Bespreek stap voor stap hoe een interrupt afgehandeld wordt op de 80x86 m.b.v. de 8259A prioriteitsinterruptcontroller.**
+
+* Het device activeert de inputlijn (IR)
+* Wanneer één of meer inputlijnen geactiveerd zijn, zet de 8259A de INT (interrupt) lijn aan. Deze is rechtstreeks verbonden met de interrupt pin op de cpu
+* Als de cpu de interrupt kan afhandelen, stuurt hij een signaal op INTA (interrupt acknowledge) terug naar de 8259A
+* De 8259A zegt welk apparaat de interrupt heeft gestuurd door zijn nummer op de databus te zetten
+* De hardware van de CPU gebruikt dit getal om de procedure die gedraaid moet worden te vinden in de **interrupt vector**
+* Wanneer de software klaar is met de interrupt af te handelen zet hij een speciale code in één van de registers van de 8259A, waardoor hij INT uitzet (behalve als er nog een interrupt moet afgehandeld worden)
+
+**Waarvoor dienen de andere signaallijnen zoals A0, RD, WR,… van de 8259A?**
+
+RD (read), WR(write), A0(adreslijn), CS(chip select), deze worden gebruikt door de cpu om de registers van de 8259A aan te spreken gebruik makend van gewone buscycli.
+
+
 
 ## Vraag 28
 
@@ -728,3 +814,337 @@ Werking:
 **Energieconsumptie**
 
 * 17- 150 watt, niet handig bij apparaten met batterijen
+
+
+
+## Vraag 29
+
+> Hoe wordt “pipelining” voorzien op de DDR3 SDRAM geheugenbus? Welke verschillende fasen zijn er en maak/bespreek een schets. Leg uit hoe, waar en waardoor er overlap van geheugenaanvragen kan optreden. (pagina 206-208)
+
+**Hoe wordt “pipelining” voorzien op de DDR3 SDRAM geheugenbus?**
+
+Doordat de DDR3 DRAMs zijn georganiseerd in meerdere **banks** (blokken geheugen, typisch 8) binnen de chip. Deze banks kunnen in parallel aangesproken worden. 
+
+**Welke verschillende fasen zijn er en maak/bespreek een schets.**
+
+<img src="img/image-20220106123402287.png" alt="image-20220106123402287" style="zoom:50%;" />
+
+4 signaalpaden:
+
+* Clock (CK): We volgen de klok, dit is dus synchrone ram
+* Command(CMD): het type commando dat opgedragen wordt aan de DRAM (ACT, READ, ...) 
+* Address (ADD): het adres (rij of kolom) van het geheugen dat wordt aangesproken
+* Data: de data die komt vanuit het geheugen
+
+
+
+Een memory request heeft 3 stappen:
+
+1. **ACTIVATE**: opent een DRAM geheugenrij, dit maakt hem klaar voor volgende geheugenaanvragen.
+
+2. **READ** of **WRITE**: hier kunnen meerdere aanvragen naar individuele woorden gedaan worden binnen de geopende rij. Of een aanvraag naar meerdere opeenvolgende woorden binnen de huidige rij (burst mode).
+
+3. **PRECHARGE**: sluit de huidige rij en bereidt de DRAM voor voor de volgende ACTIVATE
+
+**Leg uit hoe, waar en waardoor er overlap van geheugenaanvragen kan optreden. **
+
+Op de tekening kan je dit duidelijk zien. Omdat er meerdere banks zijn, kan het dat twee geheugenaanvragen op de DDR3 interface gepipelined worden. Als we bijvoorbeeld een aanvraag doen naar bank 0 en direct daarna eentje naar bank 1, komt de ACT van bank 1 direct na die van bank 0, en daarna pas de read van bank 0. In de volgende cyclus kan dan de data van bank 0 al worden verstuurd terwijl de read van bank 1 bezig is. //TODO verduidelijking
+
+
+
+## Vraag 44
+
+> Maak een schets van een PIO-module met drie 8-bit digitale I/O-poorten. Welke signaallijnen zijn er? Er zijn 4 adressen nodig, waarvoor worden die adressen gebruikt? (pagina 233)
+
+<img src="img/image-20220106141123639.png" alt="image-20220106141123639" style="zoom: 25%;" />
+
+**Welke signaallijnen zijn er?**
+
+* Chip select (CS): voor als we meerdere PIO interfaces combineren om een grotere te maken
+* Adreslijnen (A0-A1): hierover straks meer
+* Write en Read (WR en RD): om aan te geven of het om een read of write gaat
+* RESET: om de chip te resetten
+* D0-D7: verbinding met databus
+* Port A-B-C: digitaal signaal in/output
+
+**Er zijn 4 adressen nodig, waarvoor worden die adressen gebruikt?**
+
+De adressen selecteren elk één van de vier *interne registers*, die op hun beurt overeenkomen met de poorten A, B, en C of het poortconfiguratieregister. Door de juiste waarden in te stellen in het *poortconfiguratieregister* kunnen we eender welke combinatie van in- of output toelaten voor elk van de poorten.
+
+
+
+## Vraag 45
+
+> Veronderstel dat je op een CPU met 16-adreslijnen een 2048 bytes ROM-module wil aansluiten, een 2048 bytes RAM-module en een PIO-module met drie I/O-registers. Voorzie voor deze modules ‘handige’ adressen en geef de geheugenmap van de CPU. Wat wordt er bedoeld met memory mapped I/O? Wat wordt er bedoeld met partiële adresdecodering en waarom wordt het ontraden? (pagina 234-235) 
+
+<img src="img/image-20220106143243580.png" alt="image-20220106143243580" style="zoom: 50%;" />
+
+Door onze **ROM** helemaal vooraan te plaatsen weten we dat al zijn adressen van de vorm 0000 0xxx xxxx xxxx zullen zijn. 
+
+Gelijkaardig voor **RAM**, door hem op 8000h te laten beginnen: 0000 0xxx xxxx xxxx
+
+We zetten de adressen voor de **PIO** helemaal op het einde, zodat ze van de vorm 1111 1111 1111 11xx zijn.
+
+
+
+**Wat wordt er bedoeld met memory mapped I/O?**
+
+In tegenstelling tot een aparte buslijn aan te leggen om aan te geven dat een I/O apparaat wordt aangesproken, kunnen we onze I/O apparaten een geheugenadres geven en ze behandelen alsof er iets uit het geheugen wordt opgehaald. In het verhaal van onze PIO kunnen we 4 bytes geheugenruimte vrijmaken voor de 3 poorten en het controleregister.
+
+**Wat wordt er bedoeld met partiële adresdecodering en waarom wordt het ontraden?**
+
+We gaan maar een deel van het adres lezen om te weten wat we moeten doen. In dit geval kunnen we door louter de eerste twee bits uit te lezen weten of we de ROM (00), RAM(10), of PIO(11) willen aanspreken. Dit heeft bijvoorbeeld wel als gevolg dat elk adres dat begint met een 0 de ROM aanspreekt. Als we de overblijvende adressen willen gebruiken, mogelijk in de toekomst, kunnen we deze techniek beter niet toepassen.
+
+
+
+# Hoofdstuk 4
+
+## Vraag 46
+
+> Via welke twee registerparen kunnen er op de MIC-1 geheugenoperaties plaatsvinden? Wat is het verschil tussen beide? Welk probleem treedt er op wanneer je weet dat er slechts één adresbus voorhanden is en hoe wordt het opgelost? Wanneer kunnen er binnen een datapadcyclus geheugenoperaties gestart worden en wanneer zal het resultaat beschikbaar zijn? Wat wordt er bedoeld met sign extension en waar/waarom wordt het op de MIC-1 toegepast? (pagina 249-250)
+
+**Via welke twee registerparen kunnen er op de MIC-1 geheugenoperaties plaatsvinden?**
+
+* Een 32-bit woordadresseerbare poort
+  * MAR (memory address register)
+  * MDR (memory data register)
+* 8-bit byteadresseerbare poort
+  * PC (program counter) leest de low-order byte van MBR (memory buffer register)
+
+**Wat is het verschil tussen beide?**
+
+De tweede kan enkel lezen.
+
+**Welk probleem treedt er op wanneer je weet dat er slechts één adresbus voorhanden is en hoe wordt het opgelost?**
+
+MAR bevat woordadressen en PC bevat byteadressen. Als we een 2 in PC steken lezen we byte 2 uit het geheugen, als we een 2 in MAR steken lezen we byte 8-11 (één woord) uit. Het probleem is dat MAR moet kunnen werken met woordadressen, maar het fysieke geheugen enkel werkt met bytes. We kunnen dit simpel oplossen Door bit 0 van MAR op lijn 2 (1 op 3, 2 op 4, ...) aan te sluiten. En de bovenste twee bits van MAR weg te flikkeren (we hebben ze toch niet nodig voor ons kutgeheugen van 4GB).  
+
+<img src="img/image-20220106163656986.png" alt="image-20220106163656986" style="zoom:33%;" />
+
+**Wanneer kunnen er binnen een datapadcyclus geheugenoperaties gestart worden en wanneer zal het resultaat beschikbaar zijn?**
+
+Een geheugenoperatie kan gestart worden op het **einde** van de datapadcyclus. Het resultaat is pas beschikbaar op het einde van de **volgende** cyclus.
+
+
+
+**Wat wordt er bedoeld met sign extension en waar/waarom wordt het op de MIC-1 toegepast?**
+
+Om van een 8-bit signed integer een 32-bit signed integer te maken en de zelfde numerische waarde te behouden moeten we doen aan **sign extension**. Als de hoogste bit van ons 8 bit getal een 1 is zetten we er allemaal 1tjes voor, als deze 0 is zetten we er nullen voor. 
+
+Omdat we de 8-bit waaren van het MBR register op de B-bus willen krijgen. De B-bus werkt enkel met 32-bit getallen. 
+
+
+
+## Vraag 47
+
+> Gegeven de microarchitectuur van de MIC-1. Leg gedetailleerd uit hoe een datapadcyclus op de MIC-1 verloopt. Enerzijds wordt er gevraagd welke signalen er naar het datapad gestuurd worden en welke timing er hierbij gebruikt wordt en anderzijds hoe het adres van de volgende micro-instructie zal worden bepaald. Waarom is de MPC een virtueel register? (pagina 251, 253-257)
+
+<img src="img/image-20220106165322863.png" alt="image-20220106165322863" style="zoom: 50%;" />
+
+We zullen ons verhaal beginnen bij de **MIR** (Microinstruction register). De MIR bevat de huidige microinstrucie die de signalen naar het datapad zal aansturen. We maken onderscheid tussen zes signaalgroepen:
+
+1.  **Addr**: 
+2. **J** (Jam): 
+3. **ALU**: bevat 8 bits, 6 om de ALU functie te selecteren en 2 om de shifter aan te sturen
+4. **C**: laat individuele registers de ALU-output uit de C-bus laden
+5. **M**: besturen geheugenoperaties
+6. **B**: bestuurt de decodeerder die beslist wat er op de B-bus gezet wordt
+
+
+
+**Leg gedetailleerd uit hoe een datapadcyclus op de MIC-1 verloopt.**
+
+Om de uitleg te verduidelijken spreken we een aantal tijdsintervallen af:
+
+* $\Delta w$: De laadtijd van MIR 
+* $\Delta x$: de tijd om de registers te laden op de B-bus
+* $\Delta y$: de tijd om door de ALU en shifter te gaan
+* $\Delta z$: de tijd om het resultaat door de C-bus terug naar de registers te sturen
+
+Elke keer als je een van deze symbolen ziet, zitten we die hoeveelheid tijd verder in het verhaal.
+
+
+
+We splitsen de werking op in subcycli:
+
+1. De MIR wordt gevuld met het woord uit de control store waarnaar MPC wijst + $\Delta w$
+2. Meerdere signalen begeven zich naar het datapad
+   * Een register wordt op de B-bus gezet
+   * De ALU ontvangt welke operatie hij moet uitvoeren
+   * \+$\Delta x$
+3. De ALU en shifter doen hun ding + $\Delta y$
+4. De waarden van de ALU, N, Z en de shifter zijn stabiel
+   * N en Z worden opgeslagen in een paar 1-bit flip-flops
+   * De resultaten worden naar de registers geladen
+   * MPC (volgende instructie) wordt ingeladen
+   * \+$\Delta z$
+
+Alle resultaten zijn opgeslagen en de resultaten van vorige geheugenoperaties zijn beschikbaar. Dit proces herhaalt zich totdat de persoon in kwestie genoeg diamonds heeft gehakt in minecraft en zijn pc uitzet.
+
+
+
+**Hoe wordt het adres van de volgende micro-instructie bepaald?**
+
+Microinstructies worden niet in de volgorde dat ze in de control store staan uitgevoerd. De berekening van de volgende microinstructie begint nadat MIR ingeladen en stabiel is
+
+* NEXT_ADDRESS word gekopieerd naar MPC, tegelijk wordt het JAM veld geïnspecteerd (gebeurt in 'High-bit' op de figuur)
+  * JAMN = 1: de N flip-flop word ge-ORed met de hoogste bit van MPC
+  * JAMZ = 1: de Z flip-flop word ge-ORed met de hoogste bit van MPC
+  * Beide aan: Dan worden N en Z ge-ORed met de hoogste bit van MPC
+  * Beide uit: er gebeurt niets extra
+* (N en Z zijn de ALU flags, we hebben ze nodig omdat we op dit punt niet meer weten of de inhoud van de ALU correct is)
+* //TODO dit is nog niet alles ik ben effe gek aan het worden deze vraag is veel te uitgebreid
+
+**Waarom is de MPC een virtueel register?**
+
+Omdat al zijn inputs even goed rechtstreeks doorgevoerd kunnen worden naar de control store. Het is niet nodig om ze effectief op te slaan in MPC. Zolang de waarden aanwezig zijn in de control store op de falling edge van de clock wanneer MIR is geselecteerd en wordt uitgelezen, hebben we geen probleem. 
+
+
+
+## Vraag 48
+
+> Waarom wordt er voor lokale variabelen gebruikgemaakt van een stapel? Waarom kan je dus niet aan elke variabele een uniek adres toekennen?
+
+Als we onze variabelen binnen een procedure elk een geheugenadres toekennen, en de procedure dan zichzelf oproept, zijn we genaaid. De procedure overschrijft zijn eigen waarden. Door de lokale variabelen op een stapel te zetten kan onze recursief opgeroepen procedure zijn variabelen gewoon bovenop de stack keilen zonder die van de vorige te verkloten.
+
+
+
+## Vraag 49
+
+> Wat wordt er bedoeld met de datapadlengte? Welke drie zaken worden er toepast op de MIC-1 om tot de MIC-2 te komen (gewoon benoemen en wat uitleg over geven, zeker geen MAL-code voorzien)? (pagina 285-287)
+
+**Wat wordt er bedoeld met de datapadlengte?**
+
+Het aantal microinstructies dat moet uitgevoerd worden per ISA instructie.
+
+
+
+**Welke drie zaken worden er toepast op de MIC-1 om tot de MIC-2 te komen**
+
+1. De Interpreter Loop samenvoegen met de Microcode
+   * Bij elke set microinstructies die eindigt door te branchen naar Main1, kunnen we Main1 achteraan deze sequentie steken in plaats van aan het begin van de volgende instructie.
+2. Three-Bus Architectuur
+   * We geven de ALU twee volledige inputbussen, een A- en B-bus, nu kunnen we elk register met elk ander register optellen in één cyclus
+3. Instruction Fetch Unit
+   * Als een instructie extra velden nodig heeft (operanden), moeten deze expliciet, byte per byte gefetched worden. Dit houdt de ALU ten minste één cyclus per byte bezig (PC incrementeren en de resulterende index of offset berekenen). 
+   * Door een instruction fetch unit (IFU) in te voeren die deze taken overneemt van de ALU kunnen we onze performantie aanzienlijk verhogen. Onze IFU kan dan zelfstandig PC incrementeren en bytes van de bytestream halen voordat ze nodig zijn. 
+
+
+
+## Vraag 50
+
+> Maak een schets van de IFU die men bij MIC-2 gebruikt? Beschrijf welke registers er zijn en hoe de interne werking verloopt? Voorzie voor de interne buffer een FSM. Waarom wordt de C-bus door de IFU constant in de gaten gehouden? (pagina 288-290)
+
+<img src="img/image-20220106224815488.png" alt="image-20220106224815488" style="zoom: 33%;" />
+
+* **Shift register**: bevat een wachtrij van bytes uit het geheugen om MBR1 en MBR2 te voorzien van data
+  * Schuift vanzelf 1 byte op wanneer MBR1 wordt uitgelezen
+  * Schuift vanzelf 2 bytes op wanneer MBR2 wordt uitgelezen
+* **MBR1**: (memory buffer register): Bevat telkens de oudste byte uit het shift register
+* **MBR2**: bevat telkens de oudste twee bytes uit het shift register
+* 
+
+
+
+## Vraag 51
+
+> Gegeven de micro-architectuur van de MIC-2 Welke drie zaken moet men toevoegen om van dit ontwerp naar een gepipelinede versie met vier stages te evolueren en waarom? Welke vier fasen kent de MIC-3? (pagina 295- 299)
+
+<img src="img/image-20220106230633512.png" alt="image-20220106230633512" style="zoom:50%;" />
+
+
+
+## Vraag 52
+
+> Gegeven de microarchitectuur van de MIC-4 Bespreek de werking van iedere fase van deze microarchitectuur. Leg daarnaast ook uit hoe een ISA-level instructie opgesplitst wordt in micro-operaties en welke problemen hierbij kunnen optreden. Wat is het verschil tussen een micro-instructie en een microoperatie? (pagina 300-303)
+
+
+
+## Vraag 53
+
+> Wat is het idee achter cachegeheugens waardoor performantiewinst geboekt wordt? Geef hierbij een aantal voorbeelden. Geef twee mogelijke implementaties van cachegeheugens en bespreek de werking ervan. Met welke berekening kan je achterhalen op welke lijn een cachelijn zich zou moeten bevinden? Wat zijn de mogelijkheden bij schrijfoperaties? (pagina 304-310)
+
+
+
+## Vraag 54
+
+> Waarom vormen (on)voorwaardelijke spronginstructies in combinatie met pipelining een probleem? Wat is meest eenvoudige manier om dit op te lossen zonder gebruik te maken van een geschiedenistabel? (pagina 310-312)
+
+
+
+## Vraag 55
+
+> Wat is dynamische sprongvoorspelling? Geef drie mogelijke implementaties (één voorspellingsbit, twee voorspellingsbits, …). Welke techniek analoog aan cachegeheugens kan je hier ook toepassen? Geef voor de implementatie met twee voorspellingsbits het FSM. Aan de hand van welke formule kan je de lijn gaan achterhalen waar voor een gegeven spronginstructie de voorspellingsbits te vinden zijn. Wat gebeurt er wanneer een spronginstructie niet voorkomt? (pagina 312-314)
+
+
+
+## Vraag 56
+
+> . Wat is statische sprongvoorspelling? (pagina 315) 
+
+
+
+## Vraag 57
+
+> Wat er wordt er in computerterminologie bedoeld met een scorebord? Waarvoor dient het en uit welke delen bestaat het? (pagina 315-317)
+
+
+
+## Vraag 58
+
+> Gegeven de volgende (micro-)instructies:
+
+```assembly
+R3 = R0*R1
+R4 = R0+R2
+R5 = R0+R1
+R6 = R1+R4
+R7 = R1*R2
+R1 = R0-R2
+```
+
+> Ga er van uit dat je beschikt over een superscalaire architectuur waarbij twee instructies zich gelijktijdig in de execute-fase kunnen bevinden. Veronderstel ook dat het uitvoeren van een optel- of aftrekinstructie, opgehaald in cyclus n, tegen het einde van cyclus n+2 klaar is. Voor een vermenigvuldigingsopdracht is het resultaat pas bekend op het einde van cyclus n+3. Geef het scorebord voor de het uitvoeren van deze instructies wanneer alles instructies mooi in volgorde worden uitgevoerd. Welke dependencies kom je tegen en hoe worden ze al dan niet opgelost (geen code, gewoon omschrijven)? Waarom worden instructies ook mooi in volgorde beëindigd? (pagina 315-320)
+
+
+
+## Vraag 59
+
+> Gegeven onderstaand codefragment:
+
+```c
+evensum=0;
+oddsum=0;
+i=0;
+while (i<limit){
+	k=i*i*i;
+	if (k%2==0)
+		evensum+=k;
+	else
+		oddsum+=k;
+	i++;
+}
+```
+
+> Wat is een basisblok en deel bovenstaande code op in basisblokken. Veronderstel dat evensum en oddsum de enige variabelen zijn die zich niet in registers bevinden. Wat is speculatieve uitvoering en welke problemen kunnen er zich voordoen. Hoe kunnen ze worden opgelost? Wat is het gevaar bij het toepassen van speculatieve uitvoering op onderstaand probleem? (pagina 320-323)
+
+```c
+if (x>0) z=y/x;
+```
+
+
+
+## Vraag 60
+
+> Bespreek het principe van een VLIW-processor. Wat is het verschil met een superscalaire architectuur? Wat is predicated execution en wat is het voordeel er van? Wat is saturated arithmetic? (pagina 555-556, predicated execution/saturated arithmetic 559)
+
+
+
+## Vraag 61
+
+> Bespreek de drie mogelijkheden om aan multithreading te doen. Wanneer wordt er van thread gewisseld? Welke problemen ontstaan er bij het gebruik van een gedeelde pipeline? Wat zijn de voor- en nadelen van iedere vorm van on chip-multithreading? (pagina 562-564)
+
+
+
+## Vraag 62
+
+> Bij hyperthreading op de i7 (simultane multithreading) worden bronnen gedeeld op drie verschillende manieren. Dewelke en wat is voordeel/nadeel ervan? Welke zaken zijn per thead uniek en worden dus niet gedeeld en waarom kunnen ze niet gedeeld worden? Wat probleem treedt er op met betrekking tot cachegeheugens (geen tekening en geen voorbeelden uit de pipeline van de i7 zijn hier nodig, gewoon bespreken) (pagina 566- 567)
