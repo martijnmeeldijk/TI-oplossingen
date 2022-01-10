@@ -286,7 +286,7 @@ Een paar definities:
 **Derived data systems**
 
 * Data afgeleid van de originele 'truth' met eventuele bewerkingen
-* Als je deze kwijtraakt kan je ze altijd opniew afleiden van de source
+* Als je deze kwijtraakt kan je ze altijd opnieuw afleiden van de source
 
 
 
@@ -313,7 +313,7 @@ Als het systeem groeit (in datavolume, verkeer of complexiteit) moeten er manier
 Twee manieren om hiermee om te gaan
 
 1. Als je een tweet post wordt deze in een globale lijst van tweets gestoken. Als een gebruiker dan zijn tijdlijn opvraagt, nemen we de lijst van alle mensen die hij volgt, zoeken we voor elk van deze gebruikers alle tweets en steken we dit chronologisch in de tijdlijn.
-2. Een cache bijhouden voor elke tijdlijn van elke gebruiker. Als iemand dan een tweet schrijft, wordt deze direct in alle caches van al zijn volgers gestoken. Dit is efficienter op het moment dat de tijdlijn wordt opgevraagd, maar er moeten wel op   voorhand een aantal berekeningen gedaan worden.
+2. Een cache bijhouden voor elke tijdlijn van elke gebruiker. Als iemand dan een tweet schrijft, wordt deze direct in alle caches van al zijn volgers gestoken. Dit is  op het moment dat de tijdlijn wordt opgevraagd, maar er moeten wel op   voorhand een aantal berekeningen gedaan worden.
 
 Twitter gebruikte vroeger het eerste, maar de systemen konden niet volgen en ze zijn overgeschakeld op het tweede. Het probleem met deze aanpak is dat als een gebruiker met 30 miljoen volgers een tweet maakte, er direct 30 miljoen writes gedaan werken. Twitter combineert nu dus de twee mogelijkheden. De tweede voor normale gebruikers, en de eerste voor bekende mensen.
 
@@ -332,7 +332,7 @@ We kunnen bijvoorbeeld kijken naar het 99ste percentiel. En dan zorgen dat 99% v
 
 
 
-### Maintainablility
+### Maintainability
 
 Er zullen over een tijdspanne vele verschillende mensen aan het systeem werken. Deze mensen moeten de mogelijkheid hebben om op een productieve manier aan het systeem te werken.
 
@@ -448,7 +448,7 @@ Een data mart voorziet snelle toegang tot een subset van de data en verlicht de 
 <img src="img/1aL3F0rn5ho6H5xbSCdtff4YCl1wmGJo3IKqXGOSw7663mwszTalnM-tFb3PngMa11vRbQc3vf6mTu_xWtp4CH1JrP-CvfvFtu7bJ7i_d9RQ-VeNJPOfFEy6GVl8t3j0n5xptvCm-1304663.png" alt="img" style="zoom: 33%;" />
 
 * DQ: **Data quality tools**
-  * Definieren *quality rules* en passen deze toe op data om fouten te vinden en te verbeteren
+  * Defineren *quality rules* en passen deze toe op data om fouten te vinden en te verbeteren
   * Zo wordt enkel data van goeie kwaliteit opgenomen
 * ETL: **Extract-transform-load**
 * MDM: **Master data management** systemen
@@ -542,7 +542,7 @@ ELT: Extract-load-transform, de data wordt dus eerst in het datawarehouse ingela
 
 ### Virtualized data warehouse
 
-Simpel uitgelegd. We gaan virtueel schema maken dat onze data die verdeeld zit over verschillende systemen als een data warehouse voorstelt. Eigenlijk een soort view. Dit is handig als onze data heel vaak verandert en spaart ons de kosten van een datacenter. 
+Simpel uitgelegd. We gaan een virtueel schema maken dat onze data die verdeeld zit over verschillende systemen als een data warehouse voorstelt. Eigenlijk een soort view. Dit is handig als onze data heel vaak verandert en spaart ons de kosten van een datacenter. 
 
 Enkele nadelen zijn natuurlijk dat een gevirtualiseerde datawarehouse minder performant is.  Of dat een wijziging in het schema ervoor kan zorgen dat je queries niet meer werken.
 
@@ -585,7 +585,7 @@ Het moet schaalbaar en goedkoop zijn. Als we technologieën zoals Hadoop en AWS 
 
 Verder is het belangrijk dat onze data lake een goede **interface** heeft. Het moet gemakkelijk zijn voor business mensen om de data te vinden en te begrijpen. (verschillend voor analysten of data wetenschappers bijvoorbeeld)
 
-Als je niet goed oplet en geen goeie faciliteiten voorziet voor je groeiende *data puddle*, kan je eindigen met een **data swamp**. Vol met duistere, onbruikbare data. 
+Als je niet goed oplet en geen goeie faciliteiten voorziet voor je groeiende *data puddle*, kan je eindigen met een **data swamp**. Vol met duistere, onbruikbare data (mogelijks ook een oger die je probeert weg te jagen). 
 
 
 
@@ -778,7 +778,7 @@ De read wordt naar 3 nodes gestuurd waarvan eentje down is. Als de client nu lee
 Als een uitgevallen node terug online komt moeten we zorgen dat hij terug up-to-date raakt. Dit kan op twee manieren:
 
 * Read repair: de client van altijd van meerdere replicas laten lezen, als hij dan ziet dat er eentje achter loopt, stuurt hij een write naar die replica om hem te updaten
-* Anti entropy process: een achtegrondproces dat constant de replicas met elkaar vergelijkt en dingen update waar nodig
+* Anti entropy process: een achtergrondproces dat constant de replicas met elkaar vergelijkt en dingen update waar nodig
 
 
 
@@ -1415,6 +1415,14 @@ Elke rij beschrijft een gebeurtenis op een bepaalde tijd
 
 <details><summary>Antwoord</summary><small>De naam van een klant</small></details>
 
+**Wat is een conforming dimension? Waarom is deze nuttig?**
+
+<details><summary>Antwoord</summary><small>Een dimensie die dezelfde ID heeft over verschillende systemen. Dan kunnen we makkelijk door middel van extract-transform-load data van verschillende systemen halen en samenvoegen omdat de ids overeenkomen.</small></details>
+
+**Wat zijn de voor- en nadelen van een gevirtualiseerd datawarehouse?**
+
+<details><summary>Antwoord</summary><small>We hoeven geen datawarehouse te bouwen en we kunnen kosten uitsparen. Aan de andere kant zullen onze queries een stuk minder performant zijn. Het kan ook dat onze queries plots niet meer werken als er ergens een wijziging gebeurt.</small></details>
+
 **We vergelijken een data lake met een data warehouse, vul aan.**
 
 | Data Warehouse | vs         | Data Lake |
@@ -1441,6 +1449,9 @@ Elke rij beschrijft een gebeurtenis op een bepaalde tijd
 Gold zone (production zone): hier wordt clean, processed data gehouden<br>
 Work zone (dev zone): hier wordt door devs en data scientists gewerkt aan de data. Als analytics van hier klaar zijn voor productie, worden ze naar de gold zone verplaatst<br>
 Sensitive zone: bevat gevoelige data</small></details>
+**Wat is een catalog-driven data lake? Wat zijn de voordelen?**
+
+<details><summary>Antwoord</summary><small>Een catalog-driven data lake is een logische data lake waarbij we metadata bijhouden over elke dataset. Zo hebben we een soort van catalogus van waar onze data te vinden is. Dit maakt het leven van de analysten een stuk makkelijker.</small></details>
 
 **Waarom is het nuttig om te doen aan replicatie?**
 
@@ -1456,7 +1467,6 @@ Als de follower niet antwoordt ben je genaaid<br><br>
 Asynchrone replicatie<br>de leader wacht niet op bevestiging van de follower<br>
 als de leader kapot gaat, zijn de writes die nog niet doorgevoerd zijn verloren<br>
 de leader kan wel blijven writes verwerken, ookal lopen de followers achter<br></small></details>
-
 **Waarom hebben we bij replicatie read after write consistency nodig?**
 
 <details><summary>Antwoord</summary><small><img src="img/XLHokZKZuniq9WaDr1Zmvy-qeS350Uck1FygvMVhVS6YrLrLyjBt8BuHi0TWjMd8e4zdwRHkeHXtgAIEy3rPmsg5ase3W8nGQQ2tzCHxw2W1eMqSD8xFzWTFAhmI__Y6gxd_xWWH-1304689.png" alt="img" style="zoom:33%;"/><br>Als je je eigen write wilt lezen, kan het dat deze nog niet is doorgevoerd naar de follower waar je dit record opvraagt. We hebben dus read after write consistency nodig. Als een user een verandering maakt, moeten we ervoor zorgen dat als hij iets opvraagt dat hij heeft verandert ook direct wordt weergegeven. De client houdt een timestamp bij van wanneer hij de write heeft gedaan. Wanneer hij dan de write opvraagt, wordt gecheckt of de followers al aan die timestamp zitten, anders haalt hij de data bij de leader. Dit wordt nog moeilijker wanneer de user meerdere devices gebruikt (gsm, laptop, smart fridge)</small></details>
@@ -1471,12 +1481,39 @@ de leader kan wel blijven writes verwerken, ookal lopen de followers achter<br><
 
 <details><summary>Antwoord</summary><small>Doordat de follower van partition één achter loopt, leest de observer de berichten in de foute volgorde. We moeten zorgen voor consistent prefix reads
 <br>= ervoor zorgen dat reads in dezelfde volgorde als writes gebeuren.</small></details>
+**Vul de tabel aan.**
+
+| Single leader | vs               | Multi-leader |
+| ------------- | ---------------- | ------------ |
+|               | Performance      |              |
+|               | Outage tolerance |              |
+|               | Netwerkproblemen |              |
+|               | Nadelen          |              |
+
+<details><summary>Antwoord</summary><small>
+<br>Elke write moet over het internet naar het datacenter van de leader
+<br>Performance<br>
+we gebruiken de locale leader, die dan de writes asynchroon doorgeeft aan de andere leaders <br><br>
+Als de leader uitvalt, kunnen we een follower in een ander datacenter promoten tot leader
+<br>Outage tolerance
+<br>Elk datacenter is onafhankelijk, replicatie kan de achterstand inhalen wanneer het datacenter terug online komt<br><br>
+Gevoelig aan problemen in de verbinding tussen datacenters, want writes moeten synchroon naar de leader gestuurd worden
+<br>Netwerkproblemen
+<br>Tijdelijke netwerkproblemen voorkomen niet dat writes naar de lokale leader geschreven worden<br><br>
+<br>basically alles hierboven
+<br>Nadelen
+<br>Write conflicts, als dezelfde data in twee datacenters aangepast wordt, hebben we een probleem. Multi-leader is ook gewoon ingewikkelder. |</small></details>
+
+**Geef twee manieren om een uitgevallen node terug op to date te krijgen bij leaderless replication. **
+
+<details><summary>Antwoord</summary><small>Read repair: de client van altijd van meerdere replicas laten lezen, als hij dan ziet dat er eentje achter loopt, stuurt hij een write naar die replica om hem te updaten<br><br>
+Anti entropy process: een achtergrondproces dat constant de replicas met elkaar vergelijkt en dingen update waar nodig</small></details>
 
 **Hoe gaan we bij leaderless replication om met het uitvallen van een node. Verduidelijk met een schets.**
 
 <details><summary>Antwoord</summary><small><img src="img/fcOSzxpOKCzrBUDgVHbS0dIRVrSZN4eNyP2_meevoAS4WfJkrlv3aB9WFCNmE3dN69i_QQFgf1UBwTUZ5XXjsS5bb822MSrxkyShR0RWhiiOZ2i7ZIuttlYMDDPBpJYM0jjAA1Zr-1304704.png" alt="img" style="zoom:33%;"/><br>De read wordt naar 3 nodes gestuurd waarvan eentje down is. Als de client nu leest van replica 3 gaat hij oude data krijgen. We gaan dus de client ook van meerdere replicas laten lezen. </small></details>
 
-**Geef een voobeeld van een strategie die we kunnen gebruiken om een gepartitioneerd systeem te rebalancen.**
+**Geef een voorbeeld van een strategie die we kunnen gebruiken om een gepartitioneerd systeem te rebalancen.**
 
 <details><summary>Antwoord</summary><small>Niet hashen met mod n, want als n verandert moeten we heeeel veel data verplaasen<br><br>
 Veel meer partities maken dan nodes, dus meerdere partities per node<br>
@@ -1486,6 +1523,24 @@ Wanneer een partitie groeit, hem splitsen als hij te groot wordt (omgekeerd als 
 Partitioning proportionally to nodes<br>
 Vast aantal partities per node<br>
 als een nieuwe node komt, splitst hij een vast aantal random partities en neemt hij die helft voor zich</small></details>
+**Wat zijn hotspots in gepartitioneerde systemen en hoe kunnen we ze voorkomen?**
+
+<details><summary>Antwoord</summary><small>Hotspots zijn bepaalde records die uitzondelijk veel worden gelezen of geschreven. (een post van een celebrity bijvoorbeeld) We kunnen een random nummer voor de key zetten om de load te verdelen over de verschillende partities.</small></details>
+
+**Wat is een secondary index? Op welke manieren kunnen we secondary indexes implementeren op ons gepartitioneerd systeem? Leg uit.**
+
+<details><summary>Antwoord</summary><small>
+Vaak zoeken we een record niet op de primary key, maar op iets anders. (Als je bijvoorbeeld iemand z'n naam intypt op facebook). Een secondary index is dus een index op iets anders dan de primary key.
+<br><br>Document based partitioning<br>
+We maken voor elke partitie een secundaire index. Als we dan een query uitvoeren, moeten we deze naar elke partitie sturen.<br><br>
+Term based partitioning<br>
+We maken een index overheen al onze partities. De index zelf moet dus ook gepartitioneerd worden. Queries zijn makkelijker, maar een gepartitioneerde index vertraagt de writesnelheid.</small></details>
+
+**Een client wilt verbinden met een gepartitioneerd systeem. Hoe weet hij met welke node hij moet verbinden? (3 manieren)**
+
+<details><summary>Antwoord</summary><small>De client naar alle nodes laten sturen<br>
+Een soort router hebben waarnaar de client een request stuurt (Bijvoorbeeld zookeeper)<br>
+De client kennis laten hebben van de partitionering</small></details>
 
 **Wat wilt deze tabel zeggen?**
 
@@ -1493,10 +1548,40 @@ als een nieuwe node komt, splitst hij een vast aantal random partities en neemt 
 
 <details><summary>Antwoord</summary><small>Mapreduce is nuttig wanneer we één keer schrijven en dan heel vaak moeten lezen. Relationele databanken zijn beter als je constant dingen moet updaten. Bij mapreduce is het schema ook niet zo strict als bij een relationele databank. Nog stuff (mmm misschien is dit niet zo een goeie vraag)</small></details>
 
+**Welke isolatieniveaus kun je gebruiken bij een een transactie?**
+
+<details><summary>Antwoord</summary><small>//TODO</small></details>
+
+**Waarvoor staat ACID? Wat wilt elke term zeggen?**
+
+<details><summary>Antwoord</summary><small>A: atomicity: als een transactie faalt zijn we zeker dat er niks is aangepast <br>
+C: consistency: we weten zeker dat de database voor een na de transactie valid is<br>I: isolation: transacties die tegelijk draaien zijn geisoleerd van elkaar<br>D: Durability: als een transactie gedaan is weten we dat de data blijft waar hij is</small></details>
+
+**Welke stappen doorloopt elke mapreduce taak?**
+
+<details><summary>Antwoord</summary><small>
+1. Sequentially read (a lot of) data <br>
+2. Map (Extract key, values you care about)<br>
+3. Group by key: sort and shuffle<br>
+4. Reduce (Aggregate, summarize, filter or transform)<br>
+5. Write result</small></details>
+
 **Leg uit hoe we MapReduce kunnen gebruiken aan de hand van een voorbeeld.**
 
 <details><summary>Antwoord</summary><small>We hebben een set van items en een bepaalde functie. We willen bijvoorbeeld alle items die dezelfde waarde hebben voor de functie samen opslaan.<br>
 De Mapper berekent de functie voor elk item en geeft de uitkomst als key en het item zelf als value. <br>De Reducer ontvangt alle items gegroepeerd per functiewaarde en slaat ze op.</small></details>
+**Wat zijn de voor -en nadelen van mapreduce?**
+
+<details><summary>Antwoord</summary><small>
+Voordelen:<br>
+Model gemakkelijk te gebruiken verbergt complexiteit van parallelisatie en fault recovery<br>
+Veel problemen kunnen omgezet worden in een MapReduce operatie<br>
+Schaalt naar heeeel veel machines<br>
+<br><br>
+Nadelen<br>
+1 input tweetraps dataflow zit vastgebakken in het systeem<br>
+Je hebt extra code nodig voor veel simpele operaties (bv. Filtering)<br>
+Moeilijk om te optimaliseren wegens intransparantie van MapReduce functies</small></details>
 
 **Wat toont deze tekening? Leg elke stap uit.**
 
@@ -1563,4 +1648,55 @@ Real-time data storage<br>
 Container system<br>
 Global Resource Management
   </small></details>
+**Noem twee taken van data mining en geef voor elke taak een voorbeeld.**
 
+<details><summary>Antwoord</summary><small>Voorspellen<br>clustering: gelijkaardiege objecten groeperen. We kunnen klanten met gelijkaardieg koopgedrag groeperen om ze betere reclame te sturen.<br>Beschrijven<br>Deviation detection: dingen vinden die sterk afwijken van standaard gedrag. Zo kunnen we bijvoorbeeld frauduleuze creditcardtransacties opsporen.</small></details>
+
+**Wat is in de context van een dataobject het verschil tussen een discreet en een continu attribuut? **
+
+<details><summary>Antwoord</summary><small>Discreet: heeft een eindig aantal waarden of telbaar oneindig aantal waarden. Bv postcode of telefoonnummer <br> Continu: heeft een reële waarde. Bv. temperatuur of gewicht</small></details>
+
+**Leg het verschil uit tussen nominal, ordinal, interval en ratio- attributen.**
+
+<details><summary>Antwoord</summary><small>Nominal: variabelen met een naam (oogkleur, geslacht, postcode)<br>Ordinal: variabelen met een naam en orde (punten op 10, rating van een restaurant)<br>Interval: variabelen die een interval beschrijven met een naam en orde (datum, temperatuur)<br>Ratio: een proportioneel interval tussen een variabele en 0 (lengte, tijd, leeftijd) (je kan hier niet onder 0</small></details>
+
+**Wat is het verschil tussen een system of record en een derived data system?**
+
+<details><summary>Antwoord</summary><small>Systems of record<br>
+Dit systeem is de 'source of truth'.
+Als er een aanpassing komt, wordt die als eerste op dit systeem uitgevoerd.
+Bij een conflict of fout is deze altijd juist.
+<br>Derived data systems<br>
+Data afgeleid van de originele 'truth' met eventuele bewerkingen.
+Als je deze kwijtraakt kan je ze altijd opnieuw afleiden van de source.</small></details>
+
+**Op welke twee manieren kunnen we een systeem schalen? Geef een kleine uitleg voor elke manier.**
+
+<details><summary>Antwoord</summary><small>Vertical scaling: betere hardware kopen
+<br>Horizontal scaling: het gewicht verdelen over meer machines</small></details>
+
+**Aan welke voorwaarden voldoet een 'maintainable' systeem?**
+
+<details><summary>Antwoord</summary><small><br>Operability: ervoor zorgen dat het gemakkelijk is om het systeem draaiende te houden
+<br>Simplicity: nieuwe ingenieurs moeten het systeem gemakkelijk kunnen begrijpen
+<br>Evolvability: het moet gemakkelijk zijn om in de toekomst aanpassingen aan te brengen in het systeem</small></details>
+
+**Wat is het verschil tussen schema-on-read en schema on write?**
+
+<details><summary>Antwoord</summary><small>Schema-on-read: de structuur van data is impliciet en wordt alleen geïnterpreteerd als de data uitgelezen wordt <br> Schema-on-write: De structuur waarin data wordt opgeslagen wordt vanaf het begin afgedwongen door middel van een expliciet schema.</small></details>
+
+**Op welke twee manieren kan je een graaf opslaan in een klassieke RDB?**
+
+<details><summary>Antwoord</summary><small>Property graph: een lijst van vertices en een lijst van edges. <br>Triple store: een verzameling van driedelige statements. Als eerste staat altijd de naam van de vertex. Als tweede kan je ofwel een key en value voor een attribuut hebben, of een relatie en een andere vertex.</small></details>
+
+**Wat zijn OLAP en OLTP? Wat is het verschil?**
+
+<details><summary>Antwoord</summary><small>Beide zijn access-patronen die beschrijven hoe een databank wordt aangesproken. <br>OLTP: online transaction processing. Typisch gebruik van een databank. Iemand schrijft een comment op een foto van je lelijke hond. Deze wordt opgeslagen en opgehaald uit de databank wanneer jij hem leest en moet huilen. <br>OLAP: online analytics processing. Grote queries uitvoeren om inzichten te verkrijgen uit onze data. </small></details>
+
+
+
+
+
+
+
+<details><summary>Antwoord</summary><small><br></small></details>

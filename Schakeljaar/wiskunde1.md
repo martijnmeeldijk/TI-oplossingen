@@ -81,7 +81,7 @@ kan je doorschuiven: $\vec{a}.(\vec{b} \times \vec{c}) = \vec{b}.(\vec{c} \times
 $$
 \abs{\vec{a}.(\vec{b} \times \vec{c})} = \text{inhoud parallellepipedum} \\
 \frac{1}{6}\abs{\vec{a}.(\vec{b} \times \vec{c})} = \text{inhoud tetraëder} \\
-\abs{\vec{a}.(\vec{b} \times \vec{c})} \xRightarrow{} \text{vectoren zijn coplanair}
+\abs{\vec{a}.(\vec{b} \times \vec{c})} = 0 \xRightarrow{} \text{vectoren zijn coplanair}
 $$
 
 # Tweedegraadskrommen en -oppervlakken
@@ -185,7 +185,7 @@ $$
 
 $$
 y' = \frac{\frac{dy}{dt}}{\frac{dx}{dt}} \\
-x' = \frac{\frac{dy'}{dt}}{\frac{dx}{dt}} \\
+y'' = \frac{\frac{dy'}{dt}}{\frac{dx}{dt}} \\
 $$
 
 ### Verticale asymptoot
