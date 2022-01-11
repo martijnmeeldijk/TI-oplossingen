@@ -1191,7 +1191,7 @@ nogmaals:
 | ---------------------------------------- | ------------------------------------------------------------ |
 | Hoge throughput                          | Geen true streaming, dus niet goed als je lage latency nodig hebt |
 | Fault tolerance                          | Veel parameters die je moet afstellen                        |
-| High leven APIs                          | Stateless                                                    |
+| High level APIs                          | Stateless                                                    |
 | Grote community met snelle uitbreidingen | Loopt achter op apache flink in advanced features            |
 | Exactly once                             |                                                              |
 
@@ -1235,7 +1235,7 @@ Eerst moeten we de **source data** begrijpen, wat zit er in één message (een t
 * **Processor**: neemt gefilterde stream van messages en kan meerdere outputs genereren. (voor elke tweet voor elke hashtag een message bv)
 * **Counter**: geeft een increment op meerdere buckets als output en slaat het resultaat op in een sink (bv. Database)
 
-We kunnen de services in de pipeline omhoog en omlaag stalen afhankelijk van de belasting van het systeem:
+We kunnen de services in de pipeline omhoog en omlaag scalen afhankelijk van de belasting van het systeem:
 
 <img src="https://lh3.googleusercontent.com/bWZAuZ5Z1gy2JlO08Twz0dqyWNq7GvGYUx6uuWD9eBCyN8A82DKzw96jdJ3a6lgUBePvE46VXwy-I9KtnQ9AiS0VMcpUaknTfb5DaAyO4SvtIQtIJDl_S2IrRqZqwuIrfZCziEvQ" alt="img" style="zoom:33%;" />
 
@@ -1557,6 +1557,11 @@ De client kennis laten hebben van de partitionering</small></details>
 <details><summary>Antwoord</summary><small>A: atomicity: als een transactie faalt zijn we zeker dat er niks is aangepast <br>
 C: consistency: we weten zeker dat de database voor een na de transactie valid is<br>I: isolation: transacties die tegelijk draaien zijn geisoleerd van elkaar<br>D: Durability: als een transactie gedaan is weten we dat de data blijft waar hij is</small></details>
 
+**Wat zijn dirty reads en writes? Hoe kunnen we ze voorkomen?**
+
+<details><summary>Antwoord</summary><small>Een dirty read doet zich voor als je een waarde leest die aangepast wordt tijdens een transactie, maar waarvan de transactie is mislukt. We hebben dus een waarde gelezen die nu weg is. Dit kan zorgen voor conflicten.<br><br> 
+Bij een dirty write schrijven we een waarde, diee dan tijdens onze transactie wordt overschreven door een andere transactie. <br><br> We kunnen diet voorkomen door het isolatieniveau van onze transacties ten minste op read committed te zetten.</small></details>
+
 **Welke stappen doorloopt elke mapreduce taak?**
 
 <details><summary>Antwoord</summary><small>
@@ -1591,6 +1596,7 @@ Moeilijk om te optimaliseren wegens intransparantie van MapReduce functies</smal
 <br>NameNode weet locatie van de blokken van het bestand en rangschikt ze op afstand
 <br>Client ontvangt een inputstream object (om abstractie te maken van het lezen van verschillende nodes)</small></details>
 
+
 **We vergelijken Spark met Hadoop MapReduce. Vul aan.**
 
 | Spark | vs              | Hadoop MapReduce |
@@ -1615,15 +1621,84 @@ Moeilijk om te optimaliseren wegens intransparantie van MapReduce functies</smal
 
 <details><summary>Antwoord</summary><small>
   At least once: elk bericht wordt mogelijk meerdere keren door het systeem gestuurd, zodat het ten minste één keer doorgevoerd wordt (apache storm)<br>
-  Exactly once: elk bericht gaat exact één keer door ons systeem, meestal wel een beetje hogere latency (trident) <br>
+  Exactly once: elk bericht gaat exact één keer door ons systeem, meestal wel een beetje hogere latency (trident, kafka streams) <br>
   At most once: we weten dat elk bericht maximaal één keer verwerkt wordt (Apache Heron, maar die kan ze eigenlijk alle drie)
   </small></details>
 
-**War vertelt deze figuur ons over Apache Heron?**
+**Uit welke logische onderdelen bestaat Apache Storm?**
+
+<details><summary>Antwoord</summary><small>De Spout is de bron van de streams. (Kan bv. kafka zijn). <br><br>Een Bolt ontvangt een tuple en verwerkt hem. Bolts kunnen lezen en schijven uit data stores en berekeningen uitvoeren. Spouts en bolts zijn individuele taken en kunnen parallel op verschillende machines draaien.</small></details>
+
+**Wat vertelt deze figuur ons over Apache Heron?**
 
 <img src="img/r-Dt104M2k0n6wReP8_KNQSjFG1xbrUbrCPUoUEBgaXFeB1XRfys6M3-dDYOTXco4w1T0XmxGIfqUXoIC8KeyV59CKiAJbzwMAranQsFZ4ercKjZkCEEFQTrWPDf4Y_d1XUBzjv6-20220104145908944.png" alt="img" style="zoom: 33%;" />
 
-<details><summary>Antwoord</summary><small>Dit weet ik niet goed. Ik denk dat wanneer een user een bepaalde topologie maakt en doorgeeft aan de scheduler, de scheduler dan zelf containers alloceert op basis van resources enzo.</small></details>
+<details><summary>Antwoord</summary><small>Dit weet ik niet goed. Ik denk dat wanneer een user een bepaalde topologie maakt en doorgeeft aan de scheduler, de scheduler dan zelf containers alloceert op basis van resources enzo.//TODO</small></details>
+
+**Wat zijn de 5 hoofdonderdelen van Kafka? Geef bij elk onderdeel een korte uitleg.**
+
+<details><summary>Antwoord</summary><small>Topics zijn logische categorieën die een stream van records bevatten van de vorm (key, value, timestamp). 
+<br><br>
+Producers genereren een stream van records en pushen die naar een topic. We kunnen het werk verdelen door records op basis van hun key te verdelen over de hiervoor aangehaalde topic partitions, want we willen ervoor zorgen dat de consumer altijd mee is om het gebeuren zo real-time mogelijk te houden.
+<br><br>
+Consumers verwerken de berichten van de producers door te subscriben op een topic. Meerdere consumers kunnen van dezelfde topic lezen.
+<br><br>
+Connectors verbinden de topics met bestaande applicaties of systemen. Zo kan je bijvoorbeeld een RDB die alle veranderingen opslaat verbinden met een connector. 
+<br><br>
+Stream Processors verwerken input stream vanuit één of meerdere topics en sturen een output naar één of meerdere topics. een stream is een onbegrensde dataset die continu wordt geupdate. Een stream processor doet typisch één bepaalde operatie op de input alvorens hem door te sturen.</small></details>
+
+**Vergelijk Spark Streaming met Storm. Vul de ontbrekende waarden aan. **
+
+| Spark Streaming                                              | Storm                                                        |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+|                                                              | Streaming per event (micobatch gaat met trident)             |
+| Exactly once                                                 |                                                              |
+|                                                              | Betrouwbaarheid hangt af van de spouts. Als die goed zijn verliezen we geen data. (best Kafka gebruiken voor spouts) |
+| Performance hangt af per geval. Typische latency in seconden. |                                                              |
+|                                                              | Kan gedeployed worden op YARN of Mesos (kubernetes gaat ook maar dan gebruik je best Heron) |
+
+<details><summary>Antwoord</summary><small>Events per microbatch, gegroepeerd per interval (dus geen true streaming)
+<br><br>
+at least once (exactly once met trident)
+<br><br>
+Voor fault-tolerance en betrouwbaarheid heb je een HDFS-backed data source nodig (geeft latency). Network data sources zijn kwetsbaar voor data loss als een node uitvalt.
+<br><br>
+Performance hangt af per geval. Typische latency in tientallen milliseconden.
+<br><br>
+Kan gedeployed worden op YARN of Kubernetes
+</small></details>
+
+**Wat is het verschil tussen stream en batch processing? **
+
+<details><summary>Antwoord</summary><small>Batch processing <br>
+We gaan een grote hoeveelheid data (een batch) binnen een bepaalde tijdspanne verwerken. De hoeveelheid data is eindig en het resultaat is beschikbaar nadat alle data is overlopen. <br><br>
+Stream processing<br>
+We verwerken een doorlopende stream data terwijl hij wordt aangemaakt. We verwerken dus de data in real-time met een delay van enkele milliseconden tot enkele seconden. We werken niet met een eindige dataset en leveren dus constant bijgewerkte tussenresultaten.
+</small></details>
+
+**Geef enkele eigenschappen van Flink. Wat is het grote voordeel aan dit framework?**
+
+<details><summary>Antwoord</summary><small>Flink werkt met streams en transformations. Een stream is een data-input. Een transformation doet een bewerking op de stream en produceert een output. Flink is stateful. Er kan een state bijgehouden worden waarmee je leuke bewerkingen kan doen.
+</small></details>
+
+**Wat zijn de voor- en nadelen van Spark Streaming?**
+
+<details><summary>Antwoord</summary><small>Voordelen <br>
+  Hoge throughput, Fault tolerance, High level APIs, Grote community met snelle uitbreidingen, Exactly once proocessing <br><br>
+Nadelen<br>
+Geen true streaming, dus niet goed als je lage latency nodig hebt. Veel parameters die je moet afstellen, Stateless, Loopt achter op apache flink in advanced features
+</small></details>
+
+**Gegeven deze figuur van een data processing pipeline in spring cloud data flow. Wat doet elke stap? **
+
+<img src="img/9ad1CAUzFZr-zY58i1xoV01YQV0ldrXZw8iarNK3VhYP8CUQP8fOY5KJx9Dzxip_CUrDHcXUIgDKGv679fq0wJvJ73gphg5LHo8RyXExhFhklz-DO-k1GcGdoURzgBvZkHq9nuO7-20220104145913982.png" alt="img" style="zoom:33%;" />
+
+<details><summary>Antwoord</summary><small>
+Tweet source (data): we halen data van verschillende bronnen (HDFS, REST API, ...) en transformeren deze tot een discrete stream van messages en sturen deze naar een output channel.
+<br>Filter: doet wat het betekent en filtert noise om de kwaliteit van metingen in de volgende modules te verbeteren
+<br>Processor: neemt gefilterde stream van messages en kan meerdere outputs genereren. (voor elke tweet voor elke hashtag een message bv)
+<br>Counter: geeft een increment op meerdere buckets als output en slaat het resultaat op in een sink (bv. Database)
+</small></details>
 
 **Leg de Lambda-architectuur uit aan de hand van een tekening. Waarom wordt deze architectuur in de praktijk niet meer gebruikt?**
 
@@ -1697,6 +1772,18 @@ Als je deze kwijtraakt kan je ze altijd opnieuw afleiden van de source.</small><
 
 
 
+## Frameworkwijzer
 
+We gaan de geziene frameworks eens in de andere richting visualiseren. Hieronder een lijst van eigenschappen, en dan de frameworks die deze eigenschap bezitten.
 
-<details><summary>Antwoord</summary><small><br></small></details>
+| Eigenschap               | Framworks                                                    |
+| ------------------------ | ------------------------------------------------------------ |
+| Exactly once processing  | Kafka streams, Heron, Spark streaming, Trident, Flink        |
+| At least once processing | Storm, Heron, Samza                                          |
+| At most once processing  | Heron                                                        |
+| Stream processing        | Kafka streams, Storm, Trident, Spark Streaming, Heron, Flink, Spring Cloud data flow, Beam |
+| Batch processing         | Beam, Hadoop, Spark                                          |
+| Micro-batch              | Trident, Spark streaming                                     |
+| Stateful                 | Kafka streams, Flink, Samza                                  |
+| Stateless                | Storm, Spark Streaming, ik denk al de rest ook               |
+
