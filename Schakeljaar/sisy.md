@@ -772,3 +772,212 @@ Een wiel draait aan -9 toeren per seconde. Een scherm flitst 12 keer per seconde
 * $\frac{-9}{12}$ toeren per frame = $\frac{-3}{4}$, dit is tussen 0.5 en 1
 * Het wiel lijkt dus $\frac{1}{4}$ toeren per frame te doen
 * Vermenigvuldig dit met het aantal frames per seconde om het schijnbare toerental te krijgen = 3 toeren/sec
+
+
+
+### Vorige examenvragen (met mijn oplossing)
+
+
+
+**Gegeven: $H(s) = \frac{s-10}{s(s+10)}$ is de systeemfunctie van een systeem in continue tijd. (2018)**
+
+1. *Is dit systeem BIBO-stabiel? Verklaar.*
+   1. Nee, de polen zijn niet strikt negatief
+2. *Bereken en teken het impulsantwoord van dit systeem*
+   1. Gewoon de inverse Laplacetransformatie doen
+   2. $h(t) = (2e^{-10}-1)u(t)$ sorry geen zin om te tekenen
+3. *Schrijf de differentiaalvergelijking die de dynamica van dit systeem beschrijft*
+   1. Gebruik $H(s) = \frac{Y(s)}{X(s)}$, dan zet je $X(s).s$ om naar $x'$ enzovoort.
+   2. $y'' + 10y' = x' -10x$
+4. *Men legt aan de ingang van het systeem een signaal $x(t) = \delta(t)+10e^{10t}$ aan. Bereken en teken het uitgangssignaal $y(t)$*
+   1. Gebruik $X(s).H(s) = Y(s)$
+   2. Dan zet je $Y(s)$ om naar $y(t)$ met Laplace.
+   3. $y(t) = e^{-10t}u(t)$
+5. *Teken het bodediagram van het systeem (gebruik hiervoor de methode met de benaderende lijnstukken)*
+   1. Antwoord coming soon in theatres near you
+
+---
+
+**Een wiel draait aan -9 toeren per seconde. Een scherm flitst 12 keer per seconde. Wat is het schijnbare toerental van het wiel?** (Januari 2021)
+
+A. +4 toeren/sec 
+
+**B**. +3 toeren/sec: $-\frac{9}{12}$ toeren per frame. Oftewel schijnbaar $\frac{3}{12}$. Doe dit terug maal twaalf voor het schijnbare toeren/sec.
+
+C. -3 toeren/sec 
+
+D. -4 toeren/ sec
+
+---
+
+**$H(s) = \frac{1}{s-1}$. Het gedrag van $\varphi(\omega)$ is?** (Januari 2021)
+
+A. 180° voor 𝜔 = 0, 90° voor 𝜔 gaat naar oneindig 
+
+B. 0° voor 𝜔 = 0, 90° voor 𝜔 gaat naar oneindig 
+
+C. 0° voor 𝜔 = 0, -90° voor 𝜔 gaat naar oneindig 
+
+**D**. -180° voor 𝜔 = 0, -90° voor 𝜔 gaat naar oneindig
+
+Gebruik deze figuur: <img src="img/image-20220103130654153_copy.jpg" alt="image-20220103130654153" style="zoom: 33%;" />
+
+voor $j\omega-a$ gaan we normaal van 180° naar 90°, maar hij staat in de noemer. Als je mijn tabelletje hebt gelezen weet je dan dat je nog het tegengestelde moet nemen. Antwoord D dus.
+
+---
+
+**Wat is het functievoorschrift van y(t) in functie van x(t)?** (Januari 2021)
+
+
+
+<img src="img/image-20220113100911559.png" alt="image-20220113100911559" style="zoom: 33%;" /><img src="img/image-20220113101022427.png" alt="image-20220113101022427" style="zoom: 33%;" />
+
+A. $y(t) = 2x(2(2-t))$
+
+B. $y(t) = 2x(2-\frac{t}{2})$
+
+C. $y(t) = 2x(-2t+\frac{3}{2})$
+
+D. $y(t) = 2x(-\frac{t}{2}+3)$
+
+Oke dit is een leuke vraag. Als we een grafiek tekenen, gaan we normaal eerst verschuiven, en dan schalen. Hier moeten we omgekeerd werken.
+
+1. We maken ons ingangssignaal half zo lang: $x(2t)$
+2. Verschuiven 2 vakjes naar rechts: $x(2(t-2))$
+3. Spiegelen het (rond het verschoven nulpunt, 2): $x(-2(t-2))$
+4. En tenslotte schalen we de amplitude: $2x(-2(t-2)) = 2x(2(2-t))$, optie **A** dus.
+
+(ik denk dat je ook gewoon allemaal punten kan invullen om de oplossing te reverse-engineeren, als iemand zin heeft om dat te doen. Laat maar weten.)
+
+---
+
+**Welke filter is dit?** (Januari 2021)
+
+<img src="img/image-20220113104348096.png" alt="image-20220113104348096" style="zoom:50%;" />
+
+A. Laagdoorlaatfilter 
+
+B. Hoogdoorlaatfilter 
+
+C. Bandpass-filter 
+
+**D**. Bandstop-filter
+
+Hopelijk vraagt hij dit. Gratis punten
+
+---
+
+**Wat is de systeemfunctie?**
+
+<img src="img/download (2).png" alt="download (2)" style="zoom: 33%;" />
+
+Hoe ik dit onthou. $y(t)$ is de uitgang van de sommatie. Dus y(t) = som van 3 andere dingen (van boven naar onder):
+
+1. $-\int y$
+2. $\int x$
+3. $x$
+
+Als we nu de som van die dingen nemen en alles een keertje afleiden krijgen we: $dy = -y + x + dx$
+
+Zet de xjes en ytjes ieder aan hun kant, doe de Laplace-transformatie: $Ys + Y = Xs + X$
+
+De systeemfunctie: $H(s) = \frac{Y(s)}{X(s)} = \frac{s+1}{s+1} = 1$
+
+---
+
+**Welke vergelijking heeft de 4 punten op de tekening de oplossing?**
+
+<img src="img/download (3).png" alt="download (3)" style="zoom: 50%;" />
+
+A. $x^4 + 1 = 0$ 
+
+B. $x^4 − 1 = 0$ 
+
+C. $x^4 + j=0$
+
+D.  $x^4 − j=0$
+
+Ik veronderstel dat de assen de reële en imaginaire as zijn. Dan veronderstel ik ook dat de straal van de cirkel 1 is. 
+
+Als we nu punt het eerste puntje rechtsboven nemen: $P_1 = \frac{\sqrt{2}}{2} + \frac{\sqrt{2}}{2}j$ = $e^{\frac{\pi}{4}j}$
+
+Doe die gewoon tot de 4de macht en je hebt je uitkomst: -1 -> $x^4 = -1$, dus $x^4 + 1 = 0$
+
+---
+
+**Het frequentieantwoord van $p(t)$ is gegeven in de tekening. Wat is het spectrum van $R(\omega) = P(\omega).P(\omega)$?**
+
+<img src="img/download (4).png" alt="download (4)" style="zoom:50%;" />
+
+$H(\omega) = \frac{Y(\omega)}{X(\omega)}$
+
+$H(\omega)= \abs{H(\omega)}e^{j\varphi(\omega)}$
+
+geen idee wat ik moet doen sorry
+
+
+
+---
+
+![download (5)](img/download (5).png)
+
+1. **Bepaal de systeemfunctie $H(s)$**
+
+Impulsantwoord $\omega(t)$ = $u(t) + u(t-a)$
+
+Als we Laplacetransformeren is de systeemfunctie $H(s) = \frac{1}{s} + e^{-as}\frac{1}{s}$
+
+2. **Bepaal de uitgang $y(t)$ en teken.**
+
+$y(t) = \omega(t)*h(t)$ 
+
+$Y(s) = H(s).H(s)$
+
+
+
+
+
+
+
+---
+
+**Een lineair tijdsinvariant systeem heeft als impulsantwoord $h(t) = 10 . (e^{-2t} – e^{-3t}) . u(t)$.**
+
+1. **Zoek de systeemfunctie**
+
+Gewoon $h(t)$ Laplace transformeren= $\frac{10}{s+2} - \frac{10}{s+3} = \frac{10}{s^2 + 5s + 6}$
+
+2. **Geef de differentiaalvergelijking die de dynamica van dit systeem beschrijft. (Gebruik als ingangsfunctie x(t) en als uitgangsfunctie y(t)) **
+
+$\frac{Y(s)}{X(s)} = \frac{10}{s^2 + 5s + 6}$ 
+
+$10X(s) = Y(s)s^2 + Y(s).5s + Y(s).6$
+
+$10x(t) = y''(t) + 5y'(t) + 6y(t)$
+
+3. **Teken een simulatieschema voor dit systeem op basis van integratoren.**
+
+<img src="img/image-20220113121136698.png" alt="image-20220113121136698" style="zoom:50%;" />
+
+4. **Als de ingang x(t) = 3/5 . u(t), bepaal dan lim 𝑡 → +∞ 𝑦(𝑡). (Met andere woorden, wat zal de uitgang worden na voldoende lange tijd indien we aan de ingang een stapfunctie aanleggen met waarde 3/5** 
+
+$y(t) = x(t)*h(t)$
+
+$Y(s) = X(s).H(s)$
+
+Neem de laplacegetransformeerde van x(t) en vermenigvuldig die met H(s). Dan kom je Y(s) uit. Die transformeer je terug en neem daarvan de limiet naar oneindig= 1.
+
+---
+
+**Gegeven:** $x(t) = \frac{1}{2}(\delta(t + 2\pi) + \delta(t − 2\pi))$.
+
+**Wat is het amplitudespectrum en het fasespectrum?**
+
+
+
+
+
+
+
+![image-20220113161143510](img/image-20220113161143510.png)
+

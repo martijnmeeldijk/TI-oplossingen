@@ -321,7 +321,7 @@ Twitter gebruikte vroeger het eerste, maar de systemen konden niet volgen en ze 
 
 **Performance beschrijven**
 
-We kunnen bijvoorbeeld kijken naar het 99ste percentiel. En dan zorgen dat 99% van de requests minder dan 200ms duren om af te handelen. 99.9 of 99.99 kan ook, maar nooit 100, want een systeem dat nooit faalt bestaat niet. Zelf microsoft en facebook hebben soms downtime.
+We kunnen bijvoorbeeld kijken naar het 99ste percentiel. En dan zorgen dat 99% van de requests minder dan 200ms duren om af te handelen. 99.9 of 99.99 kan ook, maar nooit 100, want een systeem dat nooit faalt bestaat niet. Zelfs microsoft en facebook hebben soms downtime.
 
 **Handling load increases**
 
@@ -1711,7 +1711,6 @@ Tweet source (data): we halen data van verschillende bronnen (HDFS, REST API, ..
 Everything is a stream<br>
 Single stream engine is used<br>
 Data can be replayed</small></details>
-
 **Wat staat er centraal in de Zeta-architectuur? Wat zijn de 7 hoofdcomponenten?**
 
 <details><summary>Antwoord</summary><small>Global resource management<br><br>
