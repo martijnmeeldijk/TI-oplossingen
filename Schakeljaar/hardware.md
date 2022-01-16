@@ -1,6 +1,6 @@
 # Examenvragen computerhardware
 
-In dit document doe ik mijn best om een zo goed mogelijk antwoord te geven op de examenvragen van computerhardware
+In dit document doe ik mijn best om een zo goed mogelijk antwoord te geven op de examenvragen van computerhardware. Wim heeft wat vragen geschrapt yeeeeeey. :tada: :tada:
 
 
 
@@ -1148,3 +1148,492 @@ if (x>0) z=y/x;
 ## Vraag 62
 
 > Bij hyperthreading op de i7 (simultane multithreading) worden bronnen gedeeld op drie verschillende manieren. Dewelke en wat is voordeel/nadeel ervan? Welke zaken zijn per thead uniek en worden dus niet gedeeld en waarom kunnen ze niet gedeeld worden? Wat probleem treedt er op met betrekking tot cachegeheugens (geen tekening en geen voorbeelden uit de pipeline van de i7 zijn hier nodig, gewoon bespreken) (pagina 566- 567)
+
+
+
+
+
+# Labo's
+
+Een paar dingen die ik nuttig vind om de labo-oefeningen beter te begrijpen.
+
+## De Von Neumann cyclus
+
+Bij het uivoeren van een programma zal de processor elke insctructie uitvoeren volgens de Von Neumann cyclus. Dit verloopt in 3 stappen:
+
+1. **Instruction fetch**
+   * CPU zet het adres van de volgende instructie op de adresbus
+   * Het geheugen plaatst dan die instuctie op de databus
+   * CPU haalt de instructie van de databus en plaatst die in zijn instructieregister (IR)
+2. **Instruction decoding**
+   * Onze instructie zit nu in de IR
+   * De CPU decodeert deze om te achterhalen welke instructie er moet uitgevoerd worden en welke GPR's (General purpuse registers) er gebruikt moeten worden
+3. **Execute**
+   * We voeren de instructie uit
+   * Tijdens de instructie kunnen er een aantal vlaggen worden gezet 
+     * *Zero flag*: als het resultaat nul is
+     * *Overflow flag*: als het resultaat groter is dan in het register past
+     * *Carry flag*: als we twee 8-bit getallen optellen kan dit een 9-bit getal geven. In de carry steekt dan het nummertje dat te veel is.
+     * *Negative flag*: geeft aan dat het getal negatief is (tekenbit bij 2-complement)
+
+
+
+## Instructies
+
+Waaruit kan een instructie bestaan.
+
+Elke instructie heeft een **opcode** (operation code). Dit is het bitpatroon dat zegt wat de instructie doet. Bij de instructie kunnen ook operanden zitten die bij die opcode horen.
+
+Om met instructies te werken is het nuttig om een beetje te weten over hoe de adressering en de instructies van de 8051 samengaan.
+
+### Adresseringsmodi
+
+Instructies kunnen op verschillende mogelijkheden gebruikmaken van adressering. Dus op verschillende manieren verschillende dingen aanspreken. 
+
+| Soort                 | Structuur                        | Voorbeeld                                                    |
+| --------------------- | -------------------------------- | ------------------------------------------------------------ |
+| Register adressering  | [opcode + r]                     | add A, R7                                                    |
+| Directe adressering   | [opcode] [direct adres]          | mov P1, A                                                    |
+| Indirecte adressering | [opcode + i]                     | mov A,@R0 (zet niet de inhoud R0, maar de inhoud van het vakje waarnaar R0 wijst in A) |
+| Immediate adressering | [opcode] [immediate data]        | mov A,#12d (als we dus gewoon een getal zelf schrijven in de code) |
+| Relatieve adressering | [opcode] [relatieve offset]      | sjmp verder (als we een aantal posities verder of terug moeten, max 127 verder of 128 terug) |
+| Absolute adressering  | [opcode] [absoluut adres]        | ajmp verder (om verder te springen)                          |
+| Long adressering      | [opcode] [MSB adres] [LSB adres] | ljmp en lcall (alleen voor lange doeladressen)               |
+
+
+
+### Overzicht instructies
+
+Ik ga iets minder in detail dan Wim. Dit is eerder een geheugensteun voor tijdens de oefeningen.
+
+| Instructie | Nut                                                          | Voorbeeld         |
+| ---------- | ------------------------------------------------------------ | ----------------- |
+| mov        | Dataoverdracht                                               | mov A, R1         |
+| movx       | Dataoverdracht van of naar extern datageheugen               | movx A,@DPTR      |
+| movc       | Dataoverdracht van of naar programmageheugen                 | movc A,@A+DPTR    |
+| xch A, R6  | Verwisselen met de accumulator                               |                   |
+| push       | Iets op de stack zetten (Gebruik niet push A maar wel push ACC als de inhoud van de accumulator op de stack moet worden geplaatst!) | push dadr         |
+| pop        | Iets van de stack halen                                      | pop dadr          |
+| anl        | AND (kan ook op enkele bits gebruikt worden)                 | anl A, R1         |
+| orl        | OR(kan ook op enkele bits gebruikt worden)                   | orl A, dadr       |
+| xrl        | XOR (kan ook op enkele bits gebruikt worden)                 | xrl A,#2H         |
+| clr        | Clear, leegmaken (kan ook op enkele bits gebruikt worden)    | clr A             |
+| cpl        | Complement (inverteren) (kan ook op enkele bits gebruikt worden) | cpl A             |
+| swap       | Hoogste en laagste nibble verwisselen                        | swap A            |
+| RL         | Rotate left (1 plaats naar links bitshiften)                 | RL A              |
+| RR         | Rotate right (1 plaats naar rechts bitshiften)               | RR A              |
+| RLC        | RL, maar de hoogste bit wordt op de carry gezet. De waarde die al op de carry stond wordt op de laagste bit van A gezet | RLC A             |
+| RRC        | Hetzelfde, in de andere richting                             | RRC A             |
+| setb       | Een bit op 1 zetten (nuttig voor bijvoorbeeld de carry)      | setb C            |
+| /          | Als je een / voor een bitadres zet neem de de inverse        | anl C,/bitadr     |
+| add        | Optellen (zonder rekening te houden met de carry)            | add A, #2         |
+| addc       | Optellen (de inhoud van de carry wordt erbij opgeteld)       | addc A,#2         |
+| subb       | Aftrekken (houdt altijd rekening met de carry, dus als je die niet wilt gebruiken eerst 'clr C' doen) | subb A, R1        |
+| mul        | vermenigvuldigen (ACC met B-register, het grote deel van de uitkomst komt in B) De carry wordt altijd op 0 gezet. Pariteitsvlag wordt gezet als de hoeveelheid enen oneven is | mul AB            |
+| div        | deelt A door B, quotient in A, rest in B. Bij deling door 0 worden OV en CY-bit gezet. Er gebeurt niets met AC | div AB            |
+| inc        | incrementeren met 1                                          | inc DPTR          |
+| dec        | decrementeren met 1 (dec DPTR gaat niet)                     | inc A             |
+| jmp        | onvoorwaardelijke sprong (assembleerder kiest zelf tussen één van de volgende 3) (jmp $ maakt een oneindige loop) | jmp adres         |
+| ajmp       | absolute sprong                                              | ajmp adres        |
+| ljmp       | lange sprong                                                 | ljmp adres        |
+| sjmp       | kleine sprong                                                | sjmp rel          |
+| jc         | Jump als de carry op 1 staat                                 | jc rel            |
+| jnc        | Jump als de carry op 0 staal                                 | jnc rel           |
+| jb         | Jump als bit aanstaat                                        | jb bitadr,rel     |
+| jnb        | Jump als bit niet aanstaat                                   | jnb bitadr,rel    |
+| jz         | Jump als accumulator op 0 staat                              | jz rel            |
+| jnz        | Jump als accumulator niet op 0 staat                         | jnz rel           |
+| djnz       | Decrement en jump als het aangegeven register niet op 0 staat (om for loops te maken) | djnz R1, rel      |
+| cjne       | Compare en jump if not equal. Als de eerste twee operanden niet gelijk zijn, springen naar de derde operand | cjne A, dadr, rel |
+| call       | subroutine oproepen (assembleerder kiest tussen lcall en acall) | call adres        |
+| lcall      | ik weet niet wat het verschil is tussen de twee help         | lcall adres_16    |
+| acall      |                                                              | acall adres_11    |
+| ret        | Return, moet je altijd zetten op het einde van een subroutine |                   |
+| reti       | Return, maar bij een interrupt                               |                   |
+
+
+
+Handig tabelletje van Wim om te zien welke instructies vlaggen kunnen aanpassen.
+
+<img src="img/image-20220115151438556.png" alt="image-20220115151438556" style="zoom:50%;" />
+
+
+
+## I/O op de C8051F120
+
+### De Crossbar
+
+Je kan niet alle I/O mogelijkheden tegelijk gebruiken. Om bepaalde functies aan het zetten maken we gebuik van deze conversietabel. Hier zien we welke bits van XBR0, XBR1 en XBR2 we moeten aanzetten om bepaalde functies te kunnen gebruiken.
+
+<img src="img/image-20220115155535579.png" alt="image-20220115155535579" style="zoom:50%;" />
+
+voorbeeld:
+
+```assembly
+…
+mov SFRPAGE,#0FH ; alle configuratieregisters van de digitale crossbar bevinden zich in SFR-pagina F.
+mov XBR2,#40H ; de crossbar wordt aangezet.
+mov XBR0,#04H ; UART0 naar buiten brengen.
+mov XBR2,#04H ; idem voor UART1
+mov XBR1,#04H ; idem voor externe interruptlijn 0
+…
+```
+
+
+
+### I/O Poorten
+
+Om een poort in te stellen als in- of output gebruiken we het PxMDOUT register (met x het poortnummer). We zetten een poort op 0 voor uitvoer, en op 1 voor invoer. Bij het opstarten of resetten staan alle poorten default op invoer.
+
+Bijvoorbeeld:
+
+```assembly
+...
+mov SFRPAGE,#0FH ; alle configuratieregisters van de digitale crossbar bevinden zich in SFR-pagina F.
+mov XBR2,#40H ; de crossbar aanzetten.
+mov P3MDOUT,#00H ; Alle pinnen van poort 3 = invoer
+mov P3,#0FFh ; Om poort 3 te gebruiken als invoerpoort moeten alle invoerpinnen na configuratie op een logische 1 gezet worden. 
+...
+```
+
+Je kan ook individuele pinnen van de poorten aanspreken:
+
+```assembly
+…
+mov SFRPAGE,#0FH ; alle configuratieregisters van de digitale crossbar bevinden zich in SFR-pagina F.
+mov XBR2,#40H ; de crossbar aanzetten.
+mov P5MDOUT,#10H ; Pin P5.4 = uitvoer
+…
+```
+
+
+
+### Analoge I/O
+
+
+
+## Timers en counters
+
+### TMOD
+
+Via het TMOD register kunnen we timer/counters 0 en 1 configureren
+
+<img src="img/image-20220115161348582.png" alt="image-20220115161348582" style="zoom:50%;" />
+
+* **Gate**: Deze bit zetten betekent dat de timer/counter enkel kan gestart worden als /INT1=1 (INT0 bij timer 0). Externe interruptlijn 1 kan er dus voor zorgen dat de timer/counter vergrendeld wordt. 
+* **C/T**: Op 0 zetten om de timer functie te gebruiken, 1 voor de counter
+* **TxMx**: om te kiezen welke modus we gebruiken:
+
+<img src="img/image-20220115161731232.png" alt="image-20220115161731232" style="zoom:33%;" />
+
+### TCON
+
+Het timer/counter controleregister.
+
+<img src="img/image-20220115161948454.png" alt="image-20220115161948454" style="zoom:50%;" />
+
+* **TF1/TF0:** Wordt op 1 gezet als de timer overflowt
+* **TR1/TR0**: Zorgt ervoor dat het tellen start in TH1 en TL1
+
+### CKCON
+
+Het klokcontroleregister. We gebruiken dit register om de klok te delen als hij te snel tikt, zodat we grotere tijdsintervallen kunnen tellen.
+
+<img src="img/image-20220115162356498.png" alt="image-20220115162356498" style="zoom:50%;" />
+
+* **T1M/T0M**: om te kiezen of we de systeemklok gebruiken of delen door de waarden in SCA1 en SCA0
+* **SCA1/SCA0**: hier passen we de snelheid aan waarop er geteld wordt:
+  * <img src="img/image-20220115162552424.png" alt="image-20220115162552424" style="zoom:50%;" /> 
+  * De systeemklok is gelijk aan 24,5 MHz gedeeld door 8!
+
+### Timermodi
+
+* Mode 1
+  * Bij het starten van een timer/counter in mode 1 worden er pulsen geteld in de 2 telregisters THx en TLx. Het register THx bevat de meest significante byte van de tellerwaarde, TLx de minst significante byte. 
+* Mode 2
+  * 8 bit timer/counter met autoreload
+  * Wanneer het tijdsinterval voldoende klein is, kan een 8 bit timer volstaan. Bovendien kan er dan gebruik gemaakt worden van de autoreload functionaliteit. 
+  * Bij het overlopen van de timer/counter wordt de autoreload-waarde, die zich in THx bevindt, naar TLx gekopieerd.
+
+
+
+### Werkwijze
+
+Op het voorbeeld van Wim willen we om de 60ms de waarde van P2.1 omwisselen. Om dit te kunnen doen moeten we eerst weten hoe veel **klokpulsen** er zitten in 60ms.
+
+Aantal klokpulsen = klokfrequentie * tijdsinterval
+
+We gebruiken de systeemklok: $\frac{24,5.10^6}{ 8} .60 .10^{−3} =183750$ klokpulsen. (De klokfrequentie is 24,5MHz/8). Ons getal is te groot en past niet in onze 16 bit timer. We gaan onze instellingen dus zo aanpassen dat we delen door 48 (3828 klokpulsen). Nu gaat onze time 48 keer zo traag. Maar dat is dan weer te lang om onze tijd te meten. We weten dat de timer overflowt op FFFFh. Dus we moeten zorgen dat hij op een bepaald getal start om exact na 60ms te overflowen. Dit getal is FFFFh - 3828d, oftewel FFFFh - EF4h = F10Bh
+
+
+
+Hier doet onze Wim het even voor.
+
+```assembly
+...
+mov P2MDOUT,#0FFH 	; P2.1 =>uitvoer. De overige pinnen zijn don’t cares
+mov SFRPAGE#00H 		; alle timerregisters bevinden zich in SFRpagina 0
+mov TMOD,#01H 			; Timer 0 mode 1 (16 bit timer)
+mov CKCON,#02H 			; SYSCLK nog eens extra delen door 48
+mov TH0,#0F1H 			; TH0=F1H
+mov TL0,#0BH 				; TL0=0BH
+setb TR0 						; timer 0 starten
+loop: jnb TF0, $ 		; wacht 60 ms
+	clr TF0 					; Timer overflow vlag wissen
+	cpl P2.1 					;polariteit P2.1 omwisselen
+	clr TR0 					; timer 0 stoppen
+	mov TH0,#0F1H 		; telregisters opnieuw instellen
+	mov TL0,#0BH
+	setb TR0 					; timer 0 opnieuw starten
+	jmp loop 					; oneindige lus
+END
+```
+
+
+
+## Interrupts
+
+### Notes bij de uitleg van Wim
+
+Pagina 147 in de datasheet.
+
+Om een interrupt te maken zoek je op deze pagina op welke plek in de interruptvector je het adres moet zetten van de code die de interrupt afhandelt. Als je een interrupt oproept wordt ook automatisch geswitcht naar de juiste sfrpage. Pas op met `cseg`. Als de assembler iets zegt van memory overlap moet je die wat verzetten. ET4 is niet bit-addresseerbaar. Timer 4 staat op sfrpage 2.
+
+Je kan geen code delen tussen je hoofdprogramma en interrupt service routines.
+
+### Het IE-register
+
+(interrupt enable)
+
+<img src="img/image-20220115164705783.png" alt="image-20220115164705783" style="zoom:50%;" />
+
+* EA 
+  * Enable all interrupts. Het op nul zetten van dit bit betekent dat geen enkele interrupt de programmacode kan onderbreken. Het zetten van dit bit laat interrupts toe. Welke interrupts toegelaten worden is afhankelijk van de individuele settings van iedere interruptbron (te vinden in IE, EIE1 en EIE2 registers). 
+* ET2: Timer 2 interrupt enable 
+* ES0: UART0 interrupt enable 
+* ET1: Timer 1 interrupt enable 
+* EX1: External interrupt 1 enable 
+* ET0: Timer 0 interrupt enable 
+* EX0: External interrupt 0 enable
+
+### Het IP-register
+
+(interrupt priority denk ik)
+
+We kunnen met dit register bepaalde interrupts een hogere prioriteit geven dan andere.
+
+
+
+### Voorbeeld
+
+Net als bij het vorige codefragment willen we hier de waarde op P2.1 elke 60ms laten wisselen, maar deze keer met het gebruik van een interrupt.
+
+```assembly
+cseg at 0000H 				; Schrijf onderstaande code in het programmageheugen te beginnen bij adres 0000H
+jmp main 							; onvoorwaardelijke sprong naar het hoofdprogramma
+cseg at 000BH 				; interrupt vector voor timer 0
+jmp ISRTR0 						; onvoorwaardelijke sprong naar het label ISRTR0
+cseg at 0050H 				; Schrijf onderstaande code in het programmageheugen te beginnen bij adres 0050H
+main: clr EA
+	mov WDTCN ,#0DEH 		;uitschakelen van de watchdog timer
+	mov WDTCN,#0ADH
+	setb EA
+	setb ET0 						;interrupts van timer 0 toelaten
+	mov SFRPAGE,#0FH
+	mov XBR2,#40H 			; crossbar aanzetten
+	mov P2MDOUT,#0FFH 	; P2.1 =>uitvoer. De overige pinnen zijn don’t cares
+	mov SFRPAGE#00H 		; alle timerregisters bevinden zich in SFRpagina 0
+	mov TMOD,#01H 			; Timer 0 mode 1 (16 bit timer)
+	mov CKCON,#02H 			; SYSCLK nog eens extra delen door 48
+	mov TH0,#0F1H 			; TH0=F1H
+	mov TL0,#0BH 				; TL0=0BH
+	setb TR0 						; timer 0 starten
+	jmp $ 							; oneindige lus en wachten op interrupts
+
+ISRTR0: cpl P2.1 			; polariteit P2.1 omwisselen
+	clr TR0 						; timer 0 stoppen
+	mov TH0,#0F1H 			; telregisters opnieuw instellen
+	mov TL0,#0BH
+	setb TR0 						; timer 0 opnieuw starten
+	RETI 								; einde ISR
+END
+```
+
+
+
+
+
+## Eigenschappen van de 8051
+
+Een paar eigenschappen uit de pdf van onze lieve Wim. Kan handig zijn om te weten en om een beetje meer voeling te krijgen met de microcontroller.
+
+* CPU met uitgebreide instructieset (111 instructies ; bit- en byte-bewerkingen) 
+* 32 digitale GPIO-lijnen (general purpose I/O) verdeeld over vier 8-bitpoorten (P0, P1, P2 en P3). 
+* Twee timer/counters die in vier modes kunnen geprogrammeerd worden: 
+  * Mode 0: 13-bit timer/counter
+  * Mode 1: 16-bit timer/counter 
+  * Mode 2: 8-bit timer met autoreload 
+  * Mode 3: Bijzonder geval (opsplitsing naar drie timer/counters) 
+* Een full duplex serieel kanaal met instelbare baudrate (hoe snel de informatie over het kanaal verstuurd wordt). Voor het genereren van de baudrate zijn er diverse mogelijkheden 
+* Twee externe interruptlijnen. Naast deze externe interruptlijnen zijn er nog tal van interne interruptbronnen. Zo zijn er interne interrupts voorzien voor het serieel kanaal en de twee timers. 
+* 128 Bytes interne RAM waarvan een aantal adressen bitadresseerbaar zijn. 
+* 4 KB interne ROM. Naast deze versie zijn er tevens 8051-varianten die gebruik maken van EPROM en EEPROM. 
+* Uitbreidbaar met 64 KB datageheugen en 64 KB programmageheugen.
+
+
+
+### Vergelijking met C8051F120
+
+Aangezien de 8051 een beetje oud is zijn er wat uitbreidingen voorzien op de C8051F120.
+
+* Een 8051-compatibele CPU 
+* 128 KB onchip FLASH programmageheugen 
+* 8448 bytes (8 KB + 256 bytes) onchip datageheugen 
+* 20 interruptbronnen • Een 24,5 MHz interne oscillator 
+* Wat analoge onchip periferie waaronder: 
+  * Een 10/12-bit en een 8-bit ADC13 
+  * 2 x 12-bit DAC’s14
+  *  … 
+* Onderstaande Digitale I/O 
+  * 2 full duplex seriële kanalen met instelbare baudrate 
+  * 5 Timer/counters. De werking van timers 0 en 1 is volledig analoog aan de werking van timers 0 en 1 van de 8051. 
+  * 64 digitale GPIO-lijnen verdeeld over acht 8-bitpoorten (P0, P1, P2,…, P7) 
+  * … 
+* …
+
+## Registers
+
+| Symbool        | Naam                         | Functie                                                      |
+| -------------- | ---------------------------- | ------------------------------------------------------------ |
+| ACC            | Accumulator                  | Hier worden meestal tussenresultaten van rekenkundige operaties ingestoken |
+| P              | B-register                   | Hulpregister bij vermenigvuldigen en delen                   |
+| PSW            | Program status word          | Statusregister van de ALU                                    |
+| SP             | Stack pointer                | Wijst naar de laatst ingevulde positie van de stack(preincrement). Bij het opstarten of bij een reset is de default waarde van SP 07H. |
+| DPTR           | Data Pointer                 | Dit 16-bit register wordt gebruikt voor het indirect adresseren van het extern datageheugen. |
+| P0, P1, P2, P3 | I/O registers                | Deze registers worden gebruikt voor het inlezen en het wegschrijven van data naar een GPIO-poort of pin |
+| IE             | Interrupt enable control     | Wordt gebruikt om in te stellen welke interrupts het programma kunnen onderbreken. |
+| IP             | Interrupt priority control   | Bij het gelijktijdig optreden van twee interrupts zal dit register worden geraadpleegd om te bekijken welke van de twee interrupts het meest prioritair is |
+| TMOD           | Timer mode register          | Voor het instellen van de werkingsmodi van de 2 timers/counters. |
+| TCON           | Timer controle register      | Statusregister van de twee timers/counters. Wanneer een timer overloopt zal in dit register een vlaggetje gezet worden om deze gebeurtenis vast te leggen. |
+| TH0/TL0        | Timer registers voor timer 0 | Dit zijn de telregisters van timer/counter0. Er wordt geteld op het ritme van de klok (timer) of op het ritme van een extern signaal (counter) |
+| TH1/TL1        | Timer registers voor timer 1 | Dit zijn de telregisters van timer/counter1. Er wordt geteld op het ritme van de klok (timer) of op het ritme van een extern signaal (counter) |
+
+
+
+### Layout van PSW
+
+(van links naar rechts, groot naar klein)
+
+| Bit   | Afkorting | Nut                                                          |
+| ----- | --------- | ------------------------------------------------------------ |
+| PSW.7 | CY        | Carry-flag                                                   |
+| PSW.6 | AC        | Auxiliary carry. Dit vlaggetje wordt gezet wanneer er bij een optelling een overdracht plaatsvindt na de eerste vier bits. |
+| PSW.5 | F0        | De functie van dit vlaggetje kan door de gebruiker zelf worden ingevuld. |
+| PSW.4 | RS1       | M.b.v. deze bits kan de programmeur instellen welke registerbank hij wil gebruiken. Er zijn in totaal 32 GPR-registers verdeeld over vier registerbanken van telkens acht registers. Op een gegeven moment kan er slechts één registerbank worden benut. Wanneer er dus nood is aan meer dan acht registers kunnen deze bits gemanipuleerd worden om het aantal registers uit breiden naar 16, 24 of zelfs 32. |
+| PSW.3 | RS2       | Samen met de vorige. Deze twee bits samen bepalen welke registerbank je gebruikt: 00 voor bank 0, 01 voor bank 1, ... In elke bank kan je gebruikmaken van R0, R1, R2 enzo, maar ze komen dan overeen met andere registers. |
+| PSW.2 | OV        | Overflow flag                                                |
+| PSW.1 | /         | is gereserveerd                                              |
+| PSW.0 | P         | pariteit-vlag. Deze vlag wordt gezet wanneer de accumulator een oneven aantal enen bevat. Deze vlag is nul bij een even aantal enen. |
+
+
+
+
+
+## Oefeningen
+
+### Reeks 4 oefening 1
+
+Een klok maken op de 7seg display met minuten en seconden. Deze oefening maakt gebruik van interrupts.
+
+```assembly
+$include (c8051f120.inc)
+
+cseg at 0000H
+
+jmp main
+
+cseg at 000BH ; interrupt vector timer 0
+
+jmp ISR_TR0
+
+cseg at 0044H
+
+main:clr EA
+	 mov WDTCN,#0DEH
+	 mov WDTCN,#0ADH
+	 setb EA
+	 setb ET0
+
+	 mov SFRPAGE,#0Fh
+	 mov XBR2,#40H
+	 mov P0MDOUT,#0FFH
+	 mov P1MDOUT,#0FFH
+	 mov P2MDOUT,#0FFH
+	 mov P4MDOUT,#0FFH
+
+	 mov SFRPAGE,#00H
+	 mov TMOD,#01H ; timer 0 mode 1
+	 mov CKCON,#02H ; /48
+	 mov TH0,#06H	 	
+	 mov TL0,#0C6h  ; 06C6=>FFFF (~1s)
+	 setb TR0
+
+	 mov 20H,#3FH
+	 mov 21H,#06H
+	 mov 22H,#5BH
+	 mov 23H,#4FH
+	 mov 24H,#66H
+	 mov 25H,#6Dh
+	 mov 26H,#7Dh
+	 mov 27H,#07H
+	 mov 28H,#7FH
+	 mov 29H,#6FH
+
+	 mov R2,#00d
+	 mov R3,#00d
+	 mov R4,#00d
+	 mov R5,#00d
+
+schrijf: 
+		 mov A,#20H	  ; Eenheden A=20H
+         add A,R2  	  ; A=A+R2 => [20H,29H]
+         mov R0,A
+         mov P0,@R0 ; P0=*R0 => P0=*(A+R2) => P0=tab[R2]
+
+         mov A,#20H	  ; Tientallen A=20H
+         add A,R3  	  ; A=A+R3 => [20H,29H]
+         mov R0,A
+         mov P1,@R0 ; P1=*R0 => P1=*(A+R3) => P1=tab[R3]
+
+         mov A,#20H	  ; Eenheden minunten A=20H
+         add A,R4  	  ; A=A+R4 => [20H,29H]
+         mov R0,A
+         mov P2,@R0 ; P2=*R0 => P2=*(A+R4) => P2=tab[R4]
+
+         mov A,#20H	  ; Tientallen minuten A=20H
+         add A,R5  	  ; A=A+R5 => [20H,29H]
+         mov R0,A
+         mov SFRPAGE,#0FH
+         mov P4,@R0 ; P4=*R0 => P4=*(A+R5) => P4=tab[R5]
+         mov SFRPAGE,#00H
+         jmp schrijf
+
+ISR_TR0: 
+	   clr tf0
+	   mov TH0,#06H	 	
+	   mov TL0,#0C6h  ; 06C6=>FFFF (~1s)
+	   inc R2
+	   cjne R2,#10d,einde
+	   mov R2,#00d
+	   inc R3
+	   cjne R3,#06d,einde
+	   mov R3,#00d
+	   inc R4
+	   cjne R4,#10d, einde
+	   mov R4,#00D
+	   inc R5
+	   cjne R5,#06d,einde
+	   mov R5,#00d
+einde: reti 
+```
+
