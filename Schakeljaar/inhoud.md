@@ -20,6 +20,8 @@ Als je deze samenvattingen gebruikt moet je [King Marti](https://open.spotify.co
 
 [Gedistribueerde Gegevensverwerking](gdv.html)
 
+[Programmeren in C/C++](cpp.html)
+
 
 
 enjoy :wink:

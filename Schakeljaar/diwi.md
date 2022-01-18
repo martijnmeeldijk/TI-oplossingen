@@ -526,6 +526,10 @@ hammingafstand
 
 private key encryptie
 
+$\mathbb{Z}_n$ is een veld $\xleftrightarrow{}$ $n$ is priem
+
+
+
 
 
 # Examen
@@ -542,7 +546,11 @@ $a.x \stackrel{n}{=} b$
 * Zoek de ggd(a, n), als je b daar niet door kan delen houdt het verhaal op en zijn er geen oplossingen
 * Je hebt nu al de ggd(a, n) gezeocht, nu kan je de bezoutcoefficienten gebruiken om de inverse van a te berekenen en beide leden ermee te vermenigvuldigen. Bada bing bada boom opgelost.
 
+## Stelsels van lineaire congruenties oplossen
 
+<img src="img/image-20211230110054684.png" alt="image-20211230110054684" style="zoom:33%;" />
+
+<img src="img/image-20211230110114139.png" alt="image-20211230110114139" style="zoom:33%;" />
 
 ## Diofantische vergelijkingen oplossen
 
