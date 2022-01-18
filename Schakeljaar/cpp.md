@@ -1,6 +1,411 @@
+# C
+
+Een kleine compilatie van dingen die nuttig vind om nog eens na te kijken.
+
+## Lezen/schrijven
+
+Lezen/schrijven van één character:
+
+```c
+#include <stdio.h>
+#include <ctype.h>
+int main() {
+  int c;
+  while ((c = getchar()) != '\n')
+  	putchar(toupper(c));
+  return 0;
+}
+```
+
+
+
+## Bewerkingen
+
+`x*x*x` is NIET gelijk aan `pow(x,3)`. Want pow gebruikt een reeksontwikkeling en is bedoeld voor reële getallen.
+
+Voor de rest heb ik hier niks over te zeggen
+
+
+
+## Arrays
+
+Declaratie:
+
+```c
+int getallen[8];
+//of
+const int MAX = 8;
+int getallen[MAX];
+//of
+int n = 8; //of n inlezen...
+int getallen[n];
+```
+
+Kleine sidenote. Arrays zijn standaard altijd gevuld met rommel. Als je zeker wilt zijn dat alle getallen in je array 0 zijn, moet je hem initialiseren met nullen:
+
+```c
+int array[1024] = {0}; // wordt dus {0, 0, 0, 0, ...}
+```
+
+Laatste ding. Pas op, je kan de grootte van een array niet at runtime kiezen. De compiler moet weten hoeveel geheugen hij moet vrijmaken. Gebruik dus altijd een constante om de grootte van je array te bepalen.
+
+
+
+## Pointers
+
+Enkele regels om te onthouden
+
+* Nullpointer niet derefereren
+* Void pointer kan je niet derefereren (`void * v`)
+
+
+
+Een paar dingen die fijn zijn om te weten:
+
+```c
+int *x[5]; //array van pointers naar int
+int (*y)[10]; //pointer naar array van int
+
+
+int *t = {1,2,3}; //FOUT
+int t[] = {1,2,3} //OK
+
+```
+
+
+
+### Pointer naar const
+
+```c
+int n = 3;
+int *p = &n;
+const int *q = &n; // lees van achter naar voren: * int const -> een pointer naar een int die const is
+
+(*p)++;
+(*q)++; // mag niet, const int
+*p = *q; // is oke, want je kopieert de waarde van q naar p
+*q = *p; // mag niet, je kan een const int niet aanpassen
+p = q; // mag niet, p wijst naar een gewone int, maar q naar een const int
+			 // door hem in p te steken kunnen we niet garanderen dat die int niet aangepast wordt = error
+q = p; // we laten onze pointer naar een const int nu wijzen naar een gewone int
+			 // hierdoor kunnen we die int nu wel niet meer aanpassen via q
+```
+
+
+
+### Pointers en arrays
+
+```c
+int t[5] = {0};
+int *p, *q;
+
+p = &t[3]; // zelfde als p = t+3;
+q = p-2; 
+t = p+1; // mag niet, want t is een array pointer (constante pointer) en die kan je niet verplaasen
+p++;
+q--;
+t++; // mag niet
+
+```
+
+
+
+### Pointers naar pointers
+
+```c
+const int MAX = 5;
+int *p; const int *pc; const int **ppc;
+
+p = pc; // mag niet
+pc = p; // oke
+p = &MAX; // mag niet
+(*p)++; // sure
+pc = &MAX; // oke
+ppc = &p; // ik denk dat dit oke is, maar het mag niet volgens Helga (oke er komt gewoon een warning)
+*ppc = &MAX; // oke
+
+```
+
+
+
+```c
+int n = 7, m = 5;
+const int *p = &n;
+int * const q = &n;
+const int * const l = &n;
+
+(*p)++; // mag niet
+p = &m; // oke
+(*q)++; // oke
+q = &m; // mag niet
+(*l)++; // mag niet
+l = &m; // mag niet
+
+```
+
+
+
+### Functiepointers
+
+Voorbeeld
+
+```c
+double som(double x, double y) { return x + y; }
+double product(double x, double y) { return x * y;}
+
+int main() {
+  double (*pfun)(double, double) = &som; 
+  printf("som = %f\n", pfun(5,10));
+  pfun = product; //& mag weggelaten worden!
+  printf("product = %f\n", pfun(5,10));
+  pfun = fmin; //uit math.h
+  printf("min = %f\n", pfun(5,10));
+  return 0;
+}
+```
+
+Array van functiepointers
+
+```c
+double som(double x, double y) { return x + y; }
+double product(double x, double y) { return x * y;}
+
+int main() {
+	double (*t[])(double, double) = {som,product,fmin};
+	int i;
+	for (i=0 ; i<3 ; i++)
+		printf("result = %f\n", t[i](10,5));
+	return 0;
+}
+```
+
+
+
+Functiepointer als parameter
+
+```c
+void change(double(*fp)(double), double *t, int n) { // voert gegeven functie uit op alle elementen van de array
+	int i=0;
+	for (i=0 ; i<n ; i++)
+		t[i] = fp(t[i]);
+}
+
+int main() {
+	double tab[] = {1.0,2.0,4.0,8.0};
+	change(sqrt,tab,4);
+}
+```
+
+
+
+## C-strings
+
+### scanf
+
+```c
+char *s1 = "str1"; char s2[80]; char s3[] = "test";
+scanf("%s",s1); // crash
+scanf("%s", s2); //max. 1 woord inlezen
+scanf("%s", s3); //max. 1 woord inlezen
+scanf("%79s", s2); //max. 1 woord (79 karakters) inlezen
+scanf("%4s",s3);
+```
+
+Veel mensen op stackoverflow zeggen dat scanf suckt.
+
+### fgets
+
+```c
+char *s1;
+char s2[80]; char s3[] = "string";
+gets(s1); // mag niet
+gets(s2); gets(s3); //telkens (rest van) 1 lijn inlezen
+fgets(s2,80,stdin); //max. 79 karakters inlezen
+fgets(s3,7,stdin); 
+```
+
+gets suckt ook, gebruik fgets
+
+Input buffer leegmaken nadat je fgets hebt gebruikt (en niet alles eruit hebt gehaald):
+
+```c
+while ((getchar()) != '\n');
+```
+
+
+
+### Stringfuncties
+
+ahah deze krijg je op het examen dus ik ge hier mooi niet schrijven
+
+
+
+## Argc en argv
+
+```c
+#include <stdio.h>
+int main(int argc, char** argv) {
+  // argc: het aantal argumenten (vanop command line), naam van het programma wordt meegeteld
+  // argv: lijst van de argumenten, naam als eerste
+  if (argc == 1)
+  	printf("geen extra strings meegegeven");
+  else {
+    for (int i=1 ; i<argc ; i++)
+      printf("Hallo %s\n", argv[i]);
+  }
+  return 0;
+}
+```
+
+
+
+## Structs
+
+Gebruik deze syntax:
+
+```c
+typedef struct {
+	double x,y;
+} punt;
+
+punt p2 = {3.5,-2.9};
+punt p3 = {7.2};
+punt t1[5] = {{1.2,-1.2},{5.1,4.6}};
+punt t2[3] = {0}; // alles 0
+p2 = {6.2,3.8}; // mag niet
+```
+
+
+
+## Malloc
+
+```c
+punt* lees_punt() {
+  punt *p = (punt *) malloc(sizeof(punt));
+  printf("x-coordinaat: ");
+  scanf("%lf",&p->x);
+  printf("y-coordinaat: ");
+  scanf("%lf",&p->y);
+  return p;
+}
+
+// oproepen
+punt *p = lees_punt(); … ; free(p); //daarna ook geheugen vrijmaken
+```
+
+`calloc` doet hetzelfde als `malloc`, maar zet het geheugen op 0;
+
+Realloc:
+
+```c
+void* realloc(void *toegewezen_pointer,
+size_t totaal_aantal_bytes) // hergebruikt geheugen
+```
+
+
+
+## Linked lists
+
+### Definitie
+
+```c
+typedef struct knoop knoop;
+struct knoop {
+  int getal;
+  knoop *next;
+};
+```
+
+### Overlopen
+
+```c
+void print_lijst(const knoop *lst) {
+  while (lst) {
+    printf("%d\n", lst->getal);
+    lst = lst->next;
+  }
+}
+```
+
+### Opbouwen
+
+```c
+knoop* maak_lijst() {
+  knoop *l = 0;
+  int g; scanf("%d",&g);
+  if (g) {
+    l = (knoop*) malloc(sizeof(knoop));
+    knoop *h = l; h->getal = g;
+    scanf("%d",&g);
+    while (g) {
+      h->next = malloc(sizeof(knoop));
+      h = h->next; h->getal = g; scanf("%d",&g);
+    }
+    h->next = 0;
+  }
+  return l;
+}
+```
+
+### Element verwijderen
+
+```c
+void verwijder_element(knoop **pl, int g) {
+  if (*pl) {
+    if ((*pl)->getal == g) {
+    	knoop *m = *pl; *pl = (*pl)->next; free(m);
+    }
+    else {
+      knoop *h = *pl;
+      while (h->next && h->next->getal != g)
+      h = h->next;
+      if (h->next) {
+        knoop *m = h->next;
+        h->next = m->next; free(m);
+      }
+    }
+  }
+}
+
+// lijst vernietigen
+void vernietig_lijst(knoop **pl) {
+  while (*pl) {
+    knoop *h = *pl;
+    *pl = h->next;
+    free(h);
+  }
+}
+```
+
+
+
+### Voor -en nadelen
+
+* Voordelen
+  * Vooraan of tussenin (achter een bestaande knoop) een knoop toevoegen kan snel. 
+  * Achteraan een knoop toevoegen kan ook snel als men over een wijzer beschikt naar de laatste knoop. 
+  * Een knoop verwijderen lukt snel als men naast de opvolger ook de voorganger van de knoop kent.
+* Nadelen
+  * De i-de knoop kan men niet direct bekomen. Eerst moeten alle voorgangers overlopen worden. 
+    * Indexeren ([ ]) is een dure operatie 
+  * Een gelinkte lijst verbruikt meestal iets meer geheugen dan een tabel doordat elke knoop pointers moet bijhouden. Bovendien zorgt de verspreiding in het geheugen voor performantieverlies. 
+
+## Bitoperatoren
+
+| Operator | Beschrijving         |
+| -------- | -------------------- |
+| a & b    | bitwise AND          |
+| a \| b   | bitwise OR           |
+| a ^ b    | bitwise XOR          |
+| ~a       | bitwise NOT          |
+| a >> i   | shift right (i bits) |
+| a << i   | shift left (i bits)  |
+
+
+
 # C++
 
-Dingen die ik nuttig vind om even na te kijken.
+
 
 
 
