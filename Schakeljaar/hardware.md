@@ -1377,6 +1377,17 @@ Bij course-grained multithreading kunnen we wachten totdat de pipeline vrij is a
 
 **Bij hyperthreading op de i7 (simultane multithreading) worden bronnen gedeeld op drie verschillende manieren. Dewelke en wat is voordeel/nadeel ervan?**
 
+* Partitioned resource sharing
+  * De resources strikt verdelen tussen twee threads
+  * Gemakkelijk te implementeren
+  * Geen overhead
+  * Houdt de threads uit elkaars haar
+  * Als een thread resources niet gebruikt die een andere thread zou kunnen gebruiken, mag hij dat niet. Zo wordt er wel wat verspild
+* Full resource sharing
+  * Elke thread kan de resources verkrijgen die hij nodig heeft
+  * Lost het probleem op 
+* Threshold sharing
+
 
 
 # Labo's

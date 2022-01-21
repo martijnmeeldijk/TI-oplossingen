@@ -270,7 +270,7 @@ typedef struct {
 
 punt p2 = {3.5,-2.9};
 punt p3 = {7.2};
-punt t1[5] = {{1.2,-1.2},{5.1,4.6}};
+punt t1[5] = //
 punt t2[3] = {0}; // alles 0
 p2 = {6.2,3.8}; // mag niet
 ```
