@@ -32,6 +32,10 @@ Oke ik ben dom, hij heeft het gewoon vertaald. Ik dacht dat hij het engelse woor
 
 Het *data path* bestaat typisch uit de **registers**, de **ALU** en meerdere bussen die de onderdelen verbinden. De registers zijn verbonden met 2 **ALU input registers** (A en B). Daar wordt de input voor de ALU bijgehouden terwijl de ALU nog met iets anders bezig is. Nadat er een bewerking is uitgevoerd wordt het resultaat opgeslagen in het **ALU output register**. Dit resultaat kan dan weer opgeslagen worden in één van de registers. 
 
+> Een datapad is een hoopje registers dat via een aantal inputbussen verbonden is met één of meerdere rekeneenheden. Met een bus die van de rekeneenheid terugkeert naar dezelfde registers om het resultaat te kunnen wegschrijven.
+>
+> - Wim
+
 **Op welke manier kunnen er instructies op uitgevoerd worden?**
 
 Volgens de **fetch-decode-execute** cyclus:
@@ -158,13 +162,17 @@ Een simpel voorbeeld uit het boek. Als je bij deze figuur kijkt, is (c) het resu
 
 We willen in een pc snel en groot geheugen, dat is in de realiteit niet mogelijk. Je moet kiezen, ofwel snel, ofwel groot. De oplossing is klein, snel geheugen combineren met groot, traag geheugen. 
 
-**Het localiteitsprincipe**
+**Ruimtelijke localiteit**
 
 Als een programma een stuk geheugen opvraagt is de kans groot het volgende stuk geheugen dat hij nodig heeft daarbij in de buurt ligt. Als er dus iets wordt opgevraagd uit het grote, trage geheugen gaan we ook al een aantal aanliggende geheugenvelden in de cache stoppen, want de kans is groot dat we ze later toch nodig hebben.
 
+**Temporale localiteit**
+
+Als je een bepaald stuk geheugen recent hebt gebruikt, is de kans groot dat je het in de toekomst opnieuw nodig hebt.
 
 
-> **Op basis van welk principe dragen cache geheugens bij tot prestatieverbeteringen? Geef enkele voorbeelden (minstens drie) om dit te verduidelijken.**
+
+**Op basis van welk principe dragen cache geheugens bij tot prestatieverbeteringen? Geef enkele voorbeelden (minstens drie) om dit te verduidelijken.**
 
 1. We printen de letters van een string uit. De letters staan achtereenvolgend in het geheugen. Wanneer een letter ophalen, zetten we een bepaald aantal volgende letters in de cache. Aangezien uitlezen uit het cachegeheugen sneller is, loopt ons programma nu sneller.
 2. We hebben een programma dat manipulaties uitvoert op een matrix. In plaats van elke keer opnieuw een getalletje uit het geheugen uit te lezen, kunnen we beter al een deel (of de gehele) matrix in de cache stoppen. De kans is groot dat we niet één getal uit de matrix nodig hebben.
@@ -172,7 +180,7 @@ Als een programma een stuk geheugen opvraagt is de kans groot het volgende stuk 
 
 
 
-> **Welke mogelijkheden zijn er om cache-geheugens te voorzien en welk verband is er met de Harvard architectuur?**
+**Welke mogelijkheden zijn er om cache-geheugens te voorzien en welk verband is er met de Harvard architectuur?**
 
 * Unified cache: instructies en data gebruiken dezelfde cache
 * Split cache: instructies en data hebben ieder hun eigen cache = **Harvard Architectuur**
@@ -212,13 +220,13 @@ Een schijf wordt opgedeeld in blokjes data, sectors genaamd. Deze zijn typisch 5
 
 
 
-> **Wat is het voordeel om sporen onder te verdelen in zones?**
+**Wat is het voordeel om sporen onder te verdelen in zones?**
 
 Vroeger had je een bepaald aantal sectoren over de omtrek van de schijf. Naarmate je dichter naar het midden van de schijf ging, werden die natuurlijk veel denser. Dat is niet handig, want ge gebruikt de schijf niet optimaal. Door de schijf te verdelen in zones, en als je van binnen naar buiten gaat op de schijf, het aantal sectoren per zone te laten toenemen, maak je beter gebruik van de schijf om er zo veel mogelijk foto's van je lelijke kinderen op te kunnen krijgen.
 
 
 
-> **Wat zijn de twee belangrijkste eigenschappen die bijdragen tot de performantie van een harde schijf? (pagina 89) Bespreek**
+**Wat zijn de twee belangrijkste eigenschappen die bijdragen tot de performantie van een harde schijf? (pagina 89) Bespreek**
 
 * Seek: de tijd die het duurt om de arm naar de juiste positie te verplaatsen (5-10 ms)
 * Rotational latency: de tijd dat het duurt om de schijf naar de juiste positie te draaien (3-6 ms)
@@ -327,7 +335,7 @@ Alhoewel RAID leuk is, heb je wel meer overhead, dus minder effectief bruikbare 
 
 **Wat wordt er bij RAID-4 bedoeld met de schrijfstraf?** 
 
-Elke kleine update heeft 2 reads en 2 writes nodig. De oude data en oude pariteitsdata lezen, waaruit met de nieuwe data de nieuwe pariteitsdata berekend kan worden. (dit is een kleine optimalisatie op elke keer alle schijven lezen voor de pariteit, maar nog steeds best traag). //TODO dit effe fact-checken
+Elke kleine update heeft 2 reads en 2 writes nodig. De oude user data en oude pariteitsdata lezen, waaruit met de nieuwe data de nieuwe pariteitsdata berekend kan worden. (dit is een kleine optimalisatie op elke keer alle schijven lezen voor de pariteit, maar nog steeds best traag).
 
 
 
@@ -540,9 +548,13 @@ Dit zijn de driehoekjes rechts onder. Ze komen logisch overeen met een soort sch
 
 
 
-## Vraag 19
+## Vraag 19 (wordt zeker gesteld op examen)
 
 > Geef drie mogelijke indelingen voor een geheugenchip. Wat zijn de voor- en nadelen van elk dergelijk ontwerp? (pagina 178 – 179)
+
+> Vraag 19 heb ik qua formulering aangepast omdat iemand mij in de feedback-sectie heeft laten weten dat dit niet zo zinvol is om deze waarden van buiten te leren. Dat is inderdaad niet de bedoeling en de vraag werd dus geherformuleerd. - Wim
+
+Je moet dus de getallen en lettertjes niet vanbuiten kennen. Wel kunnen uitleggen hoe elk ontwerp werkt. Zie hieronder voor een oplossing van Wim.
 
 **Volledig adres**
 
@@ -554,15 +566,21 @@ Het volledige adres wordt op de A-lijnen gegeven. Dit schaalt moeilijk, want je 
 
 <img src="img/image-20220102183501096.png" alt="image-20220102183501096" style="zoom:50%;" />
 
-De chip neemt een rijadres, dan wordt de RAS (row access strobe) geactiveerd. Dan wordt een kolomadres aan de chip gegeven. Vervolgens wordt de CAS (column access strobe) geactiveerd en wordt de bit op die plek geoutput. Dit is een beetje traag omdat we telkens twee operaties moeten doen om één ding uit het geheugen te lezen. Om dit te versnellen kunnen we eerst een rijnummer ingeven en vervolgens meerdere kolomnummers om een rij aan bits uit te lezen.
+De chip neemt een rijadres, dan wordt de RAS (row access strobe) geactiveerd. Dan wordt een kolomadres aan de chip gegeven. Vervolgens wordt de CAS (column access strobe) geactiveerd en wordt de bit op die plek geoutput. Dit is een beetje traag omdat we telkens twee operaties moeten doen om één ding uit het geheugen te lezen. Om dit te versnellen kunnen we eerst een rijnummer ingeven en vervolgens meerdere kolomnummers om een rij aan bits uit te lezen. (burst mode)
+
+**Memory banks**
+
+We splitsen ons geheugen op in geheugenbanks. We doen hetzelfde als de vorige manier, maar we voegen extra controlelijnen om aan te geven welke bank we willen aanspreken. Zo kunnen we zelfs parallelle aanvragen mogelijk maken, zolang ze verschillende geheugenbanks aanspreken.
 
 
 
-//TODO derde ding
-
-wordt zeker gesteld op examen (oplossing in aankondiging?)
 
 
+### Antwoord van Wim himself
+
+In het begin werd het volledige adres ineens aangeboden aan de geheugenchip waarna men is overgeschakeld naar het opgeven van een rij- en kolomadres om het aantal pinnen te beperken. Hiervoor moet er dan wel twee controlesignalen worden toegevoegd, i.e. RAS en CAS, om aan te geven of de adreslijnen het rijadres dan wel het kolomadres bevatten. Hier wordt nuttig gebruik van gemaakt bij burstmode om een rijadres aan te bieden gevolgd door meerdere kolomadressen. Dus zolang er niet gewisseld wordt van rij blijft men kolomadressen aanbieden en bijgevolg gaat men dus de adresfase in tijd halveren. 
+
+Een laatste indeling is dezelfde als de tweede met uitzondering dat er nu nog meer extra controlelijnen worden toegevoegd om de geheugenbank aan te duiden waarop de vraag aan het geheugen betrekking heeft. Hierdoor zijn parallelle aanvragen mogelijk zolang ze maar betrekking hebben op verschillende geheugenbanken. Dus van een 1-dimensioneel ontwerp is men geëvolueerd naar een driedimensioneel ontwerp.
 
 ## Vraag 20
 
@@ -578,7 +596,7 @@ Geheugens waarvan geschreven en gelezen kan worden. Typisch wordt de data niet b
 
 **Random access memory**
 
-Met random access betekent dat elke geheugenlocatie direct bereikt kan worden. Dit is niet zo een goeie naam, want alle geheugenchips hebben deze eigenschap. //TODO wat is een betere invulling voor de afkorting?
+Met random access wordt bedoeld dat elke geheugenlocatie direct bereikt kan worden. Dit is niet zo een goeie naam, want alle geheugenchips hebben deze eigenschap. Een beter invulling voor de afkorting zou **Read And Modify** zijn.
 
 
 
@@ -987,15 +1005,19 @@ Alle resultaten zijn opgeslagen en de resultaten van vorige geheugenoperaties zi
 
 **Hoe wordt het adres van de volgende micro-instructie bepaald?**
 
-Microinstructies worden niet in de volgorde dat ze in de control store staan uitgevoerd. De berekening van de volgende microinstructie begint nadat MIR ingeladen en stabiel is
+In het beste geval vind je het adres van de volgende miscroinstructie in het NEXT_ADDRESS veld van de huidige microinstructie.
+
+Microinstructies worden niet in de volgorde dat ze in de control store staan uitgevoerd. De berekening van de volgende microinstructie begint nadat MIR ingeladen en stabiel is.
 
 * NEXT_ADDRESS word gekopieerd naar MPC, tegelijk wordt het JAM veld geïnspecteerd (gebeurt in 'High-bit' op de figuur)
-  * JAMN = 1: de N flip-flop word ge-ORed met de hoogste bit van MPC
-  * JAMZ = 1: de Z flip-flop word ge-ORed met de hoogste bit van MPC
-  * Beide aan: Dan worden N en Z ge-ORed met de hoogste bit van MPC
+  * JAMN = 1: de N flip-flop word ge-ORed in de hoogste bit van MPC 
+    * De n flag geeft aan dat het resultaat van de alu negatief was
+  * JAMZ = 1: de Z (zero) flip-flop word ge-ORed in de hoogste bit van MPC
+    * De z flag geeft aan dat het resultaat van de alu nul was
+  * Beide aan: Dan worden N en Z ge-ORed in de hoogste bit van MPC
   * Beide uit: er gebeurt niets extra
 * (N en Z zijn de ALU flags, we hebben ze nodig omdat we op dit punt niet meer weten of de inhoud van de ALU correct is)
-* //TODO dit is nog niet alles ik ben effe gek aan het worden deze vraag is veel te uitgebreid
+* Bij de laatste microinstructie gaat het NEXT_ADDRESS veld bestaan uit allemaal nullen, met JMPC op 1. Dit geeft aan dat MBR naar MPC gekopieerd moet worden.
 
 **Waarom is de MPC een virtueel register?**
 
@@ -1027,7 +1049,7 @@ Het aantal microinstructies dat moet uitgevoerd worden per ISA instructie.
    * Bij elke set microinstructies die eindigt door te branchen naar Main1, kunnen we Main1 achteraan deze sequentie steken in plaats van aan het begin van de volgende instructie.
 2. Three-Bus Architectuur
    * We geven de ALU twee volledige inputbussen, een A- en B-bus, nu kunnen we elk register met elk ander register optellen in één cyclus
-3. Instruction Fetch Unit
+3. Instruction Fetch Unit (een gespecialiseerde unit om instructies uit het geheugen te halen)
    * Als een instructie extra velden nodig heeft (operanden), moeten deze expliciet, byte per byte gefetched worden. Dit houdt de ALU ten minste één cyclus per byte bezig (PC incrementeren en de resulterende index of offset berekenen). 
    * Door een instruction fetch unit (IFU) in te voeren die deze taken overneemt van de ALU kunnen we onze performantie aanzienlijk verhogen. Onze IFU kan dan zelfstandig PC incrementeren en bytes van de bytestream halen voordat ze nodig zijn. 
 
@@ -1043,8 +1065,19 @@ Het aantal microinstructies dat moet uitgevoerd worden per ISA instructie.
   * Schuift vanzelf 1 byte op wanneer MBR1 wordt uitgelezen
   * Schuift vanzelf 2 bytes op wanneer MBR2 wordt uitgelezen
 * **MBR1**: (memory buffer register): Bevat telkens de oudste byte uit het shift register
-* **MBR2**: bevat telkens de oudste twee bytes uit het shift register
-* 
+* **MBR2**: bevat telkens de oudste twee bytes uit het shift register (worden gekruist omdat het een big endian systeem is)
+* **IMAR**: beschikt over een eigen incrementer om telkens het volgende woord uit te lezen. Hier zit dus het adres van het woord dat ingelezen zal worden en in het shift register geplaatst zal worden.
+* **PC**: programmateller
+
+**Voorzie voor de interne buffer een FSM.**
+
+<img src="img/image-20220121173216209.png" alt="image-20220121173216209" style="zoom:50%;" />
+
+Mini uitleg. De nummertjes zijn hoeveel bytes zich in shift register bevinden. Deze is 6 bytes groot. Als we een woord ophalen komen er 4 bytes bij. Stoppen we een byte in MBR1, dan gaat er een byte weg. Stoppen we twee bytes in MBR2, gaan er twee bytes weg. Dit diagram toont simpelweg alle mogelijkheden.
+
+**Waarom wordt de C-bus door de IFU constant in de gaten gehouden?**
+
+We moeten weten wanneer de programmateller (PC) aangepast wordt. Dit gebeurt bij een methode oproepen, jump of return, etc. Als dit gebeurt is alles in het shift register ongeldig en moeten we snel nieuwe datawaarden inladen. Dit doen we door de nieuwe waarde van PC te kopieren naar IMAR.
 
 
 
@@ -1054,13 +1087,62 @@ Het aantal microinstructies dat moet uitgevoerd worden per ISA instructie.
 
 <img src="img/image-20220106230633512.png" alt="image-20220106230633512" style="zoom:50%;" />
 
+**Welke drie zaken moet men toevoegen om van dit ontwerp naar een gepipelinede versie met vier stages te evolueren en waarom?**
 
+3 registers:
+
+* A latch register
+* B latch register
+* C latch register
+
+Deze registers splitsen het datapad in 3 stukken. We zetten De A en B registers vlak voor de ALU, op de A en B bus. Het C register plaatsten we na de shifter. Op deze manier kan er bijvoorbeeld al een nieuwe waarde op de A bus gezet worden terwijl de ALU nog bezig is met het vorige commando. Alhoewel we nu drie klokcycli nodig hebben om het datapad te doorlopen, is door het opsplitsen de delay per deel kleiner, waardoor we hogere kloksnelheden kunnen hanteren. Daarenboven kunnen we danzij deze opsplitsing ook instructies gaan pipelinen.
+
+
+
+**Welke vier fasen kent de MIC-3? **
+
+* Instructie ophalen
+* Operanden voorzien (in A en B dus)
+* ALU & shifter operations
+* Writeback to the registers
+
+Deze architectuur is gevoelig aan RAW (read after write) dependence. Dus als een microstap een register wilt lezen dat nog niet geschreven is.
 
 ## Vraag 52
 
 > Gegeven de microarchitectuur van de MIC-4 Bespreek de werking van iedere fase van deze microarchitectuur. Leg daarnaast ook uit hoe een ISA-level instructie opgesplitst wordt in micro-operaties en welke problemen hierbij kunnen optreden. Wat is het verschil tussen een micro-instructie en een microoperatie? (pagina 300-303)
 
+<img src="img/image-20220121180143787.png" alt="image-20220121180143787" style="zoom:50%;" />
 
+1. Instructies en operanden worden opgehaald en doorgestuurd naar de decoder
+
+2. Decodeert de instructies
+
+   1. Bevat een ROM array, geïndexeerd volgens de opcode van de intructies. Deze bevat de lengte van de instructie (om een verschil te kunnen maken tussen operanden en opcodes) en de index van de instructie in de volgende stap.
+
+3. Hier bevinden de microoperaties zich, in een stukje ROM-geheugen en RAM-geheugen voor het implementeren van een queue
+
+   1. Meer uitleg hieronder
+   
+4. MIR1: om de source registers in de latch registers A en B te stoppen.
+
+5. MIR2: opdracht geven aan de ALU om één of andere berekening uit te voeren
+
+6. MIR3: doelregisters aanduiden (write back verzekeren)
+
+7. MIR4: start eventuele geheugenoperaties
+
+   
+
+**Leg daarnaast ook uit hoe een ISA-level instructie opgesplitst wordt in micro-operaties en welke problemen hierbij kunnen optreden.**
+
+Onze decoding unit heeft een lijst van de opcodes. Wanneer hij een instructie krijgt, zal hij naar de queueing unit de index sturen van de eerste micro-operatie. Hij heeft een lijst met microoperaties en zal vanaf het startadres micro-operaties beginnen queuen totdat hij aan een operatie komt waar de final bit op 1 staat.
+
+Problemen doen zich voor als er een microbranch voorkomt. Dan zal de pipeline niet verder kunnen gaan.
+
+**Wat is het verschil tussen een micro-instructie en een micro-operatie?**
+
+Iedere microinstructie duidt zijn opvolger aan. Bij een micro-operatie staan ze mooi in volgorde dus is dit niet nodig. De pipeline moet worden stopgezet en de rommel moet worden opgeruimd.
 
 ## Vraag 53
 
@@ -1070,9 +1152,18 @@ Het aantal microinstructies dat moet uitgevoerd worden per ISA instructie.
 
 Een cache houdt de meest recent gebruikte geheugenwoorden in een klein,  supersnel geheugen om toegang ertoe te versnellen. Als een groot genoeg percentage van de geheugenwoorden die de cpu nodig heeft in de cache zitten, kan er enorme performantiewinst geboekt worden.
 
-//TODO voorbeelden 
+<u>Ruimtelijke localiteit</u>
 
-moeten dit voorbeelden van toepassingen van cachegeheugen zijn? of voorbeelden van hoe er performantiewinst wordt geboekt?
+> Opeenvolgende adressen bevatten opeenvolgende instructies. - Wim
+>
+
+Als iets nodig hebt uit het geheugen, is de kans groot dat het volgende dinge dat je nodig hebt daar in de buurt zit. Kijk bijvoorbeeld naar arrays of queues. De elementen zitten mooi in volgorde in onze gegevensstructuur. Als we een element uit deze structuren gaan halen is ligt het volgende element er vlak naast in het geheugen.
+
+<u>Temporale localiteit</u>
+
+Als je iets recent nodig had is de kans groot dat je het in de toekomst opnieuw nodig hebt.
+
+Lussen zijn hier een goed voorbeeld van. Een stapel ook, want je zit constant te werken rond de stack pointer.
 
 **Geef twee mogelijke implementaties van cachegeheugens en bespreek de werking ervan.**
 
@@ -1186,7 +1277,7 @@ We gaan onze compiler voorzien van speciale branchinstructies die de hardware ve
 * Slimme compiler: de compiler zoekt uit welke branches er waarschijnlijk genomen gaan worden. Bij een for loop van 1000000 iteraties kan de compiler dan bijvoorbeeld zo een instructie aan de hardware meegeven.
 * Simulatie: we draaien het programma op een simulator en houden het branchgedrag bij. We geven deze informatie aan de compiler, die dan de speciale instructies gebruikt om de hardware te zeggen wat hij moet doen.
 
-
+De voorspellingen van de sprongen liggen dus op voorhand vast.
 
 ## Vraag 57
 
@@ -1229,9 +1320,24 @@ R1 = R0-R2
 >
 > Geef het scorebord voor de het uitvoeren van deze instructies wanneer alles instructies mooi in volgorde worden uitgevoerd. Welke dependencies kom je tegen en hoe worden ze al dan niet opgelost (geen code, gewoon omschrijven)? Waarom worden instructies ook mooi in volgorde beëindigd? (pagina 315-320)
 
+<img src="img/Screenshot 2022-01-21 at 19.44.29.png" alt="Screenshot 2022-01-21 at 19.44.29" style="zoom:50%;" />
 
+ **Welke dependencies kom je tegen en hoe worden ze al dan niet opgelost**?
 
-//TODO aanpassing checken
+Bij deze architectuur zullen we enkele regeltjes moeten toepassen om problemen met depencies te voorkomen.
+
+* WAR (write after read)
+  * Als er naar een operand geschreven wordt, instructie niet starten
+* RAW (read after write)
+  * Als het uitkomstregister gelezen wordt, instructie niet starten
+* WAW (write after write)
+  * Als naar het uitkomstregister geschreven wordt, instructie niet starten 
+
+**Waarom worden instructies ook mooi in volgorde beëindigd? **
+
+Dit is nodig voor het geval dat er een interrupt zich voordoet. Als de instructies niet in volgorde zouden eindigen is het moeilijk om de huidige staat van de machine op te slaan om deze later te kunnen herstellen. 
+
+We kunnen in ons systeem dus altijd met zekerheid zeggen dat bij een interrupt alle instructies tot op een bepaald punt uitgevoerd zijn, en die daarna niet. Deze karakteristiek noemen we een **precise interrupt**. 
 
 ## Vraag 59
 
@@ -1385,10 +1491,19 @@ Bij course-grained multithreading kunnen we wachten totdat de pipeline vrij is a
   * Als een thread resources niet gebruikt die een andere thread zou kunnen gebruiken, mag hij dat niet. Zo wordt er wel wat verspild
 * Full resource sharing
   * Elke thread kan de resources verkrijgen die hij nodig heeft
-  * Lost het probleem op 
+  * Zorgt ervoor dat resources niet meer liggen te niksen wanneer een andere thread ze zou kunnen gebruiken.
+  * Het kan dat één thread zo resource hungry is dat hij de andere vertraagt of zelft helemaal stillegt.
 * Threshold sharing
+  * Het compromis tussen de vorige twee. Elke thread kan dynamisch resources verkrijgen, totop een bepaald maximum.
+  * Laat flexibiliteit toe zonder het gevaar dat één thread alle resources inpikt.
 
+**Welke zaken zijn per thread uniek en worden dus niet gedeeld en waarom kunnen ze niet gedeeld worden?**
 
+De programmateller, register map en interrupt controller. Ze kunnen niet gedeeld worden omdat elke thread ze de hele tijd nodig heeft.
+
+**Welk probleem treedt er op met betrekking tot cachegeheugens**.
+
+Als we bijvoorbeeld twee threads hebben die ieder 3/4 van het cachegeheugen nodig hebben om goed te kunnen functioneren. Als we deze twee apart draaien, zullen ze perfect werken (op een paar cache misses na). Als we de threads samen draaien, zullen ze beide constant cache misses hebben en kan onze performantie veel slechter zijn dan wanneer we niet aan multithreading doen.
 
 # Labo's
 
@@ -2305,8 +2420,11 @@ recursie: dec R2
           pop 01H
           pop 00H
           ret
-          
+      
+      
 ```
+
+Een eenvoudige regel waar je zeker bij het schrijven van subroutines in het achterhoofd moet houden is dat wanneer het C-programma twee pointers gebruikt, het assembleertaalprogramma ook twee pointers zal hebben. Aangezien de programmeertaal C eigenlijk een meer leesbare vorm is van assembleertaal is dat eigenlijk ook niet meer dan logisch. Wanneer het C-programma een lus heeft, dan moet je assembleertaalprogramma ook een lus hebben. Dus controleer je oplossing of alle zaken die in de C-code aanwezig zijn, ook aanwezig zijn in het assembleertaalprogramma.
 
 ```assembly
 org 0000H
@@ -2487,3 +2605,77 @@ ret
 
 ```
 
+
+
+## Praktijkexamen
+
+Bij vraag 1 wordt er gewoon gevraagd wat dat die code doet. Aangezien die neg instructie erbij staat en dat je ook ziet dat er negatieve getallen in voorkomen plaats je eens in AX een paar kleine negatieve getallen en een paar positieve getallen. Bv. -1 (of in binair 1111) en 1 (binair 0001). kijk wat de uitvoer is na de laatste instructie. Neem enkel kleine getallen, probeer dit niet met 32-bit getallen want dan wordt dit ondoenbaar. 
+
+Bij vraag 2, hetzelfde, neem twee vier bit getallen, plaats die in AX en BX en kijk wat AX en BX zijn na de derde instructie.
+
+Bij vraag 3, mag je 8051 vervangen door c8051f120, dat geeft geen invloed. Er wordt gewoon gevraagd om in 8051-assembleertaal enkel het hoogstnodige te schrijven om een getal te delen door 2 op een zo efficiënt mogelijke manier. Dus geen volledig programma dat begint met cseg at ... maar gewoon de regels die de accumulator delen door 2.
+
+Vraag 4 is een recursieve functie die je moet omzetten naar 8051-assembleertaal. Als je hier c8051f120 schrijft i.p.v. 8051 moet je bij de start enkel de watchdogtimer uitzetten en voor de rest is de vraag dezelfde. Wanneer er zou gevraagd worden om het te doen met een local variable frame dan ziet het hoofdprogramma er uit zoals hieronder. Met vaste adressen in het datageheugen, zoals hier gevraagd, is het hoofdprogramma makkelijker.
+
+```assembly
+cseg at 0000H
+
+jmp main
+
+cseg at 0080H
+main: clr EA
+     mov WDTCN,#0DEH
+     mov WDTCN,#0ADH
+     setb EA
+     ; local variabel frame aanmaken, eerst source tabel naar stack
+     
+     mov A, #'a' ; je kan inderdaad letters ook zo meegeven
+     push ACC
+     mov R0, SP ;adres van src bijhouden
+     mov A, #'b'
+     push ACC
+     mov A, #'c'
+     push ACC
+     mov A, #'d'
+     push ACC
+     mov A, #0
+     push ACC ; 5 plaatsen voorzien voor dst tabel
+     dec SP
+     mov R1, SP ;adres van dst bijhouden
+     dec SP
+     dec SP
+     dec SP
+     dec SP
+     push 01H ; parameters van rechts naar links naar de stack
+     push 00H      
+     call strcpy
+     jmp $
+```
+
+Bij vraag 5 zal je in tegenstelling tot vorig jaar de crossbar moeten aanzetten, je gebruikt immers pinnen uit het bereik van P0.0 t.e.m. P3.7. Dat verreist een wisseling van SFRPAGE naar F en dan nog een paginawissel naar 0 om timer 0 te configureren en later ook om TR0 te kunnen aan- of uitzetten.
+
+Dus enkel nuttige tips:
+
+- Schrijf je programma gestructureerd, interruptvlaggen bij mekaar, onmiddellijk daaronder de crossbar-instellingen en onmiddellijk daaronder de digitale I/O-poortinstellingen (P0MDOUT, P3MDOUT, ....)
+- Voor het configureren van I/O, bekijk de SFR-pagina en zorg er voor dat je in de juiste zit
+- lees de opgave goed en kijk of je bij het omzetten van C-code en C-functies gebruik moet maken van een local variable frame dan wel van vaste adressen
+- bekijk ook of je een subroutine moet schrijven of gewoonweg een programma. Bij een programma moet je bijna niets doen met de stack. Gewoon de code schrijven zoals ze gevraagd werd aub en niet moeilijker maken dan ze is
+- Bij inzichtvragen probeer uit met kleine getallen
+- Meng nooit interruptcode met code uit het hoofdprogramma
+- Zorg dat het hoofdprogramma eindigt met een oneindige lus
+- Zorg dat je goed kunt zoeken/lezen in de datasheet, ik heb al een paar keer laten vallen dat ik wel eens dingen zou durven vragen die je moet gaan zoeken in de datasheet
+- ....
+
+
+
+
+
+De laatste oefening (boostersessie 2) van daarnet was een uitdaging, zelfs voor mij, en is zeker niet het genre oefening die ik zelfs maar zou durven vragen. Het oefeningenexamen kan het volgende bevatten:
+
+-I/O-poorten, timers, analoog naar digitaal omzettingen al dan niet met externe signalen en al dan niet via interrupts
+
+-een hoeveelheid aan (kleine) vragen waar je het antwoord kan vinden in de datasheet, of kleine weetjes
+
+-oefeningen in het genre van deze morgen, inclusief recursieve functies/procedures. De C-code zal telkens gegeven zijn en er zal ook bij vermeld worden of je voor een functie de waarde op de stack moet bewaren dan wel gebruik kan maken van een vast register om de returnwaarde in te stoppen. 
+
+Probeer zeker de programmeervragen uit het voorbeeldexamen op te lossen! Ook een combinatie-oefening zoals het digitaal schema met interruptlijnen of bits die een timer starten is mogelijk.
