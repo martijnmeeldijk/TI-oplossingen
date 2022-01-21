@@ -1192,3 +1192,15 @@ try {
 }
 ```
 
+
+
+
+
+# Notes to self
+
+* const niet vergeten (ook achter functies die niks aanpassen)
+* `[] (const string& addr) { return addr.find(".be")!=-1; }` -> c++ lambda
+* `function<[return type] ([parameters])> naam` -> functie als parameter in c++
+* `double(*fp)(double)` functiepointer als parameter in c
+* 
+

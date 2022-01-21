@@ -560,6 +560,8 @@ De chip neemt een rijadres, dan wordt de RAS (row access strobe) geactiveerd. Da
 
 //TODO derde ding
 
+wordt zeker gesteld op examen (oplossing in aankondiging?)
+
 
 
 ## Vraag 20
@@ -1064,11 +1066,88 @@ Het aantal microinstructies dat moet uitgevoerd worden per ISA instructie.
 
 > Wat is het idee achter cachegeheugens waardoor performantiewinst geboekt wordt? Geef hierbij een aantal voorbeelden. Geef twee mogelijke implementaties van cachegeheugens en bespreek de werking ervan. Met welke berekening kan je achterhalen op welke lijn een cachelijn zich zou moeten bevinden? Wat zijn de mogelijkheden bij schrijfoperaties? (pagina 304-310)
 
+**Wat is het idee achter cachegeheugens waardoor performantiewinst geboekt wordt? Geef hierbij een aantal voorbeelden.**
+
+Een cache houdt de meest recent gebruikte geheugenwoorden in een klein,  supersnel geheugen om toegang ertoe te versnellen. Als een groot genoeg percentage van de geheugenwoorden die de cpu nodig heeft in de cache zitten, kan er enorme performantiewinst geboekt worden.
+
+//TODO voorbeelden 
+
+moeten dit voorbeelden van toepassingen van cachegeheugen zijn? of voorbeelden van hoe er performantiewinst wordt geboekt?
+
+**Geef twee mogelijke implementaties van cachegeheugens en bespreek de werking ervan.**
+
+<u>Direct-mapped caches</u>
+
+| Direct-mapped cache (a)                                      | 32-bit virtueel adres (b)                                   |
+| ------------------------------------------------------------ | ----------------------------------------------------------- |
+| <img src="img/image-20220120115134869.png" alt="image-20220120115134869"  /> | ![image-20220120115154436](img/image-20220120115154436.png) |
+
+In elke rij van de direct-mapped cache zit exact één cachelijn uit het hoofdgeheugen. (a) Elke entry bestaat uit een:
+
+* *Valid* bit: Zegt of deze lijn valid data bevat (staan allemaal op *invalid* bij system boot)
+* *Tag* veld: bevat het adres waar de lijn vandaan komt in het hoofdgeheugen
+* *Data* veld: bevat een kopie van de data in het geheugen
+
+Een geheugenadres (b) (geproduceerd door de cpu) bestaat uit:
+
+* *Tag* veld: zelfde als de tag bits in de cachelijn
+* *Line* veld: geeft aan welk cache-item de nodige data bevat (als deze aanwezig is)
+* *Word* veld: zegt welk woord binnen de lijn nodig is
+* *Byte* veld: zegt welke byte binnen het woord nodig is (wordt meestal niet gebruikt)
+
+Wat ze volgens mij in het boek niet zo goed uitleggen, is wat direct-mapped nu precies betekent. Als je een bepaald geheugenadres hebt, kan die maar op exact één plek in de cache uitkomen. Dus als als onze cpu een geheugenadres produceert, is er maar één plek in de cache om de corresponderende data te vinden. De figuur hieronder illustreert dit concept iets beter.
+
+<img src="img/image-20220120112701940.png" alt="image-20220120112701940" style="zoom: 25%;" />
+
+Een nadeel aan direct mapped caches zijn collisions. Als je bijvoorbeeld een cache hebt van 64KB, dan komt elke X + k*65.536 uit op hetzelfde cache-item. Dit zie je ook duidelijk op de tekening hierboven. De cache kan dus nooit (op de tekening) een stuk data uit adres 0 en adres 4 tegelijk bevatten.
+
+<u>Set-associative caches</u>
+
+Een 4-way set associative cache. 
+
+<img src="img/image-20220120123718695.png" alt="image-20220120123718695" style="zoom:33%;" />
+
+Een set-associative cache houdt $n$ items bij voor elk geheugenadres. Nadat de juiste cachelijn is bepaald, moeten we ook nog tussen $n$ entries zoeken welke we nodig hebben. Wanneer we een nieuw stuk data in de cache willen steken, moeten we dus ook nog bepalen welke van de entries er weg moet. Hiervoor gebruikt met het **LRU (least recently used)** algoritme. Dit algoritme rangschikt onze entries op basis van welke het meest recent is geraadpleegd. Wanneer we een entry moeten vervangen, kijken we naar onze lijst en vervangen we diegene op het einde van de lijst (de oudste). 
+
+
+
+**Met welke berekening kan je achterhalen op welke lijn een cachelijn zich zou moeten bevinden?**
+
+Als de cpu een geheugenadres produceert, worden de *line* bits eruit gehaald om (via een index) de juiste cachelijn te vinden. Als deze lijn op *valid* staat, worden de *tag* bits van het cacheitem en het geheugenadres vergeleken. Als deze overeenkomen, hebben we een **cache hit** en kan het geheugenwoord uit de cache gelezen worden. Als het item niet op *valid* staat of de *tag* bits niet overeenkomen, hebben we een **cache miss**. In dit geval wordt de lijn uit het hoofdgeheugen gehaald en in de cache gestoken, in plaats van wat er daarvoor stond.
+
+bij een set-associative cache gebeurt hetzelfde, maar zitten er op elke lijn $n$ entries. Elke entry van deze lijn word vergeleken met de *tag* bits. 
+
+**Wat zijn de mogelijkheden bij schrijfoperaties? **
+
+Wanneer de cpu wilt schrijven, vormt dit een probleem voor onze cachegeheugens. Als de cpu een woord schrijft, en deze zit in het cachegeheugen, moet ofwel de cachelijn geupdate worden, ofwel wegegooid worden. Bijna alle systemen kiezen voor de eerste optie. Doordat ons woord nu al in de cache zit, kunnen we in principe wachten (totdat het door LRU weggesmeten wordt) met dit woord in het hoofdgeheugen te updaten. 
+
+* Als we toch direct het hoofdgeheugen updaten, noemen we dit **write through**. Deze aanpak is simpeler en betrouwbaarder, maar vergt meer write traffic naar het geheugen. 
+
+* Doen we dit niet, hebben we een iets ingewikkelder alternatief, genaamd **write back**. Het hoofdgeheugen wordt dus pas aangepast als de lijn uit de cache verdwijnt. Dit is sneller, maar vergt extra geheugenadministratie.
+
+In de vorige paragraaf spreken we alleen over wat te doen wanneer de te schrijven lijn al in de cache zit. Als dit niet het geval is zijn er ook weer twee mogelijkheden. 
+
+* De data naar de cache brengen bij een write miss. Deze methode noemt men **write allocation** en wordt meestal gebruikt bij write back systemen
+* De data niet naar de cache brengen. Dit wordt meestal gedaan bij write through systemen om het systeem zo simpel mogelijk te houden.
+
 
 
 ## Vraag 54
 
 > Waarom vormen (on)voorwaardelijke spronginstructies in combinatie met pipelining een probleem? Wat is meest eenvoudige manier om dit op te lossen zonder gebruik te maken van een geschiedenistabel? (pagina 310-312)
+
+Stel je een pipeline voor waar het decoderen van de instructie pas in de tweede stap gebeurt. Onze fetch unit moet dan al beslissen waar hij de volgende instructie moet halen, zonder dat hij weet wat de huidige instructie is. Als hij dan in de volgende cyclus ontdekt dat de huidige instructie een spronginstructie is, heeft hij de volgende instructie voor niets opgehaald. In sommige systemen wordt deze foute instructie zelfs uitgevoerd.
+
+In oude systemen werd er gewacht totdat de locatie waarnaar er gesprongen moet worden bekend was, maar dit is super inefficiënt, aangezien de meeste programma's vol if-statements zitten. 
+
+De gemakkelijkste manier om hier mee om te gaan is door twee veronderstellingen te maken:
+
+* Sprongen naar achter worden altijd genomen
+  * Deze zijn meestal loops, dus deze veronderstelling is het grootste deel van de tijd correct.
+* Sprongen naar voor worden nooit genomen
+  * Sprongen naar voor zijn meestal bij errors. Deze komen veel minder vaak voor dan niet errors. Deze veronderstelling is dus ook meestal correct
+
+
 
 
 
@@ -1076,17 +1155,60 @@ Het aantal microinstructies dat moet uitgevoerd worden per ISA instructie.
 
 > Wat is dynamische sprongvoorspelling? Geef drie mogelijke implementaties (één voorspellingsbit, twee voorspellingsbits, …). Welke techniek analoog aan cachegeheugens kan je hier ook toepassen? Geef voor de implementatie met twee voorspellingsbits het FSM. Aan de hand van welke formule kan je de lijn gaan achterhalen waar voor een gegeven spronginstructie de voorspellingsbits te vinden zijn. Wat gebeurt er wanneer een spronginstructie niet voorkomt? (pagina 312-314)
 
+Lees alsjeblieft [deze](https://stackoverflow.com/questions/11227809/why-is-processing-a-sorted-array-faster-than-processing-an-unsorted-array) stackoverflow post. Deze man heeft echt de mooiste uitleg voor branch prediction.
 
+**Wat is dynamische sprongvoorspelling?**
+
+Voorspellen of een voorwaardelijke spronginstructie uitgevoerd gaat worden op basis van vorige spronginstructies.
+
+**Geef drie mogelijke implementaties.**
+
+We houden een history table bij, die een log van voorwaardelijke sprongen bijhoudt wanneer ze voorkomen. Wanneer onze spronginstructie plots terug verschijnt, kunnen we hem opzoeken in de tabel. Dit kunnen we op twee manieren doen:
+
+<u>Eén voorspellingsbit</u>
+
+We houden in onze tabel één bit bij om aan te duiden of de sprong genomen is of niet. Als de tabel de foute voorspelling gaf, wordt deze aangepast.
+
+<u>Twee voorspellingsbits</u>
+
+Op het einde van een lange loop gaat ons algoritme met één bit altijd de foute voorspelling doen. Erger nog, hij gaat de bit aanpassen en bij de volgende loop gaat de eerste iteratie ook fout voorspeld worden. Dit probleem kunnen we oplossen door twee voorspellingsbits in te voeren. Eentje die zegt wat we de vorige keer hebben gedaan, en eentje die zegt wat we moeten doen. Ons algoritme gaat dan pas een andere voorspelling maken als hij twee keer de foute heeft gedaan. 
+
+<u>Branch history shift register</u>
+
+Dit is een andere aanpak dan de twee voorgaande. We houden in een speciaal register (van $k$ bits) bij of de $k$ voorgaande voorwaardelijke spronginstructies uitgevoerd werden, onafhankelijk van welke instructies ze waren. Onze entries in de history table hebben dan ook een $k$ bit key. We vergelijken ons shift register met de entries en als we een overeenkomst vinden, wordt de voorspelling in die entry uitgevoerd. Verassingwekkend genoeg werkt deze techniek in de praktijk best goed.
 
 ## Vraag 56
 
 > . Wat is statische sprongvoorspelling? (pagina 315) 
+
+We gaan onze compiler voorzien van speciale branchinstructies die de hardware vertellen welke branch de compiler denkt dat er genomen moet worden. Dit kan op twee manieren:
+
+* Slimme compiler: de compiler zoekt uit welke branches er waarschijnlijk genomen gaan worden. Bij een for loop van 1000000 iteraties kan de compiler dan bijvoorbeeld zo een instructie aan de hardware meegeven.
+* Simulatie: we draaien het programma op een simulator en houden het branchgedrag bij. We geven deze informatie aan de compiler, die dan de speciale instructies gebruikt om de hardware te zeggen wat hij moet doen.
 
 
 
 ## Vraag 57
 
 > Wat er wordt er in computerterminologie bedoeld met een scorebord? Waarvoor dient het en uit welke delen bestaat het? (pagina 315-317)
+
+**Wat er wordt er in computerterminologie bedoeld met een scorebord?**
+
+Een scorebord is een apparaat dat voor elk register bijhoudt hoe vaak het gebruikt wordt als source of destination. 
+
+**Uit welke delen bestaat het? **
+
+* Voor elk register is er een kleine counter die aangeeft hoeveel keer dat register in gebruik is als source.
+  * Incrementeert als een instructie met dit register als operand wordt gestart
+  * Decrementeert als de instructie eindigt
+* Een 1-bit counter voor elk register om aan te geven of hij wordt gebruikt als destination
+  * Want je kan natuurlijk niet van 2 plekken tegelijk schrijven naar een register
+
+**Waarvoor dient het?**
+
+Als onze decode unit een commando decodeert, moet hij weten of hij het commando wel kan uitvoeren. Als de huidige instructie bijvoorbeeld de waarde van een register nodig heeft, maar die waarde is nog niet berekend, zal onze cpu de uitvoering moeten uitstellen. Om het gebruik van de registers bij te houden maken we dus gebruik van een **scorebord**. 
+
+Dankzij het scorebord kunnen instructies dynamisch ingepland worden om out of order execution mogelijk te maken. Dit omdat het scorebord inzicht geeft in de data dependencies van elke instructie.
 
 
 
@@ -1103,9 +1225,13 @@ R7 = R1*R2
 R1 = R0-R2
 ```
 
-> Ga er van uit dat je beschikt over een superscalaire architectuur waarbij twee instructies zich gelijktijdig in de execute-fase kunnen bevinden. Veronderstel ook dat het uitvoeren van een optel- of aftrekinstructie, opgehaald in cyclus n, tegen het einde van cyclus n+2 klaar is. Voor een vermenigvuldigingsopdracht is het resultaat pas bekend op het einde van cyclus n+3. Geef het scorebord voor de het uitvoeren van deze instructies wanneer alles instructies mooi in volgorde worden uitgevoerd. Welke dependencies kom je tegen en hoe worden ze al dan niet opgelost (geen code, gewoon omschrijven)? Waarom worden instructies ook mooi in volgorde beëindigd? (pagina 315-320)
+> Ga er van uit dat je beschikt over een superscalaire architectuur waarbij per klokcyclus twee instructies kunnen worden ge-issued. Veronderstel ook dat het volledig uitvoeren (van het decoderen tot de writeback-fase dus) van een optel- of aftrekinstructie, opgehaald in cyclus n, tegen het einde van cyclus n+2 klaar is. Voor een vermenigvuldigingsopdracht is het resultaat pas bekend op het einde van cyclus n+3. 
+>
+> Geef het scorebord voor de het uitvoeren van deze instructies wanneer alles instructies mooi in volgorde worden uitgevoerd. Welke dependencies kom je tegen en hoe worden ze al dan niet opgelost (geen code, gewoon omschrijven)? Waarom worden instructies ook mooi in volgorde beëindigd? (pagina 315-320)
 
 
+
+//TODO aanpassing checken
 
 ## Vraag 59
 
@@ -1131,11 +1257,57 @@ while (i<limit){
 if (x>0) z=y/x;
 ```
 
+**Wat is een basisblok?**
+
+Een **basisblok** is een lineaire sequentie van bevelen die bij omzetting naar assembleertaal geen branches bevat. Ons programma wordt eigenlijk door de control statements (ifs enzo) opgesplitst in basisblokken.
+
+**Deel bovenstaande code op in basisblokken.**
+
+<img src="img/image-20220121104222480.png" alt="image-20220121104222480" style="zoom: 33%;" />
+
+**Wat is speculatieve uitvoering en welke problemen kunnen er zich voordoen. Hoe kunnen ze worden opgelost?**
+
+Code uitvoeren voordat het bekend is of dit zelfs nodig is, staat bekend als **speculatieve uitvoering**. 
+
+* Als een instructie een onomkeerbaar resultaat heeft (bijvoorbeeld het resultaat van een optelling wegschrijven wanneer dit eigenlijk niet nodig is)
+  * Oplossing: De registers die gebruikt worden door de speculatieve renamen zodat alleen scratch registers worden aangepast. Dan is er geen probleem als de code uiteindelijk niet nodig is. Als dit wel het geval is, kopieren we de inhoud van de scratch registers naar de werkelijke destination registers.
+* Als een speculatief uitgevoerde instructie een exception veroorzaakt. (bijvoorbeeld een cache miss, die dan onnodig de cpu ophoudt om het woord in het hoofdgeheugen te gaan ophalen)
+  * We voorzien een speciale `SPECULATIVE-LOAD` instructie die de hardware vertelt om na een cache miss gewoon op te houden. Als die waarde niet in de cache zat en dan toch nodig blijkt te zijn, kan die later nog opgehaald worden. 
+* Het kan dat een speculatief uitgevoerde instructie het programma doet crashen. Dit is een groot probleem als deze code bijvoorbeeld in een if-statement zat met de bedoeling om dit te voorkomen. 
+  * Neem bijvoorbeeld `if(x>0) z=y/x`. Als x gelijk is aan 0 en de tweede instructie speculatief uitgevoerd wordt, zal het programma crashen. 
+  * Om dit te voorkomen voegen we een **poison bit** toe aan elk register. Deze bit wordt geset als een speculatieve instructie faalt, in plaats van een trap te veroorzaken.
+
+
+
+**Wat is het gevaar bij het toepassen van speculatieve uitvoering op onderstaand probleem?**
+
+```c
+if (x>0) z=y/x; // zie hierboven
+```
+
 
 
 ## Vraag 60
 
 > Bespreek het principe van een VLIW-processor. Wat is het verschil met een superscalaire architectuur? Wat is predicated execution en wat is het voordeel er van? Wat is saturated arithmetic? (pagina 555-556, predicated execution/saturated arithmetic 559)
+
+**Bespreek het principe van een VLIW-processor.**
+
+Bij een **VLIW (very long instruction word)** processor bevat een instructie typisch meerdere opcodes en operanden. De architectuur is dan zo gemaakt dat hij deze instructie, bestaande uit meerdere bewerkingen, in één keer kan uitvoeren. 
+
+**Wat is het verschil met een superscalaire architectuur?**
+
+Bij een superscalaire architectuur gaan we typisch meerdere kleine instructies starten in één klokcyclus, die vervolgens gepipelined uitgevoerd worden. Bij VLIW hebben we één grote instructie die meerdere bewerkingen in één keer kan doen. Hiervoor gebruiken we een compiler die bepaalt welke instructies tesamen uitgevoerd zullen worden, in tegenstelling tot de superscalaire architectuur, waar de instructies dynamisch ingepland worden.
+
+**Wat is predicated execution en wat is het voordeel er van?**
+
+Bij predicated exectution wordt de instructie enkel uitgevoerd als een bepaalde voorwaarde is voldaan. In de context van VLIW specifieert elke operatie een register dat getest wordt alvorens de operatie uitgevoerd wordt. Als de low-order bit van dat register geset is, wordt de instructie uitgevoerd. Is dit niet zo, dan wordt hij overgeslagen. Bij VLIW kan elk van de tegelijk uitgevoerde instructies apart voorzien worden van een predikaat.
+
+Door gebruik te maken van predicated execution kunnen we veel voorwaardelijke sprongen voorkomen, met performantiewinst als gevolg. //TODO er zijn denk ik nog voordelen
+
+**Wat is saturated arithmetic?**
+
+Wanneer een operatie een uitkomst produceert die niet weergeven kan worden door overflow, wordt er in plaats van een exception te gooien, het dichtstbijzijnde geldige getal gebruikt. Vb met een 8-bit unsigned integer: 130+130 wordt 255.
 
 
 
@@ -1143,13 +1315,67 @@ if (x>0) z=y/x;
 
 > Bespreek de drie mogelijkheden om aan multithreading te doen. Wanneer wordt er van thread gewisseld? Welke problemen ontstaan er bij het gebruik van een gedeelde pipeline? Wat zijn de voor- en nadelen van iedere vorm van on chip-multithreading? (pagina 562-564)
 
+(Alle drie zijn vormen van on-chip multithreading)
+
+**Fine-grained multithreading**
+
+<img src="img/image-20220121121302661.png" alt="image-20220121121302661" style="zoom:50%;" />
+
+Bij deze vorm van multitheading gaan we simpelweg van elke thread om de beurt (round robin) één instructie uitvoeren. We wisselen dus elke instructie van thread. Nemen we de drie threads van hierboven, ziet dat er zo uit:
+
+<img src="img/image-20220121121454645.png" alt="image-20220121121454645" style="zoom:50%;" />
+
+**Coarse-grained multithreading**
+
+Bij course-grained multithreading zijn er meerdere mogelijkheden.
+
+Een mogelijkheid is om pas van thread te wisselen als een commando wachttijd veroorzaakt. De drie threads van hierboven worden dus op deze manier uitgevoerd. We verspillen dus soms een cyclus.
+
+<img src="img/image-20220121134425704.png" alt="image-20220121134425704" style="zoom:50%;" />
+
+We kunnen ook van thread wisselen bij elk commando dat mogelijk een wachttijd veroorzaakt. Dit maakt het mogelijk om dead cycles te voorkomen.
+
+
+
+**Simultaneous multithreading**
+
+Dit is een verfijning op course-grained multithreading voor superscalaire CPUs. Een enkele thread kan meerdere instructies per cyclus blijven starten zolang hij kan, maar wanneer hij moet wachten, wordt er direct overgeschakeld naar de volgende thread. 
+
+Onze drie threads worden dan op deze manier uitgevoerd:
+
+<img src="img/image-20220121141947800.png" alt="image-20220121141947800" style="zoom:50%;" />
+
+**Welke problemen ontstaan er bij het gebruik van een gedeelde pipeline?**
+
+Als er commando's van verschillende threads in de pipeline terecht komen, weten we niet welk commando bij welke thread hoort.
+
+Bij fine-grained multithreading moeten we aan elke operatie een thread identifier toevoegen.
+
+Bij course-grained multithreading kunnen we wachten totdat de pipeline vrij is alvorens naar een andere thread te gaan. Dit is alleen nuttig als we niet super snel van threads wisselen. (aanzienlijk langer dan de pipeline)
+
+
+
+**Wat zijn de voor- en nadelen van iedere vorm van on chip-multithreading?**
+
+* Fine-grained multithreading
+  * Je hebt altijd minstens even veel threads nodig als stages in de pipeline, zodat er geen commando's van verschillende threads in de pipeline komen en conflicten veroorzaken.
+  * Als we even veel threads hebben als het aantal cycli dat een geheugenstall duurt, kunnen we de cpu constant bezig houden, de wachttijden van het geheugen worden dan volledig gemaskeerd.
+  * Omdat verschillende threads niets met elkaar te maken hebben, heeft elke thread zijn eigen set registers nodig. Het aantal mogelijke threads ligt dus aan het ontwerp van de chip.
+* Coarse-grained multithreading
+  * Hier hebben we niet zo veel threads nodig als pipeline stages.
+  * Bij de eerste methode verliezen we bij elke stall één cyclus
+* Simultaneous multithreading
+  * Van deze lijst de beste manier om multithreading te doen op een superscalaire cpu
+  * Helpt om alle functionele eenheden bezig te houden. Als een instructie niet gestart kan worden omdat een bepaalde functionele eenheid bezet is, kunnen we een instructie van een andere thread kiezen in de plaats. Zo wordt alles optimaal gebruikt
+* Simultaneous multithreading
+
 
 
 ## Vraag 62
 
 > Bij hyperthreading op de i7 (simultane multithreading) worden bronnen gedeeld op drie verschillende manieren. Dewelke en wat is voordeel/nadeel ervan? Welke zaken zijn per thead uniek en worden dus niet gedeeld en waarom kunnen ze niet gedeeld worden? Wat probleem treedt er op met betrekking tot cachegeheugens (geen tekening en geen voorbeelden uit de pipeline van de i7 zijn hier nodig, gewoon bespreken) (pagina 566- 567)
 
-
+**Bij hyperthreading op de i7 (simultane multithreading) worden bronnen gedeeld op drie verschillende manieren. Dewelke en wat is voordeel/nadeel ervan?**
 
 
 
@@ -1635,5 +1861,618 @@ ISR_TR0:
 	   cjne R5,#06d,einde
 	   mov R5,#00d
 einde: reti 
+```
+
+
+
+
+
+
+
+## Boostersessies
+
+
+
+### Booster 1
+
+Vraag over de werking van de stack op praktijkexamen.
+
+Logische schakeling omzetten naar assembleertaal.
+
+program status word? 33.41
+
+<img src="img/image-20220120191612445.png" alt="image-20220120191612445" style="zoom: 50%;" />
+
+```assembly
+org 0000H
+
+jmp main
+
+org 0080H
+
+main: clr EA
+      mov WDTCN,#0DEH
+      mov WDTCN,#0ADH
+      setb EA
+
+      mov SFRPAGE,#0FH
+      mov XBR2,#40H
+      mov P5MDOUT,#01H ; P5.0 = output
+start: 
+      mov C,P1.7
+	   anl C,P2.0
+      mov F0,C
+      mov C,P3.6
+      orl C,P4.2
+      anl C,F0
+      cpl C
+      mov P5.0,C
+      jmp start
+```
+
+Oplossing, maar met de carry als uitvoer
+
+```assembly
+org 0000H
+
+jmp main
+
+org 0080H
+
+main: clr EA
+      mov WDTCN,#0DEH
+      mov WDTCN,#0ADH
+      setb EA
+
+      mov SFRPAGE,#0FH
+      mov XBR2,#40H
+start: ;logische EN
+       mov A,P2  ; ACC.0=P2.0
+       rr A      ; ACC.7=P2.0
+       anl A,P1  ; ACC.7=P2.0 & P1.7
+	    push ACC
+      ; logische OF  
+      mov A,P3   ; ACC.6=P3.6 
+      rl A       ; ACC.7=P3.6
+      push ACC
+      mov A,P4   ; ACC.2=P4.2
+      rr A       ; ACC.1=P4.2
+      rr A       ; ACC.0=P4.2
+      rr A       ; ACC.7=P4.2
+      pop B
+      orl A,B    ; ACC.7=P4.2 | P3.6
+      pop B      ; resultaat logische EN => B
+      ;logische NAND
+      anl A,B
+      cpl A      ; /(ACC.7=P4.2 | P3.6)&(ACC.7=P2.0 & P1.7)
+      rlc A      ; C=/(ACC.7=P4.2 | P3.6)&(ACC.7=P2.0 & P1.7)
+      jmp start
+```
+
+altijd checken op syntaxfouten met assembleerder
+
+rekenkundige bewerkingen alleen op de accumulator
+
+geen bits naar een byte kopieren
+
+
+
+We gaan een getal vermenigvuldigen met 124 zonder de mul-instructie te gebruiken.
+
+```assembly
+org 0000H
+;x 124
+mov A,#147
+push ACC
+mov B,#0
+;x 4
+         mov R2,#2
+maal4:   clr C
+         rlc A
+         push ACC
+         mov A,B
+         rlc A
+         mov B,A
+         pop ACC
+         djnz R2, maal4
+
+         pop 00H  ; 147 => R0
+         push ACC ; tussenresultaat naar stapel
+         push B
+         mov A,R0  ; A bevat 147
+         mov B,#0
+         mov R2,#7
+maal128: clr C
+         rlc A
+         push ACC
+         mov A,B
+         rlc A
+         mov B,A
+         pop ACC 
+         djnz R2,maal128
+         pop 00H  ; R0 bevat MSB van maal 4
+         pop 01H  ; R1 bevat LSB van maal 4
+		  
+         subb 	A,R1
+         push Acc
+         mov A,B
+         subb A,R0
+         mov B,A
+         pop Acc
+jmp $
+
+
+```
+
+
+
+Zet de procedure geef_laatste_element om naar assembly. 
+
+```c
+void geef_laatste_element(int *t,int n,int *l){
+		*l=t[n-1];
+}
+
+int main(){
+	int tab[]={1,2,7,9};
+	int getal;
+	geef_laatste_element(tab,4,&getal);
+	while(1);
+	return 0;
+}
+```
+
+
+
+```assembly
+
+
+org 0000H
+
+	; hoofdprogramma eerst
+	; local variable frame
+    mov A,#1   ;tab
+    push Acc
+    mov A,#2
+    push Acc
+    mov A,#7
+    push Acc
+    mov A,#9
+    push Acc
+    mov A,#0   ;getal
+    push Acc
+    ; einde local variable frame
+    ; start aanroep procedure
+    ; -----------------
+    ;        getal         <--- SP
+    ; -----------------
+    ;         9       
+    ; -----------------
+    ;         7
+    ; -----------------
+    ;         2
+    ; ------------------
+    ;         tab        
+    mov R0,SP
+    push 00H
+    ;-----------------
+    ;         ------------ 
+    ; -----------------   |
+    ;        getal     <--|
+    ; -----------------
+    ;         9       
+    ; -----------------
+    ;         7
+    ; -----------------
+    ;         2
+    ; ------------------
+    ;         tab       
+    
+    mov R0,#4
+    push 00H
+    ;         4            <--SP
+    ; -----------------
+    ;         ------------ 
+    ; -----------------   |
+    ;        getal     <--|
+    ; -----------------
+    ;         9       
+    ; -----------------
+    ;         7
+    ; -----------------
+    ;         2
+    ; ------------------
+    ;         tab       
+    mov A,SP
+    subb A,#6
+    push Acc
+    ;         ---------------
+    ; ----------------       |
+    ;         4              |
+    ; -----------------      |
+    ;         ------------   |
+    ; -----------------   |  |
+    ;        getal     <--|  |
+    ; -----------------      |
+    ;         9              |
+    ; -----------------      |
+    ;         7              |
+    ; -----------------      |
+    ;         2              |
+    ; ------------------     |
+    ;         tab       <--  |
+    call gle
+    ;mov SP,#07H
+    jmp $
+gle: push 00H
+     mov R0,SP
+     push 01H
+     push 02H
+     push Acc
+ 
+    ;     oude R0             <--R0
+    ; ----------------------
+    ;     MSB return addr
+    ; ----------------------
+    ;     LSB return addr
+    ; -----------------
+    ;         ---------------
+    ; ----------------       |
+    ;         4              |
+    ; -----------------      |
+    ;         ------------   |
+    ; -----------------   |  |
+    ;        getal     <--|  |
+    ; -----------------      |
+    ;         9              |
+    ; -----------------      |
+    ;         7              |
+    ; -----------------      |
+    ;         2              |
+    ; ------------------     |
+    ;         tab       <--  |
+    dec R0 
+    dec R0
+    dec R0
+    mov 01H,@R0      ; R1=pointer naar eerste element tab
+    ; 01 is het directe adres van R1
+    dec R0
+    mov 02H,@R0      ; R2=4
+    dec R0
+    mov A,@R0     
+    mov R0,A         ; R0=pointer naar getal
+    dec R2           ; [n-1]
+    mov A,R1
+    add A,R2
+    mov R1,A         ; R1 is nu pointer naar laatste element
+    mov A,@R1
+    mov @R0,A
+    pop ACC
+    pop 02H
+    pop 01H
+    pop 00H   
+    ret
+   
+```
+
+
+
+### Booster 2
+
+Als de carry bit geset is gaat je psw op 80H staan.
+
+if (i < 5) in assembly
+
+```assembly
+cjne R0, #5, label
+
+;cjne doet niet alleen een jump als de operanden niet gelijk zijn, maar set ook de carry:
+dest >= src  ->  C = 0
+dest < src   ->  C = 1
+;dus 
+R0 >= 5  ->  C = 0
+R0 < 5   ->  C = 1
+
+```
+
+
+
+```c
+int bepaalSom(int *tab,int n){
+	if (n==0){
+		return 0;
+	}
+	else {
+		return tab[n-1]+bepaalSom(tab,n-1);
+	}
+}
+
+int main(){
+	int tab[]={1,5,7,9,3,-1,'A'};
+	register int b=bepaalSom(tab,7); // zodat hij b niet op de stack, maar in een register steekt
+	while(1);
+}
+```
+
+
+
+```assembly
+
+;twee mogelijkheden, ttz returnwaarde op de stack of returnwaarde in een vast register (hier B)
+
+org 0000H
+	;begin local variable frame
+	mov A,#1
+    push Acc
+	 mov A,#5
+    push Acc
+    mov A,#-1
+    push Acc
+    mov A,#4
+    push Acc
+	 mov A,#19
+	 push Acc
+	;einde local variable frame
+    mov A,#5
+    push Acc
+    mov A,SP
+	subb A,#5
+    push Acc
+
+    ;         ---------------
+    ; -----------------     |
+    ;         5             |
+    ; -----------------     | 
+    ;         19            |
+    ; -----------------      |
+    ;         4              |         'A'            |
+    ; -----------------      |
+    ;         -1             |
+    ; -----------------      |
+    ;         5              |
+    ; ------------------     |
+    ;         tab(1)    <--  |
+    call bepaalSom
+    mov SP,#7
+    jmp $
+
+bepaalSom: push 00H 
+           mov R0,SP
+    ;       oude R0        <--R0/SP
+    ; ----------------
+    ;     MSB return
+    ; ----------------
+    ;     LSB return       
+    ; ----------------       
+    ;         ---------------   
+    ; -----------------      |
+    ;         5              |
+    ; -----------------      | 
+    ;         19             |
+    ; -----------------      |
+    ;         4              |         'A'            |
+    ; -----------------      |
+    ;         -1             |
+    ; -----------------      |
+    ;         5              |
+    ; ------------------     |
+    ;         tab(1)    <--  |
+    push 01H
+    push 02H
+    push Acc
+    dec R0
+    dec R0
+    dec R0
+    mov 01H,@R0     ; startadres tabel in R0
+    dec R0
+    mov 02H,@R0     ; parameter n => R2
+    cjne R2,#00,recursie
+    mov B,#0
+    pop Acc
+    pop 02H  
+    pop 01H
+    pop 00H
+    ret
+
+recursie: dec R2
+          push 02H
+          push 01H
+          call bepaalSom
+          ;argumenten van de stack halen
+          dec SP
+          dec SP
+          ;nu verder doen met uitrekenen
+          mov A,R1
+          add A,R2
+          ; A bevat nu pointer naar laatste tabelelement
+		     mov R1,A
+          mov A,B      ; B is het register waar de som naartoe moet worden geschreven
+          add A,@R1
+          mov B,A      ; resultaat naar B
+          pop Acc
+          pop 02H  
+          pop 01H
+          pop 00H
+          ret
+          
+```
+
+```assembly
+org 0000H
+;src array
+mov 30H,'a'
+mov 31H,'b'
+mov 32H,'c'
+mov 33H,'d'
+mov 34H, #0
+
+mov A,#30H
+push ACC
+mov A,#50H
+push ACC
+call strcpy
+dec SP
+dec SP
+jmp $
+
+strcpy:
+;   return MSB   <- sp
+;---------
+;   return LSB
+;---------
+;   adres dest
+;---------
+;   adres src
+;---------
+;   ... ; elementen van de arrays
+;---------
+; zaken die nodig zijn om te rekenen op stack plaatsen
+push 00H
+mov R0, SP
+push 01H
+push 02H
+push ACC
+dec R0
+dec R0
+dec R0
+mov 01H,@R0   ; R1 bevat dest-adres
+dec R0
+mov 02H,@R0
+mov 00H,R2    ; R0 bevat src-adres
+mov A,@R0     ; A bevat *R0 of *src
+jz einde
+mov @R1,A     ;*src=*dest
+inc R0
+inc R1
+;hier recursie aanroep, dus terug zoals bij de main twee argumenten 
+;naar de stack en in dezelfde volgorde
+push 00H      ; src-adres naar stack, net zoals in de main
+push 01H      ; dest-adres naar stack
+call strcpy
+; niet vergeten, de twee argument voor de aanroep moeten eraf
+dec SP
+dec SP
+;twee argumenten voor de aanroep zijn er nu af, dus gewoon stoppen
+einde:
+      pop Acc
+      pop 02H
+		 pop 01H
+      pop 00H
+      ret
+
+
+
+
+loop:
+mov A,@R0
+mov @R1,A
+inc R0
+inc R1
+jnz loop
+pop ACC
+pop 02H
+pop 01H
+pop 00H
+ret
+
+
+```
+
+
+
+```assembly
+org 0000H
+;src array
+mov A, #'a'
+push ACC
+mov R1,SP  ; adres eerste kar van src onthouden
+mov A, #'b'
+push ACC
+mov A, #'c'
+push ACC
+mov A, #'d'
+push ACC
+mov A, #0
+push ACC
+; lege dest array
+mov A, #0
+push ACC
+mov R2,SP  ; adres eerst kar van dest onthouden in R2
+mov A, #0
+push ACC
+mov A, #0
+push ACC
+mov A, #0
+push ACC
+mov A, #0
+push ACC
+
+push 01H  ; adres src -> stack
+push 02H  ; adres dest -> stack
+call strcpy
+mov SP,#07H ;reset
+jmp $
+
+strcpy:
+;   return MSB   <- sp
+;---------
+;   return LSB
+;---------
+;   adres dest
+;---------
+;   adres src
+;---------
+;   ... ; elementen van de arrays
+;---------
+; zaken die nodig zijn om te rekenen op stack plaatsen
+push 00H
+mov R0, SP
+push 01H
+push 02H
+push ACC
+dec R0
+dec R0
+dec R0
+mov 01H,@R0   ; R1 bevat dest-adres
+dec R0
+mov 02H,@R0
+mov 00H,R2    ; R0 bevat src-adres
+mov A,@R0     ; A bevat *R0 of *src
+jz einde
+mov @R1,A     ;*src=*dest
+inc R0
+inc R1
+;hier recursie aanroep, dus terug zoals bij de main twee argumenten 
+;naar de stack en in dezelfde volgorde
+push 00H      ; src-adres naar stack, net zoals in de main
+push 01H      ; dest-adres naar stack
+call strcpy
+; niet vergeten, de twee argument voor de aanroep moeten eraf
+dec SP
+dec SP
+;twee argumenten voor de aanroep zijn er nu af, dus gewoon stoppen
+einde:
+      pop Acc
+      pop 02H
+		 pop 01H
+      pop 00H
+      ret
+
+
+
+
+loop:
+mov A,@R0
+mov @R1,A
+inc R0
+inc R1
+jnz loop
+pop ACC
+pop 02H
+pop 01H
+pop 00H
+ret
+
+
 ```
 
