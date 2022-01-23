@@ -2118,6 +2118,71 @@ Als we bijvoorbeeld twee threads hebben die ieder 3/4 van het cachegeheugen nodi
 
 Een paar dingen die ik nuttig vind om de labo-oefeningen beter te begrijpen.
 
+## Belangrijk bij het examen
+
+### SFRPAGE
+
+SFR = special function register
+
+Sfrpages bestaan omdat C8051F120 niet genoeg adressen heeft om al zijn shit aan te kunnen spreken. Da adressen worden dus verdeeld over verschillende adrespaginas
+
+**Belangrijke pages**
+
+* Configuratiegregisters crossbar: `mov SFRPAGE, #0FH`
+* Configuratieregisters voor poorten hoger dan P3, dus (P4, P5, P6 en P7): `mov SFRPAGE, #0FH`
+* Timerregisters: `mov SFRPAGE, #00H`
+
+Bij het oproepen van een interrupt ga je normaal gezien wel altijd automatisch naar de juiste sfrpage, dus daar moet je je geen zorgen om maken.
+
+### Watchdog timer
+
+Moet je altijd uitzetten
+
+```assembly
+clr EA ; dit schakelt interrupts uit
+mov WDTCN ,#0DEH ;uitschakelen van de watchdog timer
+mov WDTCN,#0ADH
+setb EA ; schakelt interrupts in
+```
+
+
+
+### Timers en interrupts
+
+ik heb een klein programmatje gemaakt op de simulator om te laten zien hoe timers en interrupts werken (op een makkelijke manier).
+
+Sommige dingen kreeg ik wel niet aan de praat met de simulator, die heb ik in comment gezet voor de volledigheid.
+
+Dit programmatje laat de LED op poort 1.6 om de seconde aan of uit gaan aan de hand van een interrupt.
+
+```assembly
+org 0000H
+jmp main
+org 000BH ;dit is de positie van de timer 0 interrupt in de interrupt vector
+jmp overflow ; dit betekent simpelweg dat als timer 0 overflowt, we moeten springen naar onze overflow ISR
+org 0080H ; vanaf hier schrijven we onze code weg
+
+main:
+	setb ea ; interrupts aanzetten
+	mov tmod, #01H ; timer 0 op mode 1 zetten
+;	mov ckcon, #02H ; de klok delen door 48
+	
+	setb TR0 ; timer 0 starten
+	setb ET0 ; timer 0 interrupt enable
+	cpl P1.6 ; we zetten de led direct al aan
+jmp $
+	
+overflow:
+	;mov th0, #06H ; high byte van de timer
+	;mov tl0, #0C6H ; low byte van de timer
+	; als we onze timer laten starten vanaf 6C6 komen we normaal gezien ongeveer op 1 seconde uit
+	cpl P1.6 ; de LED van aan naar uit of andersom
+	reti ; reti ipv ret omdat het een interrupt service routine is
+	
+```
+
+
+
 ## De Von Neumann cyclus
 
 Bij het uivoeren van een programma zal de processor elke insctructie uitvoeren volgens de Von Neumann cyclus. Dit verloopt in 3 stappen:
@@ -3486,9 +3551,801 @@ Schrijf een volledig 8051-assembleertaalprogramma dat continue deze logische sch
 
 Mijn oplossingen voor sommige oefeningen.
 
+### Reeks 2
+
+#### Oef 1
+
+Sluit de toetsenbordmodule aan op poort 0 en schrijf een programma dat zorgt voor het scannen van het toetsenbord. Wanneer een toets ingedrukt wordt, wordt de bijhorende binaire waarde op de LED-bar, aangesloten op poort 1, getoond. Onderstaande figuur geeft aan hoe het toetsenbord is opgebouwd:
+
+<img src="img/image-20220123105723851.png" alt="image-20220123105723851" style="zoom:33%;" />
+
+```assembly
+$include (c8051f120.inc)
+
+cseg at 0000H
+    mov WDTCN,#0DEH
+    mov WDTCN,#0ADH
+    mov SFRPAGE,#0FH
+    mov XBR2,#40H
+    mov P0MDOUT,#0F0H
+    mov P1MDOUT,#0FFH
+    mov P0,#0FFH
+start:
+    setb P0.5
+    setb P0.6
+    setb P0.7
+    clr P0.4
+    jnb P0.0, zero
+    jnb P0.1, vier
+    jnb P0.2, acht
+    jnb P0.3, twaalf
+    setb P0.4
+    clr P0.5
+    jnb P0.0,een
+    jnb P0.1,vijf
+    jnb P0.2,negen
+    jnb P0.3,dertien
+    setb P0.5
+    clr P0.6
+    jnb P0.0,twee
+    jnb P0.1,zes
+    jnb P0.2,tien
+    jnb P0.3,veertien
+    setb P0.6
+    clr P0.7
+    jnb P0.0,drie
+    jnb P0.1,zeven
+    jnb P0.2,elf
+    jnb P0.3,vijftien
+    setb P0.7
+    jmp start
+zero: mov P1,#00d
+      jmp start
+vier: mov P1,#4d
+      jmp start
+acht: mov P1,#8d
+      jmp start
+twaalf: mov P1,#12d
+        jmp start
+een: mov P1,#1d
+     jmp start 
+vijf: mov P1,#5d
+      jmp start
+negen: mov P1,#9d
+       jmp start
+dertien: mov P1,#13d
+         jmp start
+twee: mov P1,#2d
+      jmp start
+zes: mov P1,#6d
+     jmp start
+tien: mov P1,#10d
+      jmp start
+veertien: mov P1,#14d
+      jmp start
+drie: mov P1,#3d
+      jmp start
+zeven: mov P1,#7d
+       jmp start
+elf: mov P1,#11d
+     jmp start
+vijftien: mov P1,#15d
+          jmp start
+```
+
+#### Oef 2
+
+Schrijf een programma dat 2 getallen kleiner dan 10 inleest van het toetsenbord en de som op de LED-bar afdrukt.
+
+```assembly
+$include (c8051f120.inc)
+
+cseg at 0000H
+	jmp main
+cseg at 0050H
+main:
+	clr EA
+	mov WDTCN,#0DEh
+	mov WDTCN,#0ADh
+	setb EA
+	mov SFRPAGE,#0fh
+	mov XBR2,#40H
+	mov P0MDOUT,#0F0h
+	mov P1MDOUT,#0FFH
+	clr C
+start: mov P0,#0FFH
+	   mov R0,#0FFH
+loop:  mov R1,#0FFH
+	   djnz R1,$
+	   djnz R0,loop
+	   jnb P0.0, start
+	   jnb P0.1,start
+	   jnb P0.2,start
+	   jnb P0.3,start
+	   clr P0.4
+	   jnb P0.0,nulll
+	   jnb P0.1,vier
+	   jnb P0.2,acht
+	   jnb P0.3,twaalf
+	   setb P0.4
+	   clr P0.5
+	   jnb P0.0,een
+	   jnb P0.1,vijf
+	   jnb P0.2,negen
+	   jnb P0.3,dertien
+	   jmp start
+nulll: mov A,#00d
+       jmp check
+een: mov A,#01d
+	 jmp check
+vier: mov A,#04d
+       jmp check
+vijf: mov A,#05d
+	 jmp check
+acht: mov A,#08d
+       jmp check
+negen: mov A,#09d
+	 jmp check
+twaalf: mov A,#12d
+       jmp check
+dertien: mov A,#13d
+	 jmp check
+
+check: mov P1,A
+       jc finish
+       ;kopie maken van eerste getal in R7
+       mov R7,A
+       ;wachten op loslaten van ingedrukte knop
+       mov R0,#0FFH
+loop2:  mov R1,#0FFH
+	   djnz R1,$
+	   djnz R0,loop2
+	   jnb P0.0,loop2
+	   jnb P0.1,loop2
+	   jnb P0.2,loop2
+	   jnb P0.3,loop2
+	   ;voorwaarde aanpassen voor tweede iteratie
+	   cpl C
+	   ;tweede getal inlezen
+       jmp start 
+
+finish: add A,R7   ; A=A+R7
+		mov P1,A
+		jmp $
+
+```
+
+
+
+### Reeks 3
+
+#### Oef 3
+
+Sluit het laatste display aan op poort 3 en implementeer een seconden – en minutenteller. De seconden worden afgebeeld op de twee uiterst linkse displays, de minuten op de twee uiterst rechtse displays. Gebruik hierbij een timer!
+
+```assembly
+$include (c8051f120.inc)
+
+cseg at 0000H
+
+jmp main
+
+cseg at 0044H
+
+main:clr EA
+	 mov WDTCN,#0DEH
+	 mov WDTCN,#0ADH
+	 setb EA
+	 
+	 mov SFRPAGE,#0Fh
+	 mov XBR2,#40H
+	 mov P0MDOUT,#0FFH
+	 mov P1MDOUT,#0FFH
+	 mov P2MDOUT,#0FFH
+	 mov P4MDOUT,#0FFH
+
+	 mov SFRPAGE,#00H
+	 mov TMOD,#01H ; timer 0 mode 1
+	 mov CKCON,#02H ; /48
+	 mov TH0,#06H	 	
+	 mov TL0,#0C5h  ; 06C5=>FFFF (~1s)
+	 setb TR0
+
+	 mov 20H,#3FH
+	 mov 21H,#06H
+	 mov 22H,#5BH
+	 mov 23H,#4FH
+	 mov 24H,#66H
+	 mov 25H,#6Dh
+	 mov 26H,#7Dh
+	 mov 27H,#07H
+	 mov 28H,#7FH
+	 mov 29H,#6FH
+
+	 mov R2,#00d
+	 mov R3,#00d
+	 mov R4,#00d
+	 mov R5,#00d
+
+schrijf: 
+		 mov A,#20H	  ; Eenheden A=20H
+         add A,R2  	  ; A=A+R2 => [20H,29H]
+         mov R0,A
+         mov P0,@R0 ; P0=*R0 => P0=*(A+R2) => P0=tab[R2]
+
+         mov A,#20H	  ; Tientallen A=20H
+         add A,R3  	  ; A=A+R3 => [20H,29H]
+         mov R0,A
+         mov P1,@R0 ; P1=*R0 => P1=*(A+R3) => P1=tab[R3]
+
+         mov A,#20H	  ; Eenheden minunten A=20H
+         add A,R4  	  ; A=A+R4 => [20H,29H]
+         mov R0,A
+         mov P2,@R0 ; P2=*R0 => P2=*(A+R4) => P2=tab[R4]
+
+         mov A,#20H	  ; Tientallen minuten A=20H
+         add A,R5  	  ; A=A+R5 => [20H,29H]
+         mov R0,A
+         mov SFRPAGE,#0FH
+         mov P4,@R0 ; P4=*R0 => P4=*(A+R5) => P4=tab[R5]
+         mov SFRPAGE,#00H
+         
+start: jnb tf0,$
+	   clr tf0
+	   mov TH0,#06H	 	
+	   mov TL0,#0C5h  ; 06C5=>FFFF (~1s)
+	   inc R2
+	   cjne R2,#10d,schrijf
+	   mov R2,#00d
+	   inc R3
+	   cjne R3,#06d,schrijf
+	   mov R3,#00d
+	   inc R4
+	   cjne R4,#10d, schrijf
+	   mov R4,#00D
+	   inc R5
+	   cjne R5,#06d,schrijf
+	   mov R5,#00d
+	   jmp schrijf
+```
+
+
+
+### Reeks 4
+
+#### Oef 1
+
+Pas oefening 3 reeks 3 aan zodat er nu gebruikgemaakt wordt van een interrupt.
+
+```assembly
+$include (c8051f120.inc)
+
+cseg at 0000H
+
+jmp main
+
+cseg at 0083H ; interrupt vector timer 4
+jmp ISR_TR4
+
+cseg at 0090H
+
+main:clr EA
+	 mov WDTCN,#0DEH
+	 mov WDTCN,#0ADH
+	 setb EA
+	 mov EIE2,#04H ; ET4=1
+
+	 mov SFRPAGE,#0Fh
+	 mov XBR2,#40H
+	 mov P0MDOUT,#0FFH
+	 mov P1MDOUT,#0FFH
+	 mov P2MDOUT,#0FFH
+	 mov P4MDOUT,#0FFH
+
+	 mov SFRPAGE,#02H
+	 mov TMR4CF,#00H ; /12 en optellen naar FFFF
+	 mov TMR4H,#06H	 	
+	 mov TMR4L,#0C6h  ; 06C6=>FFFF (~0.25s)
+	 mov RCAP4H,#06H	 	
+	 mov RCAP4L,#0C6h
+	 setb TR4
+
+	 mov 20H,#3FH
+	 mov 21H,#06H
+	 mov 22H,#5BH
+	 mov 23H,#4FH
+	 mov 24H,#66H
+	 mov 25H,#6Dh
+	 mov 26H,#7Dh
+	 mov 27H,#07H
+	 mov 28H,#7FH
+	 mov 29H,#6FH
+
+	 mov R2,#00d
+	 mov R3,#00d
+	 mov R4,#00d
+	 mov R5,#00d
+
+
+	mov R7,#04D
+schrijf: 
+		 mov A,#20H	  ; Eenheden A=20H
+         add A,R2  	  ; A=A+R2 => [20H,29H]
+         mov R0,A
+         mov P0,@R0 ; P0=*R0 => P0=*(A+R2) => P0=tab[R2]
+
+         mov A,#20H	  ; Tientallen A=20H
+         add A,R3  	  ; A=A+R3 => [20H,29H]
+         mov R0,A
+         mov P1,@R0 ; P1=*R0 => P1=*(A+R3) => P1=tab[R3]
+
+         mov A,#20H	  ; Eenheden minunten A=20H
+         add A,R4  	  ; A=A+R4 => [20H,29H]
+         mov R0,A
+         mov P2,@R0 ; P2=*R0 => P2=*(A+R4) => P2=tab[R4]
+
+         mov A,#20H	  ; Tientallen minuten A=20H
+         add A,R5  	  ; A=A+R5 => [20H,29H]
+         mov R0,A
+         mov SFRPAGE,#0FH
+         mov P4,@R0 ; P4=*R0 => P4=*(A+R5) => P4=tab[R5]
+         jmp schrijf
+
+ISR_TR4: 
+	   clr TF4
+	   djnz R7,einde 
+	   mov R7,#04d	
+	   inc R2
+	   cjne R2,#10d,einde
+	   mov R2,#00d
+	   inc R3
+	   cjne R3,#06d,einde
+	   mov R3,#00d
+	   inc R4
+	   cjne R4,#10d, einde
+	   mov R4,#00D
+	   inc R5
+	   cjne R5,#06d,einde
+	   mov R5,#00d
+einde: reti 
+```
+
+#### Oef 3
+
+Sluit de toetsenbordmodule aan op poort 0. Sluit bovendien de 7-segmentdisplaymodule aan op poorten 1 t.e.m. 4. Schrijf vervolgens een programma dat je reactiesnelheid berekent. Hierbij zal de tijd tussen het indrukken van de toets linksboven en het indrukken van de toets er net onder, uitgedrukt in milliseconden, op de 7-segementen displays getoond worden. Probeer de timer te laten werken in autoreload mode.
+
+```assembly
+$include (c8051f120.inc)
+
+cseg at 0000H
+
+jmp main
+
+cseg at 0003H
+
+jmp int0
+
+cseg at 0013H
+
+jmp int1
+
+cseg at 001BH 
+
+jmp timer1 
+
+cseg at 0090H
+
+main:clr EA
+	 mov WDTCN,#0DEH
+	 mov WDTCN,#0ADH
+	 setb EA
+	 setb EX0
+	 ; setb EX1 (interrupts van lijn 1 pas toelaten wanneer er eerst gestart werd)
+         setb ET1
+
+	 mov SFRPAGE,#0Fh
+	 mov XBR2,#40H
+         mov XBR1,#14H ; /INT0 => P0.0 , /INT1 => P0.1
+	 mov P0MDOUT,#010H ; P0.4=output
+	 mov P1MDOUT,#0FFH ; eenheden
+	 mov P2MDOUT,#0FFH ; tientallen
+	 mov P3MDOUT,#0FFH ; honderdtallen
+	 mov P4MDOUT,#0FFH ; duizentallen
+	 clr P0.4 ; P.4=0 om interruptlijnen aan te sturen
+
+	 mov SFRPAGE,#00H
+         mov TMOD,#20H ; timer 1, 8 bit timer met autoreload
+	 ; 1ms => 3062,5 ticks
+         ; voor 8-bit timer moet het aantal ticks < 256
+	 ; 1ms => 3062,5/12 => 255 ticks
+	 mov TH1,#-255d
+         mov TL1,#-255d
+         mov CKCON,#00H ; klok wordt gedeeld door 12  
+
+	 mov 20H,#3FH
+	 mov 21H,#06H
+	 mov 22H,#5BH
+	 mov 23H,#4FH
+	 mov 24H,#66H
+	 mov 25H,#6Dh
+	 mov 26H,#7Dh
+	 mov 27H,#07H
+	 mov 28H,#7FH
+	 mov 29H,#6FH
+
+	 mov R2,#00d
+	 mov R3,#00d
+	 mov R4,#00d
+	 mov R5,#00d
+         
+         mov SFRPAGE,#0FH
+schrijf: 
+	 mov A,#20H	  ; Eenheden A=20H
+         add A,R2  	  ; A=A+R2 => [20H,29H]
+         mov R0,A
+         mov P1,@R0 ; P1=*R0 => P1=*(A+R2) => P1=tab[R2]
+
+         mov A,#20H	  ; Tientallen A=20H
+         add A,R3  	  ; A=A+R3 => [20H,29H]
+         mov R0,A
+         mov P2,@R0 ; P2=*R0 => P2=*(A+R3) => P2=tab[R3]
+
+         mov A,#20H	  ; Honderdtallen A=20H
+         add A,R4  	  ; A=A+R4 => [20H,29H]
+         mov R0,A
+         mov P3,@R0 ; P3=*R0 => P3=*(A+R4) => P3=tab[R4]
+
+         mov A,#20H	  ; Duizendtallen A=20H
+         add A,R5  	  ; A=A+R5 => [20H,29H]
+         mov R0,A
+         mov P4,@R0 ; P4=*R0 => P4=*(A+R5) => P4=tab[R5]
+         jmp schrijf
+
+timer1: 
+	   clr TF1
+	   inc R2
+	   cjne R2,#10d,einde
+	   mov R2,#00d
+	   inc R3
+	   cjne R3,#10d,einde
+	   mov R3,#00d
+	   inc R4
+	   cjne R4,#10d, einde
+	   mov R4,#00D
+	   inc R5
+	   cjne R5,#10d,einde
+	   mov R5,#00d
+einde: reti 
+
+int0: clr IE0
+      setb TR1
+      clr EX0
+      setb EX1
+      mov R2,#00d 
+      mov R3,#00d
+      mov R4,#00d
+      mov R5,#00d
+      reti
+
+int1: clr IE1
+      clr EX1
+      setb EX0
+      clr TR1
+      reti
+
+```
+
+### Reeks 5
+
+#### Oef 1 
+
+Open de datasheet en lees aandachtig de sectie die handelt over de werking van de verschillende analoog-naar-digitaal omzetters (pagina 49 en verder). 
+
+Geef eerst antwoord op onderstaande vragen: 
+
+* Welke analoog-naar-digitaal omzetter moet je gebruiken wanneer je de onboard temperatuursensor wil gebruiken? 
+* Geef een overzicht van alle registers (naam volstaat) die je hiervoor moet instellen. 
+* Op welke manier(en) kun je een omzetting starten? 
+* Welke registers (naam volstaat) heb je nodig voor het instellen van de referentiespanning? 
+* Wat is de waarde, uitgedrukt in Volts, van de referentiespanning? 
+* Wat is de digitale waarde die met een spanning van 0.842 V overeenstemt? Je mag hierbij veronderstellen dat er wordt gebruikgemaakt van een 12-bit SAR ADC. Schrijf nu een volledig ASM-programma dat gewoon één conversie start. Bekijk met de debugger de inhoud van de ADC-registers en ga na met welke temperatuur deze waarde overeenstemt. Bedenk tot slot een werkwijze om de digitale waarde in de registers van de ADC om te zetten naar een temperatuur die je kunt afdrukken op drie 7-segmentdisplays (voor de tientallen, eenheden en tienden).
+
+```assembly
+$include (c8051f120.inc)
+
+cseg at 0000H
+
+jmp main
+
+cseg at 0080H
+
+main:clr EA
+     mov WDTCN,#0DEH
+		 mov WDTCN,#0ADH
+		 setb EA
+
+		 mov SFRPAGE,#0FH
+		 mov XBR2,#40H
+		 mov P1MDOUT,#0FFH
+		 mov P2MDOUT,#0FFH
+		 mov P3MDOUT,#0FFH
+
+		 mov SFRPAGE,#00H
+		 mov REF0CN,#07H
+
+		 mov 20H,#3FH
+ 	   mov 21H,#06H
+	   mov 22H,#5BH
+	   mov 23H,#4FH
+	   mov 24H,#66H
+	   mov 25H,#6Dh
+	   mov 26H,#7Dh
+	   mov 27H,#07H
+	   mov 28H,#7FH
+	   mov 29H,#6FH
+
+
+
+		 mov R7,#255d
+loop:mov R6,#255d
+     djnz R6,$
+		 djnz R7,loop
+		 ;REFERENTIEspanning is aanwezig op VREF0
+		 mov AMX0CF,#00H
+		 mov AMX0SL,#08H
+		 ;termperatuurssensor is verbonden met ADC
+
+		 setb AD0EN ; ADC0 aangeschakeld
+start: clr AD0INT
+       setb AD0BUSY
+			 jnb AD0INT,$
+
+			 mov A,ADC0L
+			 subb A,#64H
+			 mov B,#5d
+			 div AB
+			 push ACC
+			 mov A,B
+			 rl A
+			 mov R2,A    ; R2 bevat cijfer na de komma
+			 pop ACC
+			 add A,#15d
+			 mov B,#10d
+			 div AB
+			 mov R3,B    ; R3 bevat eenheden
+			 mov R4,A    ; R4 bevat tientallen
+
+
+; uitschrijven naar de 7-segmentdisplays
+
+		   mov A,#20H	  ; cijfer na de komma A=20H
+       add A,R2  	  ; A=A+R2 => [20H,29H]
+       mov R0,A
+       mov P1,@R0 ; P1=*R0 => P1=*(A+R2) => P1=tab[R2]
+
+       mov A,#20H	  ; eenheden A=20H
+       add A,R3  	  ; A=A+R3 => [20H,29H]
+       mov R0,A
+       mov P2,@R0 ; P2=*R0 => P2=*(A+R3) => P2=tab[R3]
+
+       mov A,#20H	  ; tientallen 
+       add A,R4  	  ; A=A+R4 => [20H,29H]
+       mov R0,A
+       mov P3,@R0 ; P3=*R0 => P3=*(A+R4) => P3=tab[R4] 
+
+  		mov R7,#255d
+ loop2:mov R6,#255d
+      djnz R6,$
+	 	  djnz R7,loop2
+
+			 jmp start	
+```
+
+
+
+#### Oef 1 (met interrupts)
+
+```assembly
+$include (c8051f120.inc)
+
+cseg at 0000H
+
+jmp main
+
+cseg at 007BH
+
+jmp isr
+
+cseg at 0080H
+
+main:clr EA
+     mov WDTCN,#0DEH
+		 mov WDTCN,#0ADH
+		 setb EA
+		 mov EIE2,#02H
+
+		 mov SFRPAGE,#0FH
+		 mov XBR2,#40H
+		 mov P1MDOUT,#0FFH
+		 mov P2MDOUT,#0FFH
+		 mov P3MDOUT,#0FFH
+
+		 mov SFRPAGE,#00H
+		 mov REF0CN,#07H
+
+		 mov 20H,#3FH
+ 	   mov 21H,#06H
+	   mov 22H,#5BH
+	   mov 23H,#4FH
+	   mov 24H,#66H
+	   mov 25H,#6Dh
+	   mov 26H,#7Dh
+	   mov 27H,#07H
+	   mov 28H,#7FH
+	   mov 29H,#6FH
+
+
+
+		 mov R7,#255d
+loop:mov R6,#255d
+     djnz R6,$
+		 djnz R7,loop
+		 ;REFERENTIEspanning is aanwezig op VREF0
+		 mov AMX0CF,#00H
+		 mov AMX0SL,#08H
+		 ;termperatuurssensor is verbonden met ADC
+
+		   setb AD0EN ; ADC0 aangeschakeld
+			 setb AD0BUSY
+start: 
+			 subb A,#64H
+			 mov B,#5d
+			 div AB
+			 push ACC
+			 mov A,B
+			 rl A
+			 mov R2,A    ; R2 bevat cijfer na de komma
+			 pop ACC
+			 add A,#15d
+			 mov B,#10d
+			 div AB
+			 mov R3,B    ; R3 bevat eenheden
+			 mov R4,A    ; R4 bevat tientallen
+
+
+; uitschrijven naar de 7-segmentdisplays
+
+		   mov A,#20H	  ; cijfer na de komma A=20H
+       add A,R2  	  ; A=A+R2 => [20H,29H]
+       mov R0,A
+       mov P1,@R0 ; P1=*R0 => P1=*(A+R2) => P1=tab[R2]
+
+       mov A,#20H	  ; eenheden A=20H
+       add A,R3  	  ; A=A+R3 => [20H,29H]
+       mov R0,A
+       mov P2,@R0 ; P2=*R0 => P2=*(A+R3) => P2=tab[R3]
+
+       mov A,#20H	  ; tientallen 
+       add A,R4  	  ; A=A+R4 => [20H,29H]
+       mov R0,A
+       mov P3,@R0 ; P3=*R0 => P3=*(A+R4) => P3=tab[R4] 
+
+  		mov R7,#255d
+ loop2:mov R6,#255d
+      djnz R6,$
+	 	  djnz R7,loop2
+
+			 jmp start	
+
+
+
+isr:		clr AD0INT	 
+        mov A,ADC0L
+				setb AD0BUSY
+				reti
+```
+
+#### Oef 1 (met CNVSTR0)
+
+```assembly
+$include (c8051f120.inc)
+
+cseg at 0000H
+
+jmp main
+
+
+cseg at 0080H
+
+main:clr EA
+     mov WDTCN,#0DEH
+		 mov WDTCN,#0ADH
+		 setb EA
+
+
+		 mov SFRPAGE,#0FH
+		 mov XBR2,#41H    ; bit 0 XBR2 => CNVSTR0 naar buiten
+		 mov P0MDOUT,#10H
+		 mov P1MDOUT,#0FFH
+		 mov P2MDOUT,#0FFH
+		 mov P3MDOUT,#0FFH
+
+		 mov SFRPAGE,#00H
+		 mov REF0CN,#07H
+
+		 mov 20H,#3FH
+ 	   mov 21H,#06H
+	   mov 22H,#5BH
+	   mov 23H,#4FH
+	   mov 24H,#66H
+	   mov 25H,#6Dh
+	   mov 26H,#7Dh
+	   mov 27H,#07H
+	   mov 28H,#7FH
+	   mov 29H,#6FH
+
+
+
+		 mov R7,#255d
+loop:mov R6,#255d
+     djnz R6,$
+		 djnz R7,loop
+		 ;REFERENTIEspanning is aanwezig op VREF0
+		 mov AMX0CF,#00H
+		 mov AMX0SL,#08H
+		 ;termperatuurssensor is verbonden met ADC
+
+		   setb AD0EN ; ADC0 aangeschakeld
+			 setb AD0CM1 ; conversie starten met CNVSTR0
+			 clr P0.4
+start: jnb AD0INT,$
+       clr AD0INT
+			 mov A,ADC0L
+			 subb A,#64H
+			 mov B,#5d
+			 div AB
+			 push ACC
+			 mov A,B
+			 rl A
+			 mov R2,A    ; R2 bevat cijfer na de komma
+			 pop ACC
+			 add A,#15d
+			 mov B,#10d
+			 div AB
+			 mov R3,B    ; R3 bevat eenheden
+			 mov R4,A    ; R4 bevat tientallen
+
+
+; uitschrijven naar de 7-segmentdisplays
+
+		   mov A,#20H	  ; cijfer na de komma A=20H
+       add A,R2  	  ; A=A+R2 => [20H,29H]
+       mov R0,A
+       mov P1,@R0 ; P1=*R0 => P1=*(A+R2) => P1=tab[R2]
+
+       mov A,#20H	  ; eenheden A=20H
+       add A,R3  	  ; A=A+R3 => [20H,29H]
+       mov R0,A
+       mov P2,@R0 ; P2=*R0 => P2=*(A+R3) => P2=tab[R3]
+
+       mov A,#20H	  ; tientallen 
+       add A,R4  	  ; A=A+R4 => [20H,29H]
+       mov R0,A
+       mov P3,@R0 ; P3=*R0 => P3=*(A+R4) => P3=tab[R4] 
+
+  		mov R7,#255d
+ loop2:mov R6,#255d
+      djnz R6,$
+	 	  djnz R7,loop2
+
+			 jmp start	
+```
+
+
+
 ### Reeks 6
 
-**Oef 1**
+#### Oef 1
 
 Schrijf een eerste subroutine voor het bepalen van het product van twee getallen. De twee getallen worden voor het aanroepen van de subroutine op de stapel geplaatst. Bij deze oefening mag je gebruikmaken van de MUL-instructie. De uitvoer van de subroutine bevindt zich in de accu(LSB) en in het B-register(MSB).
 
@@ -3518,7 +4375,7 @@ vermenig:
 
 
 
-**Oef 2**
+#### Oef 4
 
 Schrijf een recursieve subroutine die de faculteit berekent van het getal dat zich in de accu bevindt. Het resultaat komt terecht in het B-register. 
 
@@ -3572,5 +4429,54 @@ recursie:
 	pop ACC
 	pop 00H
 	ret ; deze ret gaat dus telkens returnen naar de call 8 lijnen terug, en op het einde terug naar de call in main
+```
+
+
+
+#### Oef 4
+
+```assembly
+org 0000H
+
+jmp main
+
+org 0020H
+
+main: mov 20H,#11110000b
+      mov 21H,#01H
+      call crc    ; register B bevat CRC
+jmp $
+
+crc: push 00H
+     push 02H
+	 push  07H
+     push ACC
+     
+     mov R0,#20H
+     mov B,#00
+
+terug:cjne R0,#31H,schuiven
+    pop ACC
+	 pop 07H
+     pop 02H
+     pop 00H
+
+     ret
+schuiven: mov 07H,@R0   ; R7 bevat kopie van adres waarnaar R0 wijst
+          ;eerst en vooral R7 opschuiven naar rechts met rrc
+          mov R2,#08
+loop:     mov A,R7
+          clr C
+          rrc A
+          mov R7,A
+          mov A,B
+          rlc A
+          jnc verder
+          xrl A,#01010001b
+verder:   mov B,A   
+          djnz R2,loop
+          inc R0
+          jmp terug    
+
 ```
 
