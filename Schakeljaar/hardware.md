@@ -1189,7 +1189,7 @@ meerdere banks parallel
 
 activate: open rij & maak klaar (1 tussen deze en volgende)
 read/write: aanvraag naar verschillende woorden binnen rij of burst mode (opeenvolgend in rij) (col)
-precharge: sluit rij en bereidt voor (cyclus na vorige)
+precharge: sluit rij en bereidt voor !!! niet direct na read (2 tussen laten)
 
 tekening: CK, CMD (act, read, write), addr (row, col), Data (data)
 //TODO tekening oefenen
@@ -1494,7 +1494,7 @@ PC: (eigen incrementer, 1 of 2 bytes), gaat naar b bus
 C bus: gaat naar IMAR en PC
 nog een lijntje naar IMAR en PC om naar PC te schrijven
 
-FSM: 6 bollen
+FSM: 7 bollen
 word fetched = + 4
 read MBR1 = -1
 read MBR2 = -2
@@ -1575,6 +1575,8 @@ Deze architectuur is gevoelig aan RAW (read after write) dependence. Dus als een
 5. MIR2 geeft aan welke ALU bewerking wordt gedaan
 6. MIR3 verzekert write-back
 7. MIR4 stuurt eventuele memory operaties aan
+
+verschil -> geen next address enzo
 
 hoe ISA instructie opsplitsen:
 decoder stuurt adres eerst microoperatie, queueing unit blijft queuen to final bit op 1
