@@ -114,6 +114,8 @@ Omdat computers nu eenmaal zo werken, moeten we als we gegevens in een tabel (ar
 | Toevoegen (als we genoeg plek hebben) | $O(1)$           |
 | n elementen toevoegen                 | $3n$ (gemiddeld) |
 
+#### Geamorticeerde efficiëntie
+
 > **Amortized efficiency** is a very important concept: instead of looking at a single operation, we look at a sequence of operations and calculate the average efficiency. This is commonly used when an single operation could be slow in some rare situations
 
 Oké, hoe bewijzen we nu dat de geamorticeerde efficiëntie van een element toevoegen aan een dymanische tabel nog steeds gelijk is aan $0(1)$. 
@@ -121,10 +123,10 @@ $$
 \sum_{i=1}^n t_i = n + \sum_{j=0}^{\lceil log(n)\rceil - 1}2^j < n + 2n = 3n
 $$
 
-Met $t_i$ bedoelen we de tijd om de $i$-de toevoegoperatie uit te voeren. $\sum_{i=1}^n t_i$ is dus de tijd die $n$ toevoegoperaties in beslag nemen. We kunnen deze opsplitsen in 2 gevallen. 
+Met $t_i$ bedoelen we de tijd om de $i$-de toevoegoperatie uit te voeren. $\sum_{i=1}^n t_i$ is dus de tijd die $n$ toevoegoperaties in beslag nemen. We kunnen deze opsplitsen in 2 gevallen:
 
-* De array is niet vol: de operatie duurt '1' lang
-* De array is vol: er staan $i-1$ elementen in de array. Dan verdubbelen we de grootte van de array. Dit moeten we dus elke keer als het aantal elementen in de array een macht van twee is doen. Van daar de :$\sum_{j=0}^{\lceil log(n)\rceil - 1}2^j$ 
+* De array is niet vol: de operatie duurt '1' lang. Voor $n$ operaties duurt het dus $n$ lang.
+* De array is vol: er staan $i-1$ elementen in de array. Dan verdubbelen we de grootte van de array. Dit moeten we dus elke keer als het aantal elementen in de array een macht van twee is doen. Van daar de :$\sum_{j=0}^{\lceil log(n)\rceil - 1}2^j$ (dit is een meetkundige reeks)
 
 Wikipedia:
 
@@ -134,7 +136,7 @@ $$
 {\displaystyle a+ar+ar^{2}+ar^{3}+\cdots +ar^{n}=\sum _{k=0}^{n}ar^{k}=a\left({\frac {1-r^{n+1}}{1-r}}\right),}
 $$
 
-
+Als ik het vorige ding invul in de formule krijg ik $n-1$ als antwoord, maar dat komt waarschijnlijk omdat ik geen rekening heb gehouden met die ceil (dit ding $\lceil \rceil$) bij de $log(n)$. In ieder geval, $\sum_{j=0}^{\lceil log(n)\rceil - 1}2^j$ is een meetkundige reeks en we weten dat zijn som zeker kleiner is dan $2n$. 
 
 ### Linked List
 
@@ -261,124 +263,211 @@ We kunnen grafen in een computer op twee manieren voorstellen:
 
 
 
-## 4 - Priority queues
+## H4 - Priority queues
 
 Priority queue = een queue die elementen teruggeeft op basis van hun prioriteit.
+
+Soms willen we de elementen in een wachtrij niet behandelen volgens de volgorde dat ze erin zijn beland, maar volgens een prioriteit die wij ze toekennen. We kunnen dit op 2 manieren:
+
+* **Gerangschikte tabel**: we rangschikken de gegevens volgens prioriteit. Dan wordt het element met de hoogste prioriteit verwijderen $O(1)$ en een element toevoegen $O(n)$
+* **Ongeordende tabel**: Dan wordt toevoegen $O(1)$ en het element met de hoogste prioriteit verwijderen $O(n)$, want we moeten elke keer de hele tabel doorzoeken om hem te vinden.
+
+Er bestaat ook een compromis tussen deze twee. Een (binaire) heap. Ik zal je iets verder naar beneden laten zien dat zowel toevoegen als verwijderen dan in $O(\log n)$ tijd kan gebeuren.
 
 
 
 ### Heap
 
+Een heap is een boomstructuur die door zijn regelmatige vorm gemakkelijk in een tabel opgeslagen kan worden. Een heap is een **complete binaire boom**, waarvan de elementen voldoen aan de **heap-voorwaarde**\*. Alle niveaus, behalve dan eventueel de laatste zijn volledig gevuld. Op het laatste niveau moet dan ook het kind aan de linkerkant zitten.
+
+Zoals je ziet maakt een heap het gemakkelijk om snel het grootste (of het kleinste) element op te vragen.
+
 <img src="img/image-20211218214752652.png" alt="image-20211218214752652" style="zoom:50%;" />
 
-Basically een binaire boom waar alle niveaus (behalve soms de laatste) gevuld zijn.
-
-**Max heap**: the value of the parent is larger than (or equal to) the value of the children 
-
-**Min heap**: the value of the parent is smaller than (or equal to) the value of the children
-
-Zo kan je altijd snel het kleinste (of het grootste) element opvragen.
 
 
+> *Heap-voorwaarde
+>
+> **Max heap**: the value of the parent is larger than (or equal to) the value of the children 
+>
+> **Min heap**: the value of the parent is smaller than (or equal to) the value of the children
 
-Aantal nodes: tussen $2^{h} - 1$ En $2^{h+1} - 1$ met hoogte $h$ 
-
-dus h =  $\lfloor log(n) \rfloor$
+Op een volledig gevuld niveau $i$ zijn er  $2^i$ knopen. Een volledig gevulde boom met hoogte $h$ heeft dan:
+$$
+\sum_{i=0}^h 2^i = 2^{h+1} - 1
+$$
+knopen. Omdat het laatste niveau niet noodzakelijk is gevult zal $n$ liggen tussen:
+$$
+2^{h} - 1 <n\leq 2^{h+1} - 1 \\
+2^{h} <n\leq 2^{h+1} 
+$$
+Als we dan het logaritme nemen van bijde kanten, krijgen we $h =  \lfloor log(n) \rfloor$
 
 Omdat een heap zo regelmatig is kunnen we die gewoon in een array steken:
 
-* The parent of i is stored at ⌊(i-1)/2⌋ 
-* The children of i are stored at 2i+1 and 2i+2
+* De ouder van $i$ vinden we terug op $\lfloor (i-1)/2 \rfloor$ 
+* De kinderen van $i$ vinden we terug op: $2i+1$ en $2i+2$
+
+Er zijn ook $d$-heaps. Is dit belangrijk? //TODO
 
 
 
-**Elementen toevoegen**
+#### Bewerkingen op heaps
 
-Doen we achteraan de heap. In het slechtste geval moet die dan helemaal naar boven: $O(log(n))$
+| Bewerking                                    | Beschrijving                                                 | Tijdscomplexiteit |
+| -------------------------------------------- | ------------------------------------------------------------ | ----------------- |
+| Element toevoegen                            | Achteraan op de heap toevoegen, en daarna het element omhoog laten komen tot het op een juiste plek staat (*bubble up*). In het slechtste geval moet hij helemaal tot bovenaan. | $O(log(n))$       |
+| Root node vervangen                          | Als dan de heap voorwaarde niet is voldaan zal hij omlaag moeten zakken totdat hij juist staat. In het slechtste geval helemaal tot onderaan (*bubble down*) | $O(log(n))$       |
+| Root node verwijderen                        | Om de heap compleet te houden zetten we dan het laatste element vooraan en doen we een bubble down. | $O(log(n))$       |
+| Element van een willekeurige knoop vervangen | Als het nieuwe element de heapwoorwaarde verstoort, zal hij naar onder of naar boven moeten bubbelen. | $O(log(n))$       |
 
-= bubble up
 
-**Root node verwijderen**
 
-Dan het laatste element op zijn plek zetten en dan bubble down (telkens verwisselen met grootste kind bij max heap): $O(log(n))$
+#### Constructie van een heap (met bewijzen)
+
+We kunnen een heap op twee manieren opbouwen. Aan de ene kant door gewoon elementen blijven toe te voegen, of door verschillende deelheaps samen te voegen. Je kan misschien al raden dat de tweede manier efficiënter is.
 
 **Heap bouwen door elementen toe te voegen**
 
-$O(n log(n))$ (moeten we dit bewijs kennen ik hoop het niet want hayek)
+Oké we kunnen gemakkelijk beredeneren dat $n$ elementen toevoegen aan een heap $T(n)$ kost. We moeten voor de eerste twee toevoegingen maximaal 1 tje omhoog bubbelen. Voor de volgende 4 moeten we in het slechtste geval 2 keer omhoog bubbelen. Enzovoort...
+$$
+T(n) \leq \sum_{i=0}^h 2^i.i \text{ (dit stond om de een of andere reden niet in de cursus)} \\ 
+T(n) \leq 2.1 + 4.2 + 8.3 + \cdots + 2^{h-2}(h-2) + 2^{h-1}(h-1) + 2^{h}(h) \\
+2T(n) \leq 4.1 + 8.2 + 16.3 + \cdots + 2^{h-1}(h-2)  + 2^{h}(h-1) + 2^{h+1}(h)
+$$
+Als we nu de eerste van de tweede aftrekken, maar begin niet van het begin. Doe het zo:
+$$
+\quad\quad\quad\quad\quad\quad\quad\quad\space
+2T(n) = 4.1 + 8.2 + 16.3 + \cdots + 2^{h-1}(h-2)  + 2^{h}(h-1) + 2^{h+1}(h)\\
+T(n) = 2.1 + 4.2 + 8.3 + 16.4+ \cdots  + 2^{h-1}(h-1) + 2^{h}(h) \\
+\quad\quad\quad
+2T(n) - T(n) = -2\space\space-4\space\space-8\space\space-16- \space\space\cdots\space\space -2^{h-1}\quad \quad\quad- 2^h + 2^{h+1}.h
+\quad\quad\quad\quad\space
+\\
+$$
+De termen van $-2$ tot $-2^h$ vormen (als we vanvoor een $-1$ toevoegen) een meetkundige reeks: $\sum_{i=0}^h 2^i = 2^{h+1} -1$. 
+$$
+2T(n) - T(n) = 1 -( 1+2+4+8+16+ \cdots +2^{h-1} + 2^h) + 2^{h+1}.h
+$$
+
+$$
+T(n) = 2T(n) - T(n) \leq 1 -(2^{h+1}-1) + 2^{h+1}.h
+\\ 
+T(n) = 2T(n) - T(n) \leq 2 + 2^{h+1}(h-1)
+$$
+
+We weten dat $2^h \leq n < 2^{h+1}$, onthoud dat $h$ de hoogte is en $n$ het aantal elementen. Dan kunnen we de log nemen van het vorige en komen we dit uit:
+$$
+T(n) \leq 2 + 2n\log_2 n
+$$
+Een heap opbouwen door middel van elementen toevoegen is dus $O(n\log n)$
 
 **Heap opbouwen door kleinere heaps samen te voegen**
 
-$O(n)$
+In de plaats van de elementen één voor één toe te voegen, gaan we kleinere heaps maken en ze samenvoegen. In theorie toch. Data in een array kunnen we eigenlijk direct voorstellen als een heap, deze is alleen nog niet gesorteerd. We bekijken dan beginnend van vanonder elke deelheap.
 
+Hoe doen we dat dan:
 
+<img src="img/image-20211218214752652.png" alt="image-20211218214752652" style="zoom: 33%;" />
+
+We kijken ter illustratie naar de afbeelding. Stel je voor dat hij nu niet zou voldoen aan de heapvoorwaarde. Of nee, laten we zeggen dat we van deze data een min heap willen maken.
+
+* We beginnen helemaal onderaan. Bekijk de deelheap (17,2,7). Om deze juist te zetten moeten we enkel 17 en 7 van plaats wisselen.
+* Nu gaan we en niveau hoger (naar 19). Nu moeten we weeral enkel de wortel naar beneden laten bubbelen. 
+* Je moet dus niet elke heer heel de boom doorlopen.
+
+Het aantal operaties die je nu moet uitvoeren bedraagt.
+$$
+T(n) = \sum_{i=0}^h 2^i(h-i) \\
+$$
+Dit komt doordat er op elk niveau $2^i$ elementen zijn. Elk element moet dan hoogstens $h-i$ plaatsen zakken om op de juiste plek terecht te komen. Op het zicht lijkt dit $O(n \log n)$, maar als we een gelijkaardige strategie als bij het vorige onderdeel toepassen, kunnen we het tegendeel aantonen:
+$$
+\quad\quad\quad\quad\quad\quad\quad2T(n) = 2h + 4(h-1) + 8(h-2) + \cdots + 2.2^{h-1}+ 2^{h} \\
+T(n) = h + 2(h-1) + 4(h-2) +8(h-3) + \cdots + 2^{h-1} \\
+T(n) = -h + 2 +4+8+\cdots + 2^{h-1} + 2^h \\
+T(n) = -h - 1 + (1 + 2 +4+8+\cdots + 2^{h-1} + 2^h)\\
+T(n) = -h-1 + 2^{h+1} - 1
+$$
+We weten dat $h = \log n$, dus $T(n) = O(n)$
 
 ### Merging heaps
 
-Soms willen we twee heaps samenvoegen. Sommige andere soorten heaps zijn hier goed in.
+Soms willen we twee heaps samenvoegen. Sommige andere soorten heaps zijn hier goed in. Hieronder ga ik in detail over coole datastructuren die merge-operaties vergemakkelijken.
 
 
 
 #### Binomial queue
 
-= een set van **binomial trees**
+= een bos van **binomial trees**
 
-elke boom heeft een vaste vorm:
+Een binomiaalboom wordt gekenmerkt door zijn hoogte. Voor elke hoogte is er maar 1 binomiaalboom. Deze bestaat uit 2 bomen van de vorm van één niveau lager. Ik heb mijn artistieke skills bovengehaald om het even te verduidelijken op de tekening. Ik vind het wel een beetje dom dat ze het onnodig achtten er een boom van niveau 1 bij te zetten in de slides. De tweede boom is dus steeds het meest linkse kind van de eerste deelboom.
+
+
 
 <img src="img/image-20211218220045165.png" alt="image-20211218220045165" style="zoom:50%;" />
 
-Bij $n$ elementen zijn er dan $log(n)$ bomen nodig, deze bomen volgen allemaal de heap-eigenschap.
+We kunnen een prioriteitswachtrij dus voorstellen door een bos van binomiaalbomen, waarvan er van elk niveau hoogstens eentje is (want als er 2 zijn kunnen we ze samenvoegen.)
 
-**Minimum vinden**: dan moet je alle rootknopen van de bomen vergelijken: $O(log (n))$
+Bij $n$ elementen zijn er dus $log(n)$ bomen nodig, deze bomen volgen allemaal de heap-eigenschap.
 
-Je kan gemakkelijk 2 bomen van dezelfde groote mergen in 1 operatie (boom met de grootste root links):
+##### Operaties
+
+| Operatie                      | Beschrijving                                                 | Tijdscomplexiteit |
+| ----------------------------- | ------------------------------------------------------------ | ----------------- |
+| Minimum/maximum vinden        | Dan moet je alle rootknopen van de bomen vergelijken. Er zijn $log(n)$ bomen, dus $log(n)$ rootknopen. Als we de plaats van het minimum onthouden kunnen we er ook $O(1)$ van maken. | $O(\log n)$       |
+| 2 bomen samenvoegen           | Die met de kleinste root kind maken van die met de grootste root. (zie hieronder) | $O(1)$            |
+| 2 binomial queues samenvoegen | Omdat er $\log n$ bomen zijn.                                | $O(\log n)$       |
+| Prioriteit verminderen*       | Naar de wortel toe bewegen                                   | $O(\log n)$       |
+| Verwijderen*                  | Prioriteit verminderen en minimum verwijderen combineren.    | $O(\log n)$       |
+
+\* *vereisen beide dat het element eerst gevonden wordt*
+
+Je kan gemakkelijk 2 bomen van dezelfde grootte mergen in 1 operatie (boom met de grootste root links):
 
  <img src="img/image-20211218220532622.png" alt="image-20211218220532622" style="zoom:50%;" />
 
-**2 binomial queues mergen**: alle bomen van dezelfde grootte samenvoegen en herhalen: $O(log(n))$
 
-**minimum verwijderen**: dan valt de boom uit elkaar in kleine boompjes die je moet mergen: $O(log(n))$
 
 
 
 #### Pairing heap
 
-Een boom die de heap-eigenschap volgt, maar niet speciaal compleet is.
-
-> Each node stores a pointer to its leftmost child and to its first sibling
+Een boom die de heap-eigenschap volgt, maar niet speciaal compleet is. We gaan een pariting heap typisch implementeren gebruik makende van pointers. Elke node houdt een pointer bij naar zijn linkerkind en zijn rechterbuur.
 
 <img src="img/image-20211218221059741.png" alt="image-20211218221059741" style="zoom:50%;" />
 
-Als we 2 pairing heaps mergen, zetten we de boom met de grootste root links en omdat elke node een pointer heeft naar zijn buur, kunnen we gemakkelijk alles verzetten.
+##### Operaties
+
+| Operatie                        | Beschrijving                                                 | Tijdscomplexiteit                              |
+| ------------------------------- | ------------------------------------------------------------ | ---------------------------------------------- |
+| 2 heaps samenvoegen             | Als we 2 pairing heaps mergen, zetten we de boom met de grootste root links en omdat elke node een pointer heeft naar zijn buur, kunnen we gemakkelijk alles verzetten. (zie afbeelding hieronder) | $O(1)$                                         |
+| Prioriteit van element verlagen | Splits de boom vanaf dat element. Dit is nu de wortel van zijn eigen boom. Pas de prioriteit aan en merge hem opnieuw in de boom. (dit gaat niet als je de prioriteit moet verlagen, want dan klopt die deelboom op zich niet) | $O(1)$ (indien je het element al had gevonden) |
+| Wortel verwijderen              | De boom valt dan uit elkaar in een aantal deelbomen. Deze kan je dan samenvoegen. Als je dom bent voeg je ze dan een voor één toe tot je weer een boom hebt ($O(n)$), maar je kan ze ook eerst per 2 samenvoegen en daarna al deze boompjes samenvoegen. | $O(\log n)$ als je slim bent                   |
+| Willekeurige knoop verwijderen  | De deelheap van deze knoop loskoppelen, dan moet je op die deelheap enkel de wortel verwijderen en kan je hem vervolgens terug samenvoegen met de oorspronkelijke heap. | $O(\log n)$                                    |
+
+
 
 <img src="img/image-20211218223352628.png" alt="image-20211218223352628" style="zoom: 33%;" />
 
-**Prioriteit van een element verlagen**
-
-Dan kan je de deelboom vanaf dat element afsplitsen en opnieuw mergen.
-
-**De root verwijderen**
-
-//TODO
+Heaps zijn nuttig bij discrete event simulation. Maar dat wist je misschien al.
 
 
 
-## 5 - Basic dictionaries
+## H5 - Basic dictionaries
 
-Hier wordt precies niet echt iets nieuws gezegd.
-
-Behalve als je niet weet wat binary search is.
+Woordenboeken gebruiken sleutels om gegevens te vinden. We willen de slieutels liefst ook op goede plaats zetten om de gegevens snel terug te kunnen vinden
 
 
 
-## 6 - Hash Tables
+## H6 - Hash Tables
 
 
 
-## 7 - Binary Search Trees
+## H7 - Binary Search Trees
 
 
 
-## 8 - External data structures
+## H8 - External data structures
 
 
 
@@ -386,13 +475,10 @@ Behalve als je niet weet wat binary search is.
 
 ## Mogelijke examenvragen
 
-**Wat zijn de verschillende technieken om collisions op te vangen bij hashtabellen?**
-
-**Toon aan dat bij een binaire zoekboom de voorloper van een knoop met twee kinderen geen rechterkind heeft.**
-
-**Gegeven een zekere toepassing, welke datastructuur zou je gebruiken? Wat zijn de nadelen?**
-
-**Gegeven een binaire zoekboom, voeg een element toe, verwijder een element, geef een mogelijke toevoegvolgorde die in deze boom resulteert.**
+1. Wat zijn de verschillende technieken om collisions op te vangen bij hashtabellen?
+2. Toon aan dat bij een binaire zoekboom de voorloper van een knoop met twee kinderen geen rechterkind heeft.
+3. Gegeven een zekere toepassing, welke datastructuur zou je gebruiken? Wat zijn de nadelen?
+4. Gegeven een binaire zoekboom, voeg een element toe, verwijder een element, geef een mogelijke toevoegvolgorde die in deze boom resulteert.
 
 
 
