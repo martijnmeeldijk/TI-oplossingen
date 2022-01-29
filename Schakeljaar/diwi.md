@@ -594,7 +594,6 @@ $\mathbb{Z}_n$ is een veld $\xleftrightarrow{}$ $n$ is priem
 * H1
   * Theorie
     * Bewijzen (over)aftelbaarheid: Boek stelling 1.5 voor $\mathbb{R}$, pagina 19 voor $\mathbb{Q}$
-    * Bewijs (1.3): Twee eindige verzamelingen A en B hebben een identiek aantal elementen als en slechts als er een bijectie bestaat tussen A en B.
   * Oefeningen
     * Bewijs dat $\sqrt{n}$ (ir)rationaal is. (Stelling 1.1 in het boek voor $\sqrt{2}$)
     * Iets creatiefs met kardinaliteit
@@ -602,7 +601,7 @@ $\mathbb{Z}_n$ is een veld $\xleftrightarrow{}$ $n$ is priem
     * Relaties toepassen (dus weten wanneer je welke hebt)
 * H2
   * Theorie
-    * Bewijs (stelling 2.6): Als $ggd(a,n) = 1$ bestaat er 1 getal $x$ waarvoor: $a.x\stackrel{n}{=} 1 \stackrel{n}{=} x.a$
+    * Bewijs (stelling 2.13): Als $ggd(a,n) = 1$ bestaat er 1 getal $x$ waarvoor: $a.x\stackrel{n}{=} 1 \stackrel{n}{=} x.a$
     * Bewijs (stelling 2.15): Voor positief getal $a$ en priemgetal $p$: $a^p \stackrel{p}{=} a$ (gebruik fermat)
     * Bewijs (stelling 2.17): Het aantal oplossingen x ∈ {0, 1, 2, . . . , n − 1} van de lineaire congruentie $a.x \stackrel{n}{=} b$
     * Bewijs (stelling 2.18): Oplossing lineaire diomfantische vergelijking.
@@ -663,6 +662,110 @@ $a.x + b.y = c$
 Dan kan je omzetten naar $a.x \stackrel{n}{=} b$, deze oplossen naar $x$ en invullen in de originele vergelijking (niet vergeten dat de oplossing van de lineaire congruentie $x + t.n$ is)
 
 
+
+## Bewijzen
+
+<img src="img/image-20220126215912865.png" alt="image-20220126215912865" style="zoom: 33%;" />
+
+---
+
+<img src="img/image-20220126220014423.png" alt="image-20220126220014423" style="zoom:33%;" />
+
+---
+
+<img src="img/image-20220126220148678.png" alt="image-20220126220148678" style="zoom:33%;" />
+
+1. constructie oplossing
+2. oplossing is uniek
+
+---
+
+<img src="img/image-20220126220223287.png" alt="image-20220126220223287" style="zoom:33%;" />
+
+---
+
+<img src="img/image-20220126220255138.png" alt="image-20220126220255138" style="zoom:33%;" />
+
+
+
+## Vanbuiten leren
+
+Deductieve redenering
+
+```
+van algemene stelling -> kleiner #ok
+```
+
+<details><summary>Antwoord</summary><small>Vanuit een algemene stelling komt men tot een meer specifiek besluit
+Bijvoorbeeld:
+Uit “Het is altijd mooi weer aan de zee” volgt “Het is morgen mooi weer aan de zee”</small></details>
+
+Inductieve redenering
+
+```
+van beperkte voorbeelden veralgemenen #ok
+```
+
+<details><summary>Antwoord</summary><small>Vanuit een of meerdere bijzonder gevallen trekt men algemene besluiten
+Bijvoorbeeld:
+Experimenten in de natuurkunde, scheikunde… leiden tot ‘wetmatigheden’</small></details>
+
+Eigenschappen partiele orderelatie
+
+```
+transitief, reflexief, symmetrie #nok
+# antisymmetrie als x -> y en y -> x dan x = y
+```
+
+<details><summary>Antwoord</summary><small>reflexifiteit, anti-symmetrie, transitiviteit</small></details>
+
+Eigenschappen equivalentierelatie
+
+```
+transitief, reflexief, symmetrisch #ok
+```
+
+<details><summary>Antwoord</summary><small>reflexief, symmetrie, transitief</small></details>
+
+Eigenschappen totale orderelatie
+
+```
+partiele + als x,y in R, x -> y, of y->x #nok
+```
+
+<details><summary>Antwoord</summary><small>partiele orderelatie + voor alle x en y is er in een richting een pijl</small></details>
+
+Strikte orderelatie
+
+``` 
+(x,x) valt weg #antireflexief # nok
+```
+
+<details><summary>Antwoord</summary><small>antireflexief -> (x,x) valt weg</small></details>
+
+Verschil functie totale functie, afbeelding, partiele functie
+
+```
+functie -> uit elke vertrekt hoogstens 1 #nok
+totale -> uit elke exact 1 = afbeelding
+# partiele functie -> niet uit elk element 1 pijl (maar wel nog steeds functie) 
+```
+
+<details><summary>Antwoord</summary><small>functie: uit elk element ten hoogste 1 pijl<br>
+  totale functie/afbeelding: uit elk element exact 1 pijl<br>
+  partiele functie: niet uit elk element 1 pijl</small></details>
+
+Surjectie, injectie, bijectie
+
+```
+surjectie -> in elke komt minstens 1 toe #ok
+injecti -> in elke komt hoogstens 1 toe
+bijectie -> totale functie die injectief en surjectief is (1 op 1)
+```
+
+<details><summary>Antwoord</summary><small>surjectie: in elk element komt minstens 1 pijl toe<br>
+  injectie: in elk element komt hoogstens 1 pijl toe<br>
+  bijectie: totale functie die injectief en surjectief is (1 op 1)</small></details>
 
 # Python oefeningen
 
