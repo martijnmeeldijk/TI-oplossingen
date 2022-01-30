@@ -108,6 +108,8 @@ In het eerste hoofdstuk legde ik je het verschil uit tussen een container en een
 
 Omdat computers nu eenmaal zo werken, moeten we als we gegevens in een tabel (array) opslaan, op voorhand weten hoe groot deze moet zijn. Dit probleem kunnen we (tot kost van de performantie) door een nieuwe tabel te maken wanneer de huidige te klein is. Gewoonlijk maakt men wanneer de array te klein is een nieuwe van twee maal de grootte. De geamorticeerde efficiëntie van deze operatie is nog steeds $0(1)$ aangezien de kost om $n$ elementen $3n$ bedraagt. Zie hieronder voor een beetje meer info. Ik weet nog niet goed of we dit echt moeten kunnen aantonen. Oke het is vorig jaar gevraagd blijkbaar.
 
+**Operaties**
+
 | Operatie                              | Cost             |
 | ------------------------------------- | ---------------- |
 | Element opvragen                      | $O(1)$           |
@@ -142,6 +144,8 @@ Als ik het vorige ding invul in de formule krijg ik $n-1$ als antwoord, maar dat
 
 Bij een gelinkte lijst is elk element toegankelijk, maar niet direct toegankelijk. Als we een bepaald element zoeken, zullen we altijd vanaf de eerste knoop moeten beginnen en de pointer naar zijn opvolger volgen. We hebben natuulijk ook dubbel gelinkte lijsten, maar dat verhaal ken je hopelijk al.
 
+**Operaties**
+
 | Operatie                                 | Cost   |
 | ---------------------------------------- | ------ |
 | Eerste element opvragen                  | $O(1)$ |
@@ -158,7 +162,7 @@ Je kan een stack ook perfect implementeren met een gelinkte lijst. Alle operatie
 
 Een stack wordt zeer vaak gebruikt en is handig om gegevens bij te houden waarvoor de volgorde van verwijderen onbelangrijk is.
 
-
+**Operaties**
 
 | Operatie                         | Cost   |
 | -------------------------------- | ------ |
@@ -175,6 +179,8 @@ Simpelweg een stack met twee pointers. Als we herhaaldelijk elementen toevoegen 
 
 Het is natuulijk ook weer mogelijk om een gelinkte lijst te gebruiken voor de implementatie voor je queue. Dan moet je simpelweg een extra pointer naar het laatste element bijhouden. Als je ook langs de achterkant van de queue elementen wilt verwijderen zal je een dubbelgelinkte lijst nodig hebben.
 
+**Operaties**
+
 | Operatie              | Cost   |
 | --------------------- | ------ |
 | Toevoegen             | $O(1)$ |
@@ -187,11 +193,13 @@ Een queue werkt volgens het first in first out principe.
 
 Indien je het nog niet wist. Deque staat voor *double ended queue*. Een deque is een combinatie van een stack en een queue. Je kan nu vanvoor en vanachter elementen toevoegen of verwijderen.
 
+**Operaties**
+
 | Operatie                                       | Cost   |
 | ---------------------------------------------- | ------ |
 | Toevoegen                                      | $O(1)$ |
 | Verwijderen                                    | $O(1)$ |
-| Het boeit eigenlijk, niet alles is toch $O(1)$ |        |
+| Het boeit eigenlijk niet, alles is toch $O(1)$ |        |
 
 
 
@@ -455,11 +463,206 @@ Heaps zijn nuttig bij discrete event simulation. Maar dat wist je misschien al.
 
 ## H5 - Basic dictionaries
 
-Woordenboeken gebruiken sleutels om gegevens te vinden. We willen de slieutels liefst ook op goede plaats zetten om de gegevens snel terug te kunnen vinden
+Woordenboeken gebruiken sleutels om gegevens te vinden. We willen de slieutels liefst ook op goede plaats zetten om de gegevens snel terug te kunnen vinden. We veronderstellen ook dat de sleutels verschillend zijn.
+
+In dit hoofdstuk houden we ons enkel bezig met lineaire woordenboekstructuren. (met tabellen of gelinkte lijsten)
 
 
+
+
+
+### Tabel
+
+We steken ons woordenboek dus in een array. Dit kan op verschillende manieren
+
+#### Rechtstreeks addresseerbare tabel
+
+Als we een 1-op-1 verband kunnen vinden tussen de sleutels en indices, hoeven we de sleutels nieteens op te slaan. Dan spreken we van een *directly addressable table*. 
+
+Alle woordenboekoperaties zijn hier $O(1)$. Moet je toch meerdere gegevens per sleutel willen ondersteunen, kan je op de overeenkomstige tabelindex een gelinkte lijst voorzien.
+
+#### Ongeordende tabel
+
+We kunnen een woordenboek opslaan in een niet gerangschikte array.
+
+**Operaties**
+
+| Operatie    | Beschrijving                                                 | Tijdscomplexiteit |
+| ----------- | ------------------------------------------------------------ | ----------------- |
+| Zoeken      | Alle sleutels moeten sequentieel overlopen worden            | $O(n)$            |
+| Toevoegen   | Gewoon achteraan die lijst keilen                            | $O(1)$            |
+| Verwijderen | We gaan er van uit dat het element al gevonden is. We vervangen hem gewoon door het element achteraan in de lijst. | $O(1)$            |
+
+#### Tabel geordend volgens zoekkans
+
+We kunnen de performantie verhogen door elementen waarvan we weten dat die vaker gezocht gaan worden vooraan te zetten. De optimale volgorde van de tabel is dan als de sleutels in dalende waarschijnlijkheid gerangschikt zijn. Meestal weten we natuurlijk niet op voorhand welke sleutels vaker gebruikt gaan worden. Hier zijn enkele oplossingen voor.
+
+*  De frequentie bijhouden waarmee elke element wordt gezocht. Dan de gegevens rangschikken volgens dalende frequentie.
+* Als een element gevonden wordt, hem verwisselen met zijn voorganger. Elke keer dat je iets opzoekt wordt de tabel dus efficiënter. Het duurt wel even voordat de elementen in een goede volgorde staan, dus dit is een beetje stom als de waarschijnlijkheid verandert met de tijd.
+
+#### Gerangschikte tabel
+
+**Operaties**
+
+| Operatie    | Beschrijving                                                 | Tijdscomplexiteit |
+| ----------- | ------------------------------------------------------------ | ----------------- |
+| Zoeken      | We kunnen binair zoeken. Als je niet weet wat dat is mag aan mijn hond z'n reet komen likken hij vindt dat heel lekker (vraag me niet waarom ik dat weet). | $O(\log n)$       |
+| Toevoegen   | Nadat we de juiste plek voor het element hebben gevonden, moeten we in het slechtste geval heel de tabel opschuiven. | $O(n)$            |
+| Verwijderen | Zelfde als toevoegen                                         | $O(n)$            |
+
+
+
+
+
+### Gelinkte lijst 
+
+We kunnen ook een linked-list als woordenboek gebruiken. Dit gaat weeral op een paar manieren.
+
+#### Ongeordende lijst
+
+**Operaties**
+
+| Operatie    | Beschrijving                                                 | Tijdscomplexiteit |
+| ----------- | ------------------------------------------------------------ | ----------------- |
+| Zoeken      | We moeten heel de lijst overlopen                            | $O(n)$            |
+| Toevoegen   | Gewoon vooraan toevoegen                                     | $O(1)$            |
+| Verwijderen | Als we het element gevonden hebben, hem er gewoon tussenuit flikkeren. Bij een gewone gelinkte lijst hebben we wel de voorloper nodig. | $O(1)$            |
+
+#### Lijst geordend volgens zoekkans
+
+We kunnen ook weer de meer gebruikte elementen naar vooraan schuiven. Wat niet kon bij arrays is als een element opgeroepen wordt, hat direct helemaal vooraan te zetten. Dit blijkt in de praktijk toch minder goed te zijn dan de eerste methode.
+
+#### Gerangschikte lijst
+
+**Operaties**
+
+| Operatie    | Beschrijving                                                 | Tijdscomplexiteit |
+| ----------- | ------------------------------------------------------------ | ----------------- |
+| Zoeken      | We kunnen niet rechtstreeks aan de elementen, dus we moeten toch heel de lijst overlopen om het juiste element te vinden. | $O(n)$            |
+| Toevoegen   | Ook weer heel de lijst overlopen om de juiste plek te vinden | $O(n)$            |
+| Verwijderen | Zelfde als toevoegen                                         | $O(n)$            |
+
+Een gerangschikte linked-list voor een woordenboek is dus tering nutteloos waarom staat dit zelfs in de cursus.
 
 ## H6 - Hash Tables
+
+Ik ga even veronderstellen dat je weet wat een hashfunctie is. We gaan uit onze index een sleutel afleiden door middel van een hashfunctie. Met die index kunnen we dus rechtstreeks ons element uit de tabel halen. Het probleem is natuurlijk een hashfunctie vinden die de sleutels mooi verdeelt over de tabel, zonder conflicten te veroorzaken. Als we de sleutels op voorhand weten, kunnen we naturlijk een hashfunctie maken die een uniek resultaat oplevers voor elke sleutel. Dit is niet mogelijk als we super veel mogelijke sleutels hebben (strings bijvoorbeeld). 
+
+Hoe gaan we dan om met die conflicten? Lees verder en ik zal je verrijken met deze kennis.
+
+
+
+### Chaining
+
+Hier volgen een aantal methodes die omgaan met conflicten door middel van gelinkte lijsten. 
+
+<img src="img/image-20220129184244508.png" alt="image-20220129184244508" style="zoom: 50%;" />
+
+#### Separate chaining
+
+We zetten alle sleutels die op dezelfde index terechtkomen in een gelinkte lijst.
+
+**Operaties**
+
+| Operatie    | Beschrijving                                                 | Tijdscomplexiteit |
+| ----------- | ------------------------------------------------------------ | ----------------- |
+| Zoeken      | In het slechtste geval (wanneer al de elementen in één bucket zitten). Neem $n$, het aantal elementen en $m$ het aantal vakjes. En $\alpha = \frac{n}{m}$. Dan is de gemiddelde zoektijd $\Theta(\alpha +1)$, met 1 de constante tijd die de hashfunctie nodig heeft. Als $m \approx n$, hebben we dus $O(1)$ | $O(1)$            |
+| Toevoegen   | Vanvoor toevoegen. (draagt ook bij aan temporale lokaliteit) | $O(1)$            |
+| Verwijderen | Aangezien zoeken $O(1)$, gewoon het gevonden element wegyeeten. | $O(1)$            |
+
+We moeten dus gewoon ervoor zorgen dat de grootte van onze hashtabel evenredig is met het aantal opgeslagen sleutels. Als $m$ en $n$ te hard verschillen zullen we dus geen $O(1)$ hebben.
+
+
+
+#### Coalesced chaining
+
+Het verschil tussen separate chaining en coalesced chaining is simpel. Bij het vorige kon elke vakje enkel een lijst met elementen bevatten. Coalesced chaining gebruikt daarentegen een **tabel van lijstknopen**. Hij kan hierin niet alleen een waarde opslaan, maar ook een **verwijzing naar een andere element**.
+
+
+
+<img src="img/image-20220130105005631.png" alt="image-20220130105005631" style="zoom: 50%;" />
+
+| ![image-20220130104911717](img/image-20220130104911717.png)  | ![image-20220130104923099](img/image-20220130104923099.png)  | ![image-20220130104934284](img/image-20220130104934284.png)  | ![image-20220130104943084](img/image-20220130104943084.png)  |
+| ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| We houden op voorhand een pointer bij naar een lege plaats die gebruikt kan worden bij collisions | We voegen A en B toe, er is nog geen collision. Extra zin om de tabel te alignen ik heb autisme. | C heeft dezelfde hash als A, we smijten hem dus op het vrije plekje, verzetten de pointer naar een ander vrij plekje | Plek 9 is al bezet, dus we zetten D op de vrije plek waarnaar de pointer wees. Vak 9 heeft nu ook een pointer naar D. |
+
+In hoeverre ik het begrijp heeft elk vakje in de tabel dus plaats voor een **waarde** en een **pointer**. Als we een element toevoegen en het waarde-vakje op de plek van de hash van dat element is leeg, dan zetten we het element daar. Als er **al een waarde** staat, maar de pointer is leeg, zetten we de **pointer naar een ander leeg vakje** (die pointer wordt zo te zien op voorhand al bijgehouden) en zetten we die waarde erin. Als we een waarde willen toevoegen, maar de plek van de hash **bevat al een waarde en een pointer**, dan **volgen we de pointer**, mogelijks meermaals, totdat we bij een vakje zonder pointer komen en **zetten de pointer** naar het lege vakje daarin. (waarna we dat lege vakje vullen natuurlijk).
+
+Coalesced (samengevoegd volgens google translate) wijst op het feit dat een plaats die opgevuld is bij een collision deel uit kan maken van **verschillende lijsten**. Het grote voordeel aan deze methode is dat we geen knopen dynamisch hoeven aan te maken. 
+
+
+
+**Adres- en overflow zone**
+
+Een kleine variant op coalesced chaining maakt gebruik van een **overflow zone**, als er zich een collision voordoet, zal het desbetreffende element hierin geplaatst worden. Als er geen collision is, zal het element in de **adreszone** geplaatst worden. Pas als alle geheugenruimte in de overflowzone is opgebruikt zetten we onze lijsten verder in de adreszone.
+
+**Operaties**
+
+| Operatie    | Beschrijving                                                 | Tijdscomplexiteit |
+| ----------- | ------------------------------------------------------------ | ----------------- |
+| Zoeken      | Begint in de adreszone. We vertrekken op de plek van de hash van de te zoeken sleutel en volgen de ketting tot we de juiste hebben gevonden of uitkomen op een leeg vakje. | $O(1)$*           |
+| Toevoegen   | Heb ik grotendeels uitgelegd. Alleen heb ik niet gezegd hoe de pointer naar de lege plaats bepaald wordt. Meestal wordt **de laatste lege plaats** in de tabel hiervoor gebruikt.  Wordt deze gevult, gaan we omhoog naar de vorige lege plaats. Dit is perfect als we een adres- en overflow zone gebruiken. Bij gewone coalesced chaining gaan hierdoor de laatste knopen snellen opvullen en de lijsten sneller samenklitten. | $O(1)$*           |
+| Verwijderen | Verwijderen is moeilijk, dus we gebruiken liefst **lazy deletion**. We markeren simpelweg een element als verwijderd, als er een element op die plaats wilt staan, dan vervangen we het. Dit beïnvloedt de zoektijd wel negatief (door die sleutels die daar voor niks staan). Als we vaak willen verwijderen kunnen we beter separate chaining gebruiken. | $O(1)$*           |
+
+\* *Neem deze met een korrel zout. De worst case kan eigenlijk super slecht zijn. Dit is in de praktijk niet zo omdat we bij een goede verdeling bijna altijd onze sleutel direct vinden*
+
+Het komt erop neer dat coalesced chaing **het snelste** is van alle soorten hashtabellen. Zolang onze grootteverhouding goed ligt toch ($\alpha > 0.6$). 
+
+
+
+#### Open adressering
+
+In tegenstelling tot coalesced chaining, waar de conflicten worden opgelost met pointers, gaan we bij open addressering de alternatieve plaats voor de sleutel **berekenen**. We ruilen dus plaats voor tijd. We maken geen gebruik van een overflow zone, want de alternatieve plaatsen liggen vast. Het is ook belangrijk om op voorhand een idee te hebben van het aantal gegevens, aangezien ze allemaal in de tabel moeten passen. Onze bezettingsgraad $\alpha = \frac{n}{m}$ kan dus nooit groter zijn dan 1.
+
+| Operatie    | Beschrijving                                                 | Tijdscomplexiteit |
+| ----------- | ------------------------------------------------------------ | ----------------- |
+| Zoeken      | We berekenen weeral de hash om op de juiste plaats in de tabel uit te komen. Als deze plaats niet de juiste sleutel bevat, voeren we een bepaalde berekening uit om een andere plaats te zoeken. | $O(1)$*           |
+| Toevoegen   | Als we door te zoeken een lege plaats vinden, zetten we het element daar. | $O(1)$*           |
+| Verwijderen | We moeten weer doen aan lazy deletion. Moraal van het verhaald: gebruik seperate chaining als je vaak elementen moet verwijderen. | $O(1)$*           |
+
+\**Eigenlijk weet ik de worst case performance niet. Op zich is die niet echt zo belangrijk.*
+
+Wanneer bij open adressering de tabel **bijna vol** is zal, zoals je misschien wel kan raden, de performantie dramatisch **verslechteren**. Doordat we geen pointers moeten bijhouden, zal de totale in beslag genomen **geheugenruimte** toch aanzienlijk **kleiner** zijn dan bij andere soorten hashtabellen.
+
+
+
+#### Bepalen van zoeksequenties
+
+Hoe moeten we nu de alternatieve plaats voor een element berekenen bij het voordoen van een collision? Hier hebben we drie vershillende manieren voor. Elke techniek garandeert dat (als dat nodig blijkt) de hele tabel wordt doorzocht. De indices die uit deze wiskundige berekeningen komen zullen dan gewoon de indices van de tabel in een andere volgorde zijn.
+
+* **Lineair testen** (linear probing)
+
+$$
+(h(s)+i)\bmod m \quad \text{ voor } i=0, \cdots, m-1
+$$
+
+
+
+<img align="right" src="img/image-20220130135246284.png" alt="image-20220130135246284" style="zoom:50%;" />Met $h$ de hashfunctie en $s$ de sleutel. Als onze sleutel niet gevonden wordt op plaats $h(s)$, gaan we simpelweg **een plaats verder** in de lijst en kijken daar. Aangezien $m$ de grootte van onze tabel is, komen we na het laatste element terug bij het begin uit. Het voordeel aan deze methode is de eenvoud, maar er doet zich **primaire clustering** voor. Om het simpel te beschrijven. Als we een collision hebben, gaan we dus ons element op de volgende plaats in de tabel zetten. Nu is er twee keer zo veel kans dat er zich een collision voordoet. En als deze zich voordoet, wordt het element weer achteraan dit blok gezet. Er ontstaan dus blokken van elementen die de performantie benadelen omdat we elke keer het hele blok moeten doorzoeken om de juiste sleutel te vinden. 
+
+
+
+
+
+* **Kwadratisch testen** (quadratic probing)
+
+$$
+(h(s)+ c_1i+c_2i^2)\bmod m \quad \text{ voor } i=0, \cdots, m-1
+$$
+
+<img align="right" src="img/image-20220130135431860.png" alt="image-20220130135431860" style="zoom:50%;" />Het principe hij is hetzelfde als bij de vorige methode, enkel gaan we iets grotere sprongen maken. $c_1$ en $c_2$ zijn hier constanten verschillend van nul. We moeten er wel voor zorgen dat de constanten en tabelgrootte  $m$ aan bepaalde voorwaarden voldoen zodat de functie nog steeds uiteindelijk alle elementen van de tabel overloopt. Bij kwadratisch testen heb je geen last van primaire clustering, maar doet zich wel een een lichtere veriant voor, genaamd **secundaire clustering**. Verdere uitleg acht ik hier overbodig. Je kan er je hopelijk wel iets bij voorstellen aan de hand van de tekening.
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
