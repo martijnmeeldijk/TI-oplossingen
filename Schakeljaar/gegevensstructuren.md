@@ -610,7 +610,11 @@ Het komt erop neer dat coalesced chaing **het snelste** is van alle soorten hash
 
 
 
-#### Open adressering
+
+
+
+
+### Open adressering
 
 In tegenstelling tot coalesced chaining, waar de conflicten worden opgelost met pointers, gaan we bij open addressering de alternatieve plaats voor de sleutel **berekenen**. We ruilen dus plaats voor tijd. We maken geen gebruik van een overflow zone, want de alternatieve plaatsen liggen vast. Het is ook belangrijk om op voorhand een idee te hebben van het aantal gegevens, aangezien ze allemaal in de tabel moeten passen. Onze bezettingsgraad $\alpha = \frac{n}{m}$ kan dus nooit groter zijn dan 1.
 
@@ -623,6 +627,10 @@ In tegenstelling tot coalesced chaining, waar de conflicten worden opgelost met 
 \**Eigenlijk weet ik de worst case performance niet. Op zich is die niet echt zo belangrijk.*
 
 Wanneer bij open adressering de tabel **bijna vol** is zal, zoals je misschien wel kan raden, de performantie dramatisch **verslechteren**. Doordat we geen pointers moeten bijhouden, zal de totale in beslag genomen **geheugenruimte** toch aanzienlijk **kleiner** zijn dan bij andere soorten hashtabellen.
+
+
+
+
 
 
 
@@ -650,23 +658,293 @@ $$
 (h(s)+ c_1i+c_2i^2)\bmod m \quad \text{ voor } i=0, \cdots, m-1
 $$
 
-<img align="right" src="img/image-20220130135431860.png" alt="image-20220130135431860" style="zoom:50%;" />Het principe hij is hetzelfde als bij de vorige methode, enkel gaan we iets grotere sprongen maken. $c_1$ en $c_2$ zijn hier constanten verschillend van nul. We moeten er wel voor zorgen dat de constanten en tabelgrootte  $m$ aan bepaalde voorwaarden voldoen zodat de functie nog steeds uiteindelijk alle elementen van de tabel overloopt. Bij kwadratisch testen heb je geen last van primaire clustering, maar doet zich wel een een lichtere veriant voor, genaamd **secundaire clustering**. Verdere uitleg acht ik hier overbodig. Je kan er je hopelijk wel iets bij voorstellen aan de hand van de tekening.
+<img align="right" src="img/image-20220130135431860.png" alt="image-20220130135431860" style="zoom:50%;" /><img align="right" src="img/image-20220130140322996.png" alt="image-20220130140322996" style="zoom:50%;" />Het principe hij is hetzelfde als bij de vorige methode, enkel gaan we iets grotere sprongen maken. $c_1$ en $c_2$ zijn hier constanten verschillend van nul. We moeten er wel voor zorgen dat de constanten en tabelgrootte  $m$ aan bepaalde voorwaarden voldoen zodat de functie nog steeds uiteindelijk alle elementen van de tabel overloopt (bij de eerste afbeelding gaat dit fout). Bij kwadratisch testen heb je geen last van primaire clustering, maar doet zich wel een een lichtere veriant voor, genaamd **secundaire clustering**. Verdere uitleg acht ik hier overbodig. Je kan er je hopelijk wel iets bij voorstellen aan de hand van de tekening.
 
 
 
 
 
+* **Dubbele hashing** (double hashing)
+
+Dit is de beste vorm van open adressering, want de zoeksequenties benaderen het ideaal van uniforme hashing een stuk beter.
+$$
+(h(s) + ih'(s))\bmod m \quad \text{ voor } i=0, \cdots, m-1
+$$
+Hier is $h'()$ een andere hashfunctie. We moeten er enkel voor zorgen dat de uitvoer van $h'()$ en $m$ relatief priem zijn, anders overlopen we de tabel telkens op hetzelfde patroon zonder alle elementen te bereiken. De zoeksequentie is door het invoeren van de tweede hashfunctie nu voor iedere sleutel anders. Gebruik zeker niet dezelfde functie voor $h()$ en $h'()$, want dan krijg je weer clustering bullshit.
 
 
 
 
 
+#### Performantie
+
+We gaan nu dus niet de drie manieren van open adressering zitten analyseren. We gebruiken een iets algemenere aanpak. We veronderstellen het ideale geval van **uniforme hashing**. Dat betekent dat elke sleutel dus even veel kans heeft om in eender welk vakje terecht te komen. Dit vergemakkelijkt de analyse zodat domme studenten zoals wij hem ook kunnen uitvoeren (eerlijk gezegd vind ik het nog steeds niet zo simpel hoor, misschien ben ik wel een heel domme student).
+
+We splitsen onze analyse op in twee delen:
+
+* Hoeveel testen hebben we gemiddeld nodig om een *afwezige* sleutel te vinden?
+* Hoeveel testen hebben we gemiddeld nodig om een *aanwezige* sleutel te vinden?
+
+**Afwezige sleutel**
+
+We nemen $p_i$ als de kans dat er exact $i$ testen moeten gebeuren. Dan het gemiddelde aantal testen:
+$$
+\sum_{i=1}^{n+1}ip_i
+$$
+Dit is dus gewoon de som van elke mogelijke hoeveelheid testen die kan worden uitgevoerd, telkens maal zijn kans. We nemen nu $q_i$ als de kans dat er *minstens* $i$ testen gebeuren. Dan kunnen we onze som vereenvoudigen:
+$$
+\sum_{i=1}^{n+1}ip_i = \sum_{i=1}^{n+1} i(q_i - q_{i+1})  \quad\quad (1) \\
+= 1(q_1 - q_2) + 2(q_2- q_3) + 3(q_3-q_4) + \cdots = \sum_{i=1}^{n+1}q_i
+$$
+*(1) als $q_i$ de kans is dat er minstens $i$ testen worden uitgevoerd, en $q_{i+1}$ de kans dat er nog één extra moet worden uitgevoerd, dan is het wel logisch dat het verschil van deze twee gelijk is aan $p_i$, dus exact de kans dat $i$ testen moeten worden uitgevoerd.*
+
+Nu moeten we bepalen wat die $q_i$ nu precies is. We weten al dat er sowieso altijd één test moet worden uitgevoerd, dus $q_1 = 1$, de kans dat er minstens één test wordt uitgevoerd. De kans dat er 2 testen worden uitgevoerd is dan $\frac{n}{m}$, want er zijn $n$ plekken bezet in onze tabel van $m$ plaatsen, maal de kans dat er minstens 1 test wordt uitgevoerd, maar die is 1. 
+$$
+q_3 = (\frac{n}{m})(\frac{n-1}{m-1})
+$$
+We hebben al een vakje uitgeprobeert, dus de kans dat we een derde test moeten doen (als we er al twee hebben gedaan), bedraagt dan $\frac{n-1}{m-1}$. De kans dat er *minstens* 3 keer getest moet worden is dan $q_3$.
+
+We zetten dit patroon verder en bekomen:
+$$
+q_i = (\frac{n}{m})(\frac{n-1}{m-1})\cdots(\frac{n-i+2}{m-i+2}) \quad\text{ voor } 1<i\leq n+1
+$$
+ $n\leq m$, dus is $\frac{n-j}{m-j}$ kleiner dan $\frac{n}{m}$ voor alle positieve $j$ kleiner dan $n$. Dus:
+$$
+q_i \leq \left( \frac{n}{m} \right)^{i-1} = \alpha^{i-1} \quad\text{ voor } 1<i\leq n+1
+$$
+Anders verwoord: $\frac{n-1}{m-1} \leq \frac{n}{m}$ en $\frac{n-2}{m-2} \leq \frac{n}{m}$ tot aan $\frac{n-i+2}{m-i+2}\leq \frac{n}{m}$. Alle termen zijn kleiner dan $\frac{n}{m}$, dus we kunnen het product van die termen simpelweg vereenvoudigen tot een macht van $\frac{n}{m}$.
+
+We steken dit terug in onze som om het gemiddelde aantal testen te bekomen:
+$$
+\sum_{i=1}^{n+1}q_i \leq \sum_{i=1}^{n+1}\alpha^{i-1}< \sum_{i=1}^{\infty}\alpha^{i-1} = \sum_{i=0}^{\infty}\alpha^{i} = \frac{1}{1-\alpha}
+$$
+We gebruiken in de laatste stap dus weer de formule voor de som van een meetkundige reeks. Onze bezettingsgraad $\alpha$ is natuurlijk altijd kleiner dan 1, want er kunnen niet meer dingen in onze tabel zitten dan er plaats is. Als onze bezettingsgraad 1 benadert zal het gemiddelde aantal testen dus ongelofelijk groot worden. Logischerwijze moeten we dus ook oneindig keer testen als onze tabel vol is ($\alpha = 1$).
+
+Dit bewijs geldt natuurlijk dus ook voor als we een sleutel willen toevoegen, want we moeten dan eerst de tabel doorlopen tot we de desbetreffende sleutel niet hebben gevonden.
 
 
 
+**Aanwezige sleutel**
 
+Hoeveel testen moeten we doen om een aanwezige sleutel te vinden. De stappen die we moeten doorlopen om die sleutel te vinden zullen dezelfde zijn als wanneer hij werd toegevoegd. Op het moment dat de sleutel werd toegevoegd, bevatte de tabel $i$ sleutels, dan was het gemiddelde aantal testen:  $\frac{1}{1-\alpha}$. Of toch, de $\alpha$ op dat moment: $\frac{i}{m}$
+$$
+\frac{1}{1-\alpha} = \frac{1}{1-\frac{i}{m}} =\frac{m}{m-i}
+$$
+Het gemiddelde aantal testen voor een aanwezige sleutel is dan:
+$$
+\frac{1}{n}\sum_{i=0}^{n-1}\frac{m}{m-i} = \frac{m}{n}\sum_{i=0}^{n-1}\frac{1}{m-i}\quad \text{ (1)}
+\\=\frac{1}{\alpha}\sum_{k=m-n+1}^{m}\frac{1}{k}
+$$
+ *(1) de termen van onze som gaan van $\frac{1}{m-0}$ tot $\frac{1}{m-n+1}$, dit is hetzelfde als $\frac{1}{k}$ van $m$ tot $m-n+1$ te laten gaan*.
+
+
+$$
+\frac{1}{\alpha}\sum_{k=m-n+1}^{m}\frac{1}{k} < \frac{1}{\alpha}\int_{m-n}^m \frac{dx}{x} = 
+\frac{1}{\alpha} [\ln (m) - \ln (m-n)] \\
+= \frac{1}{\alpha} \ln \left(\frac{m}{m-n}\right) =\frac{1}{\alpha} \ln \left(\frac{1}{1-\alpha}\right)
+$$
+Als $\alpha$ dichtbij 1 komt, zal de performantie weer vreselijk slecht worden.
+
+We moeten er dus voor zorgen dat we altijd een voldoende grote plek voorzien voor onze tabel. Spijtig genoeg weten we dit niet altijd op voorhand. Dan kan je kiezen om seperate chaining te gebruiken, of je kan kiezen voor rehashing. Als we een tabel gaan **rehashen**, maken we een nieuwe tabel van ongeveer dubbel de grootte van de originele. We voorzien dan ook een nieuwe, passende hashfunctie voor deze tabel. We moeten dan elk element één voor één in de nieuwe tabel plaatsen, dit kost dan weer $O(m)$. Gelukkig is net zoals bij arrays de geamorticeerde performantie $O(1)$ per toevoegoperatie. Nu moet gewoon niet de pech hebben dat er op een cruciaal moment je tabel gerehashed moet worden. 
+
+Nog een kleine opmerking. We gaan niet rehashen als onze tabel bijna vol zit. Als je niet weet waarom dan moet je het vorige stuk opnieuw lezen, deze keer met je vinger in je reet. We gaan typisch rehashen wanneer $\alpha$ een bepaalde waarde bereikt (zeker niet meer dan 0.5).
+
+
+
+### Hashfuncties
+
+ Een hashfunctie die sleutels omzet naar tabelindices moet **snel** zijn en **zo weinig mogelijk conflicten** veroorzaken. Bovendien moet voor deze functie elke berekende tabelindex **even waarschijnlijk zijn voor elke sleutel**.
+
+De waarschijnlijkheid dat 2 sleutels dezelfde hash opleveren moet gelijk zijn aan $\frac{1}{m}$. Dit noemt men **enkelvoudig uniforme hashing**.
+
+Er bestaan zoals je misschien al had kunnen raden een aantal verschillende manieren om een hash te berekenen. We zullen er nu een paar overlopen.
+
+#### Vaste hashfuncties
+
+We hebben twee simpele soorten vaste hashfuncties die doorgaans zeer goed werken.
+
+**Delen**
+
+* $h(s) = s \bmod m$
+* Eenvoudig en efficiënt
+* Oppassen met de keuze van $m$ (grootte van de tabel)
+  * Is $m$ even, komen alle even sleutels of even indices en andersom voor oneven sleutels
+  * Als $m=2^i$, dan is de index gelijk aan de laatste $i$ bits van $s$. Je ziet wel hoe dit problemen kan opleveren.
+  * Bij $m=10^i$ doet zich een gelijkaardig probleem voor als we werken met decimale getallen.
+* Neem dus voor $m$ een priemgetal dat niet te dicht bij een macht van 2 ligt. Je kan natuurlijk in de praktijk je hashfunctie eerst eens testen alvorens je de hele netwerkinfrastructuur van je bedrijf naar de klote helpt.
+
+**Vermenigvuldigen**
+
+* $h(s) = \lfloor m(sC - \lfloor sC \rfloor)\rfloor$
+  * $C$ ligt strikt tussen 0 en 1. 
+  * $sC - \lfloor sC \rfloor$ is simpelweg het stuk na de komma van $sC$
+* We vermenigvuldigen dus basically de grootte van onze tabel $m$ met een kommagetal en ronden dat af.
+* Hier boeit de waarde van $m$ dus niet zo hard. We nemen graag $m= 2^i$ want dat is super makkelijk te implementeren in een cpu. (met bitshifts enzo)
+
+**Universele hashing**
+
+* Het kan altijd dat een bepaalde applicatie net de sleutels gebruikt die bij dezelfde tabelindex uitkomen. De enige manier om dit te vermijden is om elke keer dat we een tabel maken een andere hashfunctie te nemen.
+* $h_{a,b}(s) = ((as +b) \bmod p ) \bmod m$
+* We kiezen elke keer dat we een lijst maken een nieuwe hashfunctie met:
+  *  $p$ een priemgetal groter dan het aantal mogelijke sleutels
+  * $0<a< p$ en $0<b< p$
+  * $s$ de sleutel natuurlijk en $m$ de grootte van de tabel.
+
+
+
+**Wat als onze sleutel zeer lang is?**
+
+We kunnen hem behandelen als een (zeer groot) geheel getal. Dit is niet efficiënt, niet doen. We kunnen elk afzonderlijk woord optellen of xor'en. Dit is dom want verschillende volgordes van dezelfde woorden leveren dan hetzelfde resultaat. Er zijn toch wel een paar minder opties.
+
+* Horner
+  * We kunnen strings beschouwen als grote getallen in een tastelsel met radix $r$.
+  * $p(x) = a_1 + a_2x + a_3x^3 + \cdots$
+  * Onze $a$'tjes kunnen dan bijvoorbeeld de letters van de string zijn, de radix is het getal dat we in $x$ gaan invullen. Hier wordt typisch een priemgetal voor gekozen.
+* Onafhankelijke hashfuncties
+  * We kunnen ook voor elk deel van de grote sleutel een andere hashfunctie gebruiken
+  * $h(s) = (h_1(e_1) + h_2(e_2) + \cdots + h_k(e_k))\bmod m$
+  * En die resultaten dan combineren
+  * Dit is efficiënt bij strings, want je kan waarden van deze hashfuncties vooraf in tabellen opslaan.
 
 ## H7 - Binary Search Trees
+
+### Binaire zoekbomen
+
+<img src="img/image-20220131135839084.png" alt="image-20220131135839084" style="zoom:33%;" />
+
+We willen gegevens opslaan waarvan de sleutels **geordend** kunnen worden. Het zou ook leuk zijn om gemakkelijk het eerste of laatste gegeven te kunnen vinden, of de voorloper of opvolger van een gegeven op te kunnen vragen. Tevergeefs zijn hashtabellen hier niet zo goed in. Ookal zijn ze goed in woordenboekoperaties, kunnen ze niet zo goed om met gerangschikte gegevens. Dit om dezelfde redenen als waarom arrays hier niet geweldig goed in zijn.
+
+Als we in een array binair zoeken, dan vormt de schematische voorstelling van de keuzes die leiden tot onze gezochte sleutel een boomstructuur. Wat als we daar nu een gegevensstructuur van zouden kunnen maken? :thinking:  
+
+Bing bang boom en je hebt een binaire zoekboom
+
+Onze sleutels in de binaire zoekboom voldoen aan enkele voorwaarden:
+
+* Alle sleutels in de **linkse deelboom** van een knoop zijn **kleiner** of gelijk aan de sleutel van deze knoop
+* Alle sleutels in de **rechtse deelboom** van een knoop zijn **groter** of gelijk aan de sleutel van deze knoop
+
+Als we de boom [in-order](#Systematisch overlopen van bomen) overlopen krijgen we de sleutels gerangschikt van klein naar groot. Dit gebeurt in $\Theta(n)$. Wat zeer snel is voor rangschikken door vergelijken van willekeurige sleutels.
+
+
+
+### Zoeken in een BST
+
+We kunnen zoeken in een BST gemakkelijk **recursief** implementeren door de inherente recursiviteit van de bomen. We vergelijken de te zoeken sleutel met de sleutel van de wortel. Is de sleutel kleiner dan de wortel, gaan we verder in de linkerdeelboom. Is hij groter, gaan we naar de rechterdeelboom. Dit herhalen we tot we aan een lege deelboom komen of we de sleutel gevonden hebben.
+
+Zoeken kost in het slechtste geval $O(h)$ operaties, met $h$ de hoogte van de boom. Oftewel de langste weg van de wortel tot een blad.
+
+Om het **minimum** te vinden daal je telkens in de linkerdeelboom totdat je aan een blad komt. Voor het **maximum** ga je naar rechts.
+
+Om de **opvolger** (dus het nummertje dat erna komt) van een sleutel te vinden, hebben we twee mogelijkheden:
+
+* De rechtse deelboom van de knoop is niet leeg
+  * De kleinste sleutel in zijn rechterdeelboom is de opvolger, je kan de methode van hierboven hergebruiken
+* De rechtse deelboom van de knoop is leeg
+  * Deze knoop bevat dus het maximum van alles onder hem. Om de voorloper te vinden gaan we omhoog in de boom totdat we een 'afslag' naar rechts tegenkomen. We hebben dus ouderwijzers nodig.
+
+Om de voorloper te vinden doen we hetzelfde, maar omgekeerd. Beide operaties zijn weer $O(h)$.
+
+
+
+### Toevoegen
+
+Als we een element toevoegen aan een BST, dan moeten we ervoor zorgen dat de basiseigenschap van de sleutels van de boom intact houden. We zoeken dus naar de sleutel tot we bij een lege deelboom komen en vervangen deze dan door een nieuwe knoop zonder kinderen.
+
+#### Duplicaten
+
+Wat doen we als we meerdere keren dezelfde sleutel in een boom willen ondersteunen? Drie opties:
+
+* Altijd in de rechtse steken (niet doen want je boom wordt scheef en dan kan hij omvallen oei)
+* Voor dezelfde sleutels één knoop met een gelinkte lijst. Verspilt wel veel plaats als we niet veel duplicaten hebben.
+* Een boolean in elke knoop voorzien. Deze zegt of het duplicaat naar links of naar rechts moet. Elke keer dat er een duplicaat voorbijkomt draaien we de boolean om. Zo blijft de boom gebalanceerd
+* We kunnen de logische waarde van hierboven ook genereren met een randomgenerator.
+
+
+
+### Performantie
+
+De lengte van de afgelegde weg bij zoeken in een boom is maximum gelijk aan de hoogte van de boom. Spijtig genoeg kan het dat onze boom gehandicapt is en helemaal scheef is. $O(n)$ dus in het slechtste geval. 
+
+Omdat we slechts domme studenten zijn, gaan we niet de gemiddelde hoogte van de boom bepalen. We gaan de **gemiddelde diepte** bepalen van een te zoeken knoop. Dan weten we hoeveel stappen we gemiddeld moeten doen om een knoop te vinden. 
+
+We defineren $D(n)$. Dit staat voor de gemiddelde inwendige weglengte van alle mogelijke bomen met $n$ knopen. Dus de gemiddelde lengte van alle mogelijke paden in alle mogelijke bomen van $n$ knopen.
+
+We vertrekken van de wortel, dit is de $i$-de knoop van de boom:
+
+* Links van de wortel zitten $i-1$ knopen
+* Rechts van de wortel zitten $n-i$ knopen
+
+Het aantal paden vanaf het linkerkind van de knoop is $D(i-1)$. Voor het rechterkind is dit $D(n-i)$. 
+$$
+D(n) = n-1 + \frac{1}{n} \sum_{i=1}^n (D(i-1) + D(n-i))
+$$
+ Omdat we telkens van het linker of rechterkind vertrekken, tellen we voor elke node (behalve de root) eigenlijk één niveau te weinig. Daarom moeten we nog $n-1$ toevoegen aan de som.
+$$
+D(n) = n-1 + \frac{1}{n} \sum_{i=1}^n (D(i-1) + D(n-i)) \\
+= n-1 + \frac{1}{n}(D(0) + D(n-1) + \cdots + D(n-1) + D(0)) \quad (1) \\
+= n-1 + \frac{2}{n} \sum_{i=0}^{n-1} D(i)
+$$
+*(1) Zoals je kan zien zijn $D(i-1)$ en $D(n-i)$ hetzelfde, ze lopen enkel in de andere richting. Onze som is dus twee keer alle mogellijke $D$'tjes tot $n-1$.* 
+
+Nu doen we iets grappigs. Echt gek dat iemand hierop is gekomen. We nemen $D(n)$ en vermenigvuldigen hem met $n$. Dan nemen we $D(n-1)$ en vermenigvuldigen hem met $n-1$. 
+$$
+nD(n)= n^2-n + 2\sum_{i=1}^{n-1} D(i)\\
+(n-1)D(n-1) = (n-1)^2 - (n-1) + 2\sum_{i=1}^{n-2} D(i)\\
+$$
+Als we deze twee van elkaar aftrekken kunnen we de som wegwerken:
+$$
+nD(n) - (n-1)D(n-1) = n^2-n -(n-1)^2 + (n-1) + 2D(n-1) \\
+nD(n) = 2n - 2 + (n+1)D(n-1)\\
+nD(n) < 2n + (n+1)D(n-1)
+$$
+We delen door $n(n+1)$
+$$
+\frac{D(n)}{n+1} < \frac{2}{n+1} + \frac{D(n-1)}{n}
+$$
+Dan stellen we $f(n) = \frac{D(n-1)}{n}$ en krijgen we:
+$$
+f(n+1) < f(n) + \frac{2}{n+1} \\
+f(n) < f(n-1) + \frac{2}{n} \\
+f(n) \leq f(n-1) + \frac{1}{n}
+$$
+We weten dat voor elke stap, $f(n)$ niet meer dan $\frac{1}{n}$ kan stijgen. Want $f(n)$ is kleiner dan of gelijk aan zijn voorganger en $\frac{1}{n}$ samen. Dit betekent dat de afgeleide van $f(n)$ niet meer kan zijn dan $\frac{1}{n}$. Welke functie heeft die afgeleide? Goed geraden! Het is $\ln n$. $f(n)$ wordt langs boven begrensd door $\ln n$. 
+
+* $f(n)$ is dus $O(\log n)$. 
+* Omdat we $f(n)$ moeten vermenigvuldigen met $n$ om terug aan onze $D$ te raken is $D(n)$ dus $O(n \log n)$. 
+* $D(n)$ is de gemiddelde diepte van alle nodes. 
+* De gemiddelde diepte van één node is dus $O(\log n)$
+
+
+
+### Verwijderen
+
+We kunnen doen aan **lazy deletion**. Dit is vaak oke, maar kan vervelend zijn omdat zoek- en verwijderoperaties telkens rekening moeten houden met de als verwijderd aangeduide knopen.
+
+Willen we een knoop *echt* verwijderen, dan is dit iets ingewikkelder. We splitsen dit op in een paar gevallen
+
+* De knoop heeft geen kinderen
+  * We kunnen hem gewoon verwijderen (en zijn pointer in de ouder leegmaken)
+* De knoop heeft één kind
+  * Dan wordt zijn ouder de nieuwe ouder van dat kind (dan is hij geadopteerd, net als jij)
+  * Als de verwijderde knoop de wortel is, dan wordt zijn kind de wortel
+* De knoop heeft twee kinderen
+  * Dit betekent dat de opvolger van de knoop ergens in zijn rechterdeelboom zit
+  * De opvolger heeft sowieso geen linkerkind, omdat hij de opvolger is van de te verwijderen knoop
+  * We plaatsen de inhoud van de opvolger in de te verwijderen knoop, zonder zijn pointers aan te passen
+  * Nu hebben we onze boom niet verneukt yeey.
+
+
+
+### Threaded tree
+
+<img src="img/image-20220131135731946.png" alt="image-20220131135731946" style="zoom:33%;" />
+
+Elke binaire boom heeft steeds $n+1$ nullpointers aan zijn bladeren. We verspillen dus veel ruimte. **Threaded trees** zijn hier de oplossing voor. De nullpointers van de bladeren worden als volgt ingevuld:
+
+* De **rechtse** nullpointer bevat nu een pointer naar de **opvolger** van de knoop (in order)
+* De **linkse** nullpointer bevat nu een pointer naar de **voorganger** van de knoop (in order)
+
+Nu moeten we ook nog wel 2 bits bijhouden om aan te duiden of de pointers van een knoop wijzen naar kinderen of naar een voorganger of opvolger. Nu hebben we ook geen pointers naar de ouders meer nodig om bijvoorbeeld verwijderen te kunnen ondersteunen. We kunnen nu bovendien de boom **in-order** overlopen **zonder** gebruik te moeten maken van **recursie** (spaart stackoperaties uit).
 
 
 
@@ -674,7 +952,16 @@ $$
 
 
 
+## To do
 
+* Slide 128 oefening hashing
+* Bloom filter?
+
+
+
+Dingen die fout lijken in de cursus:
+
+* p 62, ze laten de $-2$ weg en bekomen een ongelijkheid, maar in de volgende stap is het geen ongelijkheid.
 
 ## Mogelijke examenvragen
 
