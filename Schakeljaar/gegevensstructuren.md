@@ -946,7 +946,58 @@ Elke binaire boom heeft steeds $n+1$ nullpointers aan zijn bladeren. We verspill
 
 Nu moeten we ook nog wel 2 bits bijhouden om aan te duiden of de pointers van een knoop wijzen naar kinderen of naar een voorganger of opvolger. Nu hebben we ook geen pointers naar de ouders meer nodig om bijvoorbeeld verwijderen te kunnen ondersteunen. We kunnen nu bovendien de boom **in-order** overlopen **zonder** gebruik te moeten maken van **recursie** (spaart stackoperaties uit).
 
+#### Toevoegen
 
+![image-20220131140401968](img/image-20220131140401968.png)
+
+Willen we een element toevoegen, gaat dat eigenlijk best gemakkelijk:
+
+*We stellen even dat de toe te voegen knoop een linkerkind wordt, het is gewoon omgekeerd als hij een rechterkind moet zijn*
+
+* We zoeken het juiste plekje
+* De linkerpointer van de ouder bevat de voorganger van de ouder, maar die moet nu de voorganger van het kind worden. We geven hem gewoon door aan de linkerpointer van de nieuwe node.
+* De linkerpointer van de ouder laten we naar de nieuwe node wijzen
+* De rechterpointer van de node laten we naar zijn ouder wijzen, want dat is zijn opvolger
+
+#### Verwijderen
+
+Bij het verwijderen van een knoop zonder kinderen doen we het omgekeerde als bij toevoegen. In het geval van daarnet moeten we dus gewoon de linkerpointer van de verwijderde knoop in de linkerpointer van de ouder steken.
+
+![image-20220131141538231](img/image-20220131141538231.png)
+
+Merk op: Bij de derde afbeelding is `5` verwijderd. Hiervoor moeten we dus zijn voorganger kennen. Om een knoop met kinderen te verwijderen moet je dus de pointer naar hem (die zijn voorganger bevat) indien deze bestaat, laten wijzen naar zijn opvolger. 
+
+Omdat we moeten zoeken naar de te verwijderen knoop en naar zijn voorganger, vereist verwijderen $O(h)$ operaties.
+
+Onthoud dit: De efficiëntie van operaties op een boom hangt dus af van de hoogte van de boom.
+
+### Randomized search trees
+
+*Dit lijken ze in de slides over te slaan, dus ik zal mijn uitleg beknopt houden*.
+
+Een gewone binaire zoekboom kan afhankelijk van de toevoegvolgorde van de elementen heel scheef worden, bovendien draagt het verwijderen van elementen hier verder aan bij. Randomized search trees maken gebruik van een randomgenerator om het effect van de toevoegvolgorde te neutraliseren.
+
+In het boek worden enkel *treaps* besproken.
+
+#### Treap
+
+Een treap is een combinatie van een tree en een heap. We geven buiten een sleutel, elk element ook een **prioriteit**. De orde van deze prioriteiten moet dan voldoen aan de **heapvoorwaarde**. Onze nieuwe treap moet wel niet voldoen aan de structuurvoorwaarde van een heap. Er mogen gaatjes in zitten. Als alle sleutels en prioriteiten verschillend zijn is er van elke combinatie maar één treap mogelijk. De **structuur** van de treap **hangt niet af van de toevoegvolgorde**, maar van de random gegenereerde prioriteiten.
+
+Hierdoor is de verwachtingswaarde van de efficiëntie van woordenboek bij treaps $O(\log n)$, beter dan gewone zoekbomen dus.
+
+
+
+### Hashtabel of BST?
+
+Tijd voor de epic battle? Wie behaalt de victory royale?
+
+|                    | Hashtabel                                                    | BST                                                          |
+| ------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| **Operaties**      | Enkel woordenboekoperaties. Wel eenvoudiger. Ordening van sleutels is niet speciaal nodig. | Laat operaties toe waar de volgorde van de sleutels een rol speelt. Kan ook zoeken naar een niet volledig gespecifcieerde sleutel (een range bijvoorbeeld) |
+| **Performantie**\* | Woordenboekoperaties gemiddeld $O(1)$                        | Operaties gemiddeld $O(\log n)$                              |
+| **Geheugen**       | Statisch en vereist opeenvolgende geheugenplaatsen. Grootte moet op voorhand geschat kunnen worden, want rehashing is duur. | Dynamische structuur, geheugen mag meer gefragmenteerd zijn en de grootte hoeft niet op voorhand ingeschat te worden. |
+
+\**Beide zijn in het slechtste geval $O(n)$, maar enkel bij BST's kunnen we ervoor zorgen dat het slechtste geval $O(\log n)$ wordt*
 
 ## H8 - External data structures
 
