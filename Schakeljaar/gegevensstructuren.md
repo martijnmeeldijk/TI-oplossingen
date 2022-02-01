@@ -1001,12 +1001,177 @@ Tijd voor de epic battle? Wie behaalt de victory royale?
 
 ## H8 - External data structures
 
+Als onze **gegevens te groot zijn** om in het interne geheugen te passen, moeten we ze in een **extern geheugen** plaatsen. Hoe moeten we deze gegevens nu organiseren om efficiënte woordenboekoperaties en eventueel sequentiële operaties toe te laten. De toegangssnelheid tot de gegevens wordt nu voornamelijk bepaald door de snelheid waarmee schijfoperaties uitgevoerd worden. Denk aan rotational latency en seek time bij harde schijven. We gaan typisch eens we de informatie hebben gelokaliseerd, lezen en schrijven van een schijf in **grote blokken**. Dit omdat individuele schijfoperaties duur zijn. De performantie van een programma wordt dus sterk beïnvloed door het aantal schijfoperaties.
 
+We hebben dus speciale gegevensstructuren nodig die rekening houden met al deze voorwaarden.
+
+
+
+### B-Trees
+
+<img src="img/image-20220131160247709.png" alt="image-20220131160247709" style="zoom:50%;" />
+
+Een B-tree is een uitwendige evenwichtige zoekboom. Ze worden vaak gebruikt in databanksystemen. Aangezien de kostprijs van operaties wordt bepaald door de hoogte van de boom, zorgen we ervoor dat een B-tree **altijd perfect in evenwicht** blijft. Om de hoogte nog kleiner te maken, ondersteuenen B-trees bomen met **meer dan 2 kinderen per knoop**. Informatieoverdracht van en naar een schijf gebeurt in pagina's dus we zorgen ervoor dat een knoop een volledige schijfpagina ($2^{11}$ - $2^{16}$ bytes) inneemt. We geven de knoop dus zo veel kinderen als er in de schijfpagina passen. (vaak tot duizenden).
+
+Om een operatie uit te voeren op een knoop moeten we hem toch **eerst inlezen in het geheugen**. We houden dan om dit te versnellen **ruimte vrij voor de meest gebruikte knopen**, waaronder zeker de wortel en soms ook het volledige eerste niveau. 
+
+Zeker nog belangrijk om te vermelden is dat **alle bladeren** bij een B-tree **dezelfde diepte** hebben. Na operaties die dit evenwicht verstoren wordt het aantal kinderen van de knopen gemanipuleerd om toch dit evenwicht te behouden.
+
+
+
+#### Definitie
+
+We stellen een aantal voorwaarden op om een B-tree van orde $m$, met $m>2$ te definiëren:
+
+* Elke inwendige knoop heeft maximum $m$ kinderen.
+* Elke inwendige knoop heeft ten minste $\lceil \frac{m}{2} \rceil$ kinderen.
+* Elke inwendige knoop met $k+1$ kinderen bezit $k$ sleutels.
+* De bladeren bevatten hoogstens $m-1$ en minstens $\lceil \frac{m}{2} \rceil -1$ sleutels.
+* Alle bladeren zitten op hetzelfde niveau.
+* De wortel heeft ten minste twee kinderen, behalve als hij een blad is.
+
+Elke knoop bevat:
+
+* Een getal $k$ dat het aantal sleutels in de knoop aanduidt (niet elke knoop heeft kinderen)
+* Een tabel voor maximum $m$ pointers naar de kinderen van de knoop
+* Een tabel voor maximaal $m - 1$ sleutels, stijgend gerangschikt en natuurlijk een tweede tabel met de values of een pointer er naartoe. De $k$ aantal sleutels in een inwendige knoop verdelen het sleutelbereik in $k+1$ deelgebieden, waarvan elk in een deelboom zit met als wortel een kind van de knoop.
+* Een boolean die aanduidt of de knoop een blad is of niet. We hebben dus geen nullpointers nodig voor ontbrekende kinderen.
+
+
+
+#### Eigenschappen
+
+Stel dat onze boom hoogte $h$ heeft. Wat is dan (als hij dus aan alle eigenschappen hierboven voldoet) het minimaal aantal sleutels $n$ dat hij bevat?
+
+De wortel van de (minimale) boom heeft 1 sleutel, en dus twee kinderen. Elk van die kinderen heeft op zijn beurt $g=\lceil \frac{m}{2} \rceil$ kinderen. De kinderen van de kinderen hebben op hun beurt ook $g$ kinderen. Enzovoort enzoverder. Het aantal knopen is dus ten minste:
+$$
+1+2+2g+\cdots + 2g^{h-1} = 1 + \sum_{i=0}^{h-1} g^i\\
+= 1 + 2\frac{(1-g^h)}{(1-g)}
+$$
+Elke knoop bevat ten minste $g-1$ sleutels, behalve de wortel, die heeft er één. We moeten dus het deel van de kinderen hiermee vermenigvuldigen:
+$$
+n \geq 1+2(g-1) \frac{(1-g^h)}{(1-g)}\\ = 1 - 2(1-g)\frac{(1-g^h)}{(1-g)} \\= 1 - 2(1-g^h) \\= 2g^h -1
+$$
+Dus als we het even mooi naast elkaar zetten.
+$$
+n \geq 2g^h -1 \\
+\frac{n+1}{2} \geq g^h \\
+h \leq \log_{\lceil \frac{m}{2} \rceil}\frac{n+1}{2}  \quad(1)
+$$
+*(1) $g=\lceil \frac{m}{2} \rceil$*
+
+De hoogte is dus $O(\log n)$, zoals bij een BST, maar de constante is een factor $\log_{\lceil \frac{m}{2} \rceil}$ kleiner. Dit heeft een grote impact aangezien we met grote hoeveelheden data werken.
+
+
+
+#### Zoeken
+
+Zoeken verloopt gelijkaardig als in een bst, alleen moet bij elke knoop de gesorteerde tabel met sleutels overlopen worden. Dit kan met binary search, maar blijkbaar omdat de schijf zo traag is, kan gewoon lineair zoeken efficiënter zijn. Als we bij een interne node de juiste sleutel niet vinden, gaan we tot op de plek waar de sleutel zou moeten staan in deze tabel en kijken naar het overeenkomstige plekje in de tabel met pointers naar zijn kinderen.
+
+Dit werkt omdat, zoals eerder vermeld, de sleutels in een interne node eigenlijk ook ranges zijn om te laten zien naar welk van zijn kinderen je moet gaan om een sleutel te vinden. 
+
+Om het nog anders te verwoorden. Als een interne node sleutels 2,5 en 9 heeft en je zoekt de node met sleutel 3, zal hij je naar het tweede kind sturen. (ik weet niet of dit een correcte B-tree zou zijn, maar hey, het gaat om de gedachte).
+
+We zoeken dan totdat we de sleutel of een leeg vakje vinden. Dit kost dus $O(\log_{\lceil \frac{m}{2} \rceil}m)$ schijfoperaties $O(m)$ CPU operaties voor elke node.
+
+#### Toevoegen
+
+We voegen telkens toe als blad, want als we de nieuwe sleutel toevoegen als interne knoop, moet daar een nieuwe deelboom voor worden aangemaakt. We zoeken dus naar de sleutel en voegen hem toe in het blad waar we uitkomen. Als dan net de limiet voor het aantal sleutels van dit blad $\lceil \frac{m}{2} \rceil$ is bereikt, splitsen we de lijst van sleutels in twee en voegen de sleutel die in het midden van de lijst zit toe aan de lijst van de ouder. In het slechtste geval moet dit gebeuren voor alle niveaus (we moeten dus telkens omhoog gaan en opsplitsen). Als we de wortel bereiken en deze heeft ook te veel sleutels, splitsen we zijn lijst in 2 en maken we weer van zijn middelste element een nieuwe ouder. In dit geval is dat dus de nieuwe wortel.
+
+B-trees **groeien** dus **langs boven**. Zo blijven ze gebalanceerd.
+
+Een node splitsen kost drie schijfoperaties. Als we van het worst-case scenario van hierboven uitgaan kost dat $O(h) =  O(\log_{\lceil \frac{m}{2} \rceil}n)$ diskoperaties. Bovendien kost een node splitsen $O(m)$ cpu-operaties.
+
+We kunnen ook om het splitsen zo lang mogelijk uit te stellen, als de lijst van sleutels waar de waarde in toegevoegd moet worden vol is, deze zijn hoogste waarde in de ouder steken en de sleutel die bij de ouder zat aan zijn rechterbuur geven. (linkerbuur als we het doen met zijn kleinste waarde)
+
+
+
+#### Verwijderen
+
+Om te verwijderen in een b-tree hebben we twee mogelijkheden.
+
+* De node is een blad
+  * We kunnen de sleutel gewoon verwijderen
+  * Als het aantal keys in dat blad dan te klein wordt kunnen we het omgekeerde doen van hierboven
+  * We kunnen ook ons blad sleutels van zijn buur laten nemen. (roteren)
+* Het is een interne node
+  * We zullen de sleutel moeten vervangen met zijn voorloper (die in een blad zit)
+  * Lazy deletion is ook een optie
+
+
+
+### B+ Tree
+
+Er zijn enkele nadelen aan B-trees. Zo maken ze bijvoorbeeld onnodig plaats vrij voor pointers in de bladeren, een interne knoop verwijderen is kut, de voorganger en opvolger zoeken kost $O(\log_{\lceil \frac{m}{2} \rceil}n)$ diskoperaties.
+
+B+ Trees lossen een aantal van deze problemen op. **Interne knopen worden enkel gebruikt als index** om het zoeken te versnellen. **Alle gegevens** worden **in de bladeren** opgeslagen. De bladeren zitten ook aan elkaar verbonden en vormen een gelinkte lijst met stijgende keys. Zoeken naar de opvolger vereist nu dus hoogstens één schijfoperatie.
+
+Oké ik ga de puntjes met voor- en nadelen gewoon oplijsten uit de slides:
+
+* We kunnen meer sleutels opslaan in de interne nodes, want ze bevatten geen values meer
+* Bladeren hebben geen lege pointers meer (weer extra plaats)
+* We kunnen gemakkelijk de opvolger van een sleutel vinden
+* Interne knopen en bladeren hebben een verschillende structuur, dat kan ingewikkeld zijn om te programmeren, niet dat dat ons tegenhoudt ;)
+
+B-trees en B+ trees worden vaak gebruikt in databases om indexen op te slaan.
+
+
+
+### Uitwendige hashing
+
+Net als bij het vorige onderdeel, willen we onze datastructuur uitbreiden zodat hij deftig werkt op een harde schijf. Hier zijn verschillende methodes voor.
+
+We kunnen simpelweg een disk page toekennen aan elk element in onze hashtabel. Dan kunnen we gemakkelijk de juiste pagina ophalen aan de hand van een sleutel. Als er veel collisions zijn, kan het dan wel dat we veel disk pages moeten ophalen. Er wordt ook veel ruimte verspild als veel pagina's zo goed als leeg zijn.
+
+#### Binary trie
+
+Een binary trie is een soort zoekboom waar we de bits van onze hashwaarde gaan gebruiken als wijzers. Bij 0 slaan we links af en bij 1 slaan we rechts af. In de bladeren houden we dan wijzers naar disk pages bij. De hashwaarde is dus een soort gids om ons te laten navigeren door de trie.
+
+<img src="img/image-20220131213636947.png" alt="image-20220131213636947" style="zoom:50%;" />
+
+In de volgende twee manieren van uitwendige hashing gebruiken we de trie, maar eigenlijk niet. We kunnen de trie eigenlijk veel efficiënter opslaan, en dat kan ook weer op verschillende manieren. Hierover straks meer.
+
+#### Extendible hashing
+
+<img src="img/image-20220131214112142.png" alt="image-20220131214112142" style="zoom:50%;" />
+
+We gaan de trie in een lijst opslaan. Deze bevat een vakje voor elke mogelijke combinatie van de $d$ laatste bits van de hashwaarde, met daarbij telkens een wijzer naar de juiste schijfpagina. 
+
+##### Zoeken
+
+Neem een hash van de sleutel, daarmee vind je in de tabel het adres van de pagina. Dan moet je in de pagina lineair of binair zoeken naar de juiste key.
+
+##### Toevoegen
+
+Vind de pagina en voeg de sleutel eraan toe. Als die vol is, splitsen we hem in twee volgens de volgende bit van de gehashte sleutel. Als $k$ (de bitsequentie die tot die pagina leidt) gelijk is aan $d$ (het aantal achterste bits van de hash die we bekijken), dan moeten we $d$ incrementeren. Nu wordt onze tabel dus dubbel zo groot.
+
+##### Verwijderen
+
+Zoek de sleutel en verwijder hem, als twee paginas dan samen minder dan het maximum aantal sleutels bevatten kunnen we ze mergen. Je ziet het natuurlijk al aankomen, we moeten oppassen dat we dan niet als een pagina net op het randje van volheid zit elementen herhaaldelijk toevoegen en verwijderen. Want dan wordt de pagina de hele tijd opgesplitst en gemerged.
+
+
+
+#### Linear hashing
+
+We hebben nieteens een hashtabel nodig om de trie weg te werken. We gebruiken simpelweg pagina's met **opeenvolgende logische adressen**. De laatste $d$ bits van de hash zijn dan het adres van de pagina.
+
+Als een pagina vol is gaan we splitsen, maar niet hoe je verwacht. We gaan de pagina's altijd in dezelfde volgorde splitsen. Eerst de eerste, dan de tweede, ... Dit is nodig om de adressen van de paginas altijd overeen te laten komen met onze $d$ bits van de hash. We houden dus voor de te volle pagina een overflow pagina bij totdat we in onze reeks splitsingen aan de te volle pagina komen. Dan worden zijn sleutels verdeeld over de oude en de nieuwe pagina.
+
+##### Zoeken
+
+Stel je voor dat we een hash hebben: `10101110`.  Moeten we nu in pagina 10 (2 dus) of in pagina 110 (6 dus) kijken. We houden bij tot welke pagina we al hebben gesplitst. Dit is in dit geval pagina 11 (3 dus). 10 is kleiner dan 11, dus deze pagina is al gesplitst (is dus eigenlijk 010 en 110 geworden). 11 is niet groter dan 110, dus we moeten naar pagina 110 gaan.
+
+<img src="img/image-20220131230739169.png" alt="image-20220131230739169" style="zoom: 33%;" />
+
+##### Verwijderen
+
+We lokaliseren de pagina van de desbetreffende sleutel en halen hem eruit. Te dun bevolkte pagina's worden samengevoegd in dezelfde volgorde dat ze gesplitst zijn. 
 
 ## To do
 
 * Slide 128 oefening hashing
 * Bloom filter?
+* Slide 193-... B-trees en B+ trees oefeningen operaties
 
 
 
