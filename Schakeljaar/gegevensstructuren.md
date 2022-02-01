@@ -245,7 +245,7 @@ Als we een boom met een variërend aantal gevens willen opslaan, kunnen we best 
 
 #### Systematisch overlopen van bomen
 
-<img src="img/image-20220128215720789.png" alt="image-20220128215720789" style="zoom: 50%;" />
+<img src="img/image-20220201155836029.png" alt="image-20220201155836029" style="zoom:50%;" />
 
 Bij tabellen kunnen we gemakkelijk sequentieel alle gegevens in volgorde uitlezen. Spijtig genoeg is dat niet zo simpel bij bomen. De manier waarop we een boom doorlopen hangt af van hoe wij beslissen om de boom te doorlopen. We maken onderscheid tussen drie mogelijke manieren:
 
