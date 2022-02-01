@@ -122,13 +122,19 @@ Omdat computers nu eenmaal zo werken, moeten we als we gegevens in een tabel (ar
 
 Oké, hoe bewijzen we nu dat de geamorticeerde efficiëntie van een element toevoegen aan een dymanische tabel nog steeds gelijk is aan $0(1)$. 
 $$
-\sum_{i=1}^n t_i = n + \sum_{j=0}^{\lceil log(n)\rceil - 1}2^j < n + 2n = 3n
+\sum_{i=1}^n t_i = n + \sum_{j=0}^{\lceil log(n)\rceil - 1}2^j \\
+= n + 1 +2 +4+8+ \cdots + 2^{\lceil log(n)\rceil - 1} \\
+\leq n + 1 +2 +4+8+\cdots +2^{\log n}\\
+= n+\sum_{j=0}^{\log n}2^j \\
+= n + \frac{1 - 2^{\log (n) +1}}{1-2} = n+ 2^{\log (n) +1} -1 \quad\text{ (1)} \\
+
+<n+ 2^{\log (n) +1} \quad\text{ (2)}
+\\= n + 2n = 3n
 $$
 
-Met $t_i$ bedoelen we de tijd om de $i$-de toevoegoperatie uit te voeren. $\sum_{i=1}^n t_i$ is dus de tijd die $n$ toevoegoperaties in beslag nemen. We kunnen deze opsplitsen in 2 gevallen:
+*(1) deze stap laten ze niet echt zien in de cursus, we gebruiken de formule van de meetkundige reeks*
 
-* De array is niet vol: de operatie duurt '1' lang. Voor $n$ operaties duurt het dus $n$ lang.
-* De array is vol: er staan $i-1$ elementen in de array. Dan verdubbelen we de grootte van de array. Dit moeten we dus elke keer als het aantal elementen in de array een macht van twee is doen. Van daar de :$\sum_{j=0}^{\lceil log(n)\rceil - 1}2^j$ (dit is een meetkundige reeks)
+*(2) $a^{\log_a x} = x$*
 
 Wikipedia:
 
@@ -138,7 +144,14 @@ $$
 {\displaystyle a+ar+ar^{2}+ar^{3}+\cdots +ar^{n}=\sum _{k=0}^{n}ar^{k}=a\left({\frac {1-r^{n+1}}{1-r}}\right),}
 $$
 
-Als ik het vorige ding invul in de formule krijg ik $n-1$ als antwoord, maar dat komt waarschijnlijk omdat ik geen rekening heb gehouden met die ceil (dit ding $\lceil \rceil$) bij de $log(n)$. In ieder geval, $\sum_{j=0}^{\lceil log(n)\rceil - 1}2^j$ is een meetkundige reeks en we weten dat zijn som zeker kleiner is dan $2n$. 
+
+
+Met $t_i$ bedoelen we de tijd om de $i$-de toevoegoperatie uit te voeren. $\sum_{i=1}^n t_i$ is dus de tijd die $n$ toevoegoperaties in beslag nemen. We kunnen deze opsplitsen in 2 gevallen:
+
+* De array is niet vol: de operatie duurt '1' lang. Voor $n$ operaties duurt het dus $n$ lang.
+* De array is vol: er staan $i-1$ elementen in de array. Dan verdubbelen we de grootte van de array. Dit moeten we dus elke keer als het aantal elementen in de array een macht van twee is doen. Van daar de :$\sum_{j=0}^{\lceil log(n)\rceil - 1}2^j$ (dit is een meetkundige reeks)
+
+
 
 ### Linked List
 
@@ -335,7 +348,7 @@ Er zijn ook $d$-heaps. Is dit belangrijk? //TODO
 
 We kunnen een heap op twee manieren opbouwen. Aan de ene kant door gewoon elementen blijven toe te voegen, of door verschillende deelheaps samen te voegen. Je kan misschien al raden dat de tweede manier efficiënter is.
 
-**Heap bouwen door elementen toe te voegen**
+##### Door elementen toe te voegen
 
 Oké we kunnen gemakkelijk beredeneren dat $n$ elementen toevoegen aan een heap $T(n)$ kost. We moeten voor de eerste twee toevoegingen maximaal 1 tje omhoog bubbelen. Voor de volgende 4 moeten we in het slechtste geval 2 keer omhoog bubbelen. Enzovoort...
 $$
@@ -370,7 +383,7 @@ T(n) \leq 2 + 2n\log_2 n
 $$
 Een heap opbouwen door middel van elementen toevoegen is dus $O(n\log n)$
 
-**Heap opbouwen door kleinere heaps samen te voegen**
+##### Door kleinere heaps samen te voegen
 
 In de plaats van de elementen één voor één toe te voegen, gaan we kleinere heaps maken en ze samenvoegen. In theorie toch. Data in een array kunnen we eigenlijk direct voorstellen als een heap, deze is alleen nog niet gesorteerd. We bekijken dan beginnend van vanonder elke deelheap.
 
@@ -676,7 +689,7 @@ Hier is $h'()$ een andere hashfunctie. We moeten er enkel voor zorgen dat de uit
 
 
 
-#### Performantie
+#### Performantie open adressering
 
 We gaan nu dus niet de drie manieren van open adressering zitten analyseren. We gebruiken een iets algemenere aanpak. We veronderstellen het ideale geval van **uniforme hashing**. Dat betekent dat elke sleutel dus even veel kans heeft om in eender welk vakje terecht te komen. Dit vergemakkelijkt de analyse zodat domme studenten zoals wij hem ook kunnen uitvoeren (eerlijk gezegd vind ik het nog steeds niet zo simpel hoor, misschien ben ik wel een heel domme student).
 
@@ -685,7 +698,7 @@ We splitsen onze analyse op in twee delen:
 * Hoeveel testen hebben we gemiddeld nodig om een *afwezige* sleutel te vinden?
 * Hoeveel testen hebben we gemiddeld nodig om een *aanwezige* sleutel te vinden?
 
-**Afwezige sleutel**
+##### Afwezige sleutel
 
 We nemen $p_i$ als de kans dat er exact $i$ testen moeten gebeuren. Dan het gemiddelde aantal testen:
 $$
@@ -724,7 +737,7 @@ Dit bewijs geldt natuurlijk dus ook voor als we een sleutel willen toevoegen, wa
 
 
 
-**Aanwezige sleutel**
+##### Aanwezige sleutel
 
 Hoeveel testen moeten we doen om een aanwezige sleutel te vinden. De stappen die we moeten doorlopen om die sleutel te vinden zullen dezelfde zijn als wanneer hij werd toegevoegd. Op het moment dat de sleutel werd toegevoegd, bevatte de tabel $i$ sleutels, dan was het gemiddelde aantal testen:  $\frac{1}{1-\alpha}$. Of toch, de $\alpha$ op dat moment: $\frac{i}{m}$
 $$
@@ -861,7 +874,7 @@ Wat doen we als we meerdere keren dezelfde sleutel in een boom willen ondersteun
 
 
 
-### Performantie
+### BST zoekperformantie
 
 De lengte van de afgelegde weg bij zoeken in een boom is maximum gelijk aan de hoogte van de boom. Spijtig genoeg kan het dat onze boom gehandicapt is en helemaal scheef is. $O(n)$ dus in het slechtste geval. 
 
@@ -1039,7 +1052,7 @@ Elke knoop bevat:
 
 
 
-#### Eigenschappen
+#### Eigenschappen B-Tree
 
 Stel dat onze boom hoogte $h$ heeft. Wat is dan (als hij dus aan alle eigenschappen hierboven voldoet) het minimaal aantal sleutels $n$ dat hij bevat?
 
@@ -1178,6 +1191,114 @@ We lokaliseren de pagina van de desbetreffende sleutel en halen hem eruit. Te du
 Dingen die fout lijken in de cursus:
 
 * p 62, ze laten de $-2$ weg en bekomen een ongelijkheid, maar in de volgende stap is het geen ongelijkheid.
+
+
+
+## Bewijzen
+
+* [Geamorticeerde efficiëntie van tabellen](#Geamorticeerde efficiëntie)
+* [Constructie van een heap](#Constructie van een heap (met bewijzen))
+  * [Door elementen toe te voegen](#Door elementen toe te voegen)
+  * [Door kleinere heaps samen te voegen](#Door kleinere heaps samen te voegen)
+* [Performantie open adressering](#Performantie open adressering)
+  * [Afwezige sleutel](#Afwezige sleutel)
+  * [Aanwezige sleutel](#Aanwezige sleutel)
+* [BST zoekperformantie](#BST zoekperformantie)
+* [Berekening hoogte B-tree](#Eigenschappen B-Tree)
+
+### Verkorte uitleg zonder wiskunde
+
+(als geheugensteun om te oefenen)
+
+**Geamorticeerde efficiëntie van tabellen**
+
+$n$ toevoegoperaties = $n$ operaties + voor elke macht van 2 tot aan $n$, $n$ operaties erbij.
+$$
+\sum_{i=1}^n t_i = n + \sum_{j=0}^{\lceil log(n)\rceil - 1}2^j
+$$
+Versimpel de som door de *upper* weg te werken en '<' te zetten. Dan gewoon verder uitwerken.
+
+**Constructie van een heap door elementen toe te voegen**
+
+Voor elke toevoeging $i.2^i$ keer omhoog bubbelen. De som van dit van $T(n)$ is de som van dit van 0 tot h. Doe $2T(n) - T(n)$, maar trek ze scheef van elkaar af en werk uit. 
+
+**Constructie van een heap door kleinere heaps samen te voegen**
+
+We gaan de deelheaps van onder naar boven af. Voor elke deelheap moet je maximum van zijn wortel naar beneden bubbelen. $h-i$ dus. Beschouw dit getal vanaf de wortel, dan is $i=0$, moet je $h$ zakken. Zit je bij de kinderen van de wortel, moet je $h-1$ zakken. Een blad op zich is al gesorteerd: $h=i$, moet je $0$ zakken. Doe weeral $2T(n) - T(n)$
+
+**Performantie open adressering**
+
+Bij afwezige sleutel:
+
+Neem $p_i$, de kans dat er exact $i$ testen moeten gebeuren. Doe dit maal $i$, dan heb je de gemiddelde kost per aantal testen. Maak hier een som van. Neem $q_i$, de kans dat er minstens $i$ testen moeten gebeuren. $p_i$ is natuurlijk gelijk aan $q_i$ min de kans dat er meer dan $i$ testen moeten gebeuren. Er moet altijd minstens 1 test gebeuren, de kans dat er 2 moeten gebeuren is gelijk aan de bezettingsgraad maal de kans dat er 1 moet gebeuren. Bij 3 is dat dan hetzelfde, alleen heb je er al 1 getest en moet je dus het aantal elementen en de grootte van de tabel -1 doen. Dit veralgemenen voor $q^i$ en dan terug omvormen naar een meetkundige reeks. Fuck it, laat die naar oneindig gaan, want hij convergeet toch omdat $\alpha < 1$
+
+Bij aanwezige sleutel:
+
+Neem het aantal testen dat er moesten gebeuren op het moment dat hij werd toegevoegd. Dan de som van al die aantallen gedeeld door het aantal elementen $n$. Draai de som om zodat je $\frac{1}{k}$ krijgt. Ga sicko mode en maak er een integraal van en reken die uit.
+
+**BST zoekperformantie**
+
+We willen de gemiddelde diepte bepalen van een te zoeken knoop. Je moet een beetje recursief denken. Definiëer $D(n)$, de gemiddelde weglengte van alle paden vanaf de knoop. De knoop is het $i$de element van de bst. De gemiddelde weglengte van alle paden vanaf zijn linkerkind is $D(i-1)$ (tel die op met die van het rechterkind en 1 voor de root). Je moet dus recursief de som nemen van al die mogelijke paden, voor alle mogelijke deelbomen. (vergeet de root niet). Die som kan je vereenvoudigen omdat de linker en rechterkant hetzelfde zijn, maar in omgekeerde volgorde. Doe dan $nD(n) - (n-1)D(n-1)$, en werk uit. Deel dan door $n(n+1)$. Dan stel je $f(n)$ gelijk aan het deel van de oplossing met een $D$. Dan kan je aantonen dat $f(n)$ langs boven begrensd is door $\ln n$. (vergeet niet dat je terug moet vermenigvuldigen met $n$ om terug aan $D$ te raken)
+
+**Berekening hoogte B-tree**
+
+$m$ is het maximaal aantal kinderen per knoop.
+
+Boom met hoogte $h$. Wat is het minimale aantal sleutels dat hij bevat?
+
+Wortel heeft 1 sleutel, 2 kinderen dus. Die hebben op hun beurt ieder $g= \lceil \frac{m}{2}\rceil$ kinderen. Maak hier een sommatie (tot aan de hoogte min de wortel) van en reken uit met meetkundige reeks.
+
+Elke knoop heeft ten minste $g-1$ sleutels. (behalve de knoop). Je moet je som hier dus mee vermenigvuldigen. Werk dit uit. Probeer h te isoleren dmv een logaritme. Zeg iets over de constante factor.
+
+
+
+## Overzicht alle geziene gegevensstructuren
+
+
+
+* Array (tabel)
+
+  * Stack
+  * Queue
+  * Deque
+  * Tabel geordend volgens zoekkans
+  * Gerangschikte tabel
+
+* Gelinkte lijst
+
+  * Geordend volgens zoekkans
+  * Gerangschikt
+
+* Heap
+
+  * Pairing heap
+  * Binomial queue
+
+* Hashtables
+
+  * Seperate chaining
+  * Coalesced chaining
+  * Open adressering
+    * Lineair
+    * Kwadratisch 
+    * Dubbele hash
+
+* Bomen
+
+  * Binary search tree
+    * Met pointers naar de ouders
+    * Threaded tree
+  * Treap
+
+* Externe datastructuren
+
+  * B Tree
+  * B+ Tree
+  * Binary trie 
+  * Extendible hashing
+  * Linear hashing
+
+  
 
 ## Mogelijke examenvragen
 
