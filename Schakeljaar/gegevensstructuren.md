@@ -317,7 +317,7 @@ Op een volledig gevuld niveau $i$ zijn er  $2^i$ knopen. Een volledig gevulde bo
 $$
 \sum_{i=0}^h 2^i = 2^{h+1} - 1
 $$
-knopen. Omdat het laatste niveau niet noodzakelijk is gevult zal $n$ liggen tussen:
+knopen. Omdat het laatste niveau niet noodzakelijk is gevuld zal $n$ liggen tussen:
 $$
 2^{h} - 1 <n\leq 2^{h+1} - 1 \\
 2^{h} <n\leq 2^{h+1} 
@@ -453,7 +453,7 @@ Je kan gemakkelijk 2 bomen van dezelfde grootte mergen in 1 operatie (boom met d
 
 #### Pairing heap
 
-Een boom die de heap-eigenschap volgt, maar niet speciaal compleet is. We gaan een pariting heap typisch implementeren gebruik makende van pointers. Elke node houdt een pointer bij naar zijn linkerkind en zijn rechterbuur.
+Een boom die de heap-eigenschap volgt, maar niet speciaal compleet is. We gaan een pairing heap typisch implementeren gebruik makende van pointers. Elke node houdt een pointer bij naar zijn linkerkind en zijn rechterbuur.
 
 <img src="img/image-20211218221059741.png" alt="image-20211218221059741" style="zoom:50%;" />
 
@@ -1185,6 +1185,7 @@ We lokaliseren de pagina van de desbetreffende sleutel en halen hem eruit. Te du
 * Slide 128 oefening hashing
 * Bloom filter?
 * Slide 193-... B-trees en B+ trees oefeningen operaties
+* Slide 21 oefening performantie
 
 
 
@@ -1252,15 +1253,15 @@ Elke knoop heeft ten minste $g-1$ sleutels. (behalve de knoop). Je moet je som h
 
 
 
-## Overzicht alle geziene gegevensstructuren
+## Overzicht alle geziene items
 
-
+(met miniscule uitleg)
 
 * Array (tabel)
 
-  * Stack
+  * Stack (stapel)
   * Queue
-  * Deque
+  * Deque (double ended queue)
   * Tabel geordend volgens zoekkans
   * Gerangschikte tabel
 
@@ -1271,32 +1272,50 @@ Elke knoop heeft ten minste $g-1$ sleutels. (behalve de knoop). Je moet je som h
 
 * Heap
 
-  * Pairing heap
-  * Binomial queue
+  * Pairing heap (heap maar je mag kiezen hoeveel kinderen = O(1) merge)
+  * Binomial queue (bos van bomen van recursieve vorm, O(log n) merge)
 
 * Hashtables
 
-  * Seperate chaining
-  * Coalesced chaining
-  * Open adressering
+  * Seperate chaining (linked list op elk vakje)
+  * Coalesced chaining (in ander vakje steken waarvoor pointer wordt bijgehouden, eventueel in overflow zone)
+    * elk vakje heeft dus pointer en de lijsten klitten samen
+  * Open adressering (in ander vakje steken op basis van berekening)
     * Lineair
-    * Kwadratisch 
-    * Dubbele hash
+    * Kwadratisch (oppassen dat je functie we de hele tabel overloopt)
+    * Dubbele hash (2 hashfuncties)
+
+* Hashfuncties
+
+  * Modulo based
+  * Multiplication based (vermenigvuldig met constante tussen 0 en 1 en vermenigvuldig het deel na de komma met m)
+  * Universal hashing: ((as + b) mod p)mod m (random a en b, telkens andere hashfunctie)
+  * Grote sleutels
+    * Zien als groot getal (slecht)
+    * Horner
+    * Verschillende stukken hashen en combineren (bv XOR)
+    * Verschillende hash voor elk stuk en combineren
+  * Bloom filter (gebruikt hashed om te zien of iets in een set voorkomt)
 
 * Bomen
 
   * Binary search tree
     * Met pointers naar de ouders
-    * Threaded tree
+    * Threaded tree (bladeren hebben pointer naar voorloper en opvolger, maakt in order gemakkelijk)
   * Treap
+
+* Graaf
+
+  * In adjacency matrix
+  * In adjacency list
 
 * Externe datastructuren
 
-  * B Tree
-  * B+ Tree
+  * B Tree ( maximum $m$ kinderen, minimum $\lceil \frac{m}{2} \rceil$ )
+  * B+ Tree (interne nodes enkel keys, bladeren hebben pointer naar vorige en volgende blad)
   * Binary trie 
-  * Extendible hashing
-  * Linear hashing
+  * Extendible hashing (tabel met adressen waar je key kan vinden met zelfde laatste $d$ bits van de hash)
+  * Linear hashing (laatste $d$ bits zijn het effectieve logische adres)
 
   
 
