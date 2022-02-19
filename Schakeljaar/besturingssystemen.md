@@ -430,5 +430,3 @@ Antwoord van the man himself:
 
 
 
-
-Oké, misschien is het tijd dat ik even normaal doe. Het spijt me dat ik je zo lang aan het lijntje heb gehouden. Ik ga geen nutteloze uitvluchten verzinnen. Ik was gewoon te laf om iets te sturen. Ik kan niet zo goed inschatten hoe jij je voelt bij deze situatie, dus ik hoop dat ik geen verkeerde veronderstellingen maak, maar ik heb het gevoel dat langs beide kanten de interesse is afgenomen. Ik weet zelf niet wat ik wil en ik heb het gevoel dat ik iets te snel met gevoelens ben gaan smijten. Misschien is het voor ons beide het beste om het hierbij af te ronden. Ik veronderstel dat je zeker wel je tshirt terug wilt (want die is cool). Dus ik kan die wel komen brengen of aan de deur leggen, moest je mijn kop niet willen zien. Dankjewel voor de leuke momenten :)
