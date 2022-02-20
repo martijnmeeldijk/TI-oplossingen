@@ -10,29 +10,35 @@ Als je deze samenvattingen gebruikt moet je [King Marti](https://open.spotify.co
 
 ### Semester 1
 
-[Signalen & Systemen](sisy.html)
-
 [Computerhardware](hardware.html)
-
-[Gegevensstructuren](gegevensstructuren.html)
 
 [Discrete Wiskunde](diwi.html)
 
-[Wiskunde I](wiskunde1.html)
-
 [Gedistribueerde Gegevensverwerking](gdv.html)
 
+[Gegevensstructuren](gegevensstructuren.html)
+
 [Programmeren in C/C++](cpp.html)
+
+[Signalen & Systemen](sisy.html)
+
+[Wiskunde I](wiskunde1.html)
 
 ### Semester 2
 
 Op dit moment is het meeste hiervan nog leeg.
 
-[Wiskunde II](wiskunde2.html)
+[Algoritmen](algoritmen.md)
+
+[Besturingssystemen](besturingssystemen.html)
 
 [Computernetwerken II](cn2.html)
 
-[Besturingssystemen](besturingssystemen.html)
+[Statistiek](statistiek.html)
+
+[Wiskunde II](wiskunde2.html)
+
+
 
 
 
