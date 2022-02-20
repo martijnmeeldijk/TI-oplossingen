@@ -6,27 +6,46 @@
 
 ## Vraag 1
 
-> Wat is het verschil tussen symmetrische en asymmetrische multiprocessing? 
+> Wat is het verschil tussen symmetrische en asymmetrische multiprocessing? (p15)
+
+Bij **assymmetrische multiprocessing** wordt de kernel van het besturingssysteem altijd uitgevoerd op een bepaalde **master** processor. Hij is verantwoordelijk voor scheduling en heeft volledige controle over het geheugen. 
+
+Dit heeft als gevolg dat de andere processoren enkel gebruikersprogrammas en hulpprogrammas kunnen uitvoeren. Als één van deze processoren dan een dienst nodig heeft (I/O ofzo), zal hij een request moeten sturen naar de master. De master is dus de **bottleneck** in dit systeem, maar voor deze benadering zijn echter weining aanpassingen nodig aan het besturingssysteem indien deze al multitasking voor één processor ondersteunt.
 
 
+
+We kunnen op twee manieren doen aan **symmetrische multiprocessing**:
+
+1. De kernel opbouwen uit **meerdere processen** of threads. Dan kunnen ze verdeeld worden over de verschillende processoren. 
+2. Elke processor een **volledige kopie** van het besturingsssysteem laten uitvoeren. (is wel iets complexer omtrent communicatie en synchronisatie)
+
+Bij symmetrische multiprocessing kan de kernel dus uitgevoerd worden **op elke processor**. De complexiteit is hoger en deze werkwijze vraagt meer van ons systeem, waarvoor we in ruil wel hogere fouttolerantie en betere uitbreidingsmogelijkheden krijgen.
 
 ## Vraag 2
 
-> Wat moet je voorzien om op een Unix-systeem Windows applicaties te kunnen uitvoeren? 
+> Wat moet je voorzien om op een Unix-systeem Windows applicaties te kunnen uitvoeren? p12
 
+Een virtuele machine.
 
+(hij zegt niet dat ik het moet uitleggen, maar laten we eerlijk zijn. Ik ga dat waarschijnlijk toch wel doen want ik ben een dikke neurt)
 
 ## Vraag 3
 
 > Bespreek hoe je op Windows een Unix-applicatie kan uitvoeren? Wat wordt in deze context bedoeld met een subsysteem? 
 
+**Omgevingssubsystemen** zorgen voor interactie met de gebruiker en voorzien een API set waardoor we op Windows toepassingen kunnen ondersteunen die geschreven zijn voor andere besturingssystemen, zoals Unix bijvoorbeeld. Elk subsysteem heeft zijn eigen adresruimte. 
 
+Elk programma dat draait kan maar van één omgevingssubsysteem gebruik maken (het is wel logisch dat een windows programma geen UNIX system calls hoeft te doen hoop ik). Als we een Unix applicatie willen draaien, maken we dus gebruik van het POSIX-subsysteem, waarin de meeste UNIX-compatibele software kan worden gecompileerd en uitgevoerd. De API van ons POSIX-subsysteem wordt dus vertaald om toegang te krijgen tot de Executive.
 
 ## Vraag 4
 
-> Geef drie mogelijke ontwerpen van kernels. Bespreek bij elk hun voor- en nadelen en of ze nog gebruikt worden. 
+> Geef drie mogelijke ontwerpen van kernels. Bespreek bij elk hun voor- en nadelen en of ze nog gebruikt worden. p22?
 
+* Oude Unix: monolithische kernel
+* Moderne Unix: meer modulaire arichitectuur
+* Linux: monolithische kernel
 
+// TODO effectief uitleggen
 
 ## Vraag 5
 
@@ -34,9 +53,17 @@
 
 <img src="img/image-20220214160723785.png" alt="image-20220214160723785" style="zoom:50%;" />
 
-> Geef van elke component in de “executive” aan wat de werking ervan is. 
+> Geef van elke component in de “executive” aan wat de werking ervan is. p20
 
+* I/O-manager: verwerkt I/O-verzoeken en is gelaagd opgebouwd om bijvoorbeeld stuurprogramma's dynamisch te laden
+* Cache manager: beheert de schijfcache
+* Security reference monitor: controleert alle toegang
+* Object Manager: maakt en verwijdert objecten
+* Process Manager: beheert proces- en threadobjecten
+* Virtual Memory Manager: doet de vertaling tussen fysieke en virtuele geheugenadressen. 
+* Windows & Graphics (Vanaf NT 4.0): bevatten de scherminterface en de grafische stuurprogrammas (voor NT 4.0 werden ze in gebruikersmodus uitgevoerd)
 
+//TODO hij legt ze precies niet allemaal uit in de cursus, moet ik die andere er dan ook bijzetten? let me know in the comments and be sure to like and subscribe
 
 # Hoofdstuk 2
 
@@ -422,7 +449,6 @@ Antwoord van the man himself:
 ## Vraag 56
 
 > Welke parameters pleiten voor kleine paginagroottes en welke voor grote paginagroottes? 
-
 
 
 
