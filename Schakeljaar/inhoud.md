@@ -36,7 +36,7 @@ Op dit moment is het meeste hiervan nog leeg.
 
 [Statistiek](statistiek.html)
 
-[Wiskunde II](wiskunde2.html)
+[Wiskunde II](Wiskunde2.html)
 
 
 
