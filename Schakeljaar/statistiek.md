@@ -59,3 +59,55 @@ Oefening 14
 tan(2*acos(-1/5))
 ```
 
+### Reeks 2
+
+Oef 11
+
+```matlab
+arr = 1:1000
+lol = sin(arr)
+filtered = lol > 0.5
+som = sum(filtered)
+```
+
+Oef 13
+
+```matlab
+arr = 0:10
+arr = factorial(arr)
+som = sum(arr)
+```
+
+Oef 15
+
+```matlab
+syms a b c
+py = a^2 + b ^2 == c^2
+omtr = a + b + c == 5
+opp = a*b/2
+b1 = solve(a^2 + b^2 == (5-a-b)^2)
+vgl = subs(opp, b, b1)
+afg = diff(vgl, a)
+solve(afg, 0)
+var2 = vpa(ans)
+b = var2(1)
+```
+
+Oef 17
+
+```matlab
+syms x 
+eq = 2*x^3-x^2-15*x+18
+opl = solve(eq > 0, x, 'ReturnConditions', true, 'Real', true)
+opl.conditions
+```
+
+Oef 18
+
+```matlab
+syms x real
+eq = x^5-5*x
+opl = solve(eq == -2,x, 'Real', true)
+var = vpa(opl)
+```
+

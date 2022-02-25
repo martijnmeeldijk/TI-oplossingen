@@ -454,5 +454,98 @@ Antwoord van the man himself:
 
 
 
+# Labo
+
+### Deel 1
+
+1. Welke toetsencombinatie heb je nodig om een runnend programma (een proces dus) te onderbreken? 
+
+`ctrl + C`
+
+2. Hoe kan je een runnend programma pauzeren? (Het hervatten van een programma zullen we later zien) 
+
+`ctrl + Z`
+
+3. Wanneer een programma vraagt om gegevens in te typen, met welke toetsencombinatie kan je dan aangeven dat de invoer stopt? 
+
+`ctrl + D`
+
+4. Wanneer je op de commandolijn een aantal woorden intikt, hoe kan je dan het laatste woord verwijderen?
+
+`ctrl + W`
+
+5. In een shell kan je aan “auto completion” doen door gebruik te maken van de tab-toets. Tik de letters “les” in, en tik vervolgens op de tab-toets. Je merkt dat er automatisch less verschijnt. Nu kan het zijn dat er nog opdrachten zijn die met less beginnen. Tik nogmaals op de tab-toets om te kijken welke opdrachten er met less beginnen. Een ander handigheidje is “reverse search” om eerder ingetypte commando’s te suggereren tijdens het typen. Gebruik hiervoor “CTRL+r”.
+
+### Deel 2
+
+1. Met de opdracht man kan je alle info over een welbepaalde opdracht achterhalen. Zo zal de opdracht “man ls” de info tonen van de ls-opdracht. Man toont de informatie a.d.h.v. een pager, een programma dat de informatie niet alleen op het scherm toont maar dat ook gebruikersinteractie toelaat. Zo kan je scrollen, zoeken naar bepaalde woorden, etc. Standaard is de pager ingesteld op het commando less. Dit betekent dat wanneer je wil weten hoe je voorwaarts moet zoeken in een manpagina, je dit moet gaan zoeken bij het commando less en niet bij het commando man. Vraag de manpagina op van het commando less en ga na hoe je een tekst die met less wordt getoond kan afsluiten. Hoe kan je voorwaarts zoeken in een manpagina?
+
+```bash
+/zoekopdracht
+```
+
+en dan `n` om naar het volgende en `shift + n`om naar het vorige resultaat te gaan.
+
+2. Hoe kan je zorgen dat er bij het zoeken in een manpagina geen rekening wordt gehouden met het verschil tussen hoofd- en kleine letters?
+
+```
+volgens google gewoon als je je zoekopdracht in kleine letters intikt
+```
+
+3. Bekijk de manpagina van het commando man en ga na hoeveel secties er gekend zijn.
+
+```
+13
+```
+
+4. Wanneer je de opdracht “man read” intikt krijg je de info te zien van het commando read. Er is echter ook een systeemaanroep read aanwezig. Hoe kan je aan man meegeven dat je niet de info wenst te zien van het commando read maar wel van de systeemaanroep read?
+
+```
+//TODO
+```
+
+5. Met de opdracht “ls” krijg je van een directory een overzicht van alle bestanden en subdirectories te zien. Wanneer je geen directory opgeeft, wordt de huidige werkdirectory genomen. Wat doen de opties -l en -h?
+
+```bash
+ls -l #toont meer details zoals rechten enzo
+ls -h #toont hidden files
+```
+
+6. Bekijk met “ls /” de inhoud van de hoofddirectory.
+
+
+
+7. In punt 5 en 6 heb je gemerkt dat de uitvoer voorzien wordt van kleuren. Zo worden bv. directories in het donkerblauw gekleurd en symbolische links in het lichtblauw. Dit gedrag is te wijten aan het feit dat er voor ls een alias gedefinieerd is die telkens ls vervangt door “ls --color=auto”. Ga met de opdracht “alias” na welke andere aliassen er bestaan. 
+
+```
+nog een aantal andere aliassen voor ls en grep met opties
+```
+
+8. Met de opdracht “cd” kan je van werkdirectory veranderen. Wanneer je geen directorynaam opgeeft wordt je home-directory de nieuwe werkdirectory. Voer “cd /tmp” uit en keer daarna terug naar je home-directory.
+
+9. Een directory aanmaken kan via de opdracht “mkdir”. Maak in je home-directory een directory aan met als naam ‘c’ waar je toekomstige C-programma’s naartoe kan kopiëren.
+
+10. Een bestand kopiëren gebeurt via de opdracht “cp”. De eerste parameter is de bron, de tweede de bestemming. Een bestand verplaatsen doe je via de opdracht “mv”.
+
+
+
+```c
+#include <stdio.h>
+int main(){
+	printf(“Hello ik ben MARTIJN!!!!!!”);
+	return 0;
+}
+```
+
+![image-20220225142420072](img/image-20220225142420072.png)
+
+Static is dus veel groter
+
+ ### Deel 3
+
+programma geschreven met memory leaks ik heb geen zin om het over te type want ik weet niet hoe ik copy paste uit virtualbox
+
+ ### Deel 4
+
 
 
