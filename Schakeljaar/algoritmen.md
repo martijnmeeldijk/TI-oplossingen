@@ -2,10 +2,14 @@
 
 
 
+## Evenwichtige zoekbomen
+
+
+
 We willen ervoor zorgen dat bomen niet uit balans geraken:
 
 * Red-black-tree: boom altijd herbalanceren
-* Splay trees: maakt reeks operatie efficient
+* Splay trees: maakt reeks opeenvolgende operaties efficient
 * Treaps: tree die ook een heap is (gaan we niet verder op in)
 
 

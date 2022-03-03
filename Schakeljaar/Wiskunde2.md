@@ -46,7 +46,7 @@ $$
 ### Afstand tussen punt en vlak
 
 $$
-d(p_1, \alpha) = \frac{\abs{ax_1 + by_1 + cz_1 +d}}{\sqrt{a^2 + b^2 + c^2}}
+d(p_1, \alpha) = \frac{\left| ax_1 + by_1 + cz_1 +d \right|}{\sqrt{a^2 + b^2 + c^2}}
 $$
 
 punt $p_1(x_1,y_1,z_1)$ en vlak $\alpha:\;ax+by+cz+d=0$

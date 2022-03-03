@@ -9,11 +9,10 @@
 
 
 - Introductieles
-  - Sectie 1.5 Protocollagen en servicemodel
+  - Sectie 1.5 Protocollagen en servicemodel `x`
   - Sectie 2.1 Principes van netwerkapplicaties
   - Sectie 3.2 Multiplexen en demultiplexen
   - Sectie 6.7 Een dag in het leven van ...
-
 - Week 1
   - Sectie 2.4 DNS 
   - Kennisclip: Resolver
@@ -32,6 +31,13 @@
     - Kennisclip: Network Address Translation
   - Sectie 5.6 Internet Control Message Protocol (ICMP)
     - Kennisclip: Internet Control Message Protocol (*)
+- WEEK 3
+  - Sectie 6.4 Local-Areanetwerken met switches (herhaling, behalve *)
+    - Kennisclip: ARP
+    - Kennisclip: ARP cache management (*)
+    - Kennisclip: Ethernet switching
+    - Kennisclip: VLAN
+
 
 
 
@@ -112,7 +118,151 @@ Dit is natuurlijk niet de enige protocolstack (wel de meest gebruikte). In de se
 
 Om het even kort te houden. Deze afbeelding legt het concept vrij goed uit. Ons pakketje wordt telkens ingepakt in een pakket van de bovenliggende laag en weer uitgepakt tot waar nodig.
 
+//TODO 2.1, 3.2, 6.7
 
+
+
+## DNS
+
+Een **DNS resolver** is een client-side programma dat instaat voor het omvormen van webadressen naar ip-adressen. Meestal krijgt onze host een default DNS server via DHCP. 
+
+Voordat DNS bestond had elke host een mapping met hostnames en ip adressen. 
+
+Buiten de API van je besturingssysteem zijn er nog andere manieren om te interageren met DNS servers
+
+* `host`: queries met enkel een hostname
+* `nslookup`
+* `DiG`: handige tool voor geavanceerde queries
+
+```bash
+dig +trace www.example.com
+```
+
+Dig is handig, want je kan met de trace flag het hele afgelegde pad van je query navragen.
+
+### Hierarchie
+
+<img src="img/image-20220228104417057.png" alt="image-20220228104417057" style="zoom: 33%;" />
+
+Er zijn over de wereld een aantal **root dns servers**, deze bevatten resource records voor elk van de top level domains (com, edu, be, ...). Deze vertellen je eigenlijk waar je de volgende server kunt vinden. Gaan we een niveau lager, komen we bij de **top level domain servers**. Deze zullen je vertellen waar je het ip adres van een bepaald domein kunt vinden (ugent, gov, nokia, ...). Vanaf hier kan je blijven omlaag gaan naar subdomeinen. 
+
+**Registry operators** zijn de mensen die de database onderhouden waarin staat welke domeinnamen van wie zijn. We noemen deze database de **registry** Generische top-level domeinen (com, org, edu) worden beheerd door ICANN, maar het beheer van domeinen zoals *be, nl* verschilt per land. 
+
+**Registrars** zijn bedrijven die toegang krijgen tot de registry om domeinnamen te registreren voor registrants.
+
+Een **registrant** is een persoon die de rechten tot een domeinnaam bezit.
+
+
+
+Met het commando `whois` kan je opzoeken wie de eigenaar is van een domein.
+
+
+
+### Reverse DNS
+
+Met reverse dns kan je de domeinnaam vinden die bij een bepaald ipadres hoort. Dit is niet zo makkelijk als het klinkt, want je kan niet zomaar alle DNS servers gaan doorzoeken om het record te vinden dat bij een bepaald ip adres hoort. Om reverse queries toe te laten, werd er een nieuw top level domain, genaamd arpa aangemaakt. Binnen het in-addr subdomein heb je dan een subdomein per octet van het ip adres.
+
+Het proces van reverse DNS gaat dus eigenlijk in dezelfde volgorde als gewone DNS.
+
+<img src="img/image-20220228113631667.png" alt="image-20220228113631667" style="zoom: 33%;" />
+
+### DNS server
+
+Een **caching dns server** zorgt ervoor dat gebruikers sneller een resultaat kunnen krijgen op DNS queries. Hij houdt de resultaten van vorige queries bij (zolang de time to live van het record dit toelaat). Wil je zelf een (caching) DNS server beheren, zal je zelf de adressen van de root servers in de DNS server moeten steken.
+
+
+
+**Authoritative dns servers** beantwoorden enkel queries met betrekking tot records waarover zij authoriteit hebben. Als zij niet over deze data beschikken, zullen ze de query doorverwijzen (en ze niet recursief verwerken).
+
+<img src="img/image-20220228163051606.png" alt="image-20220228163051606" style="zoom: 33%;" />
+
+Wat doet een DNS server precies?
+
+* *named* daemon luistert op poort 53 (spreek je uit als name-D)
+* Queries komen binnen via UDP, zone transfers gebeuren met TCP
+* De DNS server antwoordt op queries gestuurd door resolvers
+* Een zone file bevat resource records voor een bepaalde zone
+
+Een **zone transfer** is het proces waarin een primaire DNS server een zone file kopieert naar een secundaire dns server, alle resource records zijn op die manier altijd beschikbaar op de secundaire DNS server.
+
+Een **zone** is simpelwel een deel van het domein. In de afbeelding kan dit *com* zijn of *www, dk*. Anderzijds is een domein juist de volledige deelboom vanaf een bepaald punt.
+
+
+
+### Zone file
+
+Wat zit er allemaal in een zone file?
+
+* SOA (start of authority) record
+  * definiëert default parameters die betrekking hebben tot de hele zone (TTL, email beheerder, refresh rate, ...)
+* NS (nameserver) records
+  * duidt de authoritatieve DNS server voor het domein aan
+* A/AAAA (alias) records
+  * de naam van je website bijvoorbeeld
+* CNAME (canonical name) records
+  * mapt één domeinnaam naar een andere
+* MX (mailserver) records
+
+### TTL
+
+* Kleine time to live: meer consistentie en minder fouten op het netwerk
+* Grote time to live: minder belasting op het netwerk en snellere DNS queries
+
+
+
+## Peer-to-peer bestandsdistributie
+
+### Bittorrent
+
+Bij bittorrent worden bestanden opgesplitst in **chunks** van 512KB. Een **torrent** is dan een groep van **peers** (computers) die een bestand delen met elkaar. Een **tracker** is een node die de actieve peers van een torrent bijhoudt. Om een download te starten moeten we dus eerst van de tracker een lijst van peers krijgen. Hiermee kunnen we dan bestanden uitwisselen.
+
+Trackers zijn eigenlijk de bottleneck van het hele gebeuren. Als we het hele systeem willen verkloten moeten we enkel de trackers uitschakelen en niemand kan nog files downloaden. Zijn er alternatieven waar dit niet het geval is?
+
+
+
+### Distributed hash table (DHT)
+
+We gebruiken in plaats van een tracker een gedistribueerde hashtabel. De key-value paren van een gewone hashtabel worden verdeeld over verschillende nodes. Elke node krijgt een id. We maken vervolgens een hashfunctie die elke sleutel afbeeldt op een node en een record binnen die node.
+
+Hier onstaat dan natuurlijk weer een probleem. Wat moeten we doen als we op een id uitkomen die niet hoort bij een node? Dan gaan we simpelweg naar de eerstvolgende node.
+
+<img src="img/image-20220228170856251.png" alt="image-20220228170856251" style="zoom:50%;" />
+
+**Peer churn** (het constant joinen en leaven van nodes)
+
+Nodes slaan telkens het ip adres van hun opvolger op. Als er een node het netwerk verlaat, moet hij eerst al zijn records aan zijn opvolger geven. Komt er een nieuwe node bij, dan neemt hij een deel van de records van zijn opvolger op. 
+
+
+
+## DHCP
+
+Hoe stellen we op ons apparaat het juiste ip adres in? We kunnen manueel op onze host het ip adres ingeven, maar als we dan omhoog willen schalen naar meer hosts, komen we in de problemen. Hier komt **DHCP** binnen spel. We willen dat als er een pc op het netwerk wordt aangesloten, hij automatisch een ip-adres krijgt.
+
+Een **DHCP server** houdt een lijst van vrije ip-adressen bij. Als een apparaat zich aansluit op het netwerk, zal hij een **DHCP request** sturen naar de server, waarna de server zal antwoorden met het volgende vrije ip-adres in zijn lijst. Omdat de host wanneer hij pas op het netwerk zit het adres van de DHCP server nog niet weet, zal hij eerst een **DHCP discover** broadcasten over het netwerk.
+
+Iets meer detail:
+
+<img src="img/image-20220228222327627.png" alt="image-20220228222327627" style="zoom:33%;" />
+
+* DHCPDISCOVER
+  * aanvraag voor een ip-adres, uitgestuurd door de client
+* DHCPOFFER
+  * De DHCP server biedt een adres aan 
+  * het kan dat er meerdere servers tegelijk een offer sturen, de client kiest er dan eentje
+* DHCPREQUEST
+  * De client antwoordt om het offer te bevestigen
+* DHCPACK
+  * De server bevestigt het request
+
+Merk op dat de lease time 86400s bedraagt. Als de client zijn 'lease' op het ip adres niet vernieuwt binnen deze tijd, kan het ip-adres hergebruikt worden.
+
+DHCP kan je niet alleen het gealloceerde ip-adres binnen het subnet geven, maar ook het adres van de default gateway en het subnetmasker.
+
+Is er op het netwerk geen DHCP server beschikbaar, kan een host een random gegenereerd ipv4 link-local adres (169.254.X.X/16) gebruiken. Om dan toch zeker te zijn dat je niet het ip adres van iemand anders hebt genomen, kan je een ARP request op het netwerk uitsturen. Als er dan iemand op antwoord genereer je een nieuw adres. Dit is een goede fallback, maar kan voor problemen zorgen als de DHCP server terug online komt. 
+
+Verder heb je met een DHCP server ook het gevaar van een **single point of failure**. Deze tekortkomingen worden blijkbaar opgelost in ipv6
+
+# ---------------------
 
 
 
@@ -120,16 +270,20 @@ Om het even kort te houden. Deze afbeelding legt het concept vrij goed uit. Ons 
 
 ## Vragen
 
-* Lab 1
+* Wireshark Lab 1
   * [Is your browser running HTTP version 1.0 or 1.1? What version of HTTP is the server running?](#l1v1)
   * [How many HTTP GET request messages did your browser send? To which Internet addresses (URL) were these GET requests sent?](#l1v16)
   * [Can you tell whether your browser downloaded the two images serially, or whether they were downloaded from the two web sites in parallel? Explain.](#l1v17)
   * [When your browser’s sends the HTTP GET message for the second time, what new field is included in the HTTP GET message?](#l1v19)
-* Lab 2
+* Wireshark Lab 2
   * [How many bytes are in the IP header? How many bytes are in the payload of the IP datagram? Explain how you determined the number of payload bytes.](#l2v3)
   * [Analyze the first fragment of the fragmented IP datagram. What information in the IP header indicates that the datagram been fragmented? What information in the IP header indicates whether this is the first fragment versus a latter fragment? How long is this IP datagram?](#l2v10)
+* DNS
+  * [Resolve de URL www.tinder.com verschillende keren na elkaar, en gebruik verschillende nameservers. Herhaal hetzelfde op de home server (log in met SSH), die andere DNS-servers gebruikt. Beschrijf wat je ziet - waarom gaat een groot bedrijf op deze manier te werk?](#dnsv3)
+  * [Start in je Linux VM het script capture_dns.sh2 op dat je downloadde; voer de lookup naar www.tinder.com opnieuw uit. Hoeveel DNS requests werden er naar de server gestuurd, hoeveel antwoorden kreeg je terug?](#dnsv4)
 
 
+# Wireshark
 
 
 
@@ -429,3 +583,123 @@ Length, Flags, Header Checksum
 
 ![image-20220224162607564](img/image-20220224162607564.png)
 
+
+
+
+
+# DNS
+
+## DNS queries (vanop je client VM)
+
+1. Welk IP-adres heeft www.ugent.be? Welke servers zijn verantwoordelijk voor dit domein? 
+
+```bash
+157.193.43.50
+
+;; AUTHORITY SECTION:
+UGent.be.		71589	IN	NS	ugdns2.UGent.be.
+UGent.be.		71589	IN	NS	ugdns3.UGent.be.
+UGent.be.		71589	IN	NS	ugdns1.UGent.be.
+UGent.be.		71589	IN	NS	ns.belnet.be.
+
+```
+
+
+
+2. www.belnet.be geeft een IP-adres terug, maar als je dit IP-adres probeert om te zetten in een URL (reverse lookup) merk je dat de server een andere naam heeft. Welke? Licht toe hoe je dit vond. 
+
+```bash
+$dig www.belnet.be
+=> 217.19.230.167
+$ nslookup -x 217.19.230.167
+=> 217.19.230.167.static.hosted.by.combell.com.
+```
+
+
+
+3. Resolve de URL www.tinder.com verschillende keren na elkaar, en gebruik verschillende nameservers. Herhaal hetzelfde op de home server (log in met SSH), die andere DNS-servers gebruikt. Beschrijf wat je ziet - waarom gaat een groot bedrijf op deze manier te werk? <a name="dnsv3"></a>
+
+```bash
+# Ik krijg altijd 4 resultaten
+
+$ nslookup www.tinder.com 1.1.1.1
+=>
+Non-authoritative answer:
+Name:	www.tinder.com
+Address: 108.156.28.108
+Name:	www.tinder.com
+Address: 108.156.28.118
+Name:	www.tinder.com
+Address: 108.156.28.22
+Name:	www.tinder.com
+Address: 108.156.28.40
+
+# Waarschijnlijk voor load-balancing
+```
+
+
+
+4. Start in je Linux VM het script capture_dns.sh2 op dat je downloadde; voer de lookup naar www.tinder.com opnieuw uit. Hoeveel DNS requests werden er naar de server gestuurd, hoeveel antwoorden kreeg je terug?<a name="dnsv4"></a>
+
+```bash
+# 2 queries, 2 responses
+```
+
+<img src="img/image-20220303154303418.png" alt="image-20220303154303418" style="zoom: 33%;" />
+
+5. Netwekinstellingen DNS server
+
+dit erin kletsen en de default settings (dhcp) verwijderen
+
+```bash
+# The primary network interface
+allow-hotplug eth0
+iface eth0 inet static
+address 10.0.2.4
+netmask 255.255.255.0
+gateway 10.0.2.2 # optioneel, voor als je andere netwerken wil bereiken
+```
+
+
+
+## DNS-server – caching
+
+1 en 2: gewoon de stappen volgen
+
+
+
+3. Werkt jouw DNS-server momenteel iteratief of recursief? Leg uit aan de hand van wat je van verkeer kunnen “capturen” hebt. Werk je DNS-server bij, zodat hij een forwarder contacteert voor zijn eigen aanvragen. Herstart de bind9 server; monitor opnieuw het verkeer zoals in de vorige vraag. Werkt de server nu iteratief of recursief? Leg uit aan de hand het DNS verkeer dat je kon opvangen. 
+
+Ik denk iteratief -> allemaal vragen naar verschillende dns servers want we worden doorverwezen
+
+```
+tcpdump: verbose output suppressed, use -v or -vv for full protocol decode
+listening on eth0, link-type EN10MB (Ethernet), capture size 262144 bytes
+IP 10.0.2.15.38474 > 10.0.2.4.53: 49889+ A? www.belnet.be. (31)
+IP 10.0.2.4.35762 > 1.1.1.1.53: 53860+ [1au] A? www.belnet.be. (54)
+IP 10.0.2.4.57271 > 1.1.1.1.53: 25548+ [1au] NS? . (40)
+IP 1.1.1.1.53 > 10.0.2.4.35762: 53860 1/0/1 A 217.19.230.167 (86)
+IP 10.0.2.4.53 > 10.0.2.15.38474: 49889 1/0/0 A 217.19.230.167 (47)
+IP 1.1.1.1.53 > 10.0.2.4.57271: 25548 13/0/1 NS k.root-servers.net., NS b.root-servers.net., NS h.root-servers.net., NS l.root-servers.net., NS f.root-servers.net., NS i.root-servers.net., NS m.root-servers.net., NS a.root-servers.net., NS j.root-servers.net., NS e.root-servers.net., NS g.root-servers.net., NS c.root-servers.net., NS d.root-servers.net. (267)
+IP 10.0.2.15.44113 > 10.0.2.4.53: 35366+ AAAA? www.belnet.be. (31)
+IP 10.0.2.4.57863 > 1.1.1.1.53: 15969+ [1au] AAAA? www.belnet.be. (70)
+IP 1.1.1.1.53 > 10.0.2.4.57863: 15969 1/6/13 AAAA 2a00:1c98:10:2c::10 (464)
+IP 10.0.2.4.53 > 10.0.2.15.44113: 35366 1/6/12 AAAA 2a00:1c98:10:2c::10 (425)
+
+```
+
+nadat je de forwarder instelt is dit de output:
+
+```
+IP 10.0.2.15.50263 > 10.0.2.44.53: 2630+ A? www.belnet.be. (31)
+IP 10.0.2.44.53 > 10.0.2.15.50263: 2630 1/6/12 A 217.19.230.167 (413)
+IP 10.0.2.15.44072 > 10.0.2.44.53: 45873+ AAAA? www.belnet.be. (31)
+IP 10.0.2.44.53 > 10.0.2.15.44072: 45873 1/6/12 AAAA 2a00:1c98:10:2c::10 (425)
+
+```
+
+== recursief
+
+
+
+## DNS-server – authoritative
