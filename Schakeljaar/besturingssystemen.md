@@ -549,3 +549,321 @@ programma geschreven met memory leaks ik heb geen zin om het over te type want i
 
 
 
+### Deel 7
+
+1. Met welk van de commando’s cp, dd, ln, mktemp, touch en cat kan je vlug een aantal (lege) bestanden aanmaken waarvan de namen als parameters van het commando worden opgegeven?
+
+```
+touch
+```
+
+
+
+2. Wat verschijnt er op het scherm indien je de opdracht head /etc/passwd uitvoert? Zoek nu de verwante opdracht voor het tonen van de laatste lijnen van een bestand. Hoe kan je steeds de laatste lijnen van een bestand op het scherm laten verschijnen wanneer er een ander proces achteraan het bestand lijnen toevoegt?
+
+```bash
+$ head /etc/passwd
+=> eerste 10 lijnen van de password file
+
+$ tail /etc/passwd
+
+$ tail -f
+```
+
+
+
+3. Waarvoor dient de optie -rf bij de opdracht rm? Maak met een editor een bestand aan met als naam “-rf”. Hoe kan je het bestand “-rf“ verwijderen?
+
+```bash
+r = recursive
+f = force
+
+# het lukt mij niet om een bestand genaamd -rf te maken
+```
+
+
+
+4. Welke opties moet je toevoegen aan het commando wc om enkel de grootte van een bestand te tonen zonder extra informatie?
+
+```bash
+# wc -c
+```
+
+
+
+5. In Bash zijn er ook Bash-builtin opdrachten zoals cd, set, pwd, exec, printf en : waarvoor er geen aparte man-pagina’s beschikbaar zijn. Een overzicht kan je bekomen door man builtin of door de man-pagina van Bash op te vragen. Zoek informatie op over het gebruik van de opdrachten cd, set, pwd, exec, printf en :.
+
+```
+oke
+```
+
+
+
+6. Wat doet het commando sync?
+
+```bash
+sync - Synchronize cached writes to persistent storage
+```
+
+
+
+7. Hoe kan je met het commando dd een afbeelding maken van een USB-pen? Welke device-file heb je hiervoor nodig? Bekijk de uitvoer van de opdracht “fdisk -l”
+
+```bash
+$ dd if=/dev/usb/disk/sdX of=/path/to/backup.img bs=4M
+# stackoverflow
+
+dd if=/dev/random bs=64 count=1 #dit doorgeven aan od om random 64 bit getal te berekenen
+
+```
+
+
+
+8. Hoe kan je met dd een kopie maken van de eerste 512 bytes van de vaste schijf? Bekijk met het commando strings welke tekststrings in die 512 bytes verscholen zitten.
+
+```bash
+$ dd if=/dev/sda of=/root/Documents/lol bs=512 count=1
+=>
+	1+0 records in
+	1+0 records out
+	512 bytes copied, 0.000303232 s, 1.7 MB/s
+	
+$ strings lol
+=>
+  ZRr=
+  `|f	
+  \|f1
+  GRUB 
+  Geom
+  Hard Disk
+  Read
+  Error
+
+```
+
+
+
+9. Gebruik het commando find om een lijst van bestanden te krijgen die de afgelopen 24u nog werden aangepast.
+
+```bash
+$ find / -mtime 1 -ls
+```
+
+
+
+10. Met het commando wodim kan je van op de opdrachtlijn een CD/DVD-branden. Met het commando genisoimage kan je een ISO-bestand aanmaken. Hoe kan je van de inhoud van de /root directory een ISO-bestand maken? 
+
+```bash
+$ genisoimage -D -o root.iso /root
+
+=>
+4.68% done, estimate finish Fri Mar  4 13:25:59 2022
+  9.36% done, estimate finish Fri Mar  4 13:25:59 2022
+ 14.02% done, estimate finish Fri Mar  4 13:25:59 2022
+ 18.69% done, estimate finish Fri Mar  4 13:25:59 2022
+ 23.37% done, estimate finish Fri Mar  4 13:25:59 2022
+ 28.04% done, estimate finish Fri Mar  4 13:25:59 2022
+ 32.70% done, estimate finish Fri Mar  4 13:25:59 2022
+ 37.38% done, estimate finish Fri Mar  4 13:25:59 2022
+ 42.06% done, estimate finish Fri Mar  4 13:25:59 2022
+ 46.73% done, estimate finish Fri Mar  4 13:25:59 2022
+ 51.39% done, estimate finish Fri Mar  4 13:26:00 2022
+ 56.07% done, estimate finish Fri Mar  4 13:26:00 2022
+ 60.73% done, estimate finish Fri Mar  4 13:26:00 2022
+ 65.41% done, estimate finish Fri Mar  4 13:26:00 2022
+ 70.08% done, estimate finish Fri Mar  4 13:26:01 2022
+ 74.75% done, estimate finish Fri Mar  4 13:26:01 2022
+ 79.42% done, estimate finish Fri Mar  4 13:26:01 2022
+ 84.10% done, estimate finish Fri Mar  4 13:26:01 2022
+ 88.78% done, estimate finish Fri Mar  4 13:26:01 2022
+ 93.44% done, estimate finish Fri Mar  4 13:26:01 2022
+ 98.11% done, estimate finish Fri Mar  4 13:26:01 2022
+Total translation table size: 0
+Total rockridge attributes bytes: 0
+Total directory bytes: 1132544
+Path table size(bytes): 6162
+Max brk space used 46a000
+107024 extents written (209 MB)
+
+```
+
+
+
+11. Bij vraag 10 zal je merken dat de namen van de bestanden/directories werden gewijzigd. Je kunt dit vermijden door de image in Joliet-formaat weg te schrijven.
+
+```bash
+$ mount root.iso /mnt #om te lezen
+$ cd /mnt
+=> 
+_a___         _bash_hi  _bash_pr  c       close    _cshrc    desktop   download  _esmtp_q  _local       music     _pki    _ssh     template      _vbox001.pid  videos    _vscode
+anaconda.cfg  _bash_lo  _bashrc   _cache  _config  dead.let  document  _esd_aut  _lesshst  martijn.txt  pictures  public  _tcshrc  _vbox000.pid  _vboxcli.pid  _viminfo
+# wordt afgeknipt op 8 tekens & alleen lowercase
+
+$ genisoimage -J -D -o root.iso /root # De -J voor Joliet
+$ umount /mnt # eerst effe de vorige unmounten
+$ mount root.iso /mnt #om te lezen
+$ cd /mnt
+$ ls 
+=> _a___  anaconda-ks.cfg  c  close  dead.letter  Desktop  Documents  Downloads  martijn.txt  Music  Pictures  Public  root.iso  Templates  Videos
+
+# ziet er beter uit
+
+```
+
+Naast reguliere expressies kent Unix ook patterns om een verzameling strings te beschrijven. De mogelijkheden van standaard patterns zijn veel beperkter dan bv. reguliere expressies en  worden gebruikt zowel in opdrachten als in shellscripts. In recente Bash-versies werden deze patterns uitgebreid. Extended pattern matching kan worden aangezet met de opdracht “shopt –s extglob”. Bij het uitvoeren van een commando met een pattern wordt eerst een lijst met bestandsnamen gegenereerd die aan het opgegeven patroon voldoen. Dit wordt meestal “Pathname Expansion” genoemd. Meer uitleg kan je vinden in de man-pagina van Bash onder de rubriek “Pathname Expansion”. Maak voor onderstaande opdrachten de volgende lege bestanden aan: a, b, c, d, e, ab.c, a.b, b.a, b.c, c.d en d.e.
+
+
+
+12. Voer de volgende opdrachten uit: 
+    1. `dir a*.* ` => `a.b  ab.c`
+    2. `dir a* ` => `a  a.b	ab.c`
+    3. `dir *a  ` => `a  b.a`
+    4. `dir a\* ` => `dir: cannot access 'a*': No such file or directory`
+    5. Bemerk een belangrijk verschil met reguliere expressies. Bovendien wijkt de uitvoer af van de uitvoer van dezelfde commando’s in Windows. 
+
+
+
+13. Voorspel en controleer de uitvoer van de opdrachten: 
+
+    1. `printf "%s\n"[abcd] ` => `[abcd]`
+
+    2. `printf "%s\n" [!abcd] ` => `e`
+
+    3. `printf "%s\n" [^abcd]` => `e`
+
+    4. `printf "%s\n" [a-d] ` => 
+
+       ```
+       a
+       b
+       c
+       d
+       ```
+
+    5. `printf "%s\n" [abcd]*[abcd] ` =>
+
+       ```
+       a.b
+       ab.c
+       b.a
+       b.c
+       c.d
+       ```
+
+       
+
+
+
+14. Voer de onderstaande commando’s uit. 
+    1. `printf "%s\n" [a-e] `
+    2. `printf "%s\n" [a/-e] `
+    3. `printf "%s\n" [a\-e] `
+    4. `printf "%s\n" [!\!]*`
+    5. Wat is de bedoeling van het \\-teken in deze opdrachten? Wat gebeurt er indien je het verkeerde /-teken gebruikt? 
+
+```bash
+# \ is de escape-character, om de gereserveerde karakters als gewone karakters te kunnen gebruiken
+# met / werkt het niet
+```
+
+
+
+15. Hoe kan je een lijst met bestandsnamen bekomen die precies uit één enkel karakter bestaan? 
+
+```bash
+printf "%s\n" ?
+```
+
+
+
+16. Vraag een lijst met bestandsnamen die uit precies twee karakters bestaan. Vergelijk de uitvoer met die van de vorige opgave.
+
+```bash
+$ printf "%s\n" ??
+ik heb geen bestanden met twee tekens
+```
+
+
+
+17. Voer volgende opdrachten uit: 
+
+1. `ls * `
+2. `dir * `
+3. `printf "%s\n" * `
+4. `ls "*" `
+5. `printf "%s\n" "*" `
+
+Wat is het subtiele verschil in uitvoer tussen de eerste drie opdrachten? Verklaar dit verschil door nog een aantal bestanden aan te maken en beide commando’s opnieuw uit te voeren. Verklaar het belangrijke verschil tussen de eerste en de vierde opdracht. Verklaar ook de verschillende uitvoer van de twee laatste opdrachten.
+
+```bash
+# ls en dir doen zo map: files
+# bij printf wordt gewoon alles achter elkaar gekletst
+
+# de eerste toont alle files en folders die de wildcard matchen
+# de vierde toont alle files en folders die "*" heten
+
+# Ik heb geen files die "*" heten dus geen uitvoer
+```
+
+
+
+18. Zorg dat er geen bestanden in de werkdirectory staan waarvan de naam met abc begint. Verklaar dan het verschil in uitvoer tussen volgende opdrachten: 
+
+1. `ls abc* ` => `ls: cannot access 'abc*': No such file or directory`
+2. `printf “%s\n” abc* ` => `abc*`
+
+
+
+19. Voer de opdracht rm –f ?? uit. Verklaar daarna het verschil in uitvoer tussen volgende opdrachten: 
+
+1. `printf "%s\n" ??? `
+
+   ```
+   a.b
+   b.a
+   b.c
+   c.d
+   d.e
+   ```
+
+   
+
+2. `printf "%s\n" ??e ` => `d.e`
+
+3. `printf "%s\n" ?? ` => `??` (ja alle bestande met twee karakters zijn verwijderd dus daarom vinden we niks)
+
+
+
+20. Enigszins verwant aan pathname expansion is de mogelijkheid tot brace expansion. Dergelijke uitdrukkingen bestaan uit een eventuele prefix, gevolgd door een rij strings tussen accolades (gescheiden door komma’s) en afgesloten met een eventuele suffix. Elke string binnen de accolades wordt gecombineerd met een prefix en een suffix. In tegenstelling tot pathname expansions genereert een brace expansion een rij strings, zonder dat gecontroleerd wordt of deze strings met bestaande bestanden overeenkomen. Zowel in de prefix, de elementenstrings of de suffix van een brace expansion kunnen (recursief) andere brace expansions opgenomen worden. 
+
+    Met welke brace expansion kan je alle getallen tussen 0 en 29 (grenzen inbegrepen) als argumenten aan een opdracht (bv. printf) meegeven? Hoe kan je deze brace expansion beknopt schrijven, door bv. een range te gebruiken?
+
+
+
+```bash
+$ echo {0..29}
+```
+
+
+
+21. Je kan brace expansions nesten. Genereer de hexadecimale voorstellingen van alle even gehele getallen kleiner dan 256.
+
+```bash
+$ printf '%x ' {0..255..2}
+```
+
+
+
+22. Wanneer het eerste karakter van een string een tilde(~) is, wordt er aan tilde expansion gedaan. Dit wil zeggen dat alle karakters tussen de tilde en de eerste slash beschouwd worden als een gebruikersnaam. Wat verschijnt er op het scherm wanneer je de volgende opdrachten uitvoert: 
+
+1. `echo ~root/ ` => `/root/`
+2. `echo ~mail/ ` => `/var/spool/mail/`
+3. `echo ~{mail,root}` => `/var/spool/mail   /root`
+
+Wat wordt door de shell het eerst vervangen, de tilde of de accolades?
+
+```bash
+De accolades, want anders zou het de derde uitvoer dit zijn:
+/root/mail   /root/root
+```
+
