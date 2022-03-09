@@ -262,6 +262,85 @@ Is er op het netwerk geen DHCP server beschikbaar, kan een host een random gegen
 
 Verder heb je met een DHCP server ook het gevaar van een **single point of failure**. Deze tekortkomingen worden blijkbaar opgelost in ipv6
 
+### DHCP Renewal
+
+Wanneer onze lease vervalt, zou in principe de gebruiker een nieuwe aanvraag moeten sturen om opnieuw een ip adres te verkrijgen. Dit is natuurlijk niet zo handig, want als hij dan een ander ip adres krijgt gaan er paketten verloren en een heleboel andere bazaar.
+
+Daarom voorziet DHCP een **renewal**-proces. Dit proces gaat als volgt:
+
+<img src="img/image-20220307164629961.png" alt="image-20220307164629961" style="zoom: 33%;" />
+
+* DHCPREQUEST
+  * Wordt typisch in de helft van de lease time al gestuurd van de host naar de DHCP server waarvan hij het ip adres kreeg.
+  * Als deze niet beschikbaar is zal een andere DHCP-server geprobeerd worden door de dhcprequest te broadcasten.
+* DHCPACK
+  * De server antwoordt rechtstreeks naar de cilent met de mededeling dat hij het ip-adres mag blijven gebruiken.
+
+### DHCP Relay
+
+Als we in ons netwerk verschillende kleine subnetten hebben, zo het achterlijk zijn om op elk subnet een DHCP server te zetten. Het probleem is nu eenmaal wel dat onze hosts enkel binnen hun subnet naar een ip-adres kunnen vragen, want ze hebben er nog geen. Om dit probleem tegen te gaan kunnen we gebruik maken van een **DHCP relay**. De relay ontvangt alle DHCP broadcasts en stuurt ze per unicast door naar de DHCP server (in een ander subnet). In de omgekeerde richting (met de offer enzo), gaat het exact hetzelfde. De DHCP server stuurt de offer naar de relay en deze stuurt het in zijn subnet als een broadcast, waardoor het voor de host lijkt alsof hij met een gewone DHCP-server praat.
+
+De meeste routers tegenwoordig hebben DHCP-relays ingebouwd.
+
+
+
+### DHCP server
+
+Om onze DHCP-server te laten werken, voorzien we hem eerst en vooral van een aantal **scopes**. Dit zijn ranges van ip adressen (bv 192.168.0.1 - 192.168.0.100 of 192.168.0.0/24). Nu kunnen we adressen gaan toekennen aan hosts. Dit kan op basis van het MAC-adres (indien we geen relay gebruiken), we kunnen ook voor specifieke hosts bepaalde adressen gaan reserveren, of een nieuwe host simpelweg een vrij adres uit de lijst toewijzen.
+
+Je kan via DHCP ook andere configuratieparameters meegeven, zoals nameserver, domeinnaam en default gateway.
+
+
+
+#### ISC DHCP
+
+2 bestanden:
+
+**/etc/dhcpd.conf**
+
+```sql
+lease-file-name "/var/lib/dhcpd/dhcpd.leases";
+
+subnet 192.168.1.0 netmask 255.255.255.0 { # het subnet dat je wilt beheren
+        option domain-name "cnet2.ugent.be";
+                                                  
+                                                  
+        default-lease-time 					86400;			# 24 hours
+        max-lease-time 							172800;			# 48 hours
+        option routers 							192.168.1.1;
+        option subnet-mask					255.255.255.0;
+        option broadcast-address		192.168.1. 255;
+        option domain-name-servers 	192.168.1.1;
+				option ntp-servers 					192.168.1.1;
+        range 192.168.1.101 	192.168.1.200; # de range binnen het subnet die we mogen beheren
+        
+        host cnet2server {
+            hardware ethernet 00:ca:20:cc:54:89
+            fixed address 192.168.1.105
+         }
+```
+
+ **/var/lib/dhcp/dhcpd.leases**
+
+```sql
+lease 192.168.1.108 { 
+    starts 0 2021/01/30 08:02:54; 
+    ends 5 2021/02/04 08:02:54; 
+    hardware ethernet 00:50:04:53:D5:57; 
+    uid 01:00:50:04:53:D5:57; 
+    client-hostname "laptop-wouter"; 
+}
+
+```
+
+
+
+## NAT
+
+Er zijn maar $2^{32}$ , oftewel $4.294.967.296$ mogelijke ipv4 adressen. Om dit probleem om te lossen laten we typisch alle toestellen binnen één netwerk hetzelfde ip adres gebruiken. In het geval van je thuisnetwerk heeft je router dan enkel een ip adres. De toestellen binnen je netwerk gebruiken dan een private ip. (192.168.0.22 bijvoorbeeld).
+
+Als je met je computer thuis een pakketje stuurt naar een server buiten je netwerk, zal je router het source ip adres vervangen door zijn publieke ip adres. Hij onthoudt dan jouw ip en de source poort en stuurt het pakketje door naar de server (mogelijks ook via een andere poort). Als hij antwoord krijgt van de server op diezelfde poort weet hij dat hij het pakketje naar jouw pc moet doorsturen.
+
 # ---------------------
 
 
@@ -609,7 +688,7 @@ UGent.be.		71589	IN	NS	ns.belnet.be.
 2. www.belnet.be geeft een IP-adres terug, maar als je dit IP-adres probeert om te zetten in een URL (reverse lookup) merk je dat de server een andere naam heeft. Welke? Licht toe hoe je dit vond. 
 
 ```bash
-$dig www.belnet.be
+$ dig www.belnet.be
 => 217.19.230.167
 $ nslookup -x 217.19.230.167
 => 217.19.230.167.static.hosted.by.combell.com.
@@ -647,7 +726,7 @@ Address: 108.156.28.40
 
 <img src="img/image-20220303154303418.png" alt="image-20220303154303418" style="zoom: 33%;" />
 
-5. Netwekinstellingen DNS server
+5. Netwerkinstellingen DNS server
 
 dit erin kletsen en de default settings (dhcp) verwijderen
 
@@ -655,7 +734,7 @@ dit erin kletsen en de default settings (dhcp) verwijderen
 # The primary network interface
 allow-hotplug eth0
 iface eth0 inet static
-address 10.0.2.4
+address 10.0.2.44
 netmask 255.255.255.0
 gateway 10.0.2.2 # optioneel, voor als je andere netwerken wil bereiken
 ```
@@ -672,7 +751,7 @@ gateway 10.0.2.2 # optioneel, voor als je andere netwerken wil bereiken
 
 Ik denk iteratief -> allemaal vragen naar verschillende dns servers want we worden doorverwezen
 
-```
+```sql
 tcpdump: verbose output suppressed, use -v or -vv for full protocol decode
 listening on eth0, link-type EN10MB (Ethernet), capture size 262144 bytes
 IP 10.0.2.15.38474 > 10.0.2.4.53: 49889+ A? www.belnet.be. (31)
@@ -690,7 +769,7 @@ IP 10.0.2.4.53 > 10.0.2.15.44113: 35366 1/6/12 AAAA 2a00:1c98:10:2c::10 (425)
 
 nadat je de forwarder instelt is dit de output:
 
-```
+```sql
 IP 10.0.2.15.50263 > 10.0.2.44.53: 2630+ A? www.belnet.be. (31)
 IP 10.0.2.44.53 > 10.0.2.15.50263: 2630 1/6/12 A 217.19.230.167 (413)
 IP 10.0.2.15.44072 > 10.0.2.44.53: 45873+ AAAA? www.belnet.be. (31)
@@ -703,3 +782,122 @@ IP 10.0.2.44.53 > 10.0.2.15.44072: 45873 1/6/12 AAAA 2a00:1c98:10:2c::10 (425)
 
 
 ## DNS-server – authoritative
+
+De configuratie van mijn epische DNS setup:
+
+**named.conf.local**
+
+```c++
+//
+// Do any local configuration here
+//
+
+// Consider adding the 1918 zones here, if they are not used in your
+// organization
+// include "/etc/bind/zones.rfc1918";
+
+zone "example.com" {
+ type master;
+ notify no;
+ file "/etc/bind/db.example.com";
+};
+
+zone "meeldijk.com"{
+ type master;
+ notify no;
+ file "/etc/bind/db.meeldijk.com";
+};
+
+zone 2.0.10.in-addr.arpa{
+ type master;
+ notify no;
+ file "/etc/bind/db.10.0.2";
+};
+
+```
+
+
+
+**db.meeldijk.com**
+
+```sql
+$TTL 86400 ; 24 hours could have been written as 24h or 1d
+meeldijk.com. 1D IN SOA ns1.meeldijk.com. hostmaster.meeldijk.com. (
+ 2002022401 ; Serial
+ 3H ; Refresh
+ 15 ; Retry
+ 1w ; Expire
+ 3h ; Default TTL
+ )
+ IN NS ns1.meeldijk.com. ; in the domain
+
+; name servers
+meeldijk.com. 	IN	NS	ns1.meeldijk.com.
+ns1		IN	A 	10.0.2.44 ; name server definition
+
+; andere servers
+serv1	IN	A	10.0.2.12 	; general server definition
+www	IN	CNAME	serv1 	; web server definition
+@	IN	A	10.0.2.44
+
+```
+
+
+
+**db.10.0.2**
+
+```sql
+$TTL    604800
+@       IN      SOA     meeldijk.com. admin.meeldijk.com. (
+                              5         ; Serial
+                         604800         ; Refresh
+                          86400         ; Retry
+                        2419200         ; Expire
+                         604800 )       ; Negative Cache TTL
+;
+
+; Name servers
+        IN      NS      ns1.meeldijk.com.
+
+; PTR records
+10       IN      PTR      ns1.meeldijk.com.
+12	IN	PTR	www.meeldijk.com
+
+```
+
+Dit hier is dus voor de reverse DNS. Ik heb enkel `10.0.2.10` en `10.0.12` erin gezet (laatste twee lijnen). Want dat was het enige dat moest van de opdracht.
+
+
+
+### Verificatie
+
+Je demonstreert de correcte werking van je server door vanuit je client 
+
+* een NS lookup uit te voeren van de name server van jouw domein 
+* een lookup uit te voeren van www..be 
+* een lookup uit te voeren van de ingestelde client hostnaam (deze snap ik niet)
+* [extra] een reverse lookup uit te voeren van 10.0.2.10 en 10.0.2.12. 
+
+```bash
+student@cnet:~$ nslookup meeldijk.com 10.0.2.44
+```
+
+<img src="img/image-20220307111139221.png" alt="image-20220307111139221" style="zoom:50%;" /> 
+
+```bash
+student@cnet:~$ nslookup www.meeldijk.com 10.0.2.44
+```
+
+<img src="img/image-20220307111227115.png" alt="image-20220307111227115" style="zoom:50%;" /> 
+
+```bash
+student@cnet:~$ nslookup -x 10.0.2.10 10.0.2.44 
+```
+
+<img src="img/image-20220307111254316.png" alt="image-20220307111254316" style="zoom:50%;" /> 
+
+```bash
+student@cnet:~$ nslookup -x 10.0.2.12 10.0.2.44 
+```
+
+<img src="img/image-20220307111329085.png" alt="image-20220307111329085" style="zoom:50%;" /> 

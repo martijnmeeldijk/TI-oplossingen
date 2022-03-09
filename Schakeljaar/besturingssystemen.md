@@ -579,6 +579,8 @@ r = recursive
 f = force
 
 # het lukt mij niet om een bestand genaamd -rf te maken
+$ rm -- -rf
+## dubbele dash betekent "end of options"
 ```
 
 
@@ -586,15 +588,18 @@ f = force
 4. Welke opties moet je toevoegen aan het commando wc om enkel de grootte van een bestand te tonen zonder extra informatie?
 
 ```bash
-# wc -c
+$ wc -c
 ```
 
 
 
 5. In Bash zijn er ook Bash-builtin opdrachten zoals cd, set, pwd, exec, printf en : waarvoor er geen aparte man-pagina’s beschikbaar zijn. Een overzicht kan je bekomen door man builtin of door de man-pagina van Bash op te vragen. Zoek informatie op over het gebruik van de opdrachten cd, set, pwd, exec, printf en :.
 
-```
-oke
+```bash
+$ help cd
+
+$ help :
+=> No effect; the command does nothing.  A zero exit code is returned.
 ```
 
 
@@ -865,5 +870,15 @@ Wat wordt door de shell het eerst vervangen, de tilde of de accolades?
 ```bash
 De accolades, want anders zou het de derde uitvoer dit zijn:
 /root/mail   /root/root
+```
+
+
+
+### Extra commandos
+
+```bash
+$ cal # kalender
+$ mktemp 'XXX' # maakt random bestand aan met 3 tekens (dat nog niet bestaat)
+$ echo $$ # pid van bash shell opvragen
 ```
 

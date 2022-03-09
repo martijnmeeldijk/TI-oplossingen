@@ -58,3 +58,10 @@ $$
 $$
 
 met middelpunt $m(x_0,y_0,z_0)$ en straal R
+
+
+
+
+
+
+
