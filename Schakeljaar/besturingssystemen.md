@@ -1,16 +1,16 @@
 # Besturingssystemen
 
-
+Ik ben een nuttige idioot en ik heb ook bij elke vraag de paginanummers geschreven :wink:.
 
 # Hoofdstuk 1
 
 ## Vraag 1
 
-> Wat is het verschil tussen symmetrische en asymmetrische multiprocessing? (p15)
+> Wat is het verschil tussen symmetrische en asymmetrische multiprocessing? p15
 
-Bij **assymmetrische multiprocessing** wordt de kernel van het besturingssysteem altijd uitgevoerd op een bepaalde **master** processor. Hij is verantwoordelijk voor scheduling en heeft volledige controle over het geheugen. 
+Bij **asymmetrische multiprocessing** wordt de kernel van het besturingssysteem altijd uitgevoerd op een bepaalde **master** processor. Hij is verantwoordelijk voor scheduling en heeft volledige controle over het geheugen. 
 
-Dit heeft als gevolg dat de andere processoren enkel gebruikersprogrammas en hulpprogrammas kunnen uitvoeren. Als één van deze processoren dan een dienst nodig heeft (I/O ofzo), zal hij een request moeten sturen naar de master. De master is dus de **bottleneck** in dit systeem, maar voor deze benadering zijn echter weining aanpassingen nodig aan het besturingssysteem indien deze al multitasking voor één processor ondersteunt.
+Dit heeft als gevolg dat de andere processoren enkel gebruikersprogramma's en hulpprogramma's kunnen uitvoeren. Als één van deze processoren dan een dienst nodig heeft (I/O ofzo), zal hij een request moeten sturen naar de master. De master is dus de **bottleneck** in dit systeem, maar voor deze benadering zijn echter weinig aanpassingen nodig aan het besturingssysteem indien deze al multitasking voor één processor ondersteunt.
 
 
 
@@ -25,9 +25,9 @@ Bij symmetrische multiprocessing kan de kernel dus uitgevoerd worden **op elke p
 
 > Wat moet je voorzien om op een Unix-systeem Windows applicaties te kunnen uitvoeren? p12
 
-Een virtuele machine.
+Een **virtuele machine**. Deze zorgt ervoor dat we functioneel gebruik kunnen maken van software en hardware die niet noodzakelijk effectief aanwezig zijn op ons systeem. Hardware aanspreken via een virtuele machine vereist wel **veel meer software-instructies**, dus we moeten een afweging maken tussen efficiëntie en gebruiksvriendelijkheid.
 
-(hij zegt niet dat ik het moet uitleggen, maar laten we eerlijk zijn. Ik ga dat waarschijnlijk toch wel doen want ik ben een dikke neurt)
+
 
 ## Vraag 3
 
@@ -41,11 +41,23 @@ Elk programma dat draait kan maar van één omgevingssubsysteem gebruik maken (h
 
 > Geef drie mogelijke ontwerpen van kernels. Bespreek bij elk hun voor- en nadelen en of ze nog gebruikt worden. p22?
 
-* Oude Unix: monolithische kernel
-* Moderne Unix: meer modulaire arichitectuur
-* Linux: monolithische kernel
+* **Oude Unix**: monolithische kernel
 
-// TODO effectief uitleggen
+De kernel van oude Unix versies is **niet erg modulair**, vooral door de beperkte hardwaremogelijkheden van toen. Er zijn ook geen voorzieningen om gegevensstructuren te beschermen tegen gelijktijdige toegang door verschillende processoren. 
+
+De machineafhankelijke code van Unix zit enkel op de lagere niveaus van het I/O-subsysteem, waardoor het gemakkelijk is om Unix naar nieuwe hardware over te brengen. Er zijn dus in de loop van de tijd ook vooral op dit niveau uitbreidingen toegevoegd, maar in het oorspronkelijk ontwerp was er **geen enkele voorziening** om de **kernel** modulair **uit te breiden**.
+
+* **Moderne Unix**: meer modulaire architectuur
+
+Modernere versies van Unix (Solaris, FreeBSD, ...) hebben een **meer modulaire** architectuur. Een kleine kern zorgt voor de diensten die noodzakelijk zijn voor andere modules. 
+
+* **Linux**: monolithische kernel
+
+Het hoofddoel van Linux is om zo veel mogelijk functionaliteit te bieden, met beperkte bronnen. Linux lijkt qua ontwerp sterk op de originele Unix, één monolithische kernel. Dit met het oogmerk op **performantie**. Toch is Linux iets meer modulair dan onze oude Unix, de kernel kan dynamisch verschillende kernelmodules laden. Het is ook niet nodig om de hele kernel opnieuw te compileren wanneer nieuwe functies of hardware toegevoegd moeten worden.
+
+
+
+//TODO ik denk dat de laatste twee misschien samen horen en dat de derde kernel misschien windows NT moet zijn?
 
 ## Vraag 5
 
@@ -71,45 +83,108 @@ Elk programma dat draait kan maar van één omgevingssubsysteem gebruik maken (h
 
 ## Vraag 6
 
-> Wat is het verschil tussen een programma en een proces? 
+> Wat is het verschil tussen een programma en een proces? p28
 
-
+Een **programma** is een passieve entiteit. Simpelweg een verzameling van instructies. Een **proces** is daarentegen de effectieve uitvoering van een afzonderlijk programma. Een programma is dus passief en een proces is actief.
 
 ## Vraag 7
 
-> Waarom is het model met twee procestoestanden actief en niet actief niet interessant? Wat is het probleem dat je hier zal tegenkomen? 
+> Waarom is het model met twee procestoestanden actief en niet actief niet interessant? Wat is het probleem dat je hier zal tegenkomen? p30
+
+Het model is te simpel. Sommige processen in de toestand 'niet actief' zijn klaar om uitgevoerd te worden, terwijl anderen aan het wachten zijn op bijvoorbeeld een I/O bewerking. De scheduler moet dus telkens in de wachtrij op zoek gaan naar een proces dat niet aan het wachten is.
 
 
 
 ## Vraag 8
 
-> Geef alle toestanden waarin een thread zich kan bevinden? Bespreek wanneer een thread van de ene toestand in de andere zal terechtkomen. 
+> Geef alle toestanden waarin een thread zich kan bevinden? Bespreek wanneer een thread van de ene toestand in de andere zal terechtkomen. p30-31
+
+* **Nieuw** (new)
+  * Nieuw &rarr; Gereed: Een nieuw proces wordt toegevoegd aan de lijst van uitvoerbare processen.
+* **Gereed** (ready)
+  * Gereed &rarr; Actief: De scheduler kiest één van de processen in de toestand 'gereed' om uit te voeren.
+
+* **Actief** (running)
+  * Actief &rarr; Einde: Het proces word afgebroken of het geeft zelf aan dat het voltooid is.
+  * Actief &rarr; Gereed: Als het proces te lang bezig is (indien threshold van besturingssysteem), wordt het onderbroken. Het proces kan dit ook bijvoorbeeld doen met *sleep()*.
+  * Actief &rarr; Geblokkeerd: Een proces wordt geblokkeerd als hij vraagt om iets waarop hij moet wachten. (meestal in de vorm van een system call naar I/O of wachten op een kindproces.)
+* **Geblokkeerd** (blocked)
+  * Geblokkeerd &rarr; Gereed: Als het ding waarop het proces aan het wachten was klaar is.
+* **Einde** (exit)
 
 
 
 ## Vraag 9
 
-> Voor processen hebben we een model met 7 toestanden, dewelke? Teken het toestandsdiagram en geef aan hoe en wanneer er van toestand zal worden gewisseld. 
+> Voor processen hebben we een model met 7 toestanden, dewelke? Teken het toestandsdiagram en geef aan hoe en wanneer er van toestand zal worden gewisseld. p32-33
+
+Oké onze Wim heeft dus deze afbeelding van google images schaamteloos zonder referentie in zijn cursus geknald. (hij heeft er wel nummertjes bij gezet dus op zich heeft hij het niet helemaal gepikt)
+
+<img src="img/image-20220313150058862.png" alt="image-20220313150058862" style="zoom: 33%;" />
+
+
+
+1. **Blocked &rarr; Blocked/Suspend**
+2. **Blocked/Suspend &rarr; Ready/Suspend**
+3. **Ready/Suspend &rarr; Ready**
+4. **Ready &rarr; Ready/Suspend**
+5. **Active &rarr; Ready/Suspend**
+6. **Blocked/Suspend &rarr; Blocked**
+7. **New &rarr; Ready/Blocked**
+
+// TODO kleine uitleg voor elk nummertje
 
 
 
 ## Vraag 10
 
-> Wat wordt er bedoeld met het procesbeeld? Geef aan hoe dit er uitziet en beschrijf ook wat er zich in elk deel bevindt. Het PCB mag je hier buiten beschouwing laten. 
+> Wat wordt er bedoeld met het procesbeeld? Geef aan hoe dit er uitziet en beschrijf ook wat er zich in elk deel bevindt. Het PCB mag je hier buiten beschouwing laten. p33-34
+
+Het **procesbeeld** is de verzameling van het **programma**, de **gegevens** en de **stackgebieden**. Voordat een proces uitgevoerd wordt moet het hele procesbeeld dus in het hoofdgeheugen geladen worden. Als het programma zich in onderbroken toestand bevindt wordt het hele procesbeeld als een aaneengesloten blok geheugen op de schijf opgeslagen.
+
+
+
+* Geheugentabellen
+  * Beheren het hoofdgeheugen en het secundaire geheugen
+* I/O-tabellen
+  * Worden door het besturingssysteem om I/O apparaten te beheren. 
+* Bestandstabellen
+  * Worden niet door het besturingssysteem, maar door het bestandsbeheersysteem bijgehouden en bevatten info over over bestanden zoals naam, locatie, status en attributen.
+* Procestabellen
+  * Worden bijgehouden om processen te beheren. 
 
 
 
 ## Vraag 11
 
-> De info in het PCB kan je in drie categorieën onderverdelen. Dewelke? Bespreek ook wat er zich zoal in elk deel van het PCB bevindt. 
+> De info in het PCB kan je in drie categorieën onderverdelen. Dewelke? Bespreek ook wat er zich zoal in elk deel van het PCB bevindt. p34-36
+
+PCB = Process control block, een blok geheugen in de geheugenruimte van het proces zelf met informatie omtrent procesbeheer.
+
+* Procesidentificatie
+  * Het proces krijgt een uniek nummer (een **pid**), deze is een index in de primaire procestabel. De procesidentificatie kan ook verwijzingen bevatten naar andere processen  (bv. ouderprocessen).
+* Processortoestandsinformatie
+  * Bestaat uit de inhoud van alle processorregisters. Als het proces actief is zit deze inhoud natuurlijk in de registers van de processors. Als het proces onderbroken wordt, zal deze info in het procesbesturingsblok worden opgeslagen zodat het later weer hersteld kan worden.
+* Procesbesturingsinformatie
+  * Extra informatie die het besturingssysteem nodig heeft voor het beheren van processen. Zoals onder meer:
+    * Scheduling- en toestandsinformatie
+    * Structurele informatie
+    * De locaties van alle delen van het procesbeeld
+    * Verwijzingen naar andere geheugentabellen
+    * Welke bronnen zijn aangevraagd door en toegewezen aan het proces
+    * Informatie over privileges (geheugen en instructies)
+    * Eventuele limieten en quota
+    * Informatie over vlaggen (*sig, signal, blocked*)
 
 
 
 ## Vraag 12
 
-> Welke stappen moet het besturingssysteem ondernemen om een nieuw proces aan te maken? 
+> Welke stappen moet het besturingssysteem ondernemen om een nieuw proces aan te maken? p36
 
+Eerst en vooral maken we een unieke **procesidentificatiecode** (pid) aan en voegen we een nieuwe entry toe in primaire procestabel. We **wijzen ruimte toe** aan alle delen van het procesbeeld. Het besturingssysteem moet dus weten hoe veel ruimte er nodig is. Dan initialiseren we het **procesbesturingsblok** (PCB), eigenlijk vooral de procesbesturingsinformatie. Verder moeten we de **juiste koppelingen instellen**, zoals het proces in de wachtrij van 'gereed' of 'gereed/onderbroken' stoppen. 
 
+Tot slot kunnen we eventuele gegevensstructuren aanmaken of andere gegevensstructuren uitbreiden.
 
 ## Vraag 13
 
@@ -454,7 +529,242 @@ Antwoord van the man himself:
 
 
 
-# Labo
+# Zelftest labo
+
+## Vraag 1
+
+> Leg uit wat het verschil is tussen statisch en dynamisch linken? Enkel de uitleg 
+> volstaat.
+
+
+
+## Vraag 2
+
+> Hoe kan je een terminal venster leeg maken? 
+
+
+
+## Vraag 3
+
+Hoe kan je met het commando man informatie opvragen over de informatie 
+in het bestand /etc/passwd?  
+
+ 
+
+## Vraag 4
+
+Met het commando man kan je informatie opvragen over externe Linux/Unix-
+opdrachten. Hoe kan je best info opvragen over interne opdrachten zoals 
+echo, printf, set, cd, ... 
+
+ 
+
+## Vraag 5
+
+Welk commando kun je gebruiken om: 
+a.  gegevens te sorteren? 
+b.  het verschil tussen twee bestanden te bekijken? 
+c.  een bestand of directory te zoeken? 
+d.  duplicate regels uit een bestand te verwijderen? 
+e.  enkel de 10 eerste lijnen uit een bestand op het scherm te tonen? 
+f. enkel de 10 laatste lijnen uit een bestand op het scherm te tonen? 
+g.  een string te zoeken in een tekstbestand? 
+h.  het aantal lijnen, woorden en karakters van een bestand te tonen? 
+
+ 
+
+## Vraag 6
+
+De inhoud van de /dev-map bevat bestanden die je in twee groepen kan 
+onderverdelen. Block special device files voor harde schijven en andere 
+“mass storage devices” en character special device files voor de overige 
+randapparatuur waar een device-node voor werd voorzien (niet elke device 
+heeft immers een device node). Wat is het essentiële verschil tussen een 
+block- en character special device files? 
+
+## Vraag 7
+
+Wat is de betekenis van de twee getallen die naast een device node vermeld 
+staan?  
+
+ 
+
+## Vraag 8
+
+Gebruik het commando find om een overzicht te krijgen van zowel de 
+character special device files als de block special device files. Probeer het 
+eerst door twee opdrachten te geven en daarna door de twee opdrachten te 
+groeperen in één opdracht.  
+
+ ## Vraag 9
+
+ Leg uit wat het verschil is tussen een hard link en een soft link. Wat zijn de 
+voor- en nadelen van beide. 
+
+ 
+
+ ## Vraag 10
+
+ Maak in je home-directory een softlink aan naar /etc/passwd en een hardlink 
+naar /etc/group (probeer dit met het commando cp als met commando ln). 
+Hoe kan je zien of het wel degelijk over een hardlink gaat en niet over een 
+kopie? 
+
+
+
+## Vraag 11
+
+Waarom is een pseudo random generator met een beperkt aantal bits geen 
+goede random generator? 
+
+ 
+
+## Vraag 12 
+
+Hoe kan je met het commando head en bijhorende optie 4 bytes uit 
+/dev/random halen en deze bytes gewoon zonder te converteren naar het 
+scherm schrijven? 
+
+## Vraag 13
+
+Wat is pathname expansion? Wat zijn de verschillende metatekens die je bij 
+pathname expansion kan gebruiken? 
+
+
+
+## Vraag 14
+
+Hoe kan je met het commando “ls -l” een overzicht geven van alle 
+bestandsnamen die bestaan uit minstens twee letters gevolgd door een cijfer 
+gevolgd door een willekeurig aantal karakters?  
+
+
+
+## Vraag 15
+
+Wanneer je “echo *” ingeeft, welk proces zorgt dan dat die * wordt omgezet 
+naar bestandsnamen? 
+
+## Vraag 16
+
+Maak met touch een bestand aan met als naam passwd in je huidige 
+werkdirectory. Zoek nu met het commando find naar alle bestands- en 
+directorynamen, te beginnen bij /, die beginnen met het woord pass gevolgd 
+door 0 of meerdere willekeurige tekens? Zorg dat find hier het *-teken omzet 
+naar 0 of meerdere willekeurige tekens.  
+
+
+
+## Vraag 17
+
+Genereer met brace expansion alle hexadecimale getallen van 00 tot FF. 
+
+
+
+## Vraag 18
+
+Wat doet het commando sync? Wat wordt er bedoeld met mounten en 
+unmounten?  
+
+## Vraag 19
+
+Welke filedescriptoren worden er gebruikt voor standaard invoer, standaard 
+uitvoer en het standaardfoutenkanaal? Wat is het essentiële verschil tussen 
+de twee uitvoerkanalen?
+
+
+
+## Vraag 20
+
+Waarvoor dient /dev/null? Hoe kan je de gebufferde uitvoer van een 
+willekeurige opdracht naar /dev/null schrijven? Hoe kan je de niet-gebufferde 
+uitvoer van een willekeurige opdracht naar /dev/null schrijven? Hoe kan je 
+ervoor zorgen dat ze nu allebeide naar /dev/null worden gestuurd? 
+
+
+
+## Vraag 21
+
+Wanneer is het handig om gebufferde uitvoer om te zetten naar niet 
+gebufferde uitvoer? Wanneer is het nodig om niet-gebufferde uitvoer naar 
+gebufferde uitvoer om te zetten? 
+
+
+
+## Vraag 22
+
+Wat is een pipe? Wat wordt doorgelaten en wat niet? 
+
+
+
+## Vraag 23
+
+Tel hoeveel fouten het commando “du /proc” oplevert en maak hierbij 
+gebruik van een pipe? 
+
+
+
+## Vraag 24
+
+Gegeven “strace shuf -i 1-10 -n 5”. Strace schrijft de uitvoer van het 
+commando shuf naar stdout. De systeemaanroepen die het commando shuf 
+aan het besturingssysteem heeft gericht worden naar stderr gestuurd. 
+Herschijf de bovenstaande opdracht zodat nu uitvoer van shuf naar /dev/null 
+wordt gestuurd en waarbij de systeemaanroepen kunnen worden overlopen 
+door een pipe naar het commando less. 
+
+
+
+## Vraag 25
+
+Open de manpagina van de opdracht tr. Maak ook een bestand aan met 
+uitsluitend leestekens en kleine letters. Hoe kan je met tr alle tekst uit dit 
+bestand omzetten naar een hoofdletters? Het commando tr kent geen 
+bestandparameters waardoor je met input en output redirection zal moeten 
+werken. Bemerk ook dat het een slecht idee is om binnen een proces van een 
+bestand te lezen en er ook naartoe te schrijven. Maak dus gebruik van een 
+tijdelijk bestand dat je na tr met de opdracht cp naar het originele bestand 
+kopieert (en waardoor dus het oorspronkelijk bestand overschreven wordt).  
+
+
+
+## Vraag 26
+
+Hoe wordt het regeleinde aangegeven in Windows en hoe wordt dit gedaan 
+in Linux? Het gebruik van het Linux-formaat in Windows geeft problemen, 
+dewelke? Het gebruik van het DOS-formaat geeft dan weer nog grotere 
+problemen in Linux. Waarom? 
+
+
+
+## Vraag 27
+
+Gebruik het commando od om de inhoud van het bestand /etc/passwd 
+hexadecimaal, in groepjes van 1 byte, op het scherm te tonen.  Doe hetzelfde 
+met het commando xxd en vergelijk de uitvoer van beide commando’s. Bekijk 
+uitvoerig de manpagina’s van beide opdrachten! 
+
+
+
+## Vraag 28
+
+Bij vraag 12 werd er gevraagd om 4 bytes (32 bits) te lezen van /dev/random. 
+Zet die uitvoer met het commando od nu om naar een decimaal getal. Hoe 
+zet je het om naar een strikt positief getal? (unsigned dus) 
+
+ 
+
+ 
+
+ 
+
+ 
+
+ 
+
+
+
+# Labo opgaven
 
 ### Deel 1
 
