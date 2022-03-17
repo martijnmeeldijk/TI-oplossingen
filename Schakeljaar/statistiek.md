@@ -6,7 +6,7 @@
 
 ## Oefeningen matlab
 
-### Reeks 1
+### Week 1
 
 Oefening 4
 
@@ -59,7 +59,7 @@ Oefening 14
 tan(2*acos(-1/5))
 ```
 
-### Reeks 2
+### Week 2
 
 Oef 11
 
@@ -110,4 +110,130 @@ eq = x^5-5*x
 opl = solve(eq == -2,x, 'Real', true)
 var = vpa(opl)
 ```
+
+
+
+### Week 3
+
+Oef 20
+
+```matlab
+syms x
+f = atan((x-1)/2-1/(2*x-2))
+fplot(f)
+x1left = limit(f,x,1, 'left')
+x1right = limit(f,x,1, 'right')
+xposinf = limit(f,x, +Inf)
+xneginf = limit(f,x, -Inf)
+d = diff(f)
+solve(d==2,x)
+
+
+```
+
+Oef 23
+
+```matlab
+clear
+syms x 
+syms a 
+f = 1/(1+x^2)
+g = x^2/2
+```
+
+
+
+```matlab
+fplot(f)
+hold on
+fplot(g)
+randen = solve(f==g)
+upper = int(f, [randen(1) randen(2)])
+lower = int(g, [randen(1) randen(2)])
+opl = upper - lower
+```
+
+Oef 26
+
+```matlab
+syms x y
+hold off
+z = sin(sqrt(x^2+y^2)) /sqrt(x^2+y^2)
+fmesh(z)
+contour(z)
+```
+
+
+
+### Week 4
+
+Oef 35
+
+```matlab
+syms x
+syms y
+syms t
+syms p
+
+t=linspace(0,4*pi, 1000);
+x = 2*sin(t) + cos(2*t)
+y = -2*cos(t) - sin(2*t)
+plot(x,y)
+
+v = max(sqrt(x.^2 + y.^2))
+
+m = diff(sqrt((2*sin(p) + cos(2*p))^2 + (-2*cos(p) - sin(2*p))^2))
+
+solve(m== 0)
+
+axis equal
+
+grid on
+```
+
+Oef 43
+
+```matlab
+t = 0:0.01:2*pi;
+r = sin(4*theta)
+r(r<0) = 0;
+
+polarplot(t, r)
+```
+
+
+
+
+
+Oef 39
+
+```matlab
+syms x
+t = 0:0.01:2*pi;
+r = 2*cos(3*t)
+polarplot(t,r)
+hold on
+polarplot(t,1+0*t) % barbaars volgens Tonesi
+solve(2*cos(3*x)==1, x)
+
+q = (0.5*int(1 + 0*x, 0, pi/9) + 0.5*int((2*cos(3*x))^2, pi/9, pi/6))*6
+```
+
+
+
+
+
+
+
+Oef 44
+
+```matlab
+t = 0:0.01:2*pi;
+
+r = 1-cos(t)
+```
+
+
+
+### Week 5
 

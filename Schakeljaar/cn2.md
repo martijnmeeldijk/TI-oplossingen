@@ -901,3 +901,259 @@ student@cnet:~$ nslookup -x 10.0.2.12 10.0.2.44
 ```
 
 <img src="img/image-20220307111329085.png" alt="image-20220307111329085" style="zoom:50%;" /> 
+
+
+
+
+
+# VLANs & STP
+
+## Subnetten
+
+1. Bereken de router interface voor de drie subnetten (die corresponderen met elke VLAN). Kies het hoogst mogelijke IP van het subnet. Wat worden de drie IP-adressen voor de router? 
+
+| Hostname | IP               | VLAN | Interface     | Subnet           | Default GW    |
+| -------- | ---------------- | ---- | ------------- | ---------------- | ------------- |
+| PC10     | 10.20.101.10/26  | 10   | S1 - Fa0/10   | 10.20.101.0/26   | 10.20.101.62  |
+| PC50     | 10.20.101.50/26  | 10   | S2 - Fa0/10   | 10.20.101.0/26   | 10.20.101.62  |
+| PC78     | 10.20.101.78/26  | 20   | S1 - Fa0/18   | 10.20.101.64/26  | 10.20.101.126 |
+| PC96     | 10.20.101.96/26  | 20   | S3 - Fa0/18   | 10.20.101.64/26  | 10.20.101.126 |
+| PC182    | 10.20.101.182/25 | 33   | S3 - Fa0/6    | 10.20.101.128/25 | 10.20.101.254 |
+| PC193    | 10.20.101.193/25 | 33   | S2 - Fa0/6    | 10.20.101.128/25 | 10.20.101.254 |
+| CompServ | 10.20.101.253/25 | 33   | S0 – Gig1/0/6 | 10.20.101.128/25 | 10.20.101.254 |
+
+* Vlan 10: 10.20.101.62
+* Vlan 20: 10.20.101.126
+* Vlan 33: 10.20.101.254
+
+2. Stel deze adressen in als default gateway bij alle 6 de host PCs. Configureer eveneens de DNSserver van het bedrijf bij elke host (DNS server is 10.20.101.253). 
+
+```
+Klik op pc -> config -> global
+```
+
+
+
+3. Ga na dat je momenteel _niet_ kan pingen van geen enkele host naar een andere host. De switches behoeven duidelijk nog enige configuratie!
+
+<img src="img/image-20220317151002793.png" alt="image-20220317151002793" style="zoom:50%;" />
+
+
+
+### Configuratie access ports
+
+1. Stel op elke switch (s1, s2, s3) de juiste poorten in, opdat alle 6 de host PCs in de juiste VLAN terecht komen. 
+
+```
+S1>en
+S1#conf t
+S1(config)#int fa0/1
+S1(config-if)#switchport mode access
+S1(config-if)#switchport access vlan 10
+% Access VLAN does not exist. Creating vlan 10
+S1(config-if)#
+```
+
+overal gewoon dit doen
+
+2. Ga na dat de hosts binnen de VLAN naar elkaar kunnen pingen (PC10 naar PC50; PC78 naar PC96) 
+
+   <img src="img/image-20220317152732671.png" alt="image-20220317152732671" style="zoom:50%;" />
+
+   
+
+   
+
+3. Reflecteer over de verbinding s1-s2 en s2-s3. Hoe moeten deze poorten geconfigureerd zijn opdat het netwerk kan werken zoals het nu werkt. Leg uit.
+
+
+
+## Configuratie trunk links
+
+1. Stel op switch s0 de juiste poorten in opdat de nodige trunks actief worden in het netwerk. 
+
+```
+S1(config)#int G1/0/1
+S1(config-if)#switchport mode trunk
+
+-- ook voor 2 en 3
+```
+
+
+
+2. Ga na dat een host uit VLAN 33 de server, die in deze VLAN vertoeft, de CompServ kan pingen. 
+
+   <img src="img/image-20220317153500867.png" alt="image-20220317153500867" style="zoom:50%;" />
+
+3. Kan deze host een DNS query uitvoeren naar de server?
+
+![image-20220317153601286](img/image-20220317153601286.png)
+
+blijkbaar wel
+
+
+
+## Router on a stick
+
+1. Stel op de router de nodige subinterfaces in, opdat de router de default gateway kan zijn voor elke VLAN van je netwerk. 
+
+   ```
+   int gig0/0.10
+   encapsulation dot1Q 10
+   ip addr 10.20.101.62 255.255.255.192
+   
+   int gig0/0.20
+   encapsulation dot1Q 20
+   ip addr 10.20.101.126 255.255.255.192
+   
+   int gig0/0.33
+   encapsulation dot1Q 33
+   ip addr 10.20.101.254 255.255.255.128
+   ```
+
+   
+
+   255.255.255.128
+
+2. Kan elke host de default gateway bereiken? Welke VLAN werkt wel, welke niet?
+
+* S0 - G1/0/4 op trunk zetten
+
+commando om te kijken welke interfaces op trunk staan
+
+```
+show interface trunk
+```
+
+Zo te zien werkt alleen vlan 33
+
+
+
+## Troubleshoot
+
+Enkel VLAN 33 lijkt te werken, hoewel overal alle VLANs in trunking worden toegelaten. Bekijk het VLAN overzicht op elke switch, en probeer na te gaan hoe elke VLAN actief kan krijgen in je hele netwerk. Hint: https://www.letsconfig.com/how-to-configure-vlan-on-cisco-switch/ 
+
+```
+doe gewoon op S0 ->
+S0#vlan 10
+S0#vlan 20
+```
+
+Je moet eigenlijk op alle switches alle vlans toevoegen
+
+
+
+1. Kan elke host nu de default gateway bereiken? Kan PC78 surfen naar www.ugent.be?
+
+<img src="img/image-20220317163103619.png" alt="image-20220317163103619" style="zoom:33%;" />
+
+
+
+## STP 
+
+1. Configureer S0 als root voor elk van jouw VLANs. 
+
+
+
+```
+spanning-tree vlan 10 root primary
+spanning-tree vlan 20 root primary
+spanning-tree vlan 33 root primary
+```
+
+
+
+
+
+2. Bekijk op S1, S2 en S3 welke poorten geblokkeerd zijn door het STP protocol. Beschrijf in je persoonlijke verslag hoe de tree er uitziet voor jouw drie VLANs
+
+
+
+**S1**
+
+```
+VLAN0010
+
+Interface        Role Sts Cost      Prio.Nbr Type
+---------------- ---- --- --------- -------- --------------------------------
+Fa0/23           Altn BLK 19        128.23   P2p
+Fa0/24           Root FWD 19        128.24   P2p
+Fa0/10           Desg FWD 19        128.10   P2p
+
+VLAN0020
+
+Interface        Role Sts Cost      Prio.Nbr Type
+---------------- ---- --- --------- -------- --------------------------------
+Fa0/23           Altn BLK 19        128.23   P2p
+Fa0/24           Root FWD 19        128.24   P2p
+Fa0/18           Desg FWD 19        128.18   P2p
+
+VLAN0033
+
+Interface        Role Sts Cost      Prio.Nbr Type
+---------------- ---- --- --------- -------- --------------------------------
+Fa0/23           Altn BLK 19        128.23   P2p
+Fa0/24           Root FWD 19        128.24   P2p
+
+```
+
+**S2**
+
+```
+VLAN0010
+
+Interface        Role Sts Cost      Prio.Nbr Type
+---------------- ---- --- --------- -------- --------------------------------
+Fa0/22           Desg FWD 19        128.22   P2p
+Fa0/23           Desg FWD 19        128.23   P2p
+Fa0/24           Root FWD 19        128.24   P2p
+Fa0/10           Desg FWD 19        128.10   P2p
+
+VLAN0020
+
+Interface        Role Sts Cost      Prio.Nbr Type
+---------------- ---- --- --------- -------- --------------------------------
+Fa0/22           Desg FWD 19        128.22   P2p
+Fa0/23           Desg FWD 19        128.23   P2p
+Fa0/24           Root FWD 19        128.24   P2p
+
+VLAN0033
+
+Interface        Role Sts Cost      Prio.Nbr Type
+---------------- ---- --- --------- -------- --------------------------------
+Fa0/22           Desg FWD 19        128.22   P2p
+Fa0/23           Desg FWD 19        128.23   P2p
+Fa0/6            Desg FWD 19        128.6    P2p
+Fa0/24           Root FWD 19        128.24   P2p
+```
+
+**S3**
+
+```
+VLAN0010
+
+Interface        Role Sts Cost      Prio.Nbr Type
+---------------- ---- --- --------- -------- --------------------------------
+Fa0/22           Desg FWD 19        128.22   P2p
+Fa0/23           Desg FWD 19        128.23   P2p
+Fa0/24           Root FWD 19        128.24   P2p
+Fa0/10           Desg FWD 19        128.10   P2p
+
+VLAN0020
+
+Interface        Role Sts Cost      Prio.Nbr Type
+---------------- ---- --- --------- -------- --------------------------------
+Fa0/22           Desg FWD 19        128.22   P2p
+Fa0/23           Desg FWD 19        128.23   P2p
+Fa0/24           Root FWD 19        128.24   P2p
+
+VLAN0033
+
+Interface        Role Sts Cost      Prio.Nbr Type
+---------------- ---- --- --------- -------- --------------------------------
+Fa0/22           Desg FWD 19        128.22   P2p
+Fa0/23           Desg FWD 19        128.23   P2p
+Fa0/6            Desg FWD 19        128.6    P2p
+Fa0/24           Root FWD 19        128.24   P2p
+```
+
