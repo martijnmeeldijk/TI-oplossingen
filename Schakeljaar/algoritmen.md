@@ -65,3 +65,66 @@ Om de boom te fixen, kunnen we ook **recoloren**. We moeten dit doen wanneer een
 <img src="img/image-20220216101108475.png" alt="image-20220216101108475" style="zoom:50%;" />
 
 <img src="img/image-20220216101217905.png" alt="image-20220216101217905" style="zoom:50%;" />
+
+# Labo's
+
+
+
+## Red black trees
+
+De oplossingen staan online, maar ik wou hier toch even iets kleins toevoegen. De `contains()` wordt in de oplossing recursief opgelost, maar het kan ook iteratief.
+
+```c++
+bool RedBlackTree::contains(int key)
+{
+    // Kan blijkbaar ook recursief
+    if (root == NULL) {
+        return false;
+    } else {
+        Node* current = root.get();
+        while (true) {
+            if (current->key == key) {
+                return true;
+            } else if (current->key < key) {
+                if (current->rightChild) {
+                    current = current->rightChild.get();
+                } else {
+                    return false;
+                }
+            } else {
+                if (current->leftChild) {
+                    current = current->leftChild.get();
+                } else {
+                    return false;
+                }
+            }
+        }
+    }
+}
+```
+
+Ik had de `getHeight()` ook een beetje anders gedaan (een beetje slechter denk ik). Misschien heb je er iets aan.
+
+```c++
+int RedBlackTree::getHeight()
+{
+    return getHeight(root.get());
+}
+int RedBlackTree::getHeight(Node* node)
+{
+    if (node == NULL) {
+        return 0;
+    }
+    int left = 0;
+    int right = 0;
+    if (node->leftChild) {
+        left = getHeight(node->leftChild.get()) + 1;
+    }
+    if (node->rightChild) {
+        right = getHeight(node->rightChild.get()) + 1;
+    }
+
+    return left > right ? left : right;
+}
+```
+

