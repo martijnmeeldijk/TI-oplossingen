@@ -63,9 +63,11 @@ Three way TCP handshake
 
 Een socket is een soort deurtje van de transportlaag naar je applicatie. 
 
+Oké er was dus maar 1 les. Tot zover de notities.
 
 
-# Samenvatting
+
+# -------------Samenvatting-------------
 
 ## Intro
 
@@ -341,11 +343,7 @@ Er zijn maar $2^{32}$ , oftewel $4.294.967.296$ mogelijke ipv4 adressen. Om dit 
 
 Als je met je computer thuis een pakketje stuurt naar een server buiten je netwerk, zal je router het source ip adres vervangen door zijn publieke ip adres. Hij onthoudt dan jouw ip en de source poort en stuurt het pakketje door naar de server (mogelijks ook via een andere poort). Als hij antwoord krijgt van de server op diezelfde poort weet hij dat hij het pakketje naar jouw pc moet doorsturen.
 
-# ---------------------
-
-
-
-# Labo's
+# ------------------Labo's--------------------
 
 ## Vragen
 
@@ -368,7 +366,7 @@ Als je met je computer thuis een pakketje stuurt naar een server buiten je netwe
 
 ## 1. Wireshark Lab: HTTP v7.0
 
-### 1.1. The Basic HTTP GET/response interaction
+**1.1. The Basic HTTP GET/response interaction**
 
 1. *Is your browser running HTTP version 1.0 or 1.1? What version of HTTP is the server running?* <a name="l1v1"></a>
 
@@ -421,15 +419,15 @@ File Data: 128 bytes
 
 
 
-### 1.2. The HTTP CONDITIONAL GET/response interaction
+**1.2. The HTTP CONDITIONAL GET/response interaction**
 
 optioneel, effe skippen dus
 
-### 1.3. Retrieving Long Documents
+**1.3. Retrieving Long Documents**
 
 Ook optioneel blijkbaar
 
-### 1.4. HTML Documents with Embedded Objects
+**1.4. HTML Documents with Embedded Objects**
 
 16. *How many HTTP GET request messages did your browser send? To which Internet addresses (URL) were these GET requests sent?* <a name="l1v16"></a>
 
@@ -449,7 +447,7 @@ Ze lijken parallel gedownload te zijn. De twee GET requests (`10` en `16`) worde
 
 
 
-### 1.5 HTTP Authentication
+**1.5 HTTP Authentication**
 
 18. *What is the server’s response (status code and phrase) in response to the initial HTTP GET message from your browser?* 
 
@@ -530,7 +528,7 @@ Hypertext Transfer Protocol
 
 
 
-### 1.A. Appendix: making a live capture
+**1.A. Appendix: making a live capture**
 
 ![image-20220224153428799](img/image-20220224153428799.png)
 
@@ -542,7 +540,7 @@ geweldig
 
 
 
-### 2.1 A look at the captured trace
+**2.1 A look at the captured trace**
 
 1. *Select the first ICMP Echo Request message sent by your computer, and expand the Internet Protocol part of the packet in the packet details window. What is the IP address of your computer?* 
 
@@ -658,7 +656,7 @@ Length, Flags, Header Checksum
 
 
 
-### 2.A. Appendix
+**2.A. Appendix**
 
 ![image-20220224162607564](img/image-20220224162607564.png)
 
@@ -1225,6 +1223,8 @@ about 2 seconds
 
 
 
+## Part II
+
 8. Now which packets are always the same size, occur automatically between connected PCs in order to make the IP protocol work (also on wired networks) and will be replyed upon by the AP with a packet of which we will know its content?
 
 ```
@@ -1287,4 +1287,149 @@ A few minutes
 ```
 ik ga naar huis sorry het is tijd
 ```
+
+
+
+# Network Management
+
+
+
+![image-20220330164839056](img/image-20220330164839056.png)
+
+
+
+
+
+## Deel I
+
+Vul de volgende tabel aan m.b.t. de informatie horend bij verschillende routers.
+
+| Node | Informatie                     | Waarde       | Object id             | Object naam    |
+| ---- | ------------------------------ | ------------ | --------------------- | -------------- |
+| r1   | contactpersoon                 | root         | .1.3.6.1.2.1.1.4      | sysContact     |
+| r1   | locatie                        | cnet2 labo   | .1.3.6.1.2.1.1.6      | sysLocation    |
+| r2   | next hop voor de default route | 192.168.0.42 | .1.3.6.1.2.1.4.21.1.7 | ipRouteNextHop |
+| igw  | aantal interfaces              | 3            | .1.3.6.1.2.1.2.1.0    | ifNumber       |
+| igw  | hoeveelheid RAM geheugen       | 2040900      | .1.3.6.1.2.1.25.2.2   | hrMemorySize   |
+
+.1.3.6.1.2.1.4.21.1.13
+
+.1.3.6.1.2.1.4.21
+
+Hoe kun je in drie command line instructies vanop de NMS node een goed overzicht krijgen van de routingtabellen van r1, r2 en IGW?
+
+1. ```
+   nms snmpwalk 192.168.0.38 ipRouteTable
+   ```
+
+2. ```
+   nms snmpwalk 192.168.0.37 ipRouteTable
+   ```
+
+3. ```
+   nms snmpwalk 192.168.0.41 ipRouteTable
+   ```
+
+   
+
+Hoe kun je makkelijk filteren op SNMP netwerkverkeer in Wireshark zonder "snmp" in te geven in het filterveld?
+
+```
+udp.port == 161 or udp.port == 162
+```
+
+Wat is het eerste SNMP bericht die hiervoor werd uitgestuurd (type + parameters)?
+
+```
+ifIndex: 1
+```
+
+Wat is het laatste SNMP bericht die hiervoor werd uitgestuurd (type + parameters)?
+
+```
+atIfIndex: 2
+```
+
+Hoeveel SNMP pakketten zijn er voor deze zoekopdracht in totaal uitgewisseld?
+
+```
+134
+```
+
+Waarom werden er precies zoveel pakketten uitgewisseld?
+
+```
+omdat we de hele subtree hebben opgehaald
+```
+
+
+
+## Deel II
+
+Hoe controleer je op de bijhorende host of de webserver is gestart en luistert op de gebruikelijke poort 80 (TIP: introductieles)?
+
+Voer dit uit op de NMS node en toon via de output van wget -q -O- http://192.168.0.5 aan dat de correcte webpagina wordt weergegeven.
+
+> Sorry ik kreeg die lighttpd niet aan de praat
+
+
+
+Geef in onderstaande vak de aangepaste inventory-file:
+
+```yml
+192.168.0.42 hostname=igw
+192.168.0.37 hostname=r1
+192.168.0.41 hostname=r2
+192.168.0.45 hostname=nms
+# ik denk dat die hierboven er eigenlijk niet in moeten staan
+
+192.168.0.5 hostname=h1
+192.168.0.6 hostname=h2
+192.168.0.7 hostname=h3
+192.168.0.8 hostname=h4
+192.168.0.21 hostname=h5
+192.168.0.22 hostname=h6
+192.168.0.23 hostname=h7
+192.168.0.24 hostname=h8
+```
+
+
+
+Geef in onderstaande vak de configuratie-template voor lighttpd:
+
+```yml
+server.document-root = "/student/labo6/generated" # folder with static html files
+index-file.names = ( "index-{{ hostname }}.html" ) # main file
+server.port = 80 # default TCP port
+mimetype.assign = (
+ ".html" => "text/html",
+ ".txt" => "text/plain",
+ ".jpg" => "image/jpeg",
+ ".png" => "image/png"
+)
+server.modules = ( "mod_status" ) # page for statistics
+status.status-url="/server-status" # todo
+```
+
+
+
+flex
+
+<img src="img/image-20220330190758094.png" alt="image-20220330190758094" style="zoom:50%;" />
+
+
+
+## Deel III
+
+> Ik heb effe geen zin meer sorry
+
+Welke OID wordt gebruikt voor het gegeven extra object?
+
+```
+
+```
+
+
+
+Hoe zien configuratiebestand(en) en playbooks er uit voor dit doel?
 
