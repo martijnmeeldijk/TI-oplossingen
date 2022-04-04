@@ -83,9 +83,13 @@ Het hoofddoel van Linux is om zo veel mogelijk functionaliteit te bieden, met be
 
 ## Vraag 6
 
-> Wat is het verschil tussen een programma en een proces? p28
+> Wat is het verschil tussen een programma en een proces? Wat zijn de oorspronkelijke twee definities voor een proces?p28
 
 Een **programma** is een passieve entiteit. Simpelweg een verzameling van instructies. Een **proces** is daarentegen de effectieve uitvoering van een afzonderlijk programma. Een programma is dus passief en een proces is actief.
+
+
+
+//TODO toevoeging van wim
 
 ## Vraag 7
 
@@ -188,7 +192,7 @@ Tot slot kunnen we eventuele gegevensstructuren aanmaken of andere gegevensstruc
 
 ## Vraag 13
 
-> Welke opportuniteiten kan het besturingssysteem gebruiken om van proces te wisselen? 
+> Welke opportuniteiten kan het besturingssysteem gebruiken om van proces te wisselen? Bespreek zo gedetailleerd mogelijk op welke momenten de scheduler aan bod kan komen. Geef bij elke mogelijke opportuniteit ook aan of er van proces zal/kan/moet gewisseld worden en geef zo mogelijk ook een aantal voorbeelden om je antwoord te staven.
 
 
 
@@ -260,7 +264,7 @@ Tot slot kunnen we eventuele gegevensstructuren aanmaken of andere gegevensstruc
 
 ## Vraag 25
 
-> Wat is de definitie van een proces en de definitie van een thread? 
+> Wat is de herdefinitie van een proces en de definitie van een thread?
 
 
 
@@ -296,13 +300,13 @@ Tot slot kunnen we eventuele gegevensstructuren aanmaken of andere gegevensstruc
 
 ## Vraag 31
 
-> Geef het procestoestandsdiagram van een klassiek Unix besturingssysteem. Waarom is dit niet geschikt voor realtime-applicaties? 
+> Geef het procestoestandsdiagram van een klassiek Unix besturingssysteem en bespreek elke toestandsovergang (cfr. vraag 9). Waarom is dit niet geschikt voor realtime-applicaties?
 
 
 
 ## Vraag 32
 
-> Uit welke drie delen bestaat een proces in een Windows besturingssysteem? Benoem ze en bespreek waarvoor ze dienen. 
+> Een proces in een Windows heeft drie zaken? Benoem ze en bespreek waarvoor ze dienen.
 
 
 
@@ -314,7 +318,7 @@ Tot slot kunnen we eventuele gegevensstructuren aanmaken of andere gegevensstruc
 
 ## Vraag 34
 
-> Geef het toestandsdiagram van een besturingssysteem dat gebruikmaakt van user level threads en een lichtgewichtproces. Wat zijn de verschillende toestanden en de mogelijke overgangen?
+> Geef het toestandsdiagram van een besturingssysteem dat gebruikmaakt van user level threads en een lichtgewichtproces (cfr. Solaris). Wat zijn de verschillende toestanden en de mogelijke overgangen? Bespreek wanneer er van toestand zal worden gewisseld en geef ook aan in welke toestand de user-level thread en het lichtgewichtproces zich moeten bevinden om uitgevoerd te worden.
 
 
 
@@ -419,7 +423,7 @@ int main(){
 
 Antwoord van the man himself:
 
-> Wanneer je een systeemaanroep uitvoert komt na de uitvoering ervan in kernelmode de scheduler (ook in kernelmode) aan bod om te kijken of er door de interrupt-afhandeling geen meer prioritaire processen werden gedeblokkeerd. Wanneer er na de systeemaanroep geen andere I/O-interrupts werden afgehandeld die processen deblokkeren met een hogere prioriteit zal de uitvoering gewoon worden verdergezet in het proces dat aan zet was voor de onderbreking, de parent dus. Er is slechts één manier waarbij het kind als eerste aan bod zou kunnen komen en dat is dat bij het aanroepen van de systeemaanroep alle toegewezen tijd door de parent werd opgebruikt. Dan en enkel dan zal het kind als eerste aan bod komen.
+> Wanneer je een systeemaanroep aanroept wordt er naar kernelmode geschakeld om de software interrupt (systeemaanroep) af te handelen. Hierna komt de scheduler (ook in kernelmode) aan bod om te kijken of er door de interrupt-afhandeling geen meer prioritaire processen werden gedeblokkeerd en zich dus in de toestand “gereed” bevinden. Dit is hier onmogelijk want de enige manier dat er preemptief van proces kan worden gewisseld is wanneer er na het afhandelen van de systeemaanroep processen gedeblokkeerd werden met een hogere prioriteit. Dus zal de uitvoering gewoon worden verdergezet in het proces dat aan zet was voor de onderbreking, de parent dus. Er is slechts één manier waarbij het kind als eerste aan bod zou kunnen komen en dat is dat bij het aanroepen van de systeemaanroep alle toegewezen tijd door de parent werd opgebruikt. Dan en enkel dan zal het kind als eerste aan bod komen
 
 ## Vraag 42
 
