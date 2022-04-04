@@ -192,15 +192,35 @@ Tot slot kunnen we eventuele gegevensstructuren aanmaken of andere gegevensstruc
 
 ## Vraag 13
 
-> Welke opportuniteiten kan het besturingssysteem gebruiken om van proces te wisselen? Bespreek zo gedetailleerd mogelijk op welke momenten de scheduler aan bod kan komen. Geef bij elke mogelijke opportuniteit ook aan of er van proces zal/kan/moet gewisseld worden en geef zo mogelijk ook een aantal voorbeelden om je antwoord te staven.
+> Welke opportuniteiten kan het besturingssysteem gebruiken om van proces te wisselen? Bespreek zo gedetailleerd mogelijk op welke momenten de scheduler aan bod kan komen. Geef bij elke mogelijke opportuniteit ook aan of er van proces zal/kan/moet gewisseld worden en geef zo mogelijk ook een aantal voorbeelden om je antwoord te staven. p36-38
 
+1. **Interrupts**
+   * *Klokinterrupts*: klok die periodiek decrementeert, wanneer hij nul is zal het programma worden stopgezet zodat het niet te lang draait. (asynchroon)
+   * *I/O-interrupts:* verwittigen het besturingssysteem van een I/O-gebeurtenis. De processen die wachten kunnen onderbroken worden om bijvoorbeeld een proces met hogere prioriteit uit te voeren. (asynchroon)
+   * *Paginafouten*: verwijzing naar geheugenelementen die al verwijderd zijn (synchroon)
 
+2. **Traps / exceptions**
+
+   Een trap is een speciaal soort interrupt die wordt gegenereerd binnen het actieve proces. Dit kan bijvoorbeeld als je user mode een kernelinstructie probeert uit te voeren. (synchroon)
+
+3. **Systeemaanroepen / software-interrupts**
+
+   Systeemaanroepen zijn de interface tussen het besturingssysteem en de gebruikersprogramma's. Ze worden enkel veroorzaakt op het verzoek van het actieve proces. Systeemaanroepen kunnen op twee manieren gedaan worden:
+
+   * *Berichtgestuurd*: in besturingssystemen met een microkernel of client/server architectuur werkt de interface tussen client- en serverprocessen met het uitwisselen van berichten. Er wordt een kanaal tot stand gebracht tussenbeide. Wanneer een clientproces dan een aanvraag doet, laat het zich vrijwillig blokkeren tot het antwoord beschikbaar is. Als ze alle vragen hebben beantwoord, dragen de serverprocessen de controle over aan de scheduler.
+   * *Proceduregestuurd*: Een meer klassieke benadering. Elke systeemaanroep komt overeen met een bibliotheekprocedure. De parameters (of adres naar een lijst van parameters) worden in een register gezet en trap gegenereerd, waarna het systeem in kernelmodus wordt gezet en de controle aan het besturingssysteem wordt overgedragen. Die kijkt met welke interne procedure de systeemaanroep overeenkomt en voert hem uit. Het doel is hier om systeemaanroepen meer te doen lijken op gewone procedures. 
+
+//TODO scheduler
 
 ## Vraag 14
 
-> Wat is het verschil tussen een synchrone en asynchrone interrupt? 
+> Wat is het verschil tussen een synchrone en asynchrone interrupt? p37
+
+Een **synchrone** interrupt moet onmiddellijk worden uitgevoerd. De uitvoering van het programma waaruit de interrupt is ontstaan kan niet doorgaan zolang het besturingssysteem geen actie ondernomen heeft. Het programma wordt geblokkeerd tot de interrupt afgehandeld is. Voorbeeld: paginafout
 
 
+
+Een **asynchrone** interrupt kan daarentegen onmiddellijk worden uitgevoerd, maar ook uitgesteld worden. Het programma wordt niet geblokkeerd en de uitvoering kan doorgaan. Voorbeeld: I/O-interrupt
 
 ## Vraag 15
 
@@ -210,39 +230,55 @@ Tot slot kunnen we eventuele gegevensstructuren aanmaken of andere gegevensstruc
 
 ## Vraag 16
 
-> Hoe zal men bij een microkernel-architectuur een systeemaanroep afhandelen? 
+> Hoe zal men bij een microkernel-architectuur een systeemaanroep afhandelen?  p38
 
-
+**Berichtgestuurd**: in besturingssystemen met een microkernel of client/server architectuur werkt de interface tussen client- en serverprocessen met het uitwisselen van berichten. Er wordt een kanaal tot stand gebracht tussenbeide. Wanneer een clientproces dan een aanvraag doet, laat het zich vrijwillig blokkeren tot het antwoord beschikbaar is. Als ze alle vragen hebben beantwoord, dragen de serverprocessen de controle over aan de scheduler.
 
 ## Vraag 17
 
-> Hoe zal men bij een monolithisch kernelontwerp een systeemaanroep afhandelen? 
+> Hoe zal men bij een monolithisch kernelontwerp een systeemaanroep afhandelen? p38
+
+```
+Bij een systeemaanroep wordt de context van het huidige actieve proces opgeslagen en de besturing overgedragen aan de kernel. Na de uitvoering van de gewenste functies wordt, oftewel de context van het onderbroken proces hersteld, of verdergegaan met het opslaan van de omgeving van het actieve proces en een ander proces geactiveerd.
+
+// dit hoort hier niet denk ik maar ik wil het niet verwijderen indien het ergens anders past.
+```
+
+**Proceduregestuurd**: Elke systeemaanroep komt overeen met een bibliotheekprocedure. De parameters (of adres naar een lijst van parameters) worden in een register gezet en trap gegenereerd, waarna het systeem in kernelmodus wordt gezet en de controle aan het besturingssysteem wordt overgedragen. Die kijkt met welke interne procedure de systeemaanroep overeenkomt en voert hem uit. Het doel is hier om systeemaanroepen meer te doen lijken op gewone procedures. 
 
 
 
 ## Vraag 18
 
-> Waarom hebben software interrupts een veel lagere prioriteit dan hardware interrupts? 
+> Waarom hebben software interrupts een veel lagere prioriteit dan hardware interrupts? p39
 
-
+Het uitvoeren van systeemaanroepen voor een toepassing is doorgaans minder dringend dan het op tijd bedienen van een I/O-controller, alvorens zijn interne buffers overflowen en er data verloren gaat.  
 
 ## Vraag 19
 
-> Er wordt steeds gezegd dat wanneer een proces tegen een I/O-bewerking aanloopt, het proces geblokkeerd wordt. Hoe kan het besturingssysteem dat weten? 
+> Er wordt steeds gezegd dat wanneer een proces tegen een I/O-bewerking aanloopt, het proces geblokkeerd wordt. Hoe kan het besturingssysteem dat weten? p39
 
-
+In de interruptcyclus van de instructiecyclus checkt de processor door middel van de aanwezigheid van een interruptsignaal of er interrupts zijn opgetreden. Er wordt dus periodiek gecontroleerd op interrupts.
 
 ## Vraag 20
 
-> Bespreek de stappen bij het afhandelen van een interrupt wanneer de scheduler ervoor opteert om de uitvoering verder te zetten binnen het reeds actieve proces. Wat wordt er hier bedoeld met een moduswissel en een contextwissel? 
+> Bespreek de stappen bij het afhandelen van een interrupt wanneer de scheduler ervoor opteert om de uitvoering verder te zetten binnen het reeds actieve proces. Wat wordt er hier bedoeld met een moduswissel en een contextwissel? p40
 
+Er wordt teruggeschakeld naar gebruikersmodus en de processortoestandsinformatie wordt hersteld in de registers. Zo wordt dus automatisch de controle terug overgedragen aan het eerder onderbroken proces.
 
+Het overschakelen naar gebruikersmodus is een moduswissel. Bij een contextwissel wordt de inhoud van de registers, waaronder ook de programmateller (de processortoestandsinformatie) gewisseld. In dit geval wordt deze hersteld naar de context van het onderbroken proces, op het moment dat deze voor het laatst uit de toestand *actief* werd gewisseld.
 
 ## Vraag 21
 
-> Bespreek de stappen bij het afhandelen van een interrupt wanneer de scheduler ervoor opteert om de uitvoering niet verder te zetten binnen het reeds actieve proces. Welke stappen zijn nodig om een proceswissel door te voeren. 
+> Bespreek de stappen bij het afhandelen van een interrupt wanneer de scheduler ervoor opteert om de uitvoering niet verder te zetten binnen het reeds actieve proces. Welke stappen zijn nodig om een proceswissel door te voeren? p40-41
 
+Het besturingssysteem zal dan wat meer werk moeten doen
 
+* Context van de processor opslaan + procesbesturingsinformatie van het voorgaande actieve proces bijwerken. 
+* Procesbesturingsblok van het nieuwe proces naar de juiste wachtrij verplaatsen
+* Zijn procesbesturingsblok bijwerken
+* Gegevensstructuren voor geheugenbeheer bijwerken
+* Terugschakelen naar gebruikersmodus en de context wisselen naar die van het geselecteerde proces.
 
 ## Vraag 22
 
