@@ -2,6 +2,12 @@
 
 
 
+# ------------ Theorie ------------
+
+
+
+# Efficiënte zoekbomen
+
 ## Evenwichtige zoekbomen
 
 
@@ -46,27 +52,359 @@ Zelfde als bij BST, we houden geen rekening met de kleur, dus $O(\log n)$
 
 We gaan dus altijd toevoegen als rode knoop. Omdat we dan de zwarte hoogte van de boom niet super hard verkloten. We moeten dan gaan **roteren** om de boom terug geldig te krijgen.
 
-<img src="img/image-20220216094826507.png" alt="image-20220216094826507" style="zoom:50%;" />
+<img src="img/image-20220404153621423.png" alt="image-20220404153621423" style="zoom:50%;" />
 
-Kind roteren naar bover zijn ouder, deelboom van het kind wordt de deelboom van de voormalige ouder. De kost van één rotatie is $O(1)$.
+We roteren het kind naar bover zijn ouder, de deelboom van het kind wordt de deelboom van de voormalige ouder. De kost van één rotatie is $O(1)$. Om de boom te fixen kunnen we ook **recoloren**. We moeten dit doen wanneer een rode knoop rode kinderen heeft na een toevoegoperatie (double red).
 
-
-
-Om de boom te fixen, kunnen we ook **recoloren**. We moeten dit doen wanneer een rode knoop rode kinderen heeft na een toevoegoperatie (double red).
+// TODO verschillende gevallen
 
 
 
+### Verwijderen
+
+//TODO
 
 
-<img src="img/image-20220216100828842.png" alt="image-20220216100828842" style="zoom:50%;" />
 
-<img src="img/image-20220216100932945.png" alt="image-20220216100932945" style="zoom:50%;" />
+# Meerdimensionale gegevensstructuren
 
-<img src="img/image-20220216101108475.png" alt="image-20220216101108475" style="zoom:50%;" />
+Vaak hebben we nood aan meerdimensionale gegevens. Dit zijn gegevens die meer dan één sleutel bezitten. We modelleren deze gegevens typisch als een meerdimensionaal geometrisch probleem.
 
-<img src="img/image-20220216101217905.png" alt="image-20220216101217905" style="zoom:50%;" />
 
-# Labo's
+
+## Projectie
+
+<img src="img/image-20220404155056219.png" alt="image-20220404155056219" style="zoom:50%;" />
+
+We houden per dimensie een gegevensstructuur bij waarin de punten gerangschikt zitten volgens deze dimensie. Willen we dan een range van gegevens opzoeken, stellen we dit voor als een hyperrechthoek (in de tekening een balk, in 2 dimensies zou het een gewone rechthoek zijn). We zoeken dan per dimensie alle gegevens die binnen de overeenkomstige zijde van de hyperrechthoek vallen. Dan overlopen we sequentieel de kleinste verzameling om te kijken welke punten binnen onze range zitten. 
+
+Als de punten gelijkmatig verdeeld zijn kunnen we opteren om slechts één dimensie in een gegevensstructuur te steken. Is dit niet het geval, zullen we toch voor elke dimensie een gegevensstructuur aan moeten maken.
+
+//todo performantie? op zich is dit deel niet super belangrijk
+
+
+
+## Rasterstructuur
+
+<img src="img/image-20220404160102207.png" alt="image-20220404160102207" style="zoom:50%;" />
+
+We kunnen onze verdelen in vakjes met behulp van een raster. We houden in elk vakje een gelinkte lijst bij van alle punten. Als we dan een range van punten willen vinden in een bepaalde zoekhyperrechthoek, vragen we alle gelinkte lijsten op van de vakjes die overlappen met het zoekgebied. Dan moeten we wel nog elk van die lijsten overlopen om de punten binnen het zoekgebied te vinden. 
+
+Je kan waarschijnlijk wel al ruiken dat een gegevensstructuur van deze aard enkel goed werkt indien de punten die hij bevat ietwat uniform verdeeld zijn. In het slechtste geval kunnen alle punten samengeklit in één rooster zitten, wat ook niet echt bevorderlijk zal werken voor de performantie.
+
+De volgende gegevensstructuren trachtten deze problemen op te lossen.
+
+
+
+## Quadtrees
+
+
+
+### Point Quadtrees
+
+<img src="img/image-20220404172412643.png" alt="image-20220404172412643" style="zoom: 33%;" />
+
+<img src="img/image-20220404172458381.png" alt="image-20220404172458381" style="zoom:50%;" />
+
+
+
+Elke toegevoegde knoop verdeelt het zoekgebied in vier (niet noodzakelijk gelijke) rechthoekige gebieden. Om te zoeken vertrekken we vanaf de wortel. Dan vergelijken we telkens ons zoekpunt met de vier kinderen en dalen af indien nodig. Als we dan een leeg gebied tegenkomen is het zoekpunt niet aanwezig in de boom.
+
+De vorm van een Point Quadtree is afhankelijk van de toevoegvolgorde. Als elke toevoegvolgorde even waarschijnlijk is, zijn zoeken en toevoegen gemiddeld $O(\log n)$, en in het slechtste geval $O(n)$.
+
+Als de punten op voorhand gekend zijn kan je iets doen //TODO
+
+
+
+
+
+### Point Region Quadtrees
+
+<img src="img/image-20220404173843794.png" alt="image-20220404173843794" style="zoom:50%;" />
+
+Het principe van een PR Quadtree is gelijkaardig aan dat van een gewone Quadtree, met het verschil dat elk gebied altijd in vier gelijke gebieden gesplitst zal worden. Als er een punt wordt toegevoegd zullen we dus telkens het gebied moeten splitsen totdat elk punt zijn eigen vakje heeft. Dit heeft als gevolg dat de structuur, evenals de hoogte van de boom onafhankelijk zijn van de toevoegvolgorde. 
+
+
+
+#### Hoogte
+
+De hoogte van een PR Quadtree wordt bepaald door de kleinste afstand tussen twee knopen, aangezien er telkens dieper gesplitst zal moeten worden totdat elk punt zijn eigen vakje heeft.
+
+<img src="img/image-20220404174847533.png" alt="image-20220404174847533" style="float: left; zoom: 33%;" />  
+
+
+
+In een gebied met zijde $z$, is de maximale afstand tussen twee punten in een gebied op diepte $d$ gelijk aan $\frac{z \sqrt{2}}{2^d}$
+
+
+
+
+
+
+
+
+
+
+
+#### Range queries
+
+<img src="img/image-20220404175153842.png" alt="image-20220404175153842" style="zoom:50%;" />
+
+Om een range query uit te voeren op een PR Quadtree, zal je een recursieve oproep moeten doen per knoop. Elk niveau naar beneden moet je dan kijken welk van de cellen overlappen met de range en verder naar beneden dalen bij de knopen waar dit het geval is, zo niet geef je een leeg resultaat terug.
+
+
+
+#### Nadelen
+
+Het grote nadeel aan beide eerder genoemde Quadtrees is dat bij meer dimensies, de hoeveelheid gebruikte pointers exponentieel zal toenemen. Elke node heeft voor $k$ dimensies namelijk $2^k$ pointers. 
+
+
+
+
+
+
+
+### K-D Trees
+
+<img src="img/image-20220404180016275.png" alt="image-20220404180016275" style="zoom:50%;" />
+
+K-D Trees trachten de vertakkingsgraad te beperken door op elk niveau te splitsen volgens één dimensie. Bij het afdalen in de boom zullen we dan typisch alterneren tussen de verschillende dimensies.
+
+
+
+#### Range search query
+
+//TODO
+
+#### Nearest Neighbor
+
+//TODO
+
+
+
+
+
+# Examen
+
+Het leek me nog wel nuttig om de vragen vanuit de wooclaps te verzamelen.
+
+
+**De fysiek verwijderde knoop uit een**
+**geldige rood-zwarte boom kan zijn:**
+
+1. Een rode knoop met 2 virtuele
+   kindknopen
+2. Een rode knoop met 1 echt zwart
+   kind, en 1 virtueel kind
+3. Een zwarte knoop met 2 virtuele
+   kindknopen
+4. Een zwarte knoop met 1 echt rood
+   kind en 1 virtueel kind
+5. Een zwarte knoop met 1 echt zwart
+   kind en 1 virtueel kind
+
+
+
+**Als ik de zijde van mijn raster vergroot, krijg ik voor dezelfde gegevens (rasterstructuur):**
+
+1. Minder en kortere gelinkte lijsten
+2. Meer en kortere gelinkte lijsten
+3. Minder en langere gelinkte lijsten
+4. Meer en langere gelinkte lijsten
+
+
+
+**Welke uitspraken zijn waar voor een Point Quadtree?**
+
+1. het aantal knopen neemt toe volgens $O (n · 2^k)$ (x)
+2. het aantal knopen neemt toe volgens $O(k·2^n)$
+3. Zoeken en toevoegen zijn $O (n)$ in het slechtste geval (x)
+4. Zoeken en toevoegen zijn O (log n) in het slechtste geval
+
+
+
+**De hoogte van een Point Reqion Quad Tree hangt rechtstreeks af van (meerdere opties mogelijk):**
+
+1. De invoervolgorde van de gegevens
+2. De grootte van de zoekruimte
+3. De kortste afstand van elk mogelijk paar punten
+
+
+
+**De invoervolgorde heeft effect op de structuur van een k-d tree**
+
+1. Waar
+2. Vals
+
+
+
+**De invoervolgorde heeft effect op de structuur van een k-d tree**
+
+1. Waar
+2. Vals
+
+
+
+**Na $n$ punten toegevoegd te hebben is mijn zoekruimte gesplitst in**
+
+1. $lg(n)$ hyperrechthoeken
+2. $lg(n + 1) $hyperrechthoeken
+3. $n$ hyperrechthoeken
+4. $n+1$ hyperrechthoeken
+5. $2n$ hyperrechthoeken
+6. $2n +1$ hyperrechthoeken
+
+
+
+**Hoeveel neemt de uitvoeringstijd toe wanneer de invoergrootte verdubbelt bij een algoritme met uitvoeringstijd $ log_2 n$, respectievelijk $2^n$?**
+
+1. +1 en x2
+2. +1 en x4
+3. x2 en x2
+4. x2 en x4
+
+
+
+**Rangschik onderstaande functies in oplopende volgorde van orde van toename**
+
+1. $2^{\sqrt{n}}$
+2. $n \log \log n$n
+3. $log^2 n$
+4. $2\ log n$
+5. $\log n$
+6. $2 \log^3 n$
+
+
+
+**Rangschik onderstaande functies in oplopende volgorde van orde van toename**
+
+1. $\sqrt{n} \log n$
+2.  $5\log \log n$
+3. $2^n$
+4. $n \log^2 n$
+5. $2^{\sqrt{n}}$
+6. $2 \log n$
+
+
+
+**Is $2^{n+1} = O(2^n)$?**
+
+1. Waar
+2. Vals
+
+
+
+**Is $2^{n+1} = \Omega(2^n)$?**
+
+1. Waar
+2. Vals
+
+
+
+**Welke van onderstaande betrekkingen zijn juist over $log^3 n$? (meerdere opties mogelijk)**
+
+1. $\log^3 n$ is $O(\log n)$
+2. $\log^3 n$ is $\Omega(\log n)$
+3. $\log^3 n$ is $\Theta(\log n)$
+
+
+
+**Welke operaties neem je op in je kostenmodel?**
+
+```c++
+void selection_sort(vector<T> &v){
+	int n = v.size()
+	for (int i=0; i<n-1; i++){
+		int imin = i;
+    for (int j=i+1; j<n; j++){
+      if (v[j] < v[imin]) imin = j;
+    }
+  swap(v[i],v[imin]);
+  }
+}
+```
+
+1. Initialiseren van de positie van het minimum
+2. Sleutelvergelijking
+3. Aanpassen van de positie van ... (niet leesbaar op de wooclap)
+4. Swap operatie
+
+
+
+**Selection sort rangschikt:**
+
+```c++
+void selection_sort(vector<T> &v){
+	int n = v.size()
+	for (int i=0; i<n-1; i++){
+		int imin = i;
+    for (int j=i+1; j<n; j++){
+      if (v[j] < v[imin]) imin = j;
+    }
+  swap(v[i],v[imin]);
+  }
+}
+```
+
+1. Ter plaatse en stabiel
+2. Ter plaatse maar niet stabiel
+3. Niet ter plaatse en stabiel
+4. Niet ter plaatse en niet stabiel
+
+
+
+**Insertion sort rangschikt**
+
+1. Ter plaatse en stabiel
+2. Ter plaatse maar niet stabiel
+3. Niet ter plaatse maar stabiel
+4. Niet ter plaatse en niet stabiel
+
+
+
+
+
+**Het beste/slechtste geval voor insertion sort treedt op bij:**
+
+1. reeds oplopend/aflopend gesorteerde invoer
+2. reeds aflopend/oplopend gesorteerde invoer
+3. reeds oplopend/oplopend gesorteerde invoer
+4. reeds aflopend/aflopend gesorteerde invoer
+
+
+
+
+
+**We starten met n elementen. Wat is de maximale grootte van de deeltabel waarop de recursieve oproep gebeurt?**
+
+1. $\lfloor \frac{n}{2} \rfloor - 1$ 
+2. $\lfloor \frac{n}{2} \rfloor $ 
+3. $ \frac{n}{2}  - 1$ 
+4. $ \frac{n}{2} $ 
+5. $\lceil \frac{n}{2} - 1 \rceil $ 
+6. $\lceil \frac{n}{2} \rceil $ 
+
+
+
+**Flipping pancakes**
+
+Je hebt een stapel van n pannenkoeken, elk van verschillende grootte. Je kan een spatel onder een willekeurige pannenkoek steken, en zo alle pannenkoeken boven de stapel omkeren. Ontwerp een algoritme om met je spatel de pannenkoeken te sorteren volgens grootte, met de grootste pannenkoek op de bodem.
+
+
+
+**Welk geval van het master theorema is van toepassing bij mergesort?**
+
+<img src="img/image-20220404205911011.png" alt="image-20220404205911011" style="zoom: 33%;" />
+
+1. Geval 1
+2. Geval 2
+3. Geval 3
+
+
+
+
+
+# ------------ Labo's ------------
 
 
 
