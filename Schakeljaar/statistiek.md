@@ -2,7 +2,35 @@
 
 
 
+# ------------- Theorie -------------
 
+
+
+# 1 - Kansrekenen
+
+**De optellingswet**
+$$
+P(A \or B) = P(A) + P(B) - P(A \and B)
+$$
+**De vermenigvuldigingswet**
+$$
+P(A \and B) = P(B)P(A \vert B)= P(A)P(B \vert A)
+$$
+\* *$P(A \vert B)$ is de kans dat A gebeurt, gegeven dat B gebeurt*
+
+
+
+**Combinaties**
+$$
+C^p_n = \frac{n!}{p!(n-p)!}
+$$
+
+
+# 2 - Beschrijvende statistiek
+
+
+
+# --------------- Labo ---------------
 
 ## Oefeningen matlab
 
