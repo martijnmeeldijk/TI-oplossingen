@@ -343,6 +343,182 @@ Er zijn maar $2^{32}$ , oftewel $4.294.967.296$ mogelijke ipv4 adressen. Om dit 
 
 Als je met je computer thuis een pakketje stuurt naar een server buiten je netwerk, zal je router het source ip adres vervangen door zijn publieke ip adres. Hij onthoudt dan jouw ip en de source poort en stuurt het pakketje door naar de server (mogelijks ook via een andere poort). Als hij antwoord krijgt van de server op diezelfde poort weet hij dat hij het pakketje naar jouw pc moet doorsturen.
 
+
+
+# Examenvragen theorie
+
+## Hoofdstuk 2
+
+1. DNS is een hiërarchisch gedecentraliseerd systeem. Geef a.d.h.v. een voorbeeld aan hoe
+   dit werkt.
+
+2. Een lokale DNS-server werkt meestal zowel op recursieve als iteratieve wijze. Bespreek
+   beide werkwijzen. Leg uit welke methode gebruikt wordt voor lokale hosts.
+
+3. Wat is (in de context van DNS) : RR, A, NS, CNAME, MX (geef ook een voorbeeld)
+
+4. Wat is reverse DNS en hoe werkt het?
+
+5. Leg het principe van sockets uit en hoe je in de praktijk de actieve sockets op je Linux-
+   systeem kan opvragen.
+
+6. Bespreek de werking en functie van een DHT in peer-to-peer netwerken.
+
+   
+
+## Hoofdstuk 4
+
+1. Leg NAT uit aan de hand van een voorbeeld. Bespreek de voor- en nadelen van NAT.
+
+2. Stel een packet flow diagram op, waar één client in een netwerk een DHCP adres
+   aanvraagt, maar waar er twee DHCP servers in het netwerk voorkomen. Leg aan de hand
+   hiervan de werking van DHCP uit.
+
+3. Wat is DHCP relay en waarvoor dient het?
+
+4. Leg het werkingsprincipe uit van Software-Defined Networking. Wat zijn de voordelen.
+
+   
+
+## Hoofdstuk 5
+
+1. Wat is een AS ? Geef 3 types (waarom is het belangrijk een onderscheid te maken).
+
+   
+
+2. Bespreek het verschil tussen intra- en inter-AS routering.
+
+   
+
+3. Leg het werkingsprincipe van distance vector en link-state routering uit. Geef een
+   voorbeeld voor beide strategieën.
+
+   
+
+4. Hoe gaan distance vector en link-state routering om met problemen in het netwerk?
+   Evalueer de voor- en nadelen van beide strategieën.
+
+   
+
+5. Bespreek hierarchical OSPF. Waarom is dat nuttig ?
+
+   
+
+6. Bespreek een voorbeeld van BGP. Waarom heeft men I-BGP en E-BGP ?
+
+   
+
+7. Wat is een AS-PATH ? Wat is een NEXT-HOP ?
+
+   
+
+8. Wat is policy based routing in BGP ? Geef een voorbeeld.
+
+   
+
+9. Wat is ICMP ? Geef een voorbeeld bij het gebruik in een redirect en traceroute.
+
+   
+
+10. Leg de basisprincipes van SNMP uit (wat, waarom, hoe, ...). Verwerk het woord MIB en
+    OID in je antwoord.
+
+    
+
+11. Hoe kan Ansible ingezet worden voor netwerkautomatisering, en wat zijn de nodige
+    basiscompomenten en protocollen van Ansible?
+
+    
+
+12. Wat is netwerkvirtualisatie en waarom wordt het gebruikt?
+
+    
+
+## Hoofdstuk 6
+
+1. Hoe werkt een Ethernet switch.
+
+   
+
+2. Hoe worden de switchtabellen ingevuld ? En hoe worden ze gebruikt ?
+
+   
+
+3. Bespreek STP en geef een voorbeeld.
+
+   
+
+4. Wat is een VLAN ? Bespreek de relatie tussen VLANs en subnetten.
+
+   
+
+5. Geef een aantal voor- en nadelen van switches (versus routers).
+
+## Hoofdstuk 7
+
+1. Bespreek de voornaamste verschillen tussen draadloze netwerken en bekabelde
+   netwerken (bv. welke problemen kunnen optreden in draadloze netwerken, die je niet
+   hebt in bekabelde netwerken)?
+
+   
+
+2. Hoe werkt het IEEE 802.11 MAC protocol?
+
+   
+
+3. Bespreek de werking van de adresvelden bij IEEE 802.11 netwerken.
+
+   
+
+## Hoofdstuk 8
+
+1. Bespreek pakketfiltering “packet firewall: stateless en stateful” en toepassingsgateway
+   “application gateway”
+
+   
+
+## Hoofdstuk 4* : IPv6
+
+De slides van dit hoofdstuk bevatten tekstuele verduidelijking in de notes; deze notes vullen
+de slides aangezien er geen IPv6 hoofdstuk opgenomen is in het boek van Kurose-Ross.
+
+1. Bespreek de verschillende types adressen bij IPv6 (“Address Type”).
+
+   
+
+2. Leg uit: fe80::/10, 2000::/3, fc00::/7. Waarvoor worden deze verschillende scopes
+   gebruikt?
+
+   
+
+3. Wat zijn de belangrijkste verschillen tussen een IPv4 en IPv6 header ? Waarom heeft
+   men die verschillen ingevoerd ?
+
+   
+
+4. Geef een voorbeeld van IPv6 adresresolutie en leg uit wat “solicited-node address” is.
+
+   
+
+5. Leg uit: IPv6 DAD.
+
+   
+
+6. Een IPv6 node met meerdere interfaces (e.g. een router), gebruikt intern steeds een
+   zone index.
+   Leg uit waarom.
+
+   
+
+7. Bespreek de verschillende autoconfiguratiestappen van IPv6.
+
+   
+
+8. De overgang van IPv4 van IPv6 wordt georganiseerd in DNS records. Leg uit hoe dit
+   mechanisme werkt.
+
+   
+
 # ------------------Labo's--------------------
 
 ## Vragen
