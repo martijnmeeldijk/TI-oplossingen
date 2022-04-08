@@ -150,7 +150,7 @@ In een gebied met zijde $z$, is de maximale afstand tussen twee punten in een ge
 
 <img src="img/image-20220404175153842.png" alt="image-20220404175153842" style="zoom:50%;" />
 
-Om een range query uit te voeren op een PR Quadtree, zal je een recursieve oproep moeten doen per knoop. Elk niveau naar beneden moet je dan kijken welk van de cellen overlappen met de range en verder naar beneden dalen bij de knopen waar dit het geval is, zo niet geef je een leeg resultaat terug.
+Om een range query te implementeren bij een PR-quadtree, vertrek je vanaf de bovenste knoop. Als de zoekrechthoek overlapt met de cel van de knoop, ga je recursief dieper. Als dit niet het geval is geef je een leeg resultaat terug. Bij een bladknoop kijk je of het individuele punt overlapt met de zoekrechthoek. Als dit het geval is geef je het punt terug.
 
 
 
@@ -174,7 +174,11 @@ K-D Trees trachten de vertakkingsgraad te beperken door op elk niveau te splitse
 
 #### Range search query
 
-//TODO
+<img src="img/image-20220407111118711.png" alt="image-20220407111118711" style="zoom:33%;" />
+
+Je gaat weer recursief moeten werken per knoop. Als het punt van deze knoop binnen de zoekrechthoek valt, voeg je hem toe aan het resultaat. Als de zoekrechthoek (gedeeltelijk) overlapt met de cel van de knoop, ga je recursief dieper. Is dit niet het geval,  geef je een leeg resultaat terug.
+
+
 
 #### Nearest Neighbor
 
@@ -182,11 +186,32 @@ K-D Trees trachten de vertakkingsgraad te beperken door op elk niveau te splitse
 
 
 
+# Analyse van iteratieve algoritmen
 
+## Selection sort
+
+<img src="img/Selection-sort-0.png" alt="Selection Sort (With Code in Python/C++/Java/C)" style="zoom:33%;" />
+
+* Neem het kleinste element van de lijst en zet het vooraan
+* Neem het kleinste element van de lijst behalve het eerste element en zet dat op de tweede plek
+* Herhaal
+* Winst
+
+
+
+## Insertion sort
+
+![Recursive Insertion Sort - GeeksforGeeks](img/insertion_sort-recursion.png)
+
+Je gaat eigenlijk de rij element per element af, het element dat je tegenkomt blijf je naar links schuiven zolang het kleiner is dan het element aan zijn linkerkant. Je krijgt dus in elke stap links van het groene blokje en telkens groter wordende gesorteerde deelrij.
+
+//TODO inversies, best case, worst case?
 
 # Examen
 
 Het leek me nog wel nuttig om de vragen vanuit de wooclaps te verzamelen.
+
+
 
 
 **De fysiek verwijderde knoop uit een**
