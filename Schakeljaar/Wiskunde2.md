@@ -397,10 +397,15 @@ $$
 Beide zijn altijd ten opzichte van één as. Dus $a$ is de afstand van $dS$ tot die as.
 
 **Traagheidsmoment**
+
+> Het **traagheidsmoment** geeft de mate van verzet tegen verandering van hoeksnelheid van een lichaam met een zekere massa. - Wikipedia
+
 $$
 I_a = \iint_G a^2 dS
 $$
 **Statisch moment**
+
+
 $$
 M_A = \iint_G a \space dS
 $$
@@ -412,4 +417,123 @@ $$
 \\ 
 z = (\overline{x},\overline{y})
 $$
+
+
+
+# 4 - Basisbegrippen differentiaalvergelijkingen
+
+De **graad** van een differentiaalvergelijking is de exponent van de hoogste afgeleide. De **orde** van een differentiaalvergelijking is de orde van de hoogste afgeleide (dus hoe vaak die wordt afgeleid).
+
+
+
+Voor de graad moet je wel een beetje oppassen als je hoogste afgeleide in de noemer staat. Als je deze vergelijking herleidt om $y'$ uit de noemer te krijgen zal je zien dat de graad gelijk is aan $2$.
+$$
+y' + \frac{1}{y'} = x+3
+$$
+
+
+## DVG van een familie krommen
+
+Als er $n$ constanten zijn:
+
+1. Leid de vergelijking $n$ keer af. Dan heb je een stelsel van $n+1$ vergelijkingen
+2. Gebruik het stelsel om de constanten te elimineren
+
+
+
+
+
+# 5 - DVG van de eerste orde en eerste graad
+
+Er zijn een aantal manieren om deze DVG's op te lossen. Je moet ze blijkbaar in deze volgorde uitproberen.
+
+1. Scheiden van veranderlijken
+2. Homogene DVG
+3. Totale DVG
+4. Lineaire DVG
+5. DVG van Bernoulli
+
+
+
+## Scheiden van veranderlijken
+
+Als je de vergelijking kan herschrijven als:
+$$
+f(x)dx = g(y)dy
+$$
+Kan je hem gewoon oplossen door beide leden te integreren.
+
+
+
+## Homogene differentiaalvergelijkingen
+
+Je functie is homogeen als:
+$$
+f(\lambda x, \lambda y) = \lambda^n f(x,y)
+$$
+Vervang dus $x$ door $\lambda x$ en $y$ door $\lambda y$ en kijk of je de $\lambda$ eruit kan halen. 
+
+Een vergelijking zoals deze:
+$$
+M(x,y)dx + N(x,y)dy = 0
+$$
+Is homogeen als de $\lambda$'s van $M$ en van $N$ dezelfde graad hebben. 
+
+Substitueer dan met $y=ux$ of $x = uy$. 
+
+
+
+## Totale differentiaalvergelijkingen
+
+Een vergelijking van de vorm $M(x,y)dx + N(x,y)dy = 0$ is totaal als en slechts als
+$$
+\frac{\partial M(x,y)}{\partial y} = \frac{\partial N(x,y)}{\partial x}
+$$
+Als de partiële afgeleiden continu zijn uiteraard.
+
+
+
+Stappen (hoe ik het doe, ik weet niet zeker of het wel helemaal halal is):
+
+* Zoek een functie waarvoor de partiële afgeleide naar $x$ gelijk is aan $M$ en die naar $y$ aan $N$.
+* Dit doe ik door $M$ te integreren naar $x$ en $N$ naar $y$
+* Dan ga je zien dat de integralen van $M$ en $N$ redelijk hard op elkaar lijken en kan je op het zicht een combinatie vinden die aan de voorwaarde in de eerste stap voldoet. 
+* Omdat $\frac{\partial F(x,y)}{\partial x} + \frac{\partial F(x,y)}{\partial y} = M(x,y)dx + N(x,y)dy$, heb je gewoon $F(x) = C$ als oplossing. 
+
+
+
+## Lineaire differentiaalvergelijkingen
+
+Je DVG is lineair als je hem kan schrijven als:
+$$
+y' + yP(x) = Q(x)
+$$
+
+* Stel $y=uv$, dan krijg je $u'v + v'u + uvP(x) = Q(x)$
+* Nu kies je $v$ zodat $v' + vP(x) = 0$ 
+* Dus nu los je de (gemakkelijke) differentiaalvergelijking $v' + vP(x) = 0$ op
+* Omdat $v$ er nu voor zorgt dat er een deel wegvalt, los je $u'v = Q(x)$ op door $v$ in te vullen
+* Nu ken je $u$ en $v$ en krijg je de oplossing door ze in te vullen in $y = uv$
+
+
+
+
+
+## Differentiaalvergelijkingen van Bernoulli
+
+Heb je een vergelijking van het type:
+$$
+y' + yP(x) = y^nQ(x)
+$$
+
+* Deel alles door $y^n$
+* Stel $z=y^{1-n}$, dan is $z' = \frac{dz}{dx} = \frac{dz}{dy}\cdot \frac{dy}{dx} $, dus de afgeleide van $y^{1-n}$ maal $y'$
+* Nu heb je een lineaire DVG, slimme gast die Bernoulli
+* Los verder op door de stappen in de vorige paragraaf te volgen, maar dan met $z = uv$
+* Bij dit eindresultaat vervang je dan $z$ met $y^{1-n}$
+* Winst
+
+ 
+
+
 
