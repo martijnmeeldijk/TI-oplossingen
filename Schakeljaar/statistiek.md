@@ -1,5 +1,11 @@
 # Statistiek
 
+* Examen: 66%
+  * 60% open vragen
+  * 40% meerkeuze met standaard setting
+* Matlab test: 33%
+  * Op PC, open boek (enkel papier wel)
+
 [Examen 2020 A](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Schakeljaar/Examens%20/Examen_Statistiek_A_2020.pdf)
 
 [Examen 2020 B](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Schakeljaar/Examens%20/Examen_Statistiek_B_2020.pdf)
@@ -303,7 +309,16 @@ Als je bijvoorbeeld een berekening moet maken met $\alpha = 0.95$, kan je zo als
 
 # 6 - Schattingstheorie
 
+## Betrouwbaarheidsintervallen
 
+<img src="img/confidence_interval_95.png" alt="Confidence Interval Calculator" style="zoom:33%;" />
+
+Wat is dat, een betrouwbaarheidsinterval? Even ter verduidelijking:
+
+* $\mu$: het gemiddelde van de hele populatie
+* $\bar{x}$: het steekproefgemiddelde
+
+Het is eigenlijk nooit mogelijk om het gemiddelde van een hele populatie te weten. We moeten het doen met steekproeven op een deel van de populatie. Om dan toch een beeld te kunnen krijgen van het gemiddelde, willen we een interval opstellen waarvan we met een bepaalde maat van zekerheid kunnen zeggen dat deze $\mu$ zal bevatten. Dit noemen we een betrouwbaarheidsinterval.
 
 # 7 - Testen van hypothesen
 
@@ -822,7 +837,14 @@ Bepaal een orthonormaal stel eigenvectoren van de lineaire transformatie $g: (x,
 Maak een simulatie met 100 steekproefwaarden van een variabele met een F(7,5 df)-verdeling. Herhaal dit 400 keer. Maak passende tekeningen om hierin de centrale limietstelling te herkennen.
 
 ```matlab
-
+simulatie=frnd(7,5,100,400);
+xbar=mean(simulatie)
+histogram(xbar,'Normalization','pdf')
+hold on;
+x=0:0.05:4;
+plot(x,normpdf(x,5/3,sqrt(5/7)/3), 'r')
+hold on;
+plot(x,fpdf(x,7,5), 'g')
 ```
 
 #### 1.63 
@@ -841,7 +863,13 @@ economie worden gegeven in onderstaande tabel.
  (d) Maak een scatterplot waarbij je de score voor wiskunde uitzet ten opzichte van de score voor economie.
 
 ```matlab
-
+wisk = [30 73 51 57 81 21 75 46 85 21]
+eco = [45 70 40 60 71 30 80 50 70 10]
+a = mean(wisk)
+b = mean(eco) % gemiddelde is verwachte waarde
+stdev_wisk = sqrt(var(wisk)/10)
+stdev_eco = sqrt(var(eco)/10)
+scatter(wisk, eco)
 ```
 
 #### 1.64 
@@ -851,7 +879,10 @@ Teken de histogram van deze steekproef.
 Vind een interval waarin het steekproefgemiddelde van een dergelijke steekproef zal liggen met 80% betrouwbaarheid.
 
 ```matlab
-
+steekproefgrootte = 200
+steekproef = normrnd(2,1, 1, steekproefgrootte)
+histogram(steekproef)
+norminv([0.1 0.9], 2, 1/sqrt(steekproefgrootte))
 ```
 
 #### 1.65
@@ -863,7 +894,11 @@ Als $z:Bin(500, 0.02 d.f.)$, dan is $P(z<12)= \cdots$
 (controleer dit laatste ook met de normale verdeling en geef commentaar)
 
 ```matlab
-
+fcdf(2, 5, 12)
+1 - tcdf(1, 10)
+tinv(0.15,10)
+binocdf(11, 500, 0.02)
+% die andere heb ik geen zin in
 ```
 
 #### 1.66
@@ -877,12 +912,24 @@ van de lengte van de plank. Controleer dit aan de hand van de grafieken van de c
 distributiefuncties (theoretische functie in het rood).
 
 ```matlab
+% een lineaire combinatie van normaalverdelingen is een normaalverdeling
+% de steekproefwaarden plotten
+steekproefgrootte = 100;
+lengte = normrnd(200,9, 1, steekproefgrootte);
+afzaag = normrnd(150,1, 1, steekproefgrootte);
+rest = lengte - afzaag;
+ecdf(rest)
+hold on 
 
+% nu een normaalverdeling met de verwachte waarden plotten en over elkaar zetten voor swag
+variantie = 9^2 + 1^2
+gemiddelde = 200 - 150
+x = 30:.1:80;
+y = normcdf(x,gemiddelde, sqrt(variantie))
+plot(x,y)
 ```
 
 
-
-#### 
 
 ### Week 9
 
@@ -894,7 +941,16 @@ Creëer een nieuwe data-file met volgende gegevens: 24, 19, 14, 10, 7, 5, 6, 8, 
 (c) Ga na of de gegevens uit een normaal verdeelde populatie met gemiddeld 7 komen.
 
 ```matlab
+% a
+vec = [24 19 14 10 7 5 6 8 12 16 21 27]
+boxplot(vec) 
 
+%nrml verdeeld?
+normaal = kstest(vec)
+
+% nrml verdeelde met gem = 7
+test_cdf = makedist('Normal', 'mu',7, 'sigma',1);
+normaal_7 = kstest(vec, 'CDF',test_cdf)
 ```
 
 #### 1.67
@@ -907,7 +963,14 @@ De afdeling kwaliteitscontrole van een fabriek die microgolfovens maakt, meet bi
 Data : **microgolf.dat**
 
 ```matlab
+%a 
+microgolf.emissie
+normaal = kstest(microgolf.emissie)
+boxplot(microgolf.emissie)
 
+% c
+test_cdf = makedist('Normal', 'mu',0.10);
+normaal_mu = kstest(vec, 'CDF',test_cdf)
 ```
 
 #### 1.68

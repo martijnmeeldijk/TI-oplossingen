@@ -1,5 +1,9 @@
 # Besturingssystemen
 
+* Theorie: 50%
+  * Vragen uit vragenlijst
+* Labo: 50% 
+
 Ik ben een nuttige idioot en ik heb ook bij elke vraag de paginanummers geschreven :wink:.
 
 # Hoofdstuk 1

@@ -1,5 +1,11 @@
 # Algoritmen
 
+* Theorie: 60%
+* Praktijk:
+  * Test 30 maart: 20%
+  * Test 23 mei: 20%
+* Minstens 8/20 op zowel theorie als praktijk
+
 
 
 # ------------ Theorie ------------

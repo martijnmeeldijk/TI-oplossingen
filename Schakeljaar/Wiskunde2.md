@@ -1,6 +1,9 @@
 # Wiskunde II
 
-Eigenlijk meer een formularium dan een samenvatting.
+* Examen: 75%
+  * 60% open vragen
+  * 40% meerkeuzevragen met standaar setting (5 van de 8 juist om er door te zijn)
+* Test: 25%
 
 
 

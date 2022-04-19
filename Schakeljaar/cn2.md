@@ -1,5 +1,10 @@
 # CN2
 
+* Schriftelijk examen: 66% (theorie, theoretische oefeningen, labokennis)
+  * Gesloten boek (deel uit vragenlijst)
+  * Open boek (theoretische oefeningen)
+* Labo testjes: 33%
+
 [Het boek](https://www.ucg.ac.me/skladiste/blog_44233/objava_64433/fajlovi/Computer%20Networking%20_%20A%20Top%20Down%20Approach,%207th,%20converted.pdf)
 
 # Leerstof
@@ -352,6 +357,8 @@ Als je met je computer thuis een pakketje stuurt naar een server buiten je netwe
 1. DNS is een hiërarchisch gedecentraliseerd systeem. Geef a.d.h.v. een voorbeeld aan hoe
    dit werkt.
 
+   
+   
 2. Een lokale DNS-server werkt meestal zowel op recursieve als iteratieve wijze. Bespreek
    beide werkwijzen. Leg uit welke methode gebruikt wordt voor lokale hosts.
 
