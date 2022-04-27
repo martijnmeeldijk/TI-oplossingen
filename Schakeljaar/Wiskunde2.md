@@ -2,7 +2,7 @@
 
 * Examen: 75%
   * 60% open vragen
-  * 40% meerkeuzevragen met standaar setting (5 van de 8 juist om er door te zijn)
+  * 40% meerkeuzevragen met standaard setting (5 van de 8 juist om er door te zijn)
 * Test: 25%
 
 
@@ -96,13 +96,25 @@ $$
 \frac{x-x_1}{u_x}=\frac{\displaystyle y-y_1}{\displaystyle u_y}=\frac{\displaystyle z-z_1}{\displaystyle u_z}
 $$
 
+**Parametervergelijking**
+$$
+R:\;\left\{\begin{array}{l}
+x = x_1 + ku_x\\
+y = y_1 + ku_y \quad \text{met } k \in \mathbb{R}\\ 
+z = z_1+ku_z
+\end{array}\right.
+$$
 **Hoek tussen twee rechten**
 $$
 \cos\theta = \frac{\overrightarrow{u_1}\cdot \overrightarrow{u_2}}
 {\lvert\lvert\overrightarrow{u_1}\rvert\rvert \cdot  \lvert\lvert\overrightarrow{u_2}\rvert\rvert}
 $$
 
-
+**Hoek tussen twee vlakken**
+$$
+\cos\theta = \frac{\overrightarrow{n_1}\cdot \overrightarrow{n_2}}
+{\lvert\lvert\overrightarrow{n_1}\rvert\rvert \cdot  \lvert\lvert\overrightarrow{n_2}\rvert\rvert}
+$$
 **Hoek tussen een rechte en een vlak**
 $$
 \sin\theta = \frac{\overrightarrow{u}\cdot \overrightarrow{n}}
@@ -140,17 +152,38 @@ punt $p_1(x_1,y_1,z_1)$ en vlak $\alpha:\;ax+by+cz+d=0$
 
 **Afstand punt tot rechte**
 
-//todo
+* Maak een vlak met het punt en de normaalvector van de rechte
+* Bepaal het snijpunt van het vlak en de rechte
+* Nu bepaal je de afstand tussen het snijpunt en je punt
 
 
 
 **Afstand tussen 2 rechten**
 
-//todo
+(de rechten zijn ieder bepaald door een punt en een richtingsvector)
+
+* Methode 1
+  * Neem het vectorieel product van de richtingsvectoren van de twee rechten
+  * Maak hiervan een eenheidsvector
+  * De afstand tussen de twee rechten is het scalair product van deze eenheidsvector en de vector bepaald door de twee punten van de rechten: $|\overrightarrow{p_1 p_2} \cdot \overrightarrow{e_n}|$
+* Methode 2
+  * Maak een vlak door één punt van de rechten, evenwijdig aan beide richtingsvectoren
+  * Nu kan je de afstand van het andere punt tot dit vlak bepalen met de formule van twee paragrafen terug
 
 
 
+**Gemeenschappelijke loodlijn van twee rechten**
 
+* De richtingsvector van de loodlijn is het vectorieel product van de richtingsvectoren van de rechten
+
+* Stel nu twee vlakken op, elk door een punt op één van de rechten en met als richtingsvectoren
+
+  * De vector van de vorige stap
+  * De richtingsvector van de rechte door dat punt
+
+* De loodlijn is nu de snijlijn van de twee rechten
+
+  
 
 
 
@@ -165,6 +198,14 @@ met middelpunt $m(x_0,y_0,z_0)$ en straal R
 
 
 
+**Bol door 4 niet collineaire punten:**
+
+* Bepaal de 3 lijnstukken bepaald door de 4 punten
+* Het middelpunt van de bol is het snijpunt van de 3 middelloodvlakken van deze lijnstukken
+  * Om de middelloodvlakken te berekenen neem je als normaalvector de richtingsvector van het lijnstuk
+  * En als punt het midden van de twee punten (optellen en delen door 2)
+* De straal is de afstand van het middelpunt tot één van de punten
+
 
 
 **Cirkel**
@@ -176,6 +217,17 @@ R:\;\left\{\begin{array}{l}
 \\
 ax+by+cz+d=0\end{array}\right.
 $$
+
+**Cirkel door drie niet collineaire punten**
+
+* Bepaal het vlak door de 3 punten
+* Bepaal de middelloodvlakken van de twee lijnstukken bepaald door de 3 punten
+* Neem een willekeurig punt op de snijlijn van de twee vlakken en bereken de afstand hiervan tot één van de 3 punten
+* De cirkel is de snijlijn van:
+  *  de bol bepaald door dat willekeurig punt en de afstand 
+  * de vergelijking van het vlak door de 3 punten
+
+// TODO omzettingsformules
 
 
 ## Inhoud ruimtelichamen
@@ -198,6 +250,16 @@ De gradiënt in een punt $p$ van een scalaire functie $\varphi$ geeft de richtin
 $$
 \overrightarrow\nabla\varphi=\left\{\frac{\partial\varphi}{\partial x},\frac{\partial\varphi}{\partial y},\frac{\partial\varphi}{\partial z}\right\}
 $$
+
+* De gradiënt staat loodrecht op elke niveaulijn of niveauoppervlak van je functie
+* De gradiënt in een punt geeft de richting van grootste verandering in dat punt
+
+## Totale differentiaal
+
+$$
+df = \frac{\partial f}{\partial x}dx + \frac{\partial f}{\partial y}dy + \frac{\partial f}{\partial z}dz
+$$
+
 
 
 ## Lineaire benadering
@@ -294,7 +356,7 @@ z = f_2(t)
 \\
 \text{richtingsvector raaklijn: } \{f_1'(t_0), f_2'(t_0), f_3'(t_0)\}
 \\\\
-\text{raaklijn in $p$: }\\ \frac{x-x_0}{f_1'(t_0)} = \frac{y-_y0}{f_2'(t_0)} = \frac{z-z_0}{f_3'(t_0)}
+\text{raaklijn in $p$: }\\ \frac{x-x_0}{f_1'(t_0)} = \frac{y-y_0}{f_2'(t_0)} = \frac{z-z_0}{f_3'(t_0)}
 \\\\
 \text{normaalvlak in $p$: }\\ f_1'(t_0)(x-x_0) + f_2'(t_0)(y-y_0) + f_3'(t_0)(z-z_0) = 0
 $$
@@ -319,6 +381,30 @@ $$
   * ${\left(\frac{\partial^2z}{\partial x^2}\right)}_p=0$: verder onderzoek nodig
 
 
+
+## Gebonden extrema
+
+1. Bepaal de vergelijking van Lagrange: $L(x,y, \lambda) = f(x,y) + \lambda g(x,y)$
+
+2. Los het stelsel op
+
+$$
+\left\{\begin{array}{l}{
+\frac{\partial L}{\partial x}}=0\\
+\frac{\partial L}{\partial y}=0\\
+\frac{\partial L}{\partial \lambda}=0 \xLeftrightarrow{\space \space} g(x,y) = 0 \\
+
+\end{array}\right.
+$$
+
+3. Je functie heeft gebonden extrema inde de oplossingen van dit stelsel als:
+
+$$
+\triangle_p(x,y)=\left(\frac{\partial^2L}{\partial x\partial y}\right)_p^2-{\left(\frac{\partial^2L}{\partial x^2}\right)}_p\cdot{\left(\frac{\partial^2L}{\partial y^2}\right)}_p
+$$
+
+* ${\left(\frac{\partial^2L}{\partial x^2}\right)}_p>0$: $p$ is een minimum
+* ${\left(\frac{\partial^2L}{\partial x^2}\right)}_p<0$: $p$ is een maximum
 
 # 3 - Dubbelintegralen
 
@@ -483,6 +569,10 @@ $$
 Is homogeen als de $\lambda$'s van $M$ en van $N$ dezelfde graad hebben. 
 
 Substitueer dan met $y=ux$ of $x = uy$. 
+
+
+
+
 
 
 

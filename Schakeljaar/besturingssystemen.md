@@ -573,18 +573,22 @@ Antwoord van the man himself:
 
 
 
-# Zelftest labo
+# Zelftest 1 labo
 
 ## Vraag 1
 
 > Leg uit wat het verschil is tussen statisch en dynamisch linken? Enkel de uitleg 
 > volstaat.
 
-
+Bij statisch linken wordt alle code in één groot uitvoerbaar bestand geplaatst. Bij dynamisch linken worden voor alle onbekende symbolen stubs in de uitvoerbare code voorzien. De code zelf bevindt zich in een externe library die bij het starten van het proces aan de virtuele adresruimte wordt toegevoegd. De dynamische linker zal ervoor zorgen dat bij de iedere aanroep van een functie waarvan de code niet beschikbaar is, de code uit de bibliotheek zal uitgevoerd worden. Het voordeel van dynamisch linken is dat een bibliotheek maar één keer in het geheugen moet worden geladen en dat die dan in de adresruimte van ieder proces die hem nodig heeft kan ondergebracht worden (cfr. shared memory). Het kost wel meer tijd om uit te voeren omdat de dynamisch linker bij iedere stub de code in de bibliotheek moet gaan zoeken.
 
 ## Vraag 2
 
 > Hoe kan je een terminal venster leeg maken? 
+
+```
+clear
+```
 
 
 
@@ -592,6 +596,10 @@ Antwoord van the man himself:
 
 Hoe kan je met het commando man informatie opvragen over de informatie 
 in het bestand /etc/passwd?  
+
+```bash
+man 5 passwd # sectie 5 in de manpage van passwd
+```
 
  
 
@@ -603,63 +611,141 @@ echo, printf, set, cd, ...
 
  
 
+```
+help echo
+help printf
+```
+
+
+
 ## Vraag 5
 
 Welk commando kun je gebruiken om: 
 a.  gegevens te sorteren? 
+
+```
+sort
+```
+
 b.  het verschil tussen twee bestanden te bekijken? 
+
+```
+diff
+```
+
 c.  een bestand of directory te zoeken? 
+
+```
+find
+```
+
 d.  duplicate regels uit een bestand te verwijderen? 
+
+```
+sort {file-name} | uniq -u
+```
+
 e.  enkel de 10 eerste lijnen uit een bestand op het scherm te tonen? 
+
+```
+head
+```
+
 f. enkel de 10 laatste lijnen uit een bestand op het scherm te tonen? 
+
+```
+tail
+```
+
 g.  een string te zoeken in een tekstbestand? 
+
+```
+grep
+```
+
 h.  het aantal lijnen, woorden en karakters van een bestand te tonen? 
 
- 
+```
+wc
+```
+
+
 
 ## Vraag 6
 
-De inhoud van de /dev-map bevat bestanden die je in twee groepen kan 
-onderverdelen. Block special device files voor harde schijven en andere 
-“mass storage devices” en character special device files voor de overige 
-randapparatuur waar een device-node voor werd voorzien (niet elke device 
-heeft immers een device node). Wat is het essentiële verschil tussen een 
-block- en character special device files? 
+De inhoud van de /dev-map bevat bestanden die je in twee groepen kan onderverdelen. Block special device files voor harde schijven en andere “mass storage devices” en character special device files voor de overige randapparatuur waar een device-node voor werd voorzien (niet elke device heeft immers een device node). 
+
+Wat is het essentiële verschil tussen een block- en character special device files? 
+
+> Een block special device heeft meer besturingssysteem nodig aangezien er gebufferd wordt. Bij een character special device gebeurt dit niet. Het heeft dus eigenlijk dus niets te maken met het soort devices wat volgens sommige bronnen het geval is. Het heeft te maken met de manier van programmeren. Block special devices zijn complexer te maken en vandaar dat ze ook schaarser zijn.
+
+Bedankt Wim, maar nu weet ik eigenlijk nog steeds niet wat ze zijn. //TODO
 
 ## Vraag 7
 
-Wat is de betekenis van de twee getallen die naast een device node vermeld 
-staan?  
+Wat is de betekenis van de twee getallen die naast een device node vermeld staan?  
 
- 
+Het major nummer identificeert de device driver die door het OS gebruikt moet worden. Het minor nummer geeft aan welke instantie er gebruikt van maakt. 
+
+Een device node met major nummer 8 en minor nummer 2 moet je lezen als “De tweede instantie die gebruik maakt van de door het systeem gekende driver met als nummer 8”. Achter de schermen zal er binnen de kernel wel ergens een tabel bijgehouden worden waar het major nummer zal gebruikt worden als index om zo de device driver te vinden. De combinatie van beide is uniek. Het major nummer geeft aan welke driver er moet gebruikt worden en het minor nummer identificeert dan weer het device dat er gebruik van maakt.
 
 ## Vraag 8
 
-Gebruik het commando find om een overzicht te krijgen van zowel de 
-character special device files als de block special device files. Probeer het 
-eerst door twee opdrachten te geven en daarna door de twee opdrachten te 
-groeperen in één opdracht.  
+Gebruik het commando find om een overzicht te krijgen van zowel de  character special device files als de block special device files. Probeer het  eerst door twee opdrachten te geven en daarna door de twee opdrachten te  groeperen in één opdracht.  
+
+```bash
+find /dev -type b
+```
+
+```bash
+find /dev -type c
+```
+
+```bash
+find /dev -type b && find /dev -type c # hihi ik weet dat dit illegaal is 
+```
+
+
 
  ## Vraag 9
 
- Leg uit wat het verschil is tussen een hard link en een soft link. Wat zijn de 
-voor- en nadelen van beide. 
+Leg uit wat het verschil is tussen een hard link en een soft link. Wat zijn de voor- en nadelen van beide. 
+
+**Hardlink**
+Een inode bevat alle info over een filesysteemobject. Datum en tijdstip van laatste wijziging, de grootte, het uid van de eigenaar, de toegangsrechten, enzovoort. Ook bevat de inode een verwijzing naar de datablokken. Wanneer je aan een filesysteemobject een extra naam toekent op een eventueel andere locatie, dan is dat een hardlink. Ze delen dezelfde inode dus wanneer je een hardlink verwijdert wordt de naam verwijderd. Enkel wanneer de laatste naam (link) verwijderd wordt, wordt de inode verwijderd en dus ook de bijhorende data. Vandaar ook de naam van de syscall om iets verwijderen...unlink! 
+
+Een hardlink is dus niet op het eerste zicht zichtbaar. Enkel met “ls -l” kan je zien hoeveel hardlinks er zijn. Bij het aanmaken van een directory worden automatisch twee hardlinks toegevoegd, nl “.” En “..”. De “.” is een hardlink naar de nieuwe map, de “..”
+is een verwijzing naar de bovenliggende map. 
+
+**Symlink, softlink of logische link...**
+Bij een symlink wordt een nieuwe inode aangemaakt met een verwijzing naar de naam van het filesysteemobject. Een verwijzing naar de naam, niet naar de inode! Dit is duidelijk zichtbaar bij een “ls -l” opdracht aangezien je uiterst links lrwxrwxrwx zal terugvinden en uiterst rechts “linknaam -> naam”.
+
+Hardlinks hebben als nadeel:
+
+* Niet mogelijk voor directories. Anders kan je lussen maken in je bestandssysteem. Een opdracht zoals find kan het verschil niet zien tussen de link en het origineel aangezien er gewoon geen verschil is. Een hardlink is een extra naam die je toekent.
+* Niet mogelijk over de grenzen van schijfpartities/schijven/USB- sticks/etc. Dus een hardlink kan je enkel maar leggen naar objecten binnen hetzelfde bestandssysteem.
+* Minder zichtbaar voor gebruikers
+
+Hardlinks hebben als voordeel:
+
+* Neemt geen extra plaats in op schijf. Er wordt geen nieuwe inode
+  aangemaakt!
+* De voordelen van een symlink zijn de nadelen van een hardlink en
+  omgekeerd.
 
  
 
  ## Vraag 10
 
- Maak in je home-directory een softlink aan naar /etc/passwd en een hardlink 
-naar /etc/group (probeer dit met het commando cp als met commando ln). 
-Hoe kan je zien of het wel degelijk over een hardlink gaat en niet over een 
-kopie? 
+Maak in je home-directory een softlink aan naar /etc/passwd en een hardlink  naar /etc/group (probeer dit met het commando cp als met commando ln). 
+
+Hoe kan je zien of het wel degelijk over een hardlink gaat en niet over een kopie? 
 
 
 
 ## Vraag 11
 
-Waarom is een pseudo random generator met een beperkt aantal bits geen 
-goede random generator? 
+Waarom is een pseudo random generator met een beperkt aantal bits geen goede random generator? 
 
  
 
@@ -802,7 +888,201 @@ zet je het om naar een strikt positief getal? (unsigned dus)
 
  
 
- 
+# Zelftest 2 labo
+
+## Vraag 1
+
+Zoek naar alle bestanden of symlinks met een grootte van 1M of die de voorbije 24u werden gewijzigd. 
+
+
+
+## Vraag 2
+
+Geef hieronder de opdracht of pipeline van opdrachten om de bovenstaande uitvoer te ordenen op basis van het inodenummer (grootste eerst, kleinste laatst). 
+
+
+
+## Vraag 3
+
+Volgens de manpagina van find kan je met de optie -o op twee dingen testen en zal de naam van het object uitgeprint worden wanneer een van de twee voorwaarden voldaan is. Ook kan je haakjes gebruiken om dit te doen (let wel, in BASH moet je die wel escapen met een \ om aan te geven dat die haken voor find bedoeld zijn). Geef een overzicht van alle bestanden in de map /etc die een grootte hebben kleiner dan 10K of groter dan 100K. 
+
+
+
+## Vraag 4
+
+Geef van alle bestanden die zich bevinden in de /etc directory bevinden en die een grootte hebben van minder dan 10K het aantal lijnen. Doe dit op twee manieren: a. Met de optie -exec van find b. Door alle namen via een pipe door te geven naar het commando xargs die dan op iedere bestandsnaam het commando wc uitvoert. 
+
+
+
+## Vraag 5
+
+Bij het bovenstaande heb je wellicht geen rekening gehouden met bestandsnamen die spaties bevatten. Bij find kan je vragen om de bestandsnamen af te sluiten met een null-karakter i.p.v. een newline (\n) door middel van de optie -print0. Gebruik nu opnieuw xargs met bijhorende parameters om op iedere null-terminated bestandsnaam “wc -l” toe te passen.  
+
+
+
+## Vraag 6
+
+Gebruik het commando shuf om 16 getallen te genereren tussen 10 en 50 en gebruik xargs om die uit te schrijven in een raster van 4 bij 4. 
+
+
+
+## Vraag 7
+
+Zelfde vraag als hierboven maar doe dit nu met printf (2 karakter per getal) en command substitution. Je zal zien dat dit een betere uitlijning geeft wanneer je “%2d” gebruikt voor ieder getal. 
+
+
+
+## Vraag 8
+
+Hoe worden lijneindes aangegeven in Windows en hoe gebeurt dit in Unix/Linux? Waarom is het belangrijk om te werken met tekstbestanden/scripts/… die regeleindes hebben overeenkomstig het besturingssysteem? Geef enkele voorbeelden waar het fout kan gaan.
+
+
+
+## Vraag 9
+
+Geef de reguliere expressie om te testen of een lijn een getal bevat. Geef nu de reguliere expressie om te testen of een lijn uitsluitend een getal bevat. Maak een testbestand aan waar je enkele lijnen naartoe wegschrijft die voldoen en die niet voldoen. Test vervolgens met het commando grep uit of de reguliere expressie die je hebt uitgedacht, voldoet.
+
+
+
+## Vraag 10
+
+Een geldig e-mailadres voldoet aan de volgende regel “naam@domeinnaam” waarbij zowel de naam als de domeinnaam kan bestaan uit verschillende delen gescheiden door punten. De (domein)naam bestaat uitsluitend uit letters en/of cijfers. Test opnieuw uit of een regel van een tekstbestand uitsluitend een geldig e-mailadres bevat (dus tussen het begin en het einde van de regel bevindt zich een e-mailadres).
+
+
+
+## Vraag 11
+
+Waarvoor dient in een script de shebang-lijn? (i.e. #!/bin/bash)? 
+
+
+
+## Vraag 12
+
+Wat is het type van iedere variabele in BASH? 
+
+
+
+## Vraag 13
+
+Wanneer is het handig of zelfs noodzakelijk om bij het uitschrijven van een variabele de variabelenaam tussen accolades te plaatsen? 
+
+
+
+## Vraag 14
+
+Schrijf een BASH-script dat een getal inleest (geen controle nodig) en de derdemacht van dat getal naar het scherm schrijft (via arithmetic expansion). 
+
+Een intermezzo….de magie van process substition… 
+
+Bij interprocescommunicatie wordt meestal gebruikgemaakt van de verticale streep en voldoet een opdrachtregel aan de volgende syntax: 
+
+opdracht1 | opdracht2 | opdracht3 
+
+De uitvoer van opdracht1 wordt via een anonieme pipe naar het invoerkanaal van het proces waar opdracht2 in uitgevoerd wordt. Hetzelfde met de uitvoer van opdracht2 naar de invoer van opdracht3. 
+
+Hoe handig deze syntax is, er is één groot nadeel aan verbonden. Dat is dat iedere opdracht na de verticale streep uitgevoerd wordt in een subshell van de huidige shell. Dus wanneer bv. variabelen wil gaan inlezen via de opdrachtlijn: 
+
+echo 1 2 3 | read a b c echo \$a 
+
+kom je er altijd op uit dat als je de inhoud van de variabele a wil uitschrijven dat die precies niet bestaat. Dat is niet abnormaal aangezien je nu zou moeten weten dat het inlezen en dus ook het toekennen is gebeurd in een subshell en niet in de shell waar je de oorspronkelijke “echo 1 2 3” hebt laten uitvoeren. 
+
+Om dit wel mogelijk te maken zou je maar al te graag de volgorde van de opdrachten omdraaien en dat kan wanneer je gebruikmaakt van process substitution. De syntax is complexer als met de verticale streep maar is veel flexibeler te gebruiken. De bovenstaande opdracht kan als volgt worden geschreven: 
+
+read a b c < **<(echo 1 2 3)** 
+
+Het in het vetgedrukte gedeelte is proces substitution. Het eerste <-teken staat voor input redirection onmiddellijk gevolgd door een spatie, gevolgd door een <(opdracht). Let op, dit is aan elkaar geschreven en er kan zeker geen spatie staan tussen het <-teken en de openende ronde haak aangezien een <-teken omringd door spaties in BASH duidt op input redirection. 
+
+Wat er achter de schermen gebeurt is hetzelfde als met de verticale streep. Er worden twee kindprocessen aangemaakt die via een tijdelijke pipe met elkaar data uitwisselen. Hierbij wordt de <(opdracht) vervangen door een tijdelijk bestand dat zich in de /dev map bevindt en dat eigenlijk een gateway is naar de leesfiledescriptor van de pipe. Dus net zoals met I/O kan je eenvoudigweg via een bestand toegang krijgen tot een structuur in de kernel. 
+
+Even terzijde maar >(opdracht) kan ook. Hier zal je dus een tijdelijk bestand zien verschijnen in de /dev map dat een gateway is naar schrijffiledescriptor van de pipe. 
+
+Enkele voorbeelden: 
+
+```
+ls <(:) >(:) #hier zie je de tijdelijke bestanden voor interprocescommunicatie 
+
+grep -E “^pass” <(ls -lR /etc) 
+
+grep -E “^pass” < <(ls -lR /etc) 
+```
+
+De laatste twee opdrachten geven identieke uitvoer. Bij de eerste opdracht zal <(ls -lR) vervangen worden door een tijdelijk bestand dat zich in de /devmap bevindt en waarvan grep gewoon van leest. Bij de tweede opdracht wordt er gewerkt met input redirection waarbij de invoer voor het  commando grep komt van het tijdelijke bestand in de /dev-map. Onnodig om te zeggen dat de input redirection onnodig is! 
+
+Heb je bv. een kopie gemaakt van een map, dan kan je heel eenvoudig controleren of de inhoud van het origineel en van de kopie hetzelfde is. Dit kan door: 
+
+diff <(ls -lR origineel) <(ls -lR kopie) 
+
+Zoals onmiddellijk duidelijk wordt is dit met de verticale strepen heel wat lastiger om niet te zeggen onmogelijk! Hier worden achter de schermen drie kindprocessen aangemaakt en leest diff van zowel het ene kind (ls -lR origineel) als van het tweede kind (ls -lR kopie). Beide ls-processen hebben een pipe naar het commando diff en voor iedere pipe wordt een tijdelijk bestand voorzien waardoor diff kan lezen van die pipes alsof het van reguliere bestanden leest. 
+
+
+
+## Vraag 15
+
+Het commando read splitst op basis van de inhoud van de IFS-variabele. Zijn er meer variabelen dan dat er elementen zijn, dan zullen de overtollige variabele leeg zijn. Zijn er minder variabelen dan dat er elementen zijn dan zal de laatste variabele het restant van de lijn bevatten. 
+
+IFS-wijzigen om bv. read te laten splitsen op basis van iets anders dan whitespace kan gewoon door de volgende constructie: 
+
+IFS=. read a b c d <<< string 
+
+De <<< is string input redirection en betekent dus dat je van plan bent om niet van een bestand te lezen maar van een string. 
+
+IFS=. read a b c d <<< “192.168.16.16”
+
+ echo $a 
+
+Wanneer je IFS een waarde toekent vóór een commando dan zal IFS enkel en alleen gewijzigd zijn voor dat commando en dus niet voor de rest van het script! Dus dan gaat het om een wijziging in de context van dat commando. 
+
+Schrijf een script dat een IPv4-adres inleest en dat daarna dat IPv4-adres opsplitst in vier variabelen. Daarna check je of ieder van deze variabelen  bestaat en of dat het een getal voorstelt en of dat dat getal binnen de grenzen [0-255] ligt. Indien deze voorwaarde niet voldaan is, dan is het geen geldig IPv4-adres! Het script eindigt met een passende foutboodschap wanneer er geen geldig IPv4 adres werd ingelezen. (Met een reguliere expressie testen op de geldigheid van een IPv4-adres is niet eenvoudig maar de constructie hierboven maakt het makkelijker) 
+
+
+
+## Vraag 16
+
+Schrijf nu hetzelfde script als hierboven maar geef het IP-adres als een parameter mee met het script. Als de parameter niet wordt meegegeven, dan wordt verondersteld dat het IP-adres dat je moet checken 192.168.16.8 is. 
+
+
+
+## Vraag 17
+
+Gebruik stringoperatoren om alle klinkers uit een woord te vervangen door een punt. (probeer dit ook eens uit via de externe opdracht tr) 
+
+
+
+## Vraag 18
+
+Hoe kan je van een getal dat de bestandsgrootte in bytes voorstelt en waarbij digit grouping gebruikt wordt, bv. 131.273.678, één getal maken en dat getal in kilobytes naar het scherm schrijven. Hieronder volgen enkele oefeningen op C en systeemaanroepen: 
+
+
+
+## Vraag 19
+
+Schrijf in C een eigen versie van het commando du. De bestandsgrootte kan je opvragen met de syscall stat. 
+
+
+
+## Vraag 20
+
+Schrijf in C een eigen versie van het commando “wc -l” dat van de laatste 100 bytes van de bestanden die meegegeven worden op de commandolijn het aantal lijnen bepaalt. In BASH zou je dit als volgt schrijven …. tail -c 100 bestand1 bestand2| wc -l. Doe dit zonder pipe en zonder execve syscalls maar dus louter met open/read/write/close/…! 
+
+
+
+## Vraag 21
+
+Doe nu hetzelfde als vorige vraag waar je wel gebruikmaakt van kindprocessen en een pipe als IPC. Gebruik ook execve of gelijkaardige syscalls om de programma’s aan te roepen. 
+
+
+
+## Vraag 22
+
+Gegeven volgende situatie: 
+
+<img src="img/image-20220419160820638.png" alt="image-20220419160820638" style="zoom: 33%;" />
+
+C1 en C2 zijn kindprocessen van P. C3 is een kindproces van C1. 
+
+De werking is als volgt: Zowel de parent P als child C3 genereren een willekeurig getal. De parent stuurt zijn getal naar C1 en child C3 stuurt zijn willekeurig getal naar C2. Child C2 vermenigvuldigt het ontvangen getal van C3 met twee en stuurt dat getal door naar C1. C1 telt het getal van de parent P samen met het getal ontvangen van child C2 en schrijft de som naar het scherm. 
+
+Schrijf een volledig C-programma dat alle processen aanmaakt en ervoor zorgt dat C1 de som van g1 en g2*2 naar het scherm schrijft. 
 
  
 
@@ -1146,11 +1426,15 @@ ik heb geen bestanden met twee tekens
 
 17. Voer volgende opdrachten uit: 
 
-1. `ls * `
-2. `dir * `
-3. `printf "%s\n" * `
-4. `ls "*" `
-5. `printf "%s\n" "*" `
+    * `ls * `
+
+    * `dir * `
+
+    * `printf "%s\n" * `
+
+    * `ls "*" `
+
+    * `printf "%s\n" "*" `
 
 Wat is het subtiele verschil in uitvoer tussen de eerste drie opdrachten? Verklaar dit verschil door nog een aantal bestanden aan te maken en beide commando’s opnieuw uit te voeren. Verklaar het belangrijke verschil tussen de eerste en de vierde opdracht. Verklaar ook de verschillende uitvoer van de twee laatste opdrachten.
 
@@ -1168,28 +1452,29 @@ Wat is het subtiele verschil in uitvoer tussen de eerste drie opdrachten? Verkla
 
 18. Zorg dat er geen bestanden in de werkdirectory staan waarvan de naam met abc begint. Verklaar dan het verschil in uitvoer tussen volgende opdrachten: 
 
-1. `ls abc* ` => `ls: cannot access 'abc*': No such file or directory`
-2. `printf “%s\n” abc* ` => `abc*`
+    * `ls abc* ` => `ls: cannot access 'abc*': No such file or directory`
+
+    * `printf “%s\n” abc* ` => `abc*`
 
 
 
 19. Voer de opdracht rm –f ?? uit. Verklaar daarna het verschil in uitvoer tussen volgende opdrachten: 
 
-1. `printf "%s\n" ??? `
+    * `printf "%s\n" ??? `
 
-   ```
-   a.b
-   b.a
-   b.c
-   c.d
-   d.e
-   ```
+    ```
+    a.b
+    b.a
+    b.c
+    c.d
+    d.e
+    ```
 
-   
+    
 
-2. `printf "%s\n" ??e ` => `d.e`
+    * `printf "%s\n" ??e ` => `d.e`
 
-3. `printf "%s\n" ?? ` => `??` (ja alle bestande met twee karakters zijn verwijderd dus daarom vinden we niks)
+    * `printf "%s\n" ?? ` => `??` (ja alle bestande met twee karakters zijn verwijderd dus daarom vinden we niks)
 
 
 
@@ -1215,15 +1500,192 @@ $ printf '%x ' {0..255..2}
 
 22. Wanneer het eerste karakter van een string een tilde(~) is, wordt er aan tilde expansion gedaan. Dit wil zeggen dat alle karakters tussen de tilde en de eerste slash beschouwd worden als een gebruikersnaam. Wat verschijnt er op het scherm wanneer je de volgende opdrachten uitvoert: 
 
-1. `echo ~root/ ` => `/root/`
-2. `echo ~mail/ ` => `/var/spool/mail/`
-3. `echo ~{mail,root}` => `/var/spool/mail   /root`
+    * `echo ~root/ ` => `/root/`
+
+    * `echo ~mail/ ` => `/var/spool/mail/`
+
+    * `echo ~{mail,root}` => `/var/spool/mail   /root`
 
 Wat wordt door de shell het eerst vervangen, de tilde of de accolades?
 
 ```bash
 De accolades, want anders zou het de derde uitvoer dit zijn:
 /root/mail   /root/root
+```
+
+
+
+**Redirection, piping en filtering, process substitution en het commando find**
+
+Zoals reeds bij deel V aangehaald werd, zal elk in de shell gestart programma beschikken over drie file descriptors: standaardinvoer (stdin), standaarduitvoer (stdout) en standaardfout (stderr). Gewone uitvoer wordt steeds naar standaarduitvoer gestuurd terwijl eventuele fouten terechtkomen op standaardfout. In de shell waarin je ingelogd bent is standaardinvoer meestal gelijk aan het toetsenbord (invoer wordt afgesloten met Ctrl-D voor end of file of eventueel Ctrl-C voor terminate), en worden beide uitvoerkanalen met het beeldscherm verbonden. Elk kanaal heeft een eigen nummer waarmee de shell de kanalen identificeert: 0 standaardinvoer 1 standaarduitvoer 2 standaardfout 
+
+
+
+23. Verwijder de werkbestanden tmp\*.txt, indien die reeds zouden bestaan. Voer hiertoe het commando rm -f tmp\*.txt uit. Voer daarna achtereenvolgens deze opdrachten uit: 
+
+```bash
+du /etc 
+du /var > tmp.txt 
+du /etc 1> tmp.txt 
+du /var >> tmp.txt 
+du /etc 1>> tmp.txt 
+>tmp.txt du /etc # hierna is hij ineens kleiner
+du /var > tmp1.txt > tmp2.txt 
+```
+
+
+
+Bekijk na elke tussenstap 
+
+1. de uitvoer van het commando, 
+2. de toestand van de werkbestanden tmp\*.txt (bijvoorbeeld via de commando's wc tmp\*.txt of ls -l tmp\*.txt), \*
+3. de inhoud van de werkbestanden tmp\*.txt (bijvoorbeeld via het commando cat tmp\*.txt of door de bestanden in een teksteditor te openen). 
+
+Wat besluit je na het vergelijken van de resultaten van elke tussenstap? 
+
+
+
+24. Verwijder eerst het werkbestand tmp.txt. Voer daarna volgende opdrachten uit: 
+
+```bash
+set -o noclobber # zorgt ervoor dat je files niet overschrijft met >
+echo test > tmp.txt 
+echo test > tmp.txt 
+echo test >| tmp.txt 
+set +o noclobber # nu zetten we noclobber terug uit
+echo test > tmp.txt 
+set -C # hoofdletter verplicht! 
+echo test > tmp.txt 
+echo test >| tmp.txt 
+set +C 
+echo test > tmp.txt 
+```
+
+Wat besluit je uit de uitvoer van de verschillende tussenstappen? Waar vind je informatie terug over de shell-variabele noclobber?
+
+
+
+25. Foutmeldingen worden via een apart kanaal weergegeven, zodat er onderscheid gemaakt kan worden tussen gewone uitvoer en foutteksten. Voer achtereenvolgens volgende commando's uit en controleer de inhoud van het bestanden tmp*.txt: 
+
+    
+
+```bash
+du /etc 
+du /etc 1>tmp.txt 
+du /etc 2>>tmp.txt 
+du /etc >tmp1.txt 2>tmp2.txt
+```
+
+
+
+26. Je kunt ook omleiden naar de vuilnisbak (/dev/null). Verklaar de uitvoer bij uitvoering van volgende opdrachten: 
+
+```bash
+du /etc > /dev/null 
+cat /dev/null # geen uitvoer
+# ik denk omdat de vuibak leeg is
+```
+
+
+
+27. Ga na wat het effect is van cat /dev/null > test.txt
+
+```bash
+# er zit niks in test.txt
+```
+
+
+
+28. Veronderstel dat een of ander programma continu informatie wegschrijft in een logbestand (dat hierdoor onbeperkt en continu in grootte toeneemt), en dat niemand geïnteresseerd is in dit logbestand. Hoe kun je vermijden dat je periodiek het bestand moet legen of verwijderen?
+
+```bash
+# naar /dev/null laten gaan veronderstel ik
+```
+
+
+
+29. Bekijk verdere mogelijkheden met de opdrachten: 
+
+```bash
+du /etc >tmp.txt 2>&1 
+du /etc 2>&1 >tmp.txt 
+du /etc &>tmp.txt 
+du /etc 2>tmp.txt >tmp.txt 
+exec 3>tmp.txt ; du /etc >&3 2>&1 ; exec 3>&-
+```
+
+
+
+... oké ik heb wat in te halen
+
+89. Ontwikkel een shellscript dat als (enige) parameter een bestandsnaam heeft. Als output moet het script het gemiddelde aantal karakters per regel en het gemiddelde aantal woorden per regel uitschrijven. Gebruik de output van het commando wc en probeer met de diverse methodes die hierboven aangehaald werden (behalve de tweede) om deze output op te splitsen. Opgelet: de shell behandelt alle getallen als integers. Niettemin kun je er, met behulp van wat wiskunde, voor zorgen dat delingen correct worden afgerond. Hoe?
+
+```bash
+#!/bin/bash
+
+if (($#!=1));then
+        echo "Fout aantal argumenten" >&2
+        exit 1
+fi
+
+if [[ ! -f "$1" || ! -r "$1" ]];then
+        echo "$1 is geen bestand of is niet leesbaar!" >&2
+        exit 1
+fi
+
+array=( $( wc $1) )
+
+echo gemiddeld aantal woorden per lijn $(( (array[1]+ array[0]/ 2) /array[0] ))
+echo gemiddeld aantal chars per lijn $(( (array[2] + array[0]/2) /array[0] ))
+
+read lijnen woorden kars rest < <(wc "$1")
+
+a=$(wc "$1")
+read lijnen woorden kars rest <<< "$a" #string input redirection
+
+read -a array < <(wc "$1")
+
+```
+
+90. Wat moet je doen opdat de read-instructie lijnen niet alleen in woorden zou opsplitsen op basis van spaties, tabs en regeleinden, maar ook op basis van :-tekens?
+
+```bash
+IFS=$':' #Internal Field Separator
+
+```
+
+
+
+91. Ontwikkel een script om de gebruikersnaam (veld 1 van /etc/passwd) te bepalen aan de hand van een gebruikers-ID (veld 3 van /etc/passwd) dat je als (enige) parameter aan het script meegegeven hebt.
+
+     Je kunt de output van het commando grep zowel met cut, read als met een array analyseren.
+
+```
+
+```
+
+
+
+92. Ontwikkel een script dat het commando tail n simuleert. Als eerste argument moet een bestandsnaam opgegeven worden en als tweede argument mag het aantal regels opgegeven worden. Ontbreekt het tweede argument, dan worden de 10 laatste regels weergegeven. Realiseer dit op twee manieren: 
+    * Gebruik een while-lus met een read-commando om het bestand te overlopen en een array om de gegevens cyclisch op te slaan. 
+    * Gebruik geen array, maar bepaal vooraf het aantal lijnen van het bestand. 
+
+​	
+
+```bash
+#!/bin/bash
+input=$1
+lines = "wc -l $input"
+lines = "$lines" - 10
+i = 0
+while IFS= read -r line
+do
+  if [["$i" -ge "$lines"]]
+  then
+  echo "$line"
+  fi
+  i=$((i+1))
+done
 ```
 
 
@@ -1236,3 +1698,11 @@ $ mktemp 'XXX' # maakt random bestand aan met 3 tekens (dat nog niet bestaat)
 $ echo $$ # pid van bash shell opvragen
 ```
 
+
+
+
+
+# To do
+
+* regex
+* 

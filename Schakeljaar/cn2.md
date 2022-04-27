@@ -1468,7 +1468,7 @@ A few minutes
 11. Both the client and the AP know the 40-bit WEP key, but how does the client know the 24-bit Initialization Vector (IV) to decrypt a packet? (hint: examine the dump-xx.cap file)
 
 ```
-ik ga naar huis sorry het is tijd
+The IV is also included in the packet
 ```
 
 
@@ -1615,4 +1615,127 @@ Welke OID wordt gebruikt voor het gegeven extra object?
 
 
 Hoe zien configuratiebestand(en) en playbooks er uit voor dit doel?
+
+
+
+# IPV6 oefeningen
+
+**Vraag 1** 
+
+Aggregeer de volgende netwerken tot een zo groot mogelijk geheel: 
+
+2001:6a8:1d80:7374::/64 
+
+2001:6a8:1d80:7375::/64 
+
+2001:6a8:1d80:7376::/64
+
+ 2001:6a8:1d80:7377::/64
+
+```
+0100 
+0101
+0110
+0111
+=> 2001:6a8:1d80:7374::/62
+```
+
+ 2001:6a8:002a::/48
+
+ 2001:6a8:002b::/48
+
+ 2001:6a8:002c::/48
+
+ 2001:6a8:002d::/48
+
+```
+1010
+1011
+1100
+1101
+2001:6a8:0028::/45 ! er zit wel te veel in
+
+2001:6a8:002a::/47 -> beter in 2 splitsen
+2001:6a8:002c::/47
+```
+
+**Vraag 2**
+
+Splits de volgende network ranges in 4 subnetwerken van gelijke grootte: 
+
+2001:6a8:1d80:2080::/58 
+
+```
+2080 -> 0010 0000 01|00 0000
+
+0010 0000 0100 | 0000 -> 2001:6a8:1d80:2080::/60
+0010 0000 0101 | 0000 -> 2001:6a8:1d80:2090::/60
+0010 0000 0110 | 0000 -> 2001:6a8:1d80:20A0::/60
+0010 0000 0111 | 0000 -> 2001:6a8:1d80:20B0::/60
+```
+
+2001:6a8:1d80:e000::/52 
+
+```
+E000 -> 1110 | 0000 0000 0000
+
+1110 00 | 00 0000 0000 -> 2001:6a8:1d80:e000::/54
+1110 01 | 00 0000 0000 -> 2001:6a8:1d80:e400::/54
+1110 10 | 00 0000 0000 -> 2001:6a8:1d80:e800::/54
+1110 11 | 00 0000 0000 -> 2001:6a8:1d80:eC00::/54
+```
+
+2001:6a8:1d80:7a00::/55
+
+```
+7A00 -> 0111 101|0 0000 0000
+
+```
+
+**Vraag 3**
+
+<img src="img/image-20220421153731944.png" alt="image-20220421153731944" style="zoom:50%;" />
+
+Beschouw het bovenstaande IPv6 netwerk. 
+
+1. Genereer een Link-Local (LL) adres voor host A 
+
+2. Geef weer in de tabel hoe de andere hosts hun LL adres werd aangemaakt. Er zit ook vermoedelijk een fout in. 
+
+|                                   | Host B | Host C | Serv S | R / eth1 | R / eth2 |
+| --------------------------------- | ------ | ------ | ------ | -------- | -------- |
+| IID EUI-64 based                  |        |        |        |          |          |
+| IID privacy extension (md5 based) |        |        |        |          |          |
+| Manually assigned IID             |        |        |        |          |          |
+
+3. Een globale prefix 2001:db8:101::/48 werd toegekend aan het bedrijf. Deel op in subnetwerken van nuttige grootte, en bepaal welke adressen alle interfaces in het netwerk hierdoor zullen krijgen (duidt ze aan op de figuur).
+
+
+
+4. Extra: Genereer voor het eigen netwerk een ULA prefix range, en maak hierbinnen subnetwerken aan voor beide LANs. Ken eveneens aan de interfaces binnen het netwerk IPv6 adressen binnen de ULA prefix toe.
+
+
+
+5. Stel de routing table op van de router:
+
+
+
+
+
+| Destination | Prefix | Gateway | Interface |
+| ----------- | ------ | ------- | --------- |
+|             |        |         |           |
+|             |        |         |           |
+|             |        |         |           |
+|             |        |         |           |
+|             |        |         |           |
+|             |        |         |           |
+|             |        |         |           |
+|             |        |         |           |
+|             |        |         |           |
+|             |        |         |           |
+|             |        |         |           |
+|             |        |         |           |
+|             |        |         |           |
+|             |        |         |           |
 
