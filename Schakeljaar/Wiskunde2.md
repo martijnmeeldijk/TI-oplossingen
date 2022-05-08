@@ -628,5 +628,143 @@ $$
 
  
 
+# 6 - DVG van eerste orde en niet eerste graad
+
+## Oplosbaar naar $y'$
+
+Als je de DVG kan omvormen naar $y'$, kan je hem gewoon oplossen met de technieken van het vorige hoofdstuk.
 
 
+
+## Oplosbaar naar $y$
+
+Als je $y$ kan afzonderen. Te schrijven als $y = G(x,y')$. 
+
+* Stel $y' = p$
+
+* Leid  de vergelijking af naar $x$: 
+
+  * $\frac{dy}{dx} = \frac{\partial G(x,p)}{\partial x} + \frac{\partial G(x,p)}{\partial p} \frac{dp}{dx}$
+  * Dus gewoon de partiële afgeleide naar $x$ plus de partiële naar $p$ (met $p'$ eraan geplakt)
+  * Je hebt nu ook $p$ in het linkerlid dankzij de substitutie
+
+* Nu oplossen naar $p$ (meestal heb je meerdere oplossingen)
+
+* Vul de oplossingen van $p$ in de vergelijking waarin je $y'$ had vervangen door $p$
+
+* Bada bing bada boom, mr worldwide in the room
+
+  
+
+
+
+## Oplosbaar naar $x$
+
+Als je $x$ kan afzonderen. Te schrijven als $x = G(y,y')$. 
+
+
+
+* Stel $y' = p$
+
+* Leid  de vergelijking af naar $y$: 
+  * $\frac{dx}{dy} = \frac{\partial G(y,p)}{\partial y} + \frac{\partial G(y,p)}{\partial p} \frac{dp}{dy}$
+  * Dus gewoon de partiële afgeleide naar $x$ plus de partiële naar $p$ (met $p'$ eraan geplakt)
+  * Je hebt nu ook $\frac{1}{p}$ in het linkerlid dankzij de substitutie
+  
+* Nu oplossen naar $p$ (meestal heb je meerdere oplossingen)
+
+* Vul de oplossingen van $p$ in de vergelijking waarin je $y'$ had vervangen door $p$
+
+* zie vorige paragraaf
+
+  
+
+
+
+# 7 - Toepassingen
+
+## Orthogonale krommenbundels
+
+Twee krommenbundels waarvan elke kromme uit de ene loodrecht staat op elke kromme uit de andere. 
+
+* Stel DVG van de bundel op
+* Vervang $y'$ door $-\frac{1}{y'}$
+* Los de resulterende DVG op
+
+Door in de vergelijking van onze bundel krommen $y'$ te vervangen door $-\frac{1}{y'}$, bepalen we nu eigenlijk simpelweg een DVG die een bundel krommen beschrijft die loodrecht staat op onze krommen. Dit omdat het product van de richtingscoëfficienten nu gelijk is aan $-1$.
+
+
+
+# 8 - DVG's hogere orde 
+
+## $y^{(n)} = f(x)$
+
+* Integreer $n$ keer
+
+
+
+## Tweede orde DVG die $y$ niet expliciet bevat
+
+$F(x,y',y'') = 0$
+
+* Stel $y' = p(x)$
+* Dus $y'' = \frac{dp(x)}{dx} = p'$
+* Nu krijg je een DVG met $x$, $p$ en $p'$, deze is van de eerste orde
+* Als je deze oplost kan je $p$ terug vervangen door $y'$ en dat op zijn beurt (gemakkelijk) oplossen.
+
+
+
+## Tweede orde DVG die $x$ niet expliciet bevat
+
+$F(y,y',y'') = 0$
+
+* Stel $y' = p(y)$
+* Dus $y'' = \frac{dp(y)}{dx} = \frac{dp(y)}{dy} \cdot \frac{dy}{dx} = p'p$
+  * $p' = \frac{dp}{dy}$
+* Nu krijg je een DVG met $y$, $p$ en $pp'$, deze is van de eerste orde
+* Als je deze oplost kan je $p$ terug vervangen door $y'$ en dat op zijn beurt (gemakkelijk) oplossen.
+
+
+
+# 9 - Lineaire DVG's
+
+## Notatie van Cauchy
+
+Je kan lineaire differentiaalvergelijkingen van de n-de orde op een iets gemakkelijkere manier schrijven:
+
+* Vervang $y^{(n)}$ door $D^n$
+* Kijk maar gewoon naar het voorbeeld ik kan het niet uitleggen want ik ben dom.
+
+$$
+\begin{align}
+\tan x y''' + xy' - y &= x \\
+(\tan xD^3 + xD - 1)y &= x \\ 
+L(D)y &= x \quad\text { met } L(D) = \tan x D^3 +xD-1
+
+\end{align}
+$$
+
+
+
+## Lineaire DVG, 2de orde, constante coëfficienten
+
+Dit lijkt me nuttig
+
+![img](img/LinDVGO2.png)
+
+Het oplossen bestaat uit twee delen:
+
+1. AO van de corresponderende homogene lineaire DVG bepalen
+2. PO van de oorspronkelijke lineaire DVG bepalen
+
+
+
+### Algemene oplossing
+
+
+
+//TODO
+
+### Particuliere oplossing
+
+//TODO

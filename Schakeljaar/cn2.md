@@ -1739,3 +1739,407 @@ Beschouw het bovenstaande IPv6 netwerk.
 |             |        |         |           |
 |             |        |         |           |
 
+
+
+# IPV6 Labo
+
+
+
+
+
+
+
+
+
+# Intra AS routing
+
+
+
+Show ipv6 ripng
+
+1 router zonder RIP
+
+
+
+## Voorbereiden van labo-omgeving
+
+### Afhalen en uitpakken van de labo bestanden
+
+In de folder `/home/student` (de default folder), doe je het volgende vanuit een terminalscherm:
+
+``` bash
+student@cnet:~# wget https://www.dropbox.com/s/3qhlpldbi7jsat1/ripnglabo.py
+```
+
+### Mininet
+
+Dit labo maakt opnieuw gebruik van [Mininet](http://mininet.org). Iedere node (host, router of switch) in Mininet gedraagt zich alsof het bijna een volledig afgezonderde virtuele machine is:
+
+* processen die draaien op de ene node zijn niet zichtbaar op de andere,
+* iedere heeft een eigen netwerkstack met eigen interfaces. 
+
+<u>Let wel</u>: het bestandssysteem wordt wel gedeeld tussen alle Mininet nodes: alle nodes hebben toegang tot dezelfde schijf. Dit maakt het makkelijk om slechts eenmaal software te installeren die door alle nodes kan gebruikt worden. Ook configuratiebestanden kunnen in dezelfde folder (bv. `\home\student\labo9`)  worden opgeslagen en gebruikt worden door verschillende nodes.
+
+Een aantal nuttige opdrachten binnen Mininet:
+
+| Commando            | Functie                                                      |
+| ------------------- | ------------------------------------------------------------ |
+| `> net`             | Geeft overzicht van de netwerkcomponenten (bv. welke interfaces zijn met elkaar verbonden. |
+| `> links`           | Geeft overzicht van de netwerklinks.                         |
+| `> nodes`           | Geeft overzicht van de netwerknodes.                         |
+| `> xterm <node>`    | Start een shell op in een gegeven node.                      |
+| `> help`            | Informatie m.b.t. andere commando's                          |
+| `> <node> commando` | Laat toe om commando vanuit Mininet-shell uit te voeren op gegeven node |
+| `> ss` evt. `ss -l` | Geef openstaande sockets (evt. enkel luisterende)            |
+
+In nood (bv. wanneer systeem, proces, ... is gecrashed) kun je mininet afsluiten en opschonen door `mn -c`.
+
+Andere praktische tips:
+
+- **bewerken van bestanden** kun je doen via een command line editor (bv. `nano`) of GUI editor (bv. Accessories -> Pluma) vanop de host machine.
+  - aangezien het bestandssysteem gedeeld wordt door alle mininetnodes, kun je meteen de bestanden gebruiken op een bepaalde Mininet node
+- **copy/paste van commando's** kan niet in de `xterm` vensters, maar wel in de Mininet-terminal
+
+### Linux command-line
+
+De volgende tabel geeft bij wijze van herhaling een overzicht van mogelijks nuttige commando's die je kunt gebruiken in de command line interface op je Linuxomgeving.
+
+| Commando                                            | Functie                                                      |
+| --------------------------------------------------- | ------------------------------------------------------------ |
+| `> man <commando>` of `<commando> --help`           | Vraag extra informatie over een commando op (wat zijn de mogelijke parameters, etc.). |
+| `> ip link`                                         | Vraag informatie m.b.t interfaces (alternatief voor `ifconfig`) |
+| `> ip route` voor IPv4 of `ip -6 route` voor IPv6   | Vraag forwardingtabel op                                     |
+| `> traceroute` voor IPv4 of `traceroute6` voor IPv6 | Achterhaal de tussenliggende hops van de route naar een gegeven node. |
+
+## Routering met RIPng
+
+In dit labo gaan we de structuur en routering van een RIPng netwerk onderzoeken. RIPng maakt gebruik van distance vectors t.o.v. IPv6 netwerkprefixen. 
+
+Start het netwerk in Mininet als volgt:
+
+```shell
+/home/student/labo9$ sudo -s
+root# python3 ripnglabo.py
+```
+
+### Analyse van het netwerk en routering
+
+In eerste instantie proberen we de onderdelen van de topologie te begrijpen en analyseren. Om dit proces bij te staan kunnen we gebruik maken van de volgende netwerkfiguur en onderstaande tabel.  Aan de hand van Mininet en de draaiende RIPng daemons op routers kunnen de nodenamen, subnetadressen en distance metrics gecontroleerd worden. 
+<u>Let op</u>: niet alle gegevens zijn op de figuur te zien.
+
+<img src="img/image-20220505151845108.png" alt="image-20220505151845108" style="zoom:50%;" />
+
+| Link  | Netwerk prefix        | Link    | Netwerk prefix         |
+| ----- | --------------------- | ------- | ---------------------- |
+| r1-r2 | 2001:db8:1341:12::/64 | a-r4-r5 | 2001:db8:1341:a45::/64 |
+| r1-r3 | 2001:db8:1341:13::/64 | r2-r4   | 2001:db8:1341:24::/64  |
+| r1-r7 | 2001:db8:1341:17::/64 | r3-r4   | 2001:db8:1341:34::/64  |
+| r2-r3 | 2001:db8:1341:23::/64 | r7-c    | 2001:db8:1341:c7::/64  |
+| r3-r7 | 2001:db8:1341:37::/64 |         |                        |
+
+#### FRRouting
+
+De uitgerolde setup maakt gebruik van [FRRouting](https://frrouting.org) software. Informatie i.v.m. de [RIP](http://docs.frrouting.org/en/latest/ripd.html) en [RIPng](http://docs.frrouting.org/en/latest/ripngd.html) daemons vind je inde vermelde links. Via de management interface van FRRouting kun je inloggen op de routers via telnet op een specifieke poort per routing protocol. De RIPng management interface kan gevonden worden op poort 2603.
+
+> [!Info] RIPng info ophalen op router via FRR management interface
+>
+> 1. Open een `xterm` voor een gegeven router (bv. `r1`)
+> 2. Log in op de management interface van de RIPng routing daemon a.d.h.v. `telnet localhost 2603`. 
+> 3. Gebruik het paswoord `zebra` om in te loggen. 
+> 4. Onderzoek de RIPng routeringsdata van de daemon met `show ipv6 ripng`.
+
+<u>Kun je op basis van de info die je terugvindt in een enkele RIPng routingdaemon de volledige netwerktopologie achterhalen? Waarom wel of niet?</u>
+
+```
+niet echt denk ik
+```
+
+Als netwerkbeheerder wens je vervolgens de connectiviteit tussen verschillende (end)hosts te testen. Achterhaal de genomen route tussen host `a` en `c`.
+
+<u>Hoe heb je de route gevonden?</u>
+
+```
+traceroute to 2001:db8:1341:c7::c (2001:db8:1341:c7::c), 30 hops max, 80 byte packets
+ 1  r4 (2001:db8:1341:a45::4)  0.051 ms  0.010 ms  0.007 ms
+ 2  r3 (2001:db8:1341:34::3)  0.029 ms  0.011 ms  0.008 ms
+ 3  r1 (2001:db8:1341:13::1)  0.024 ms  0.012 ms  0.009 ms
+ 4  r7 (2001:db8:1341:17::7)  0.019 ms  0.010 ms  0.010 ms
+ 5  c (2001:db8:1341:c7::c)  0.021 ms  0.013 ms  0.023 ms
+
+```
+
+<u>Is dit de meest logische route?</u>
+
+```
+nee, hij zou r1 kunnen overslaan en direct naar C gaan
+```
+
+<u>Wat kan de reden zijn dat deze route werd gebruikt?</u>
+
+```
+misschien door de distance metrics
+```
+
+
+
+### RIPng analyse
+
+Ieder routeringsprotocol maakt gebruik van berichten die tussen routers worden uitgewisseld. Start `wireshark` op vanuit `r1` of `r3` om de uitgewisselde RIPng berichten tussen `r1` en `r3` te analyseren. Je kunt [Wireshark](https://www.wireshark.org) gebruiken om live te capturen, maar je kunt ook de eerste 10 RIPng pakketten ontvangen op de routers analyseren uit de tracefiles `/home/student/labo9/ripng-rx-trace.pcap` die zijn gecreëerd tijdens het opstarten van het netwerk.
+
+Bepaal hieruit de belangrijkste karakteristieken van RIPng:
+<u>Tussen welke IP adressen worden de RIPng berichten uitgewisseld, en wat is bijzonder aan deze adressen?</u>
+
+```
+fe80::dc73:84ff:febd:5134 en	ff02::9	
+link-local								en 	multicast
+```
+
+<u>Welke transportlaagprotocol en poortnummer wordt hiervoor gebruikt?</u>
+
+```
+UDP, 521
+```
+
+
+Routingprotocollen vergen enige tijd vooraleer ze leiden tot stabiele routingtabellen. Eenmaal de initiële interactie is geconvergeerd, analyseer je welke berichten tussen `r1` en `r3` worden uitgewisseld. 
+
+<u>Via welke berichten worden distance vectors uitgewisseld?</u>
+
+```
+r1-eth1: fe80::a2:4dff:fe1a:dd82/64
+r3-eth2: fe80::f42f:a7ff:fe73:58cb/64
+```
+
+<u>Welke prefixen worden in welke richting uitgewisseld? Waarom?</u>
+
+```
+?
+```
+
+<u>Op welke tijdsschaal wordt dit gedaan?</u>
+
+```
+71ms
+```
+
+Je kunt de uitgewisselde berichten nu gaan vergelijken met de informatie die `r3` bijhoudt in zijn RIPng routingdaemon.  Alle routeringsinformatie  in de control plane wordt bijgehouden wordt ook wel de Routing Information Base (RIB) genoemd. Bij RIPng bestaat de RIB voornamelijk uit distance vectors.
+
+<u>Geef de bijgehouden distance vector in r3 op basis van de gevonden info (vul volgende tabel aan).</u>
+
+```
+Network      Next Hop                      Via     Metric Tag Time
+R(n) 2001:db8:1341:12::/64 
+                  fe80::a2:4dff:fe1a:dd82     r3-eth2    4    0  02:40
+C(i) 2001:db8:1341:13::/64 
+                  ::                          self       1    0  
+R(n) 2001:db8:1341:17::/64 
+                  fe80::a2:4dff:fe1a:dd82     r3-eth2    4    0  02:40
+C(i) 2001:db8:1341:23::/64 
+                  ::                          self       1    0  
+R(n) 2001:db8:1341:24::/64 
+                  fe80::9893:deff:fe50:831d   r3-eth0    2    0  02:33
+C(i) 2001:db8:1341:34::/64 
+                  ::                          self       1    0  
+C(i) 2001:db8:1341:37::/64 
+                  ::                          self       1    0  
+R(n) 2001:db8:1341:c7::/64 
+                  fe80::a2:4dff:fe1a:dd82     r3-eth2    8    0  02:40
+R(n) 2001:db8:1341:a45::/64 
+                  fe80::9893:deff:fe50:831d   r3-eth0    2    0  02:33
+
+```
+
+
+
+| Netwerk prefix | Distance | Gateway | Next Hop |
+| -------------- | -------- | ------- | -------- |
+| zie hierboven  |          |         |          |
+
+<u>Waarin verschilt de distance vector van de gebruikte forwarding table van router `r3` (zoals die gebruikt wordt door de Linux netwerkstack)?</u>
+
+```
+2001:db8:1341:12::/64 via fe80::a2:4dff:fe1a:dd82 dev r3-eth2 proto 190 metric 20 pref medium
+2001:db8:1341:13::/64 dev r3-eth2 proto kernel metric 256 pref medium
+2001:db8:1341:17::/64 via fe80::a2:4dff:fe1a:dd82 dev r3-eth2 proto 190 metric 20 pref medium
+2001:db8:1341:23::/64 dev r3-eth1 proto kernel metric 256 pref medium
+2001:db8:1341:24::/64 via fe80::9893:deff:fe50:831d dev r3-eth0 proto 190 metric 20 pref medium
+2001:db8:1341:34::/64 dev r3-eth0 proto kernel metric 256 pref medium
+2001:db8:1341:37::/64 dev r3-eth3 proto kernel metric 256 pref medium
+2001:db8:1341:c7::/64 via fe80::a2:4dff:fe1a:dd82 dev r3-eth2 proto 190 metric 20 pref medium
+2001:db8:1341:a45::/64 via fe80::9893:deff:fe50:831d dev r3-eth0 proto 190 metric 20 pref medium
+fe80::/64 dev r3-eth2 proto kernel metric 256 pref medium
+fe80::/64 dev r3-eth1 proto kernel metric 256 pref medium
+fe80::/64 dev r3-eth3 proto kernel metric 256 pref medium
+fe80::/64 dev r3-eth0 proto kernel metric 256 pref medium
+
+```
+
+
+
+### RIPng configuratie met FRRouting
+
+==Een router in de gegeven topologie is nog niet geconfigureerd a.d.h.v. RIPng. over welke router gaat het precies?==
+
+
+Manueel zo'n router configureren is een tijdrovende klus die bovendien makkelijk tot fouten kan leiden in de routingtabel. Daarom gaan we RIPng op die router activeren.
+
+Om die router te configureren met behulp van FRRouting software, moeten we twee configuratiebestanden aanleveren voor de router:
+
+1. [Zebra](http://docs.frrouting.org/en/latest/zebra.html) configuratie (interfacesgegevens)
+2. [RIPng](http://docs.frrouting.org/en/latest/ripngd.html) configuratie (link costs, netwerkprefixen, etc.)
+
+De bedoeling is dat alle links van de router optimaal gebruikt worden en dat **alle link costs op 0** worden gezet.
+
+#### Zebra IP routing manager
+
+De Zebra IP routing manager verzorgt de interface tussen de Linux kernel en de specifieke routing daemons. Deze manager moet geconfigureerd worden op de betrokken node, vooraleer het specifieke routing proces kan gestart worden.
+
+Een **voorbeeld van de Zebra configuratie voor router r1** vind je hieronder. Je kunt deze gebruiken als template en naar wens kopiëren/aanpassen om de Zebra configuratie van de betrokken router op te stellen. 
+
+zebra_r1.cfg:
+
+```
+hostname r1
+password zebra
+
+    log file /tmp/zebra_r1.log
+
+interface lo
+  no shutdown
+  description -> n/a
+  link-detect
+  
+!
+interface r1-eth0
+  no shutdown
+  description -> r2-eth2
+  link-detect
+  
+!
+interface r1-eth1
+  no shutdown
+  description -> r3-eth2
+  link-detect
+  
+!
+interface r1-eth2
+  no shutdown
+  description -> r7-eth0
+  link-detect
+```
+
+==Stel nu de Zebra-configuratie op voor de resterende router. Check de te configureren interfaces via Mininet.== 
+
+> [!Info] Activeer de Zebra configuratie
+> Eenmaal je de bijhorende configuratie hebt aangepast voor de ontbrekende router, activeer je zebra op de router als volgt (in een `xterm`): `zebra -f <configfile> -u root`. 
+> Je kunt het proces stoppen a.d.h.v. CTRL+C.
+
+#### RIPng configuratie
+
+Wanneer Zebra is geconfigureerd en opgestart, kun je het RIPng proces voor de betrokken router configureren. Dit doe je ook a.d.h.v. een configuratiebestand. Hieronder vinden we een voorbeeld van de configuratie van router `r1`. 
+
+ripng_r1.cfg:
+
+```
+hostname r1
+password zebra
+
+log file /tmp/ripngd_r1.log
+
+
+interface lo
+# -> n/a
+  
+interface r1-eth0
+# -> r2-eth2
+  
+interface r1-eth1
+# -> r3-eth2
+  
+interface r1-eth2
+# -> r7-eth0
+  
+!
+ipv6 ripng split-horizon poisoned-reverse
+!
+router ripng
+  timers basic 30 180 120
+  network lo
+  offset-list lo out 0 lo
+  offset-list lo in 0 lo
+  network r1-eth0
+  offset-list r1-eth0 out 0 r1-eth0
+  offset-list r1-eth0 in 0 r1-eth0
+  network r1-eth1
+  offset-list r1-eth1 out 2 r1-eth1
+  offset-list r1-eth1 in 2 r1-eth1
+  network r1-eth2
+  offset-list r1-eth2 out 3 r1-eth2
+  offset-list r1-eth2 in 3 r1-eth2
+  
+!
+ipv6 access-list lo permit ::/0
+ipv6 access-list lo deny any
+ipv6 access-list r1-eth0 permit ::/0
+ipv6 access-list r1-eth0 deny any
+ipv6 access-list r1-eth1 permit ::/0
+ipv6 access-list r1-eth1 deny any
+ipv6 access-list r1-eth2 permit ::/0
+ipv6 access-list r1-eth2 deny any  
+```
+
+==Je mag opnieuw dergelijke configuratie als template gebruiken voor de resterende router en aanpassen als volgt:==
+
+1. Pas de vermelde **interfaces** aan
+2. Activeer opnieuw `split-horizon` met `poisoned-reverse` (check de werking hiervan.)
+3. Herneem **dezelfde timer-waarden**
+4. Zorg ervoor dat de netwerkprefixen voor alle interfaces worden geannonceerd a.d.hv. de `network`-instructies.
+5. Zet alle **link-costs op 0** voor binnenkomende- en uitgaande verkeer alle interfaces a.d.h.v. `offset-list <listname> 0 <interface>`. De `<listname>` en `<interface>` worden vaak met zelfde naam gekozen (zoals in voorbeeld).
+6. We maken geen gebruik van access lists, en laten alle mogelijke sources toe (zoals bij `r1`) 
+
+>[!Info] Activeer de RIPng configuratie
+>Eenmaal de RIPng configuratie voor de resterende router is vastgelegd, kun je de RIPng applicatie in de voorgrond starten met deze configuratie op de node (in `xterm`) via `ripngd -f <configfile> -u root`. 
+>Het proces kun je dan stoppen via CTRL+C.
+
+<div style="page-break-after: always;"></div>
+
+Controleer de routingtabel van de router eenmaal zowel zebra als ripng zijn gestart. Zijn alle netwerken vanop de router nu bereikbaar? 
+
+==Geef de routingtabel/distance vector van de router eenmaal de routers de nieuwe netwerksituatie hebben geleerd.==
+
+| Netwerk prefix | Distance | Gateway | Next Hop |
+| -------------- | -------- | ------- | -------- |
+| ...            |          |         |          |
+
+
+#### Connectiviteit tussen host a en host c
+
+Het activeren van RIPng op de betrokken router zal er hoogstwaarschijnlijk voor zorgen dat het gebruikte netwerkpad tussen host `a` en host `c` verandert. 
+
+==Welk nieuw pad wordt gebruikt tussen host `a` en `c` en waarom is dit het geval?==
+
+
+Routingprotocollen hebben ook tijd nodig om nieuwe netwerksituaties te verwerken. Zo ook hadden de routers tijd nodig om dit nieuwe pad te ontdekken.  Om dit te evalueren, stop je de daemons van de router die je zelf hebt geconfigureerd, wacht je tot de oude situatie is hersteld, en ga je `wireshark` activeren om na te gaan welk verkeer wordt uitgewisseld wanneer de router opnieuw wordt opgestart.
+
+==Welke RIPng berichten werden uitgewisseld vooraleer het netwerk stabiel werd?==
+
+
+==Herneem bovenstaande procedure, en probeer tot op een seconde nauwkeurig te bepalen hoe lang RIPng nodig heeft om het nieuwe netwerkpad te activeren. Hoe heb je dit bekomen?==
+
+
+> [!Tip] 
+> Maak gebruik van `ping` en `wireshark` om de activatietijd te bekomen.
+
+### Convergentie van RIPng bij falende link `r1`-`r7`
+
+Eenmaal alle routers naar behoren werken en dat alle routingtabellen stabiel zijn, kunnen we nagaan hoe RIPng omgaat met netwerkfouten. 
+
+==Om dit te evalueren gaan we moedwillig een netwerkfout introduceren in ons netwerk:==
+
+1. Om dit te kunnen monitoren, starten we `wireshark` op verschillende routers
+2. Start een `ping` tussen host `a`  en `c` .
+3. Log in op router `r1` en bepaal de naam van de interface naar router `r7`:  deactiveer de bijhorende interface met `ip link set dev <ifnaam> down`. 
+
+
+==Hoeveel seconden werd de verbinding verbroken en welke RIPng berichten werden uitgewisseld tussen welke nodes vooraleer de verbinding opnieuw beschikbaar werd?==
+

@@ -575,14 +575,14 @@ Antwoord van the man himself:
 
 # Zelftest 1 labo
 
-## Vraag 1
+**Vraag 1**
 
 > Leg uit wat het verschil is tussen statisch en dynamisch linken? Enkel de uitleg 
 > volstaat.
 
 Bij statisch linken wordt alle code in één groot uitvoerbaar bestand geplaatst. Bij dynamisch linken worden voor alle onbekende symbolen stubs in de uitvoerbare code voorzien. De code zelf bevindt zich in een externe library die bij het starten van het proces aan de virtuele adresruimte wordt toegevoegd. De dynamische linker zal ervoor zorgen dat bij de iedere aanroep van een functie waarvan de code niet beschikbaar is, de code uit de bibliotheek zal uitgevoerd worden. Het voordeel van dynamisch linken is dat een bibliotheek maar één keer in het geheugen moet worden geladen en dat die dan in de adresruimte van ieder proces die hem nodig heeft kan ondergebracht worden (cfr. shared memory). Het kost wel meer tijd om uit te voeren omdat de dynamisch linker bij iedere stub de code in de bibliotheek moet gaan zoeken.
 
-## Vraag 2
+**Vraag 2**
 
 > Hoe kan je een terminal venster leeg maken? 
 
@@ -592,7 +592,7 @@ clear
 
 
 
-## Vraag 3
+**Vraag 3**
 
 Hoe kan je met het commando man informatie opvragen over de informatie 
 in het bestand /etc/passwd?  
@@ -603,7 +603,7 @@ man 5 passwd # sectie 5 in de manpage van passwd
 
  
 
-## Vraag 4
+**Vraag 4**
 
 Met het commando man kan je informatie opvragen over externe Linux/Unix-
 opdrachten. Hoe kan je best info opvragen over interne opdrachten zoals 
@@ -618,7 +618,7 @@ help printf
 
 
 
-## Vraag 5
+**Vraag 5**
 
 Welk commando kun je gebruiken om: 
 a.  gegevens te sorteren? 
@@ -671,7 +671,7 @@ wc
 
 
 
-## Vraag 6
+**Vraag 6**
 
 De inhoud van de /dev-map bevat bestanden die je in twee groepen kan onderverdelen. Block special device files voor harde schijven en andere “mass storage devices” en character special device files voor de overige randapparatuur waar een device-node voor werd voorzien (niet elke device heeft immers een device node). 
 
@@ -681,7 +681,7 @@ Wat is het essentiële verschil tussen een block- en character special device fi
 
 Bedankt Wim, maar nu weet ik eigenlijk nog steeds niet wat ze zijn. //TODO
 
-## Vraag 7
+**Vraag 7**
 
 Wat is de betekenis van de twee getallen die naast een device node vermeld staan?  
 
@@ -689,7 +689,7 @@ Het major nummer identificeert de device driver die door het OS gebruikt moet wo
 
 Een device node met major nummer 8 en minor nummer 2 moet je lezen als “De tweede instantie die gebruik maakt van de door het systeem gekende driver met als nummer 8”. Achter de schermen zal er binnen de kernel wel ergens een tabel bijgehouden worden waar het major nummer zal gebruikt worden als index om zo de device driver te vinden. De combinatie van beide is uniek. Het major nummer geeft aan welke driver er moet gebruikt worden en het minor nummer identificeert dan weer het device dat er gebruik van maakt.
 
-## Vraag 8
+**Vraag 8**
 
 Gebruik het commando find om een overzicht te krijgen van zowel de  character special device files als de block special device files. Probeer het  eerst door twee opdrachten te geven en daarna door de twee opdrachten te  groeperen in één opdracht.  
 
@@ -707,7 +707,7 @@ find /dev -type b && find /dev -type c # hihi ik weet dat dit illegaal is
 
 
 
- ## Vraag 9
+**Vraag 9**
 
 Leg uit wat het verschil is tussen een hard link en een soft link. Wat zijn de voor- en nadelen van beide. 
 
@@ -735,240 +735,328 @@ Hardlinks hebben als voordeel:
 
  
 
- ## Vraag 10
+**Vraag 10**
 
 Maak in je home-directory een softlink aan naar /etc/passwd en een hardlink  naar /etc/group (probeer dit met het commando cp als met commando ln). 
 
 Hoe kan je zien of het wel degelijk over een hardlink gaat en niet over een kopie? 
 
+```
+ln -s /etc/passwd
+ln /etc/group
+```
 
+met `ls -l` zie je welke de soft link is. Als je kijkt staat er een 2 naast group, er zijn dus 2 verwijzingen naar group (hardlinks). Je kan normaal gezien niet het verschil tussen een normale file en een hardlink zien.
 
-## Vraag 11
+<img src="img/image-20220508114056325.png" alt="image-20220508114056325" style="zoom:33%;" />
+
+**Vraag 11**
 
 Waarom is een pseudo random generator met een beperkt aantal bits geen goede random generator? 
 
- 
+```
+Je doet meestal een modulo met het random getal. Als je nu een random generator hebt die tot 10 gaat en je pakt modulo 7, dan hebben 0, 1, 2 en 3 dubbel zo veel kans om voor te komen als de rest van de getallen. Neem dus veel bits.
+```
 
-## Vraag 12 
+**Vraag 12** 
 
-Hoe kan je met het commando head en bijhorende optie 4 bytes uit 
-/dev/random halen en deze bytes gewoon zonder te converteren naar het 
-scherm schrijven? 
+Hoe kan je met het commando head en bijhorende optie 4 bytes uit /dev/random halen en deze bytes gewoon zonder te converteren naar het scherm schrijven? 
 
-## Vraag 13
+```bash
+hexdump /dev/random | head -c 4 # als je gewoon zonder hexdump doet, worden de bytes omgezet in hun ascii waarden
+```
+
+**Vraag 13**
 
 Wat is pathname expansion? Wat zijn de verschillende metatekens die je bij 
 pathname expansion kan gebruiken? 
 
+```bash
+ls /etc/{resolv.conf,hosts,passwd}
+echo file{1..5}.txt
+* 0 of meer willekeurige tekens
+? één willekeurig teken
+[ ... ] een karakter uit het bereik dat zich tussen de vierkante haken bevindt
+[^...] een karakter dat zich niet in het bereik bevindt
+[!...] hetzelfde als [^...]
+```
 
+**Vraag 14**
 
-## Vraag 14
+Hoe kan je met het commando “ls -l” een overzicht geven van alle bestandsnamen die bestaan uit minstens twee letters gevolgd door een cijfer gevolgd door een willekeurig aantal karakters?  
 
-Hoe kan je met het commando “ls -l” een overzicht geven van alle 
-bestandsnamen die bestaan uit minstens twee letters gevolgd door een cijfer 
-gevolgd door een willekeurig aantal karakters?  
+```bash
+ls -l ??[0-9]*
+```
 
-
-
-## Vraag 15
+**Vraag 15**
 
 Wanneer je “echo *” ingeeft, welk proces zorgt dan dat die * wordt omgezet 
 naar bestandsnamen? 
 
-## Vraag 16
+```
+Bash zal dit omzetten. Echo krijgt nooit dat sterretje te zien behalve wanneer er zich geen enkel object zich in die map zou bevinden.
+```
 
-Maak met touch een bestand aan met als naam passwd in je huidige 
-werkdirectory. Zoek nu met het commando find naar alle bestands- en 
-directorynamen, te beginnen bij /, die beginnen met het woord pass gevolgd 
-door 0 of meerdere willekeurige tekens? Zorg dat find hier het *-teken omzet 
-naar 0 of meerdere willekeurige tekens.  
+**Vraag 16**
 
+Maak met touch een bestand aan met als naam passwd in je huidige werkdirectory. Zoek nu met het commando find naar alle bestands- en directorynamen, te beginnen bij /, die beginnen met het woord pass gevolgd door 0 of meerdere willekeurige tekens? Zorg dat find hier het *-teken omzet naar 0 of meerdere willekeurige tekens.  
 
+```bash
+find / -type f -name “pass*”
+```
 
-## Vraag 17
+**Vraag 17**
 
 Genereer met brace expansion alle hexadecimale getallen van 00 tot FF. 
 
+```bash
+echo {{0..9},{A..F}}{{0..9},{A..F}}
+```
+
+**Vraag 18**
+
+Wat doet het commando sync? Wat wordt er bedoeld met mounten en unmounten?  
+
+```
+Sync zal alle buffers naar I/O-devices gaan flushen. I/O-opdrachten worden door hun traag karakter beter gegroepeerd om efficiëntieredenen. Het is beter om 1 I/O-opdracht te hebben van 1000 bytes dan 1000 opdrachten
+van 1 bytes! Door het uitstellen van I/O-opdrachten treedt er ook een probleem op, nl. de toestand in het geheugen wijkt hoe langer hoe meer af van wat er zich in op het I/O-device bevindt! Het OS moet hiermee rekening houden en wanneer je wil dat het “nu” gebeurt, gebruik je sync!
+
+Het commando mount zorgt ervoor dat je een extern bestandssysteem koppelt aan een locatie in de hoofddirectory.
+“mount /dev/sdb1 /mnt” zorgt ervoor dat de inhoud van het device /dev/sdb1 getoond wordt in de map /mnt.
+
+Het unmounten gebeurt met de opdracht umount (niet unmount maar umount) en zorgt dat je een extern bestandssysteem verwijdert uit de hoofddirectory. Bij deze opdracht zullen alle bijhorende I/O-buffers worden
+geflusht. 
+“umount /dev/sdb1” zal het device /dev/sdb1 ontkoppelen. Je kan i.p.v. het device evengoed het mountpoint of koppelpunt opgeven. “umount /mnt” zal na de mount opdracht hierboven ook de ontkoppeling doorvoeren.
+```
+
+**Vraag 19**
+
+Welke filedescriptoren worden er gebruikt voor standaard invoer, standaard  uitvoer en het standaardfoutenkanaal? Wat is het essentiële verschil tussen de twee uitvoerkanalen?
+
+```
+0 => stdin
+1 => stdout
+2 => stderr
+
+Persoonlijk vind ik de naam stderr niet zo goed gekozen. Eigenlijk is het een tweede uitvoerkanaal dat gewoon niet gebufferd wordt. Omdat fouten zo snel mogelijk naar scherm moeten worden geschreven en niet moeten
+worden opgespaard is dat ook de reden waarom men in eerste instantie dat tweede kanaal in het leven heeft geroepen vanwaar ook de naam die men eraan gegeven heeft.
+
+Er zijn een aantal commando’s die beide uitvoerkanalen gebruiken om de uitvoer op te splitsen.
+“strace ls -l” bijvoorbeeld zal stdout gebruiken voor de uitvoer van ls, terwijl de syscalls die gegeneerd worden door ls -l door strace zullen worden weggeschreven naar stderr.
+```
+
+**Vraag 20**
+
+Waarvoor dient /dev/null? Hoe kan je de gebufferde uitvoer van een willekeurige opdracht naar /dev/null schrijven? Hoe kan je de niet-gebufferde uitvoer van een willekeurige opdracht naar /dev/null schrijven? Hoe kan je ervoor zorgen dat ze nu allebeide naar /dev/null worden gestuurd? 
+
+```
+/dev/null is de vuilbak
+met een >
+
+```
 
 
-## Vraag 18
 
-Wat doet het commando sync? Wat wordt er bedoeld met mounten en 
-unmounten?  
+**Vraag 21**
 
-## Vraag 19
+Wanneer is het handig om gebufferde uitvoer om te zetten naar niet gebufferde uitvoer? Wanneer is het nodig om niet-gebufferde uitvoer naar gebufferde uitvoer om te zetten? 
 
-Welke filedescriptoren worden er gebruikt voor standaard invoer, standaard 
-uitvoer en het standaardfoutenkanaal? Wat is het essentiële verschil tussen 
-de twee uitvoerkanalen?
+```
+Gebufferd => niet-gebufferd?
+Wanneer je bv. een foutmelding naar het scherm wil schrijven:
+echo “fout!” 1>&2”
+Niet-gebufferd => gebufferd
+Bij het gebruik van een pipe voor interprocescommunicatie wordt enkel de
+gebufferde uitvoer doorgegeven naar de invoer van de volgende opdracht
+in de pipeline.
+du /proc 2>&1 >/dev/null | wc -l (de fouten worden geteld want de
+gewone uitvoer wordt weggegooid maar daarvoor werd de foutenuitvoer
+eerst gebufferd gemaakt)
+```
 
-
-
-## Vraag 20
-
-Waarvoor dient /dev/null? Hoe kan je de gebufferde uitvoer van een 
-willekeurige opdracht naar /dev/null schrijven? Hoe kan je de niet-gebufferde 
-uitvoer van een willekeurige opdracht naar /dev/null schrijven? Hoe kan je 
-ervoor zorgen dat ze nu allebeide naar /dev/null worden gestuurd? 
-
-
-
-## Vraag 21
-
-Wanneer is het handig om gebufferde uitvoer om te zetten naar niet 
-gebufferde uitvoer? Wanneer is het nodig om niet-gebufferde uitvoer naar 
-gebufferde uitvoer om te zetten? 
-
-
-
-## Vraag 22
+**Vraag 22**
 
 Wat is een pipe? Wat wordt doorgelaten en wat niet? 
 
+```bash
+#enkel de standaarduitvoer (gebufferde) wordt doorgegeven
+#je kan ook process substitution gebruiken:
+wc -l < <(grep root /etc/passwd)
+```
 
+**Vraag 23**
 
-## Vraag 23
+Tel hoeveel fouten het commando “du /proc” oplevert en maak hierbij gebruik van een pipe? 
 
-Tel hoeveel fouten het commando “du /proc” oplevert en maak hierbij 
-gebruik van een pipe? 
+```
+du /proc 2>&1 >/dev/null | wc -l
 
+```
 
+**Vraag 24**
 
-## Vraag 24
+Gegeven “strace shuf -i 1-10 -n 5”. Strace schrijft de uitvoer van het commando shuf naar stdout. De systeemaanroepen die het commando shuf aan het besturingssysteem heeft gericht worden naar stderr gestuurd. Herschijf de bovenstaande opdracht zodat nu uitvoer van shuf naar /dev/null wordt gestuurd en waarbij de systeemaanroepen kunnen worden overlopen door een pipe naar het commando less. 
 
-Gegeven “strace shuf -i 1-10 -n 5”. Strace schrijft de uitvoer van het 
-commando shuf naar stdout. De systeemaanroepen die het commando shuf 
-aan het besturingssysteem heeft gericht worden naar stderr gestuurd. 
-Herschijf de bovenstaande opdracht zodat nu uitvoer van shuf naar /dev/null 
-wordt gestuurd en waarbij de systeemaanroepen kunnen worden overlopen 
-door een pipe naar het commando less. 
+```
+strace shuf -i 1-10 -n 5 2>&1 >/dev/null | less
+```
 
+**Vraag 25**
 
+Open de manpagina van de opdracht tr. Maak ook een bestand aan met uitsluitend leestekens en kleine letters. Hoe kan je met tr alle tekst uit dit bestand omzetten naar een hoofdletters? Het commando tr kent geen bestandparameters waardoor je met input en output redirection zal moeten werken. Bemerk ook dat het een slecht idee is om binnen een proces van een bestand te lezen en er ook naartoe te schrijven. Maak dus gebruik van een tijdelijk bestand dat je na tr met de opdracht cp naar het originele bestand kopieert (en waardoor dus het oorspronkelijk bestand overschreven wordt).  
 
-## Vraag 25
+```bash
+tr [:lower:] [:upper:] < klein.txt > temp.txt && cp temp.txt klein.txt
 
-Open de manpagina van de opdracht tr. Maak ook een bestand aan met 
-uitsluitend leestekens en kleine letters. Hoe kan je met tr alle tekst uit dit 
-bestand omzetten naar een hoofdletters? Het commando tr kent geen 
-bestandparameters waardoor je met input en output redirection zal moeten 
-werken. Bemerk ook dat het een slecht idee is om binnen een proces van een 
-bestand te lezen en er ook naartoe te schrijven. Maak dus gebruik van een 
-tijdelijk bestand dat je na tr met de opdracht cp naar het originele bestand 
-kopieert (en waardoor dus het oorspronkelijk bestand overschreven wordt).  
+#wim deed het een klein beetje anders
+tr a-z A-Z < bestand > tempfile
+cp tempfile bestand
+```
 
+**Vraag 26**
 
+Hoe wordt het regeleinde aangegeven in Windows en hoe wordt dit gedaan in Linux? Het gebruik van het Linux-formaat in Windows geeft problemen, dewelke? Het gebruik van het DOS-formaat geeft dan weer nog grotere problemen in Linux. Waarom? 
 
-## Vraag 26
+```
+In Windows wordt het regeleinde gegeven via de combinatie carriage return
+newline of in POSIX-notatie “\r\n”. In Linux wordt een regeleinde gegeven
+door een newline of kortweg “\n”.
 
-Hoe wordt het regeleinde aangegeven in Windows en hoe wordt dit gedaan 
-in Linux? Het gebruik van het Linux-formaat in Windows geeft problemen, 
-dewelke? Het gebruik van het DOS-formaat geeft dan weer nog grotere 
-problemen in Linux. Waarom? 
+Wanneer je een bestand opent in Windows (in een primitieve editor) dat in Linux werd gemaakt dan zal je zien dat door het ontbreken van de carriage return lijnen onder mekaar worden gezet maar dat er niet noodzakelijk aan het begin van de lijn zal begonnen worden.
+De layout zal er bv. zo uitzien.
+.......................................
+																			...........................
+																																 	........................
+Wanneer je scriptbestanden aanmaakt in Windows en die zomaar overneemt in Linux dan krijg je foutmeldingen wanneer de scriptaal het regeleinde (\n dus) neemt als einde van een opdrachtlijn. Wanneer het einde van de opdracht gegeven wordt door een kommapunt “;” dan is dit minder een probleem.
 
+De reden van de problemen is dat de carriage return dan als deel van de opdracht genomen wordt en dat kan leiden tot foutmeldingen die weinig begrijpbaar zijn want een “\r” is nu eenmaal een onzichtbaar teken.
+```
 
+**Vraag 27**
 
-## Vraag 27
+Gebruik het commando od om de inhoud van het bestand /etc/passwd  hexadecimaal, in groepjes van 1 byte, op het scherm te tonen.  Doe hetzelfde met het commando xxd en vergelijk de uitvoer van beide commando’s. Bekijk uitvoerig de manpagina’s van beide opdrachten! 
 
-Gebruik het commando od om de inhoud van het bestand /etc/passwd 
-hexadecimaal, in groepjes van 1 byte, op het scherm te tonen.  Doe hetzelfde 
-met het commando xxd en vergelijk de uitvoer van beide commando’s. Bekijk 
-uitvoerig de manpagina’s van beide opdrachten! 
+```
+od -x -t x1 /etc/passwd
+xxd -g 1 /etc/passwd 
+```
 
+**Vraag 28**
 
-
-## Vraag 28
-
-Bij vraag 12 werd er gevraagd om 4 bytes (32 bits) te lezen van /dev/random. 
-Zet die uitvoer met het commando od nu om naar een decimaal getal. Hoe 
-zet je het om naar een strikt positief getal? (unsigned dus) 
+Bij vraag 12 werd er gevraagd om 4 bytes (32 bits) te lezen van /dev/random. Zet die uitvoer met het commando od nu om naar een decimaal getal. Hoe zet je het om naar een strikt positief getal? (unsigned dus) 
 
  
 
- 
+```bash
+head -c4 /etc/random | od -td4
+head -c4 /etc/random | od -An -td4 # zonder adresprefix
+head -c4 /etc/random | od -An -tu4 # unsigned int
+```
 
- 
+
+
+**Vraag 29**
+
+Gebruik het commando cut (zie manpage) om alle gebruikersnamen (1e veld) uit het wachtwoordenbestand te halen?
+
+```bash
+cut -d : -f1 /etc/passwd
+# -d splitst elke lijn in velden gescheiden door ":"
+# f1 zorgt dat alleen het eerst veld geprint wordt
+```
+
+ **Vraag 30**
+
+Hoe kan je het bestand /etc/passwd sorteren op het eerste veld? Zie de manpage van sort.
+
+```bash
+sort -t : -k1,1 /etc/passwd # zelfde logica als vorige commando
+```
+
+
 
 # Zelftest 2 labo
 
-## Vraag 1
+**Vraag 1**
 
 Zoek naar alle bestanden of symlinks met een grootte van 1M of die de voorbije 24u werden gewijzigd. 
 
 
 
-## Vraag 2
+**Vraag 2**
 
 Geef hieronder de opdracht of pipeline van opdrachten om de bovenstaande uitvoer te ordenen op basis van het inodenummer (grootste eerst, kleinste laatst). 
 
 
 
-## Vraag 3
+**Vraag 3**
 
 Volgens de manpagina van find kan je met de optie -o op twee dingen testen en zal de naam van het object uitgeprint worden wanneer een van de twee voorwaarden voldaan is. Ook kan je haakjes gebruiken om dit te doen (let wel, in BASH moet je die wel escapen met een \ om aan te geven dat die haken voor find bedoeld zijn). Geef een overzicht van alle bestanden in de map /etc die een grootte hebben kleiner dan 10K of groter dan 100K. 
 
 
 
-## Vraag 4
+**Vraag 4**
 
 Geef van alle bestanden die zich bevinden in de /etc directory bevinden en die een grootte hebben van minder dan 10K het aantal lijnen. Doe dit op twee manieren: a. Met de optie -exec van find b. Door alle namen via een pipe door te geven naar het commando xargs die dan op iedere bestandsnaam het commando wc uitvoert. 
 
 
 
-## Vraag 5
+**Vraag 5**
 
 Bij het bovenstaande heb je wellicht geen rekening gehouden met bestandsnamen die spaties bevatten. Bij find kan je vragen om de bestandsnamen af te sluiten met een null-karakter i.p.v. een newline (\n) door middel van de optie -print0. Gebruik nu opnieuw xargs met bijhorende parameters om op iedere null-terminated bestandsnaam “wc -l” toe te passen.  
 
 
 
-## Vraag 6
+**Vraag 6**
 
 Gebruik het commando shuf om 16 getallen te genereren tussen 10 en 50 en gebruik xargs om die uit te schrijven in een raster van 4 bij 4. 
 
 
 
-## Vraag 7
+**Vraag 7**
 
 Zelfde vraag als hierboven maar doe dit nu met printf (2 karakter per getal) en command substitution. Je zal zien dat dit een betere uitlijning geeft wanneer je “%2d” gebruikt voor ieder getal. 
 
 
 
-## Vraag 8
+**Vraag 8**
 
 Hoe worden lijneindes aangegeven in Windows en hoe gebeurt dit in Unix/Linux? Waarom is het belangrijk om te werken met tekstbestanden/scripts/… die regeleindes hebben overeenkomstig het besturingssysteem? Geef enkele voorbeelden waar het fout kan gaan.
 
 
 
-## Vraag 9
+**Vraag 9**
 
 Geef de reguliere expressie om te testen of een lijn een getal bevat. Geef nu de reguliere expressie om te testen of een lijn uitsluitend een getal bevat. Maak een testbestand aan waar je enkele lijnen naartoe wegschrijft die voldoen en die niet voldoen. Test vervolgens met het commando grep uit of de reguliere expressie die je hebt uitgedacht, voldoet.
 
 
 
-## Vraag 10
+**Vraag 10**
 
 Een geldig e-mailadres voldoet aan de volgende regel “naam@domeinnaam” waarbij zowel de naam als de domeinnaam kan bestaan uit verschillende delen gescheiden door punten. De (domein)naam bestaat uitsluitend uit letters en/of cijfers. Test opnieuw uit of een regel van een tekstbestand uitsluitend een geldig e-mailadres bevat (dus tussen het begin en het einde van de regel bevindt zich een e-mailadres).
 
 
 
-## Vraag 11
+**Vraag 11**
 
 Waarvoor dient in een script de shebang-lijn? (i.e. #!/bin/bash)? 
 
 
 
-## Vraag 12
+**Vraag 12**
 
 Wat is het type van iedere variabele in BASH? 
 
 
 
-## Vraag 13
+**Vraag 13**
 
 Wanneer is het handig of zelfs noodzakelijk om bij het uitschrijven van een variabele de variabelenaam tussen accolades te plaatsen? 
 
 
 
-## Vraag 14
+**Vraag 14**
 
 Schrijf een BASH-script dat een getal inleest (geen controle nodig) en de derdemacht van dat getal naar het scherm schrijft (via arithmetic expansion). 
 
@@ -1016,7 +1104,7 @@ Zoals onmiddellijk duidelijk wordt is dit met de verticale strepen heel wat last
 
 
 
-## Vraag 15
+**Vraag 15**
 
 Het commando read splitst op basis van de inhoud van de IFS-variabele. Zijn er meer variabelen dan dat er elementen zijn, dan zullen de overtollige variabele leeg zijn. Zijn er minder variabelen dan dat er elementen zijn dan zal de laatste variabele het restant van de lijn bevatten. 
 
@@ -1036,43 +1124,43 @@ Schrijf een script dat een IPv4-adres inleest en dat daarna dat IPv4-adres opspl
 
 
 
-## Vraag 16
+**Vraag 16**
 
 Schrijf nu hetzelfde script als hierboven maar geef het IP-adres als een parameter mee met het script. Als de parameter niet wordt meegegeven, dan wordt verondersteld dat het IP-adres dat je moet checken 192.168.16.8 is. 
 
 
 
-## Vraag 17
+**Vraag 17**
 
 Gebruik stringoperatoren om alle klinkers uit een woord te vervangen door een punt. (probeer dit ook eens uit via de externe opdracht tr) 
 
 
 
-## Vraag 18
+**Vraag 18**
 
 Hoe kan je van een getal dat de bestandsgrootte in bytes voorstelt en waarbij digit grouping gebruikt wordt, bv. 131.273.678, één getal maken en dat getal in kilobytes naar het scherm schrijven. Hieronder volgen enkele oefeningen op C en systeemaanroepen: 
 
 
 
-## Vraag 19
+**Vraag 19**
 
 Schrijf in C een eigen versie van het commando du. De bestandsgrootte kan je opvragen met de syscall stat. 
 
 
 
-## Vraag 20
+**Vraag 20**
 
 Schrijf in C een eigen versie van het commando “wc -l” dat van de laatste 100 bytes van de bestanden die meegegeven worden op de commandolijn het aantal lijnen bepaalt. In BASH zou je dit als volgt schrijven …. tail -c 100 bestand1 bestand2| wc -l. Doe dit zonder pipe en zonder execve syscalls maar dus louter met open/read/write/close/…! 
 
 
 
-## Vraag 21
+**Vraag 21**
 
 Doe nu hetzelfde als vorige vraag waar je wel gebruikmaakt van kindprocessen en een pipe als IPC. Gebruik ook execve of gelijkaardige syscalls om de programma’s aan te roepen. 
 
 
 
-## Vraag 22
+**Vraag 22**
 
 Gegeven volgende situatie: 
 
@@ -1090,7 +1178,24 @@ Schrijf een volledig C-programma dat alle processen aanmaakt en ervoor zorgt dat
 
 # Labo opgaven
 
-### Deel 1
+## Commando's die ik vergeet
+
+```bash
+> cal # kalender
+> mktemp 'XXX' # maakt random bestand aan met 3 tekens (dat nog niet bestaat)
+> echo $$ # pid van bash shell opvragen
+> du # disk usage
+```
+
+
+
+lezen van string: <<<
+
+lezen van commando: process substitution
+
+declare -A array: dictionary maken
+
+### 1 - Inleiding
 
 1. Welke toetsencombinatie heb je nodig om een runnend programma (een proces dus) te onderbreken? 
 
@@ -1110,7 +1215,7 @@ Schrijf een volledig C-programma dat alle processen aanmaakt en ervoor zorgt dat
 
 5. In een shell kan je aan “auto completion” doen door gebruik te maken van de tab-toets. Tik de letters “les” in, en tik vervolgens op de tab-toets. Je merkt dat er automatisch less verschijnt. Nu kan het zijn dat er nog opdrachten zijn die met less beginnen. Tik nogmaals op de tab-toets om te kijken welke opdrachten er met less beginnen. Een ander handigheidje is “reverse search” om eerder ingetypte commando’s te suggereren tijdens het typen. Gebruik hiervoor “CTRL+r”.
 
-### Deel 2
+### 2 -  Compileren in de Shell
 
 1. Met de opdracht man kan je alle info over een welbepaalde opdracht achterhalen. Zo zal de opdracht “man ls” de info tonen van de ls-opdracht. Man toont de informatie a.d.h.v. een pager, een programma dat de informatie niet alleen op het scherm toont maar dat ook gebruikersinteractie toelaat. Zo kan je scrollen, zoeken naar bepaalde woorden, etc. Standaard is de pager ingesteld op het commando less. Dit betekent dat wanneer je wil weten hoe je voorwaarts moet zoeken in een manpagina, je dit moet gaan zoeken bij het commando less en niet bij het commando man. Vraag de manpagina op van het commando less en ga na hoe je een tekst die met less wordt getoond kan afsluiten. Hoe kan je voorwaarts zoeken in een manpagina?
 
@@ -1175,15 +1280,21 @@ int main(){
 
 Static is dus veel groter
 
- ### Deel 3
+ ### 3 - Profiler programma’s
 
 programma geschreven met memory leaks ik heb geen zin om het over te type want ik weet niet hoe ik copy paste uit virtualbox
 
- ### Deel 4
+ ### 4 - Een eerste programmeeropdracht
+
+### 5 -  I/O-Systeemaanroepen
+
+### 6 - Processen en POSIX-threads
 
 
 
-### Deel 7
+### 7 - Programmeren in Bash
+
+#### Patterns, expansions en het opzoeken van hulp
 
 1. Met welk van de commando’s cp, dd, ln, mktemp, touch en cat kan je vlug een aantal (lege) bestanden aanmaken waarvan de namen als parameters van het commando worden opgegeven?
 
@@ -1515,7 +1626,7 @@ De accolades, want anders zou het de derde uitvoer dit zijn:
 
 
 
-**Redirection, piping en filtering, process substitution en het commando find**
+#### Redirection, piping, ... 
 
 Zoals reeds bij deel V aangehaald werd, zal elk in de shell gestart programma beschikken over drie file descriptors: standaardinvoer (stdin), standaarduitvoer (stdout) en standaardfout (stderr). Gewone uitvoer wordt steeds naar standaarduitvoer gestuurd terwijl eventuele fouten terechtkomen op standaardfout. In de shell waarin je ingelogd bent is standaardinvoer meestal gelijk aan het toetsenbord (invoer wordt afgesloten met Ctrl-D voor end of file of eventueel Ctrl-C voor terminate), en worden beide uitvoerkanalen met het beeldscherm verbonden. Elk kanaal heeft een eigen nummer waarmee de shell de kanalen identificeert: 0 standaardinvoer 1 standaarduitvoer 2 standaardfout 
 
@@ -1616,7 +1727,153 @@ exec 3>tmp.txt ; du /etc >&3 2>&1 ; exec 3>&-
 
 
 
-... oké ik heb wat in te halen
+30. Verwijder eerst het werkbestand tmp.txt, indien dit reeds zou bestaan. Vergelijk daarna telkens de uitvoer en de inhoud van tmp.txt bij uitvoering van volgende commandoregels. Vergeet de spaties niet!
+
+* ```
+  du /etc ; du /var
+  ```
+
+* ```
+  du /etc ; du /var > tmp.txt 
+  ```
+
+* ```
+  ( du /etc ; du /var ; ) > tmp.txt # de laatste twee lijken hetzelfde te doen
+  ```
+
+* ```
+  { du /etc ; du /var ; } > tmp.txt
+  ```
+
+31. Hoe kan je ervoor zorgen dat de uitvoer van het commando printf "dit is een fout" niet als standaarduitvoer, maar als standaardfout wordt geïnterpreteerd? De tekst moet dus wel op het scherm getoond worden, maar mag niet doorgepipet worden naar een volgend commando.
+
+```bash
+printf "%s\n" "dit is een fout" 1>&2 |tr [:lower:] [:upper:]
+# ik heb die tr erachter gezet zodat je ziet dat het werkt
+# als je nu de 1>&2 weglaat zal de fout in drukletters getoond worden
+```
+
+
+
+32. Enkel de standaarduitvoer wordt normaal doorgepipet naar het volgende commando. Hoe kan je (met een wc-filter) het aantal foutmeldingen vragen bij het commando du /etc?
+
+```bash
+du /proc 2>&1 >/dev/null | wc -l
+```
+
+
+
+33. Hoe kun je met behulp van de head- en tail-commando's enkel de N-de lijn van een bestand tonen, voor een willekeurige N? Zorg er voor dat geen uitvoer wordt geproduceerd indien het gevraagde lijnnummer groter is dan het aantal lijnen in het bestand.
+
+```bash
+head -n 12 martijn.txt |tail -n 1
+# ik weet niet hoe ik niks toon als het nummer te groot is
+```
+
+
+
+34. Met behulp van de eenvoudige opdracht dos2unix kun je de \<CR>\<LF> -sequenties in een bestand dat door een Windowstoepassing is aangemaakt, vervangen door enkele \<LF>-lijnscheidingstekens, zoals dit op UNIX verwacht wordt. Hoe kun je met behulp van de tr opdracht hetzelfde effect bereiken? Welke zijn de nadelen van deze benadering?
+
+```bash
+tr -d '\r' input.txt > out.txt
+# tr werkt alleen met standaard invoer, je moet dus tijdelijke bestanden maken
+```
+
+
+
+35. Het commando uniq -d bestandsnaam is bedoeld om alle lijnen te tonen die meerdere keren voorkomen in een bestand. Echter, indien men dit commando toepast op een bestand met als inhoud:
+
+```
+het
+is
+mooi
+het
+geweest
+is
+```
+
+dan wordt geen enkele lijn getoond. Hoe komt dit? Zoek een eenvoudige oplossing hiervoor, door gebruik te maken van een pipe
+
+```bash
+sort weer.txt |uniq -d
+```
+
+
+
+36. Het filter-commando grep toont alle lijnen van een bestand die aan een bepaald patroon voldoen. Op welke drie verschillende manieren (drie verschillende opties, met betrekking op de interpretatie van regular expressions) kan dit patroon opgegeven worden? Let erop dat het patroon door het grep-commando moet worden geïnterpreteerd en niet door de shell. Gebruik de drie mogelijkheden om alle lijnen van een bestand te zoeken die een woord bevatten uit de lijst: BEGIN END IF ENDIF In de man-pages van grep vind je een extra sectie over regular expressions.
+
+```
+//TODO
+```
+
+
+
+37. Installeer emacs (yum install emacs) en wijzig de werkdirectory naar /usr/share/emacs/versienummer/etc/tutorials. Voorspel de uitvoer van volgende commando's en test ze dan uit op de Emacs tutorial: 
+
+* `grep -E 'C\-[a-z] *' TUTORIAL`
+* `grep -E '(C\-[a-z] *){2}' TUTORIAL`
+* `grep '\(C\-[a-z] *\)\{2\}' TUTORIAL`
+
+Het patroon moet tussen enkele of dubbele aanhalingstekens staan, zodat de shell de speciale tekens niet interpreteert, maar het patroon ongewijzigd doorgeeft aan het grepcommando.
+
+
+
+38. Wat is de uitvoer van volgend commando? 
+
+```bash
+grep -E '^.*$' TUTORIAL
+```
+
+Wat zijn de twee verschillen met 
+
+```bash
+grep -E '^\.*$' T*
+```
+
+//TODO
+
+
+
+39. Zoek de opties van het grep-commando die het gedrag van grep als volgt wijzigen: 
+
+* Er worden enkel lijnen getoond die niet aan het patroon voldoen. 
+
+* Deze patronen worden in een configuratiebestand opgeslagen, één lijn per patroon. 
+
+```bash
+-v, --invert-match
+# geen idee wat hij wilt zeggen met de tweede //TODO
+```
+
+
+
+40. Voorspel de uitvoer die je bij de volgende commando's verwacht en voer daarna pas de commando's effectief uit, om te controleren dat je prognose correct was.
+
+```bash
+grep -E '^$' TUTORIAL | wc -l # telt aantal lijnen die beginnen met TUTORIAL
+grep -Ev '^$' TUTORIAL # print lijnen die niet beginnen met TUTORIAL
+grep -E 'margin|direction' TUTORIAL | nl # print lijnen die margin of direction bevatten en zet er lijnnummers bij
+nl TUTORIAL | grep -E 'margin|direction' # zet eerst nummer en dan filter
+grep -E '^-+$' TUTORIAL | uniq -d # neemt alle lijnen die bestaan uit streepjes en haalt de herhaalde lijnen eruit
+grep -E '^-+$' TUTORIAL | sort | uniq -d # haalt ook de gedupliceerden die niet achter elkaar staan eruit
+grep -E '\--+' TUTORIAL | grep -Ev '^-+$' #
+```
+
+Een aantal van deze commando's zijn syntactisch correct, maar bevatten logische fouten. Welke? 
+
+```bash
+#geen idee //TODO
+```
+
+
+
+#### Shellvariabelen
+
+
+
+#### Arithmetic expansion
+
+
 
 89. Ontwikkel een shellscript dat als (enige) parameter een bestandsnaam heeft. Als output moet het script het gemiddelde aantal karakters per regel en het gemiddelde aantal woorden per regel uitschrijven. Gebruik de output van het commando wc en probeer met de diverse methodes die hierboven aangehaald werden (behalve de tweede) om deze output op te splitsen. Opgelet: de shell behandelt alle getallen als integers. Niettemin kun je er, met behulp van wat wiskunde, voor zorgen dat delingen correct worden afgerond. Hoe?
 
@@ -1688,15 +1945,17 @@ do
 done
 ```
 
+101. Ontwikkel een script dat een beperkte versie van het commando wc simuleert. Het script moet het aantal regels en de bestandsnaam afdrukken van elk bestand dat als parameter meegegeven wordt. Het script mag enkel interne Bash-instructies (if, for, case, let, while, read enz.) gebruiken, en behalve echo geen externe commando's; het gebruik van awk, sed, perl en wc in het bijzonder is niet toegelaten. Je zult bijgevolg elk bestand regel voor regel moeten inlezen en deze tellen. Het script moet bovendien een samenvattende regel weergeven met het totale aantal regels. Indien geen enkele parameter meegegeven wordt, neem je alle bestanden in de huidige werkdirectory in beschouwing. Los dit zo beknopt mogelijk op met de speciale notaties voor shellvariabelen
 
 
-### Extra commandos
 
-```bash
-$ cal # kalender
-$ mktemp 'XXX' # maakt random bestand aan met 3 tekens (dat nog niet bestaat)
-$ echo $$ # pid van bash shell opvragen
-```
+104. nuttig
+
+
+
+
+
+
 
 
 
@@ -1705,4 +1964,57 @@ $ echo $$ # pid van bash shell opvragen
 # To do
 
 * regex
+* dynamisch linken
+* file descriptor
+* bash minteken
+* lseek 
+* execl execv
+* zelf du schrijven ... cp zonder memory mapping
+* input redirection
 * 
+
+
+
+# Concepten
+
+## Process substitution
+
+```bash
+wc -l < <(ls ~)
+```
+
+
+
+## Dictionary
+
+```bash
+declare -A sounds
+sounds[dog]="bark"
+sounds[cow]="moo"
+```
+
+
+
+## Redirection
+
+```bash
+python hello.py > output.txt   # stdout to (file)
+python hello.py >> output.txt  # stdout to (file), append
+python hello.py 2> error.log   # stderr to (file)
+python hello.py 2>&1           # stderr to stdout
+python hello.py 2>/dev/null    # stderr to (null)
+python hello.py &>/dev/null    # stdout and stderr to (null)
+```
+
+
+
+## Speciale variabelen
+
+```bash
+$?	#Exit status of last task
+$!	#PID of last background task
+$$	#PID of shell
+$0	#Filename of the shell script
+$_	#Last argument of the previous command
+```
+

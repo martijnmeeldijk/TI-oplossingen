@@ -320,7 +320,223 @@ Wat is dat, een betrouwbaarheidsinterval? Even ter verduidelijking:
 
 Het is eigenlijk nooit mogelijk om het gemiddelde van een hele populatie te weten. We moeten het doen met steekproeven op een deel van de populatie. Om dan toch een beeld te kunnen krijgen van het gemiddelde, willen we een interval opstellen waarvan we met een bepaalde maat van zekerheid kunnen zeggen dat deze $\mu$ zal bevatten. Dit noemen we een betrouwbaarheidsinterval.
 
+Er zijn allemaal leuke bewijzen in de cursus, maar ik ga eerlijk zijn. Die kunnen mij echt geen tering schelen. 
+
+
+
+### Normaal verdeelde populatie
+
+#### $\sigma^2$ onbekend
+
+Het $100(1-\alpha)$% betrouwbaarheidsinterval is:
+$$
+\sigma^2 \in \left[ \frac{(n-1)s^2}{\chi^2_{1-\frac\alpha2}} , \frac{(n-1)s^2}{\chi^2_{\frac\alpha2}}  \right]
+$$
+$n$: steekproefgrootte
+
+$\alpha$: onbetrouwbaarheidsdrempel
+
+$s^2$: steekproefvariantie
+
+
+
+#### $\mu$ indien $\sigma$ gekend
+
+Het $100(1-\alpha)$% betrouwbaarheidsinterval is:
+$$
+\mu \in \left[
+\bar{x}-z_{\frac{1-\alpha}{2}}\frac{\sigma}{\sqrt n}, \quad
+\bar{x}+z_{\frac{1-\alpha}{2}}\frac{\sigma}{\sqrt n}
+\right]
+$$
+
+
+
+#### $\mu$ indien $\sigma$ onbekend
+
+Het $100(1-\alpha)$% betrouwbaarheidsinterval is:
+$$
+\mu \in \left[
+\bar{x}-t_{1-\frac{\alpha}{2}}\frac{s}{\sqrt n}, \quad
+\bar{x}+t_{1-\frac{\alpha}{2}}\frac{s}{\sqrt n}
+\right]
+$$
+
+
+
+#### Betrouwbaarheidsinterval voor $\frac{\sigma_2^2}{\sigma_1^2}$
+
+Het $100(1-\alpha)$% betrouwbaarheidsinterval is:
+
+$$
+\frac{\sigma_2^2}{\sigma_1^2} \in 
+\left[
+\frac{1}{F_\frac \alpha 2 (n_2 - 1, n_1-1 \text{ d.f.})}\frac{s_2^2}{s_1^2}, \quad
+F_\frac \alpha 2 (n_1 - 1, n_2-1 \text{ d.f.})\frac{s_2^2}{s_1^2}
+\right]
+$$
+
+
+
+#### $\mu_1 - \mu_2$ met gekende $\sigma$'s
+
+Het $100(1-\alpha)$% betrouwbaarheidsinterval is:
+
+$$
+\mu_1-\mu_2 \in \left[
+\bar{x_1} - \bar{x_2} - z_{\frac{1-\alpha}{2}}\sqrt{\frac{\sigma_1^2}{n_1}+\frac{\sigma_2^2}{n_2}}, \quad
+\bar{x_1} - \bar{x_2} + z_{\frac{1-\alpha}{2}}\sqrt{\frac{\sigma_1^2}{n_1}+\frac{\sigma_2^2}{n_2}}
+\right]
+$$
+
+
+
+#### $\mu_1 - \mu_2$ met ongekende maar (ongeveer) gelijke $\sigma$'s
+
+Het $100(1-\alpha)$% betrouwbaarheidsinterval is:
+$$
+\mu_1-\mu_2 \in \left[
+\bar{x_1} - \bar{x_2} - t_{1-\frac{\alpha}{2}}s_p \sqrt{\frac{1}{n_1}+\frac{1}{n_2}}, \quad
+\bar{x_1} - \bar{x_2} + t_{1-\frac{\alpha}{2}}s_p \sqrt{\frac{1}{n_1}+\frac{1}{n_2}}
+\right]
+$$
+
+
+### Willekeurig verdeelde populatie
+
+Bij $n \geq 30$ kan je alle betrouwbaarheidsintervallen hierboven voor $\mu$ gebruiken. Om een betrouwbaarheidsinterval voor $\sigma^2$ te maken werk je best met $n \geq 100$.
+
+
+
+### Binomiaal verdeelde populatie
+
+$p$: de kans dat een eigenschap optreedt
+
+$p_b$: berekende kans (het aantal keren dat de eigenschap optreedt gedeeld door $n$)
+
+Het $100(1-\alpha)$% betrouwbaarheidsinterval is:
+$$
+p \in \left[
+p_b - z_{\frac{1-\alpha}{2}}\sqrt{\frac{p(1-p)}{n}}, \quad
+p_b + z_{\frac{1-\alpha}{2}}\sqrt{\frac{p(1-p)}{n}}
+\right]
+$$
+Als $p$ onbekend is mag je hem vervangen door $p_b$ in de formule.
+
+Als de voorwaarden $(np \geq 5)$ en $(n(1-p) \geq 5)$ niet voldaan zijn mag je deze formule niet gebruiken. Dan moet je een andere formule waarvoor ik nu te lui ben om hem op te schrijven //TODO
+
+
+
+### Voorspellingsintervallen
+
+Een voorspellingsinterval geeft je een interval waarin de volgende meting met een bepaald % zekerheid in zal zitten.
+
+$x_{n+1}$: de volgende meting
+
+Er is $100(1-\alpha)$% kans dat:
+$$
+x_{n+1} \in \left[
+\bar{x} - t_{1 - \frac a 2}s \sqrt{\frac 1 n + 1}
+, \quad
+\bar{x} + t_{1 - \frac a 2}s \sqrt{\frac 1 n + 1}
+
+\right]
+$$
+Bij grote $n$ mag je $t_{1 - \frac a 2}$ vervangen door $z_{\frac{1-\alpha}{2}}$.
+
+
+
+
 # 7 - Testen van hypothesen
+
+## Methode
+
+1. Bepalen numerieke gegevens a.d.h.v. een steekproef
+2. Formuleren van de $H_0$-hypothese
+3. Formuleren van alternatieve $H_1$-hypothese
+4. Bepalen van **toetsingsgrootheid** en haar gekende distributie
+5. Bepalen van onbetrouwbaarheidsdrempel voor $\alpha$ voor de test om daaruit een besluit te trekken:
+   * $H_0$ aanvaarden
+   * $H_0$ verwerpen
+
+## Type I en Type II fouten
+
+* **Type I fout**: $H_0$ ten onrechte verwerpen
+* **Type II fout**: $H_0$ ten onrechte aanvaarden
+
+
+
+## Testen van parameters van een populatie
+
+### Normaal verdeelde populatie
+
+#### Testen van de variantie
+
+$H_0$: $\sigma^2 = \sigma_0^2$
+
+De toetsingsgrootheid: $\chi^2_{\text{ber}} = \frac{(n-1)s^2}{\sigma^2}$ is $\chi^2(n-1 \text{ d.f.})$ verdeeld 
+
+
+
+#### Testen van $\mu$ als $\sigma$ gekend
+
+$H_0$: $\mu = \mu_0$
+
+De toetsingsgrootheid $z_{\text{ber}} = \frac{\bar{x} - \mu_0}{\frac{\sigma}{\sqrt n}}$ is $N(0,1)$ verdeeld.
+
+
+
+#### Testen van het $\mu$ als $\sigma$ ongekend
+
+$H_0$: $\mu = \mu_0$
+
+De toetsingsgrootheid $t_{\text{ber}} = \frac{\bar{x} - \mu_0}{\frac{s}{\sqrt n}}$ is $t(n-1 \text{ d.f.})$ verdeeld
+
+
+
+#### Vergelijkingstest $\sigma_1^2$ en $\sigma_2^2$
+
+$H_0$: $\sigma_1^2 = \sigma_2^2$
+
+De toetsingsgrootheid $F_\text{ber} = \frac{s_1^2}{s_2^2}$ is $F(n_1-1, n_2 -1 \text{ d.f.})$ verdeeld.
+
+(als de steekproeven onafhankelijk)
+
+
+
+#### Testen van $\mu_1 - \mu_2$ met gekende $\sigma$'s
+
+$H_0$: $\mu_1-\mu_2 = d_0$ 
+
+De toetsingsgrootheid $z_\text{ber} = \frac{\bar x_1 - \bar x_2 - d_0 }{s_p \sqrt{\frac{1}{n_1} + \frac{1}{n_2}}}$ is $t(n_1 + n_2 -2 \text{ d.f.})$ verdeeld met $s^2_p = \frac{(n_1 - 1)s^2_1 + (n_2 -1)s_2^2}{n_1 + n_2 -2}$
+
+(als de steekproeven onafhankelijk)
+
+
+
+### Willekeurig verdeelde populatie
+
+Bij $n \geq 30$ kan je alle testen hierboven voor $\mu$ gebruiken. Om een betrouwbaarheidsinterval voor $\sigma^2$ te maken werk je best met $n \geq 100$ en een ietwat klokvormige verdeling.
+
+
+
+### Binomiaal verdeelde populatie
+
+$H_0$: $p=p_0$
+
+
+
+Voor $np_o > 5$ en $n(1-p_0) > 5$ is de toetsingsgrootheid $z_\text{ber} = \frac{p_\text{ber} - p_o}{\sqrt{\frac{p_o(1-p_o)}{n}}}$ benaderd $N(0,1)$ verdeeld is.
+
+
+
+## Goodness of fit testen
+
+### De $\chi^2$ test
+
+Hiermee kunnen we nagaan of een populatie een bepaalde discrete heeft, met een bepaalde betrouwbaarheid.
+
+Ik ga de uitleg schrijven nadat ik wat oefeningen heb gemaakt want ik begrijp nog niet zo goed wat de bedoeling is. //TODO
 
 
 
@@ -329,10 +545,6 @@ Het is eigenlijk nooit mogelijk om het gemiddelde van een hele populatie te wete
 
 
 # 9 - Regressie
-
-# 
-
-# 
 
 
 

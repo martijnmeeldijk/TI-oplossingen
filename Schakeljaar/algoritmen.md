@@ -12,7 +12,7 @@
 
 
 
-# Efficiënte zoekbomen
+# 1 - Efficiënte zoekbomen
 
 ## Evenwichtige zoekbomen
 
@@ -72,7 +72,7 @@ We roteren het kind naar bover zijn ouder, de deelboom van het kind wordt de dee
 
 
 
-# Meerdimensionale gegevensstructuren
+# 2 - Meerdimensionale gegevensstructuren
 
 Vaak hebben we nood aan meerdimensionale gegevens. Dit zijn gegevens die meer dan één sleutel bezitten. We modelleren deze gegevens typisch als een meerdimensionaal geometrisch probleem.
 
@@ -194,7 +194,7 @@ Je gaat weer recursief moeten werken per knoop. Als het punt van deze knoop binn
 
 
 
-# Analyse van iteratieve algoritmen
+# 3 - Analyse van iteratieve algoritmen
 
 ## Selection sort
 
@@ -214,6 +214,32 @@ Je gaat weer recursief moeten werken per knoop. Als het punt van deze knoop binn
 Je gaat eigenlijk de rij element per element af, het element dat je tegenkomt blijf je naar links schuiven zolang het kleiner is dan het element aan zijn linkerkant. Je krijgt dus in elke stap links van het groene blokje en telkens groter wordende gesorteerde deelrij.
 
 //TODO inversies, best case, worst case?
+
+
+
+## Orde van toename
+
+$$
+n!>> 2^n >> n^{1+\alpha} >> n \log n  >> n^\epsilon >> \log n >> \log \log n >> C
+$$
+
+
+
+## Stappenplan
+
+  1. Definieer een maat voor de invoergrootte
+ 2. Definieer je kostenmodel: welke basisoperaties?
+ 3. Bepaal of uitvoeringstijd afhankelijk is van waarde van de invoer
+ 4. Stel een sommatie op die uitdrukt hoe vaak de basisoperatie wordt uitgevoerd
+ 5. Werk deze sommatie uit tot een gesloten uitdrukking, of schat af in asymptotische notatie
+
+
+
+# 4 - Analyse van recursieve algoritmen
+
+<img src="img/image-20220501180337873.png" alt="image-20220501180337873" style="zoom:50%;" />
+
+
 
 # Examen
 
