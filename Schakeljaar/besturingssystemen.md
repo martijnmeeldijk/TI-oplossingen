@@ -689,7 +689,7 @@ find / -type f -name “pass*”
 Genereer met brace expansion alle hexadecimale getallen van 00 tot FF.
 
 ```bash
-echo { {0..9},{A..F}}{{0..9},{A..F}}
+echo { {0..9},{A..F} } { {0..9},{A..F} }
 ```
 
 **Vraag 18**
@@ -1646,7 +1646,7 @@ IFS=$':' #Internal Field Separator
     - Gebruik een while-lus met een read-commando om het bestand te overlopen en een array om de gegevens cyclisch op te slaan.
     - Gebruik geen array, maar bepaal vooraf het aantal lijnen van het bestand.
 
-​
+
 
 ```bash
 #!/bin/bash
