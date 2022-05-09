@@ -514,6 +514,10 @@ De toetsingsgrootheid $z_\text{ber} = \frac{\bar x_1 - \bar x_2 - d_0 }{s_p \sqr
 
 
 
+#### Testen van $\mu_1 - \mu_2$ met ongekende $\sigma$'s
+
+//TODO
+
 ### Willekeurig verdeelde populatie
 
 Bij $n \geq 30$ kan je alle testen hierboven voor $\mu$ gebruiken. Om een betrouwbaarheidsinterval voor $\sigma^2$ te maken werk je best met $n \geq 100$ en een ietwat klokvormige verdeling.
@@ -526,7 +530,7 @@ $H_0$: $p=p_0$
 
 
 
-Voor $np_o > 5$ en $n(1-p_0) > 5$ is de toetsingsgrootheid $z_\text{ber} = \frac{p_\text{ber} - p_o}{\sqrt{\frac{p_o(1-p_o)}{n}}}$ benaderd $N(0,1)$ verdeeld is.
+Voor $np_o > 5$ en $n(1-p_0) > 5$ is de toetsingsgrootheid $z_\text{ber} = \frac{p_\text{ber} - p_o}{\sqrt{\frac{p_o(1-p_o)}{n}}}$ benaderd $N(0,1)$ verdeeld.
 
 
 
@@ -537,6 +541,22 @@ Voor $np_o > 5$ en $n(1-p_0) > 5$ is de toetsingsgrootheid $z_\text{ber} = \frac
 Hiermee kunnen we nagaan of een populatie een bepaalde discrete heeft, met een bepaalde betrouwbaarheid.
 
 Ik ga de uitleg schrijven nadat ik wat oefeningen heb gemaakt want ik begrijp nog niet zo goed wat de bedoeling is. //TODO
+
+
+
+### De KS-test
+
+Oftewel Kolmogorov-Smirnov test. We gaan testen of een bepaalde continue verdeling aanwezig is. Dus bijvoorbeeld kijken of een populatie normaal verdeeld is.
+
+//TODO
+
+### Contingentietabellen
+
+//TODO
+
+
+
+
 
 
 
@@ -1176,13 +1196,26 @@ Data : **microgolf.dat**
 
 ```matlab
 %a 
-microgolf.emissie
-normaal = kstest(microgolf.emissie)
+gem=mean(microgolf.emissie);
+sig=std(microgolf.emissie);
+test_cdf=makedist('Normal','mu',gem,'sigma',sig);
+[h,p,D]=kstest(microgolf.emissie,'CDF',test_cdf)
+
+% b
 boxplot(microgolf.emissie)
+percentiel_25 = prctile(microgolf.emissie, 25);
+percentiel_75 = prctile(microgolf.emissie, 75);
+interkwartiel = iqr(microgolf.emissie);
+ondergrens = percentiel_25-1.5*interkwartiel
+bovengrens = percentiel_75+1.5*interkwartiel
 
 % c
-test_cdf = makedist('Normal', 'mu',0.10);
-normaal_mu = kstest(vec, 'CDF',test_cdf)
+[h,p,ci, stats]=ttest(microgolf.emissie,0.1);
+h
+
+%d
+[h,p,ci]=ttest(microgolf.emissie, 0,'Alpha',0.01);
+ci
 ```
 
 #### 1.68
@@ -1191,7 +1224,17 @@ Een consumentenorganisatie evalueert de kwaliteit van zonnepanelen. Daarvoor wer
 Data : **zonnepaneel.txt**
 
 ```matlab
+A=zonnepanelen(zonnepanelen.typePaneel == "A",1).stroom
+B=zonnepanelen(zonnepanelen.typePaneel == "B",1).stroom
+boxplot(zonnepanelen.stroom, 1)
+[h,sig,ci,stats] = ttest2(A,B)
+% h = 0, mu_a == mu_b met significantie 95%
 
+% in de oplossing doen ze het anders:
+x=A-B;
+test_cdf=makedist('Normal','mu',mean(x),'sigma',std(x));
+[h,p, D]=kstest(x,'CDF',test_cdf)
+[h,p,ci,stats]=ttest(x,0)
 ```
 
 #### 1.69
