@@ -196,32 +196,185 @@ Je gaat weer recursief moeten werken per knoop. Als het punt van deze knoop binn
 
 # 3 - Analyse van iteratieve algoritmen
 
-## Selection sort
+## Orde van toename
+
+$$
+n!>> 2^n >> n^{1+\alpha} >> n \log n  >> n^\epsilon >> \log n >> \log \log n >> C
+$$
+
+
+
+## Lussen
+
+**Enkele lus**
+
+```c++
+int functie (vector<int>& v){
+	int result = 0;
+	int n = v.size();
+	for (int i = 0; i < n; i++){
+		result += (i+1)*v[i];
+	}
+	return result;
+}
+```
+
+We loopen $n$ keer. Onze basisoperatie wordt dus $T(n) = n$ keer uitgevoerd.
+
+
+
+**Geneste lus**
+
+```c++
+int functie(vector<int>& v){
+  int result = 0;
+    int n = v.size();
+    for (int i = 0; i < n; i++){	
+      for (int j = 0; j < n; j++){
+      	result += v[j];
+      }
+    }
+  return result;
+}
+```
+
+Deze code doet eigenlijk het zelfde als het vorige blokje code, maar minder efficiënt. We zetten onze code om in een sommatie:
+$$
+T(n) = \sum_{i=0}^{n-1} \sum_{j=0}^{n-1}1
+$$
+Na wat coole wiskunde krijgen we:
+$$
+T(n) = \frac{n^2+n}{2}
+$$
+**Logaritmische uitvoeringstijd**
+
+Als je je teller bijvoorbeeld verdubbeld in plaats van incrementeert, krijg je een logaritmische uitvoeringstijd:
+
+```c++
+int functie(vector<int>& v){
+  int result = 0;
+    int n = v.size();
+    for (int i = 0; i <= n; i*=2){	
+      for (int j = 0; j < n; j++){
+      	result += v[j];
+      }
+    }
+  return result;
+}
+```
+
+Per iteratie van de buitenste lus, wordt de binnenste lus $n$ keer uitgevoerd. De buitenste lus wordt $K = \lfloor \log n \rfloor$ keer uitgevoerd.
+$$
+\begin{align}
+T(n) &= \sum_{i=1}^{K} \sum_{j=0}^{n-1} 1 \\
+&= \sum_{i=1}^{K}n \\ 
+
+&= nK \\
+&= n\lfloor \log n \rfloor
+
+\end{align}
+$$
+De uitvoeringstijd bedraagt $\Theta(n\log n)$.
+
+
+
+## Sorteeralgoritmes
+
+### Selection sort
 
 <img src="img/Selection-sort-0.png" alt="Selection Sort (With Code in Python/C++/Java/C)" style="zoom:33%;" />
 
 * Neem het kleinste element van de lijst en zet het vooraan
 * Neem het kleinste element van de lijst behalve het eerste element en zet dat op de tweede plek
 * Herhaal
-* Winst
+* Winst (eigenlijk niet want het is $O(n^2)$)
+
+```c++
+void selectionSort(int arr[], int n)
+{
+    int i, j, min_idx;
+ 
+    // One by one move boundary of
+    // unsorted subarray
+    for (i = 0; i < n-1; i++)
+    {
+        // Find the minimum element in
+        // unsorted array
+        min_idx = i;
+        for (j = i+1; j < n; j++)
+        if (arr[j] < arr[min_idx])
+            min_idx = j;
+ 
+        // Swap the found minimum element
+        // with the first element
+        swap(&arr[min_idx], &arr[i]);
+    }
+}
+```
 
 
 
-## Insertion sort
+### Insertion sort
 
 ![Recursive Insertion Sort - GeeksforGeeks](img/insertion_sort-recursion.png)
 
 Je gaat eigenlijk de rij element per element af, het element dat je tegenkomt blijf je naar links schuiven zolang het kleiner is dan het element aan zijn linkerkant. Je krijgt dus in elke stap links van het groene blokje en telkens groter wordende gesorteerde deelrij.
 
-//TODO inversies, best case, worst case?
+```c++
+void insertionSort(int arr[], int n)
+{
+    int i, key, j;
+    for (i = 1; i < n; i++)
+    {
+        key = arr[i];
+        j = i - 1;
+ 
+        // Move elements of arr[0..i-1], that are greater than key, to one position ahead of their
+        // current position
+        while (j >= 0 && arr[j] > key)
+        {
+            arr[j + 1] = arr[j];
+            j = j - 1;
+        }
+        arr[j + 1] = key;
+    }
+}
+```
+
+Belangrijk om te weten bij insertion sort, is dat het vrij goed werkt op een tabel die al redelijk goed in volgorde staat. 
+
+#### Efficiëntie
+
+* Buitenste lus wordt $n-1$ keer uitgevoerd.
+* Het aantal iteraties van de binnenste lus hangt af van de invoer. We gaan dus onderscheid maken tussen het best, slechtste en gemiddelde geval.
+
+Als we twee elementen $a[i] $ en $ a[j]$ uit de tabel nemen, met $i<j$. Dan vormen deze twee een **inversie** als $a[i] > a[j]$. Een inversie is dus simpelweg **een paar elementen dat op de verkeerde volgorde staat**. Om een beter zicht te krijgen op de performantie van ons algoritme, gaan we het aantal inversies tellen. Afhankelijk van dit aantal, kunnen we een onderscheid maken tussen drie gevallen.
+
+**Slechtste geval**
+
+De rij staat achterstevoren, elk paar elementen vormt een inversie. Dit zijn er $n(n-1)/2$, en is dus het aantal sleutelvergelijkingen. We komen op $\Theta(n^2)$.
+
+**Beste geval**
+
+De tabel staat in volgorde en er zijn geen inversies. We moeten de tabel dus maar één keer $(n-1)$ overlopen: 
+
+**Gemiddeld geval**
+
+We veronderstellen dat elke permutatie van de elementen even waarschijnlijk is. Dan bekomen we $n(n-1)/4$. Dit is nog steeds $\Theta(n^2)$, maar dan met een verborgen factor van $0.5$.
 
 
 
-## Orde van toename
+Goed, dit is eigenlijk niet zo belangrijk. Wat insertion sort zo nuttig maakt, is dat zolang het aantal inversies $O(n)$ is. Onze uitvoertijd $\Theta(n)$ zal zijn. Dit is weliswaar alleen het geval wanneer onze rij al bijna helemaal gesorteerd is. We gebruiken insertion sort dus vaak in de laatste fase van efficiëntere algoritmen.
 
-$$
-n!>> 2^n >> n^{1+\alpha} >> n \log n  >> n^\epsilon >> \log n >> \log \log n >> C
-$$
+
+
+#### Sentinel
+
+Een andere manier om insertion sort een klein beetje sneller is door een **sentinel** (poortwachter) te selecteren. Dit is het kleinste element van de tabel. Door dit element al direct vooraan te zetten, kunnen we de conditie $j>= 0$ uit onze while-lus weghalen. Pas wel op, want als je bijvoorbeeld veel kleine rijen moet sorteren, kan dit juist een negatief effect hebben.
+
+
+
+
 
 
 
@@ -237,7 +390,141 @@ $$
 
 # 4 - Analyse van recursieve algoritmen
 
+## Iteratieve methode
+
+```c++
+int factorial(int n){
+  // basisgeval
+  if (n == 0) return 1; 
+  //recursie
+  else return n*factorial(n–1);
+}
+```
+
+Het aantal vermenigvuldigingen $T(n)$ is gelijk aan het aantal vermenigvuldigingen voor het berekenen van $(n-1)!$ plus één. We krijgen de volgende recurrente betrekking:
+$$
+T(n) = \begin{cases}
+T(n-1) +1  &\text{ als } n \geq 0 \\
+0 &\text{ als } n=0
+
+
+
+\end{cases}
+$$
+We gebruiken **backwards substitution** om deze om te vormen naar een gesloten uitdrukking:
+$$
+\begin{align}
+T(n) &= T(n-1) + 1 \\
+&= (T(n-2)+1)+1 = T(n-2)+2 \\
+&= T(n-3) + 3 \\
+&= \dots \\
+&= T(0 +n) \\
+&= n
+\end{align}
+$$
+Onze `factorial()` is dus $\Theta(n)$. In dit geval gaan we dus vanaf $T(n)$ omlaag. Je kan ook omhoog gaan. Dit heet dan **forwards substitution**.
+
+
+
+## Recursieboom
+
+Beschouw het volgende algoritme:
+
+```c++
+int somBinaireRecursie (const vector<T>&v, int start, int stop){
+   if (start >= stop) //basisgeval: lege rij
+      return 0;
+   if (start == (stop – 1)) //basisgeval: 1 element
+      return v[start];
+   int mid =start +( stop-start)/2;
+   return somBinaireRecursie(v, start, mid) + somBinaireRecursie(v, mid, stop );
+}
+```
+
+We zullen hiervan is een recursieboom maken. We beginnen met het opstellen van een betrekking voor de uitvoeringstijd met als basisoperatie de optelling op de laatste lijn:
+$$
+T(n) = \begin{cases}
+T(\lfloor \frac n 2 \rfloor) + T(\lceil \frac n 2 \rceil) + 1  &\text{ als } n \geq 2 \\
+0 &\text{ als } n=0
+
+
+
+\end{cases}
+$$
+We negeren de floor en ceil en verkrijgen:
+$$
+T(n) = \begin{cases}
+2T( \frac n 2 ) + 1  &\text{ als } n \geq 2 \\
+0 &\text{ als } n=0
+
+\end{cases}
+$$
+Nu kunnen we een boom maken. 
+
+<img src="img/image-20220513183754169.png" alt="image-20220513183754169" style="zoom:50%;" />
+
+We moeten we wel nog weten hoe diep hij is. Op elk niveau verdubbelt het aantal elementen in de boom. Als we dus $n$ nemen en hem $h$ keer delen, zullen we een getal tussen $1$ en $2$ krijgen:
+$$
+1 \leq \frac{n}{2^h} < 2
+$$
+Met $h$ de hoogte van de boom en $n$ het aantal elementen. We kunnen dit omvormen naar:
+$$
+h \leq \log n < h+1 \\
+h = \lfloor \log n \rfloor
+$$
+In het slechtste geval is de boom volledig gevuld en kunnen we dus stellen dat $h= \log n$. Onze totale uitvoeringstijd is de som van de uitvoeringstijd in alle knopen.
+$$
+\begin{align}
+T(n) &= 2^0 + 2^1 + 2^2 + \dots + 2^{\log n -1}-1 \\
+&= 2^{\log n } -1\\
+&= n-1\\
+&= O(n)
+\end{align}
+$$
+
+## Master theorema
+
+Oké, we gaan dit even drastisch versimpelen. Het kadertje hieronder vertelt ons eigenlijk hoe het werk in onze boom verdeeld wordt. Je moet de term $f(n)$ zien als het werk dat in de huidige knoop wordt gedaan en  $aT(n/b)$ zien als het werk dat gedelegeerd wordt naar de kindknopen. 
+
+1. Onze $f(n)$ is klein dus er wordt veel werk naar onder gedelegeerd.
+2. Het werk is gelijk verdeeld
+3. $f(n)$ is groot en er wordt dus veel werk in de wortel gedaan.
+
+
+
 <img src="img/image-20220501180337873.png" alt="image-20220501180337873" style="zoom:50%;" />
+
+Als je dus een recurrente betrekking kan opstellen van je algoritme, kan je d.m.v. dit kadertje een afschatting maken voor de onder- en bovengrens van zijn tijdscomplexiteit.
+
+
+
+## Afschattingen van recursiebetrekkingen
+
+**Logaritmische afschatting**
+$$
+T(n) \leq T(\frac n 2) + c \xRightarrow{\quad} T \text{ is } O(\log n)
+$$
+**Machten van $n$**
+$$
+\begin{align}
+T(n) \leq c + T(n-1) &\xRightarrow{\quad} T \text{ is } O(n) \\
+T(n) \leq cn^\alpha + T(n-1) &\xRightarrow{\quad} T \text{ is } O(n^{\alpha+1}), \alpha > -1\\
+T(n) \leq \frac 1 n + T(n-1) &\xRightarrow{\quad} T \text{ is } O(\log n)
+
+
+
+
+\end{align}
+$$
+**Afschattingen met sommen**
+
+//TODO
+
+
+
+# 5 - Decrease-and-conquer
+
+
 
 
 

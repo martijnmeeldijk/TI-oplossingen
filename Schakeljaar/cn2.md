@@ -2143,3 +2143,300 @@ Eenmaal alle routers naar behoren werken en dat alle routingtabellen stabiel zij
 
 ==Hoeveel seconden werd de verbinding verbroken en welke RIPng berichten werden uitgewisseld tussen welke nodes vooraleer de verbinding opnieuw beschikbaar werd?==
 
+
+
+
+
+# BGP
+
+In dit labo gaan we onderzoeken hoe routering werkt in het Internet tussen verschillende autonome systemen. 
+
+![[Gebruik van Mininet]]
+
+<div style="page-break-after: always;"></div>
+
+![[Linux command-line]]
+
+### Afhalen en uitpakken van de labobestanden
+
+Op de VM, in de folder `/home/student` (de default folder) doe je het volgende in een shell:
+
+```shell
+/home/student$ wget https://www.dropbox.com/s/026i2pd7gsmzyf2/labo10.tgz
+/home/student$ tar -xzvf labo10.tgz
+```
+
+<u>**Update (11-05-2022)**</u>: om ook het policy-gerelateerde gedeelte van dit labo te kunnen maken moet de volgende patch toegepast worden!
+
+```
+/home/student$ cd /home/student/labo10/ipmininet  
+/home/student/labo10/ipmininet$ sudo pip3 install -e .
+```
+
+Mogelijks zie je hierbij enkele warnings, maar die mag je negeren.
+
+## BGP in het huidige Internet
+
+In het [BGP update report](https://bgpupdates.potaroo.net/instability/bgpupd.html) dat dagelijks bijgewerkt wordt vinden we enkele BGP cijfers i.v.m. het aantal messages, (IPv4) prefixen en het total AS aantal van ons huidige Internet. 
+
+==Zoek hierin op hoeveel IPv4 netwerk prefixen en ASen telt het huidige Internet volgens deze cijfers?==
+
+In een [rapport van AS 6447](https://bgp.potaroo.net/as6447/) vind je ook gegevens over de routing- en forwardingtabel van routers binnenin dit Autonoom Systeem.
+
+==Wie is de eigenaar van AS 6447?==
+
+==Mocht je `ip route` op een BGP router doen binnen AS6447, hoeveel resultaatregels (entries) verwacht je dan?==
+
+==Van welke prefixlengte vinden we het meest entries in dergelijke forwardingtabel?==
+
+## BGP in een mini-Internet
+
+Voor dit labo gaan we BGP bestuderen in de context van een kleinschalig Internet bestaande uit slechts 6 ASen en 8 routers. Om dit netwerk op te starten, gebruiken we Mininet. Je laadt het netwerk als volgt:
+
+```Shell
+/home/student/labo10$ sudo -s  
+root# python3 bgplabo.py
+```
+
+### Netwerkanalyse
+
+Ons mini-Internet bestaat uit slechts 8 routers. Alle subnetten in ons netwerk maken gebruik van `/24` adresblokken onder het adresblok `192.168.0.0/16`. In de praktijk kunnen deze adressen uiteraard niet gebruikt worden in het publieke Internet (waarom niet?). 
+
+Aan iedere router hangt een host met de naam `hrx` waarbij x staat voor het routernummer. `hr3` is bijvoorbeeld rechtstreeks verbonden met router `r3`. Om de figuur overzichtelijk te houden, werden de hosts niet afgebeeld maar enkel de interface die verbinding geeft tot de host. De `.2.` bij de link bovenaan `r1` duidt aan dat de host die met `r1` verbonden is in het subnet `192.168.2.0/24` ligt.
+
+![[bgp-topology]]
+
+Ons mini-Internet wordt uiteraard niet beheerd door 1 partij, maar door 6 verschillende partijen, elk verantwoordelijk voor 1 Autonoom Systeem (AS).
+
+==Bepaal op basis van de gegevens in de BGP daemon software van verschillende routers tot welk AS iedere router behoort, en maak op basis hiervan een figuur of tabel.==
+
+>[!Tip] Inloggen op management interface van de BGPd 
+>
+>- Start een `xterm` op de router die je wil raadplegen
+>- `telnet localhost bgpd` in de command line. Het paswoord dat vervolgens wordt gevraagd, is zoals steeds `zebra`. 
+>- Eenmaal ingelogd, kun je a.d.h.v. `show ip bgp` de RIB info opvragen. Gebruik TAB om mogelijke subcommando's te achterhalen. De uitvoer van de RIB van een router zie in het voorbeeld hieronder.
+>- Als alternatief kun je meteen `noecho <node> telnet localhost bgpd` gebruiken vanuit de Mininet shell. 
+
+![[frr-bgpd-show-rib.png]]
+
+<img src="img/image-20220512152039864.png" alt="image-20220512152039864" style="zoom:50%;" />
+
+In deze interface vind je cruciale gegevens m.b.t.: de gegeven router, de ontvangen routes en zijn BGP configuratie. Merk op dat alle bruikbare (valid) routes een asterisk aan het begin van de lijn. Bij de routes vind je in de laatste kolom de padvector die kan gebruikt worden per bestemming. De laatste hop wordt steeds als "?" weergegeven, en betekent dat die rechtstreeks verbonden is aan de laatste hop (en dus niet noodzakelijk "incomplete").
+
+==Wat is de gebruikte route van `hr4` naar `hr7`?==
+
+```
+traceroute to 192.168.17.1 (192.168.17.1), 30 hops max, 60 byte packets
+ 1  r4 (192.168.10.2)  0.052 ms  0.007 ms  0.003 ms
+ 2  r5 (192.168.9.2)  0.016 ms  0.005 ms  0.004 ms
+ 3  r6 (192.168.11.2)  0.016 ms  0.005 ms  0.006 ms
+ 4  r7 (192.168.15.2)  0.017 ms  0.007 ms  0.006 ms
+ 5  hr7 (192.168.17.1)  0.029 ms  0.011 ms  0.008 ms
+
+```
+
+==Waarom werd deze route gekozen en niet een pad met minder tussenliggende routers?==
+
+Omdat hij dan door meer AS'en moet gaan.
+
+- Wat is het IP adres van de bestemming?
+- Welke routing padvectoren zijn in BGP beschikbaar voor die bestemming in de verschillende routers?
+
+==Niet alle netwerkprefixen staan op de netwerktopologie afgebeeld.  In de management interface van bgpd kun je zien dat er aan elk AS nog een extra prefix verbonden is. Over welke prefixen gaat het en aan welk ASen zijn ze verbonden?==
+
+| Netwerkprefix   | AS   | Router |
+| --------------- | ---- | ------ |
+| 192.168.19.0/24 | 6    | R1     |
+| 192.168.20.0/24 | 5    | R2     |
+| 192.168.21.0/24 | 4    | R3     |
+| 192.168.22.0/24 | 1    | R4     |
+| 192.168.23.0/24 | 2    | R5     |
+| 192.168.24.0/24 | 2    | R6     |
+| 192.168.25.0/24 | 3    | R7     |
+| 192.168.26.0/24 | 2    | R8     |
+
+### Protocolanalyse
+
+De routering in dit mini-Internet werd volledig automatisch opgebouwd door routeringsprotocollen. Je kan dit valideren door `ping4all` in Mininet uit te voeren. Als alles goed ging, heeft (bijna) iedere host verbinding met iedere andere host in het mini-Internet. Een host mist connectiviteit. Daarop komen we later terug.
+
+Maak gebruik van Wireshark om op iedere link na te gaan welk protocol gebruikt wordt tussen de 2 aangrenzende nodes.
+
+BGP wisselt enkel berichten uit wanneer dat nodig is. 
+
+- `BGP UPDATE` messages worden slechts uitgewisseld wanneer iets in het netwerk verandert. 
+- `BGP KEEPALIVE` berichten zorgen ervoor dat BGP sessies levend gehouden worden door periodiek berichten uit te wisselen.
+
+In het bestand `\home\student\labo10\bgp-r1r2-trace.pcap` vind je de eerste 30 uitgewisselde BGP berichten tussen router `r1` en router `r2`. Daarin kun je `BGP UPDATE` messages terug vinden.
+
+==Leg uit welk `BGP UPDATE` message van `r1` naar `r2` m.b.t. de bestemming in adresblok `192.168.2.0/24` heeft geleid tot een specifieke regel in de RIB van `r2`.==
+
+- Welk transportlaagprotocol gebruikt BGP? TCP
+- Welke informatie heeft `r1` over dit netwerkprefix gedeeld met `r2`? `next hop 192.168.0.2`
+- Hoe heeft `r2` dit verwerkt (hoe check je dit)?
+
+#### Netwerkfout
+
+Netwerkfouten in het Internet zijn legio. Om te achterhalen hoe BGP omgaat met een linkfout, gaan we een klein experiment uitvoeren. Achterhaal via Mininet de gebruikte interfaces voor de link tussen router `r1` en `r2`. 
+
+`r1-eth0<->r2-eth0`
+
+Om na te gaan hoe snel BGP kan omgaan met een falende link, gaan we het ==volgende uitvoeren==:
+
+- Start een ping-sessie van `r2` naar `hr1`. Pas het interval van de ICMP-berichten aan naar 0.1 sec (de manual pages helpen je hierbij).
+- Disable de link tussen `r1` en `r2` aan de hand van het commando `ip link set dev <interfacenaam> down` op de router `r1`.
+- Stop de ping-sessie en achterhaal hoeveel pakketten verloren zijn gegaan om een indicatie te krijgen van hoe snel de connectie hersteld is. Maar 1tje??
+- Controleer nu wat veranderd is in de RIB informatie van router `r2` en of de BGP peering relationship met `r1` nog steeds actief is.
+- Gebruik traceroute om eventueel de (nieuwe) route van `r2` naar `hr1` te bepalen.
+
+```
+traceroute to 192.168.2.2 (192.168.2.2), 30 hops max, 60 byte packets
+ 1  r3 (192.168.3.2)  0.025 ms  0.004 ms  0.003 ms
+ 2  r1 (192.168.1.1)  0.014 ms  0.004 ms  0.004 ms
+ 3  hr1 (192.168.2.2)  0.014 ms  0.006 ms  0.006 ms
+```
+
+<img src="img/image-20220512152039864.png" alt="image-20220512152039864" style="zoom:50%;" />
+
+==Geef in je verslag de gemeten convergentietijd (tot op 0.1 sec nauwkeurig), evenals de route voor en na de netwerkfout.== 
+
+ongeveer 0.1 (1 pakketje is weggevallen)
+
+==Kon BGP pas de nieuwe route activeren toen het gedetecteerd had dat de BGP sessie tussen `r2` en `r1` niet meer actief was? Geef een mogelijke uitleg.==
+
+#### Heractivering van de link
+
+In dit onderdeel ga je de link en bijhorende BGP sessie tussen `r1` en `r2` heractiveren en de invloed ervan in BGP achterhalen. ==Ga hiervoor als volgt te werk==:
+
+- Start een wiresharksessie op `r2` op de interface naar `r1`
+- Start een ping-sessie van `r2` naar `hr1`. Pas het interval van de ICMP- berichten aan naar 0.1 sec.    
+- Re-enable de link tussen `r1` en `r2` aan de hand van het commando `ip link set dev <interfacenaam> up` op de router `r1`. 
+- Stop de ping-sessie en achterhaal hoeveel pakketten verloren zijn gegaan om een indicatie te krijgen van hoe snel de connectie hersteld is. 
+- Controleer nu wat veranderd is in de RIB informatie van router `r2` en of de BGP peering relationship met `r1` nog steeds actief is. 
+- Gebruik traceroute om de (nieuwe) route van `r2` naar `hr1` te bepalen.
+
+Als het bovenstaande proces goed is verlopen, dan is de connectiviteit via het oorspronkelijke pad hersteld, en zijn de RIBs van `r1` en `r2` opnieuw up to date.
+
+Op basis van de opgenomen Wireshark-activiteit kun je achterhalen hoe en hoe lang dit BGP proces heeft plaats gevonden.
+
+==Maak een overzicht van de uitgewisselde BGP berichten sinds het herstel van de fout, en bepaal hieruit hoeveel tijd BGP nodig had om te convergeren.==
+
+### Disconnected host
+
+Op basis van het commando `ping4all` in Mininet konden we eerder detecteren dat 1 host geen verbinding lijkt te hebben met alle andere hosts in het mini-Internet.
+
+==Over welke node gaat het?==
+
+==Waarom heeft die node geen connectiviteit?==
+
+==Welke nodes zijn wel bereikbaar vanaf die host (waarom)?==
+
+Het is instructief om de BGP configuratie van enkele routers even te bekijken, en mogelijks aan te passen om dit probleem te verhelpen. De configuratie kun je enkel bekijken in *management mode*. 
+
+> [!Tip] Activeer management mode in bgpd
+>
+> - log in op de BGP daemon via `telnet localhost bgpd` (paswoord `zebra`)
+> - ga in de *management mode* via het commando `enable
+
+>[!Tip] Bekijk running configuration van BGP router
+>In de management mode van bgpd het volgende uit te voeren:
+>
+>- `show running-config`  
+
+De meest relevante onderdelen van een BGP configuratie zijn benoemd in volgende configuratieovoorbeeld van `r5`.  
+
+![[BGP-config.svg]]
+
+De (her-)configuratie van routers kan zoals in hedendaagse commerciele routers van Cisco of Juniper niet alleen tijdens het opstarten gebeuren, maar ook na de opstart kan die configuratie aangepast worden. Hiervoor moet je ook de configuratieterminal activeren.
+
+> [!Tip] Activeer de configuratieterminal
+>
+> - `enable` (om management mode te activeren) 
+> - `configure terminal` om in de configuratieterminal te komen.
+
+In de configuratieterminal kunnen letterlijk dezelfde commando's als in het configuratiebestand ingegeven worden.  Let wel op, wanneer de tekst in configuratiebestand is ingesprongen, dan moet je eerst het de bovenliggende instructie ingegeven die niet ingesprongen was (bv. `address-family ipv4 unicast` vooraleer je een neighbor kan activeren met `neighbor <ip> activate`).
+
+==Pas de BGP configuratie aan van enkele routers zodat, ook de resterende host bereikbaar wordt vanuit alle andere hosts.==
+
+### Netwerkpolicies in BGP
+
+Het succes van BGP als inter-AS routeringsprotocol in het Internet is grotendeels te wijten aan het feit dat BGP toelaat aan netwerkbeheerders om de routering aan te passen aan de *business agreements* tussen verschillende partijen.
+
+Hiervoor kan BGP gebruik maken van 2 mechanismen:
+
+1. Beperken aan wie bepaalde routes beschikbaar worden gemaakt
+2. Kiezen of ordenen welke van de ontvangen routes naar een gegeven bestemming worden verkozen boven alternatieve routes
+
+#### No transit AS2
+
+AS2 heeft een centrale ligging in ons mini-Internet. Bijgevolg ligt AS2 vaak op het kortste pad tussen verschillende nodes in het netwerk. Je kunt dit bijvoorbeeld nagaan door de route tussen `hr4` en `hr7` in beide richtingen te inspecteren.
+
+==Wat is de gevonden route tussen `hr4` en `hr7`?==
+
+Gezien de beperkte capaciteit van het netwerk, wenst de beheerder van AS2 dergelijk doorgangsverkeer onmogelijk te maken. De netwerkbeheerder gaat hiervoor geen gebruik maken van firewalls, maar zal verhinderen dat BGP bepaalde routes naar netwerkprefixen adverteert aan zijn peers. Routes die niet geadverteerd worden, kunnen in principe ook niet gebruikt worden door aangrenzende autonome systemen. De netwerken binnen AS2 moeten uiteraard wel nog toegankelijk zijn voor de rest van het mini-Internet.
+
+==Welke netwerkprefixen mogen dan wel en niet geadverteerd worden door de routers van AS2?==
+
+- routers van AS2:
+- netwerkprefixen te adverteren: 
+
+Om dit te bewerkstelligen, kunnen we gebruik maken van routemaps en communitylists in BGP:
+
+- met **BGP routemaps** kunnen regels bepaald worden voor inkomende en uitgaande BGP berichten (routes) naar een gegeven buur
+- met **BGP communities** kun je routes labelen zodat je ze kunt gebruiken in de regels van routemaps.
+
+Beide zaken kun je eenmaal in managementmode als volgt achterhalen.
+
+> [!Tip] Check routemap
+> De routemaps die reeds werden aangemaakt, kunnen in *management mode* als volgt geraadpleegd worden:
+>
+> - gebruik `show route-map` om alle bestaande route-maps te zien.
+
+Een voorbeeld van de output van bovenstaande proces kun je vinden in onderstaande figuur. Hieruit is het duidelijk dat er 2 route-maps per BGP neighbor (i.e. per bijhorende interface) gedefinieerd zijn: 1 routemap voor BGP routes die ontvangen worden van die BGP neighbor (bv. `r3-ipv4-in`), en 1 routemap voor BGP routes die doorgestuurd worden naar die BGP neighbor (bv. `r3-ipv4-out`). In het gegeven voorbeeld hebben de routemaps geen toegevoegde waarde, aangezien ze alle mogelijke routes toelaten en er geen bijkomende acties op uitvoeren.
+
+![[frr-bgpd-routemap.png]]
+
+Routes die een AS ontvangt van een neighboring AS kunnen gemarkeerd worden zodat ze niet verder geëxporteerd worden naar andere BGP neighbors. Dit doe je als volgt.
+
+> [!Tip] Routes markeren om ze niet te exporteren
+> Geef volgende in, *in de configuratieterminal* om routemaps niet te exporteren.
+>
+> - `# route-map rx-ipv4-in permit 10` (verander rx naar `r3` indien je de inkomende routes van `r3` wil vlaggen) 
+>   - (config) # `set community no-export`
+>   - (config) # `quit`
+
+De bovenstaande actie zorgt ervoor dat aan de routemap `rx-ipv4-in` (inkomend verkeer van router rx) met hoge prioriteit (10) elke route wordt gekoppeld/gemarkeerd met de community `no-export`. Iedere route wordt vervolgens weerhouden (permit). Wanneer routes eenmaal als volgt zijn gevlagd, zullen ze NIET verder worden geadverteerd aan (of geëexporteerd naar) andere neighboring ASen.
+
+Voer deze stappen uit voor alle interfaces waarvoor je het nodig acht om ervoor te zorgen dat AS2 niet als transit AS kan gebruikt worden. Zet vooraleer je die stappen onderneemt ook een Wiresharksessie op over de interfaces waarop veranderingen zullen optreden. Zo kun je de uitgewisselde BGP messages n.a.v. de wijziging noteren.
+
+Documenteer voor welke router(s) en interfaces je dit proces hebt gevolgd. 
+
+==Welke BGP berichten werden uitgestuurd naar aanleiding van je wijziging op de betrokken interfaces?==
+
+==Geef de output terug van een traceroute van `hr4` naar `hr7` nadat je dit gedaan hebt om te valideren of AS2 daadwerkelijk niet meer als transit gebruikt wordt.==
+
+> [!Tip] Rechtzetten van routemap configuratiefouten
+> Indien je een fout hebt gemaakt, heb je 2 mogelijkheden om dit recht te zetten:
+>
+> 1. Herstart de volledige Mininet-omgeving met je netwerk.
+> 2. Verwijder de routemap a.d.h.v. `no route-map <routemapnaam>` in de configuratieomgeving
+> 3. Configureer de routemap opnieuw zoals de configuratie die reeds beschikbaar was in de routemap voordat je hem verwijderde. Deze kan je terugvinden in de BGP configuratiebestanden van de routers in het bestand `\tmp\bgpd_rx.cfg` voor router `rx`. Ook die andere reeds bestaande regels hoor je opnieuw toe te voegen voor een goede werking. 
+
+#### Lokale policy in AS5
+
+Eenmaal bovenstaande oefening succesvol is uitgevoerd, verloopt veel verkeer via de link tussen AS5 en AS4. Nu kan het immers niet wenselijk zijn dat verkeer die link gebruikt (bvb. lage bandbreedte), waardoor de netwerkbeheerders van AS5 en AS4 verkiezen dat verkeer via AS6 loopt i.p.v. via de link tussen AS5 en AS4.
+
+Dit kunnen beide beheerders (van AS5 en AS4) bewerkstelligen door alle routes ontvangen van AS6 te markeren met een hogere local preference waarde (hoger dan de standaard waarde van 100).
+
+> [!Tip] Local preference instellen in route-map
+> In de configuratieterminal (zie vorig kader), kun je de local preference als volgt instellen
+>
+> - `route-map rx-ipv4-in permit 10` (verander `rx` naar `r3` indien je de inkomende routes van `r3` wil markeren)
+>   - (config) # `set local-preference 200`
+>   - (config) # `quit`    
+
+==Documenteer voor welke router(s) en interfaces je dit proces hebt gevolgd.==
+
+==Welke BGP berichten werden uitgestuurd naar aanleiding van je wijziging op de betrokken interfaces?==
+
+==Geef de output terug van een traceroute van `hr4` naar `hr7` nadat je dit gedaan hebt om te valideren of de verbinding tussen AS5-AS4 daadwerkelijk niet meer gebruikt wordt.==
+

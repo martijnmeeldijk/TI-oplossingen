@@ -10,6 +10,12 @@
 
 [Examen 2020 B](https://github.com/martijnmeeldijk/TI-oplossingen/blob/master/Schakeljaar/Examens%20/Examen_Statistiek_B_2020.pdf)
 
+
+
+# To do
+
+* Overzicht soorten oefeningen en wat te doen (bv welke belletjes er moeten rinkelen :wink:)
+
 # ------------- Theorie -------------
 
 
@@ -190,7 +196,7 @@ $$
 
 
 
-Als $n$ heel groot is en $p$ heel klein, kan je de poissonverdeling gebruiken om de binomiaalverdeling te benaderen.
+Als $n$ heel groot is en $p$ heel klein, kan je de poissonverdeling gebruiken om de binomiaalverdeling te benaderen. Dan is $\lambda = np$
 $$
 f(i) = P(x=i)= \frac{e^{-\lambda}\lambda^i}{i!}\\
 f(i+1) = f(i)\cdot \frac{\lambda}{i+1}
@@ -425,6 +431,8 @@ Als $p$ onbekend is mag je hem vervangen door $p_b$ in de formule.
 
 Als de voorwaarden $(np \geq 5)$ en $(n(1-p) \geq 5)$ niet voldaan zijn mag je deze formule niet gebruiken. Dan moet je een andere formule waarvoor ik nu te lui ben om hem op te schrijven //TODO
 
+Oké hij staat ook niet op het formularium dus de kans is klein dat ik hem hier zet.
+
 
 
 ### Voorspellingsintervallen
@@ -508,15 +516,19 @@ De toetsingsgrootheid $F_\text{ber} = \frac{s_1^2}{s_2^2}$ is $F(n_1-1, n_2 -1 \
 
 $H_0$: $\mu_1-\mu_2 = d_0$ 
 
-De toetsingsgrootheid $z_\text{ber} = \frac{\bar x_1 - \bar x_2 - d_0 }{s_p \sqrt{\frac{1}{n_1} + \frac{1}{n_2}}}$ is $t(n_1 + n_2 -2 \text{ d.f.})$ verdeeld met $s^2_p = \frac{(n_1 - 1)s^2_1 + (n_2 -1)s_2^2}{n_1 + n_2 -2}$
-
-(als de steekproeven onafhankelijk)
+De toetsingsgrootheid $z_\text{ber} = \frac{\bar x_1 - \bar x_2 - d_0 }{s_p \sqrt{\frac{\sigma^2}{n_1} + \frac{\sigma^2}{n_2}}}$ is $N(0,1)$ verdeeld.
 
 
 
 #### Testen van $\mu_1 - \mu_2$ met ongekende $\sigma$'s
 
-//TODO
+De toetsingsgrootheid $t_\text{ber} = \frac{\bar x_1 - \bar x_2 - d_0 }{s_p \sqrt{\frac{1}{n_1} + \frac{1}{n_2}}}$ is $t(n_1 + n_2 -2 \text{ d.f.})$ verdeeld met $s^2_p = \frac{(n_1 - 1)s^2_1 + (n_2 -1)s_2^2}{n_1 + n_2 -2}$
+
+(als de steekproeven onafhankelijk en de std's ongeveer gelijk)
+
+
+
+> :warning: Bij de twee bovenstaande gevallen moeten de twee populaties onafhankelijk zijn. Als dit niet het geval is (bijvoorbeeld twee onderzoeken op dezelfde personen), dan maak je simpelweg een nieuwe verdeling uit het verschil van de twee verdelingen. Deze beschouw je dan als één steekproef.  
 
 ### Willekeurig verdeelde populatie
 
@@ -538,23 +550,44 @@ Voor $np_o > 5$ en $n(1-p_0) > 5$ is de toetsingsgrootheid $z_\text{ber} = \frac
 
 ### De $\chi^2$ test
 
-Hiermee kunnen we nagaan of een populatie een bepaalde discrete heeft, met een bepaalde betrouwbaarheid.
+Hiermee kunnen we nagaan of in een populatie een bepaalde discrete verdeling aanwezig is, met een bepaalde betrouwbaarheid.
 
-Ik ga de uitleg schrijven nadat ik wat oefeningen heb gemaakt want ik begrijp nog niet zo goed wat de bedoeling is. //TODO
+Voor $n > 30$ en als alle $E[n_i] \geq 5$ (de verwachte waarden) :
+$$
+\chi^2_\text{ber} = \sum_{i=1}^k \frac{(n_i -E[n_i])^2}{E[n_i]} \text{ is } \chi^2(k-1-r \text{ d.f.}) \text{ verdeeld}
+$$
+Als $\chi^2_\text{ber} = 0$, dan is de steekproef afkomstig uit de bepaalde verdeling.
 
+Als de voorwaarde $E[n_i] \geq 5$ niet is voldaan, zal je wat categorieën moeten samennemen. Check bijvoorbeeld de oplossing van oefening 10 van dit hoofdstuk.
 
+$r$ is het aantal geschatte parameters. Als je bijvoorbeeld bij de poissonverdeling de parameter $\lambda$ moet schatten met $\bar x $, is $r$ gelijk aan $1$. Als je deze test wilt gebruiken bij een steekproef afkomstig uit een continue verdeling, zal je de steekproef moeten opdelen in ongeveer $\sqrt{n}$ klassen.
 
 ### De KS-test
 
 Oftewel Kolmogorov-Smirnov test. We gaan testen of een bepaalde continue verdeling aanwezig is. Dus bijvoorbeeld kijken of een populatie normaal verdeeld is.
 
-//TODO
+Ik heb nog geen enkele oefening in de cursus gezien waar je de berekening zelf moet doen. Yesss
+
+Oké onze real G Seppe van het labo heeft mij uitgelegd wat de ks-test doet.
+
+<img src="img/KS_Example.png" alt="Kolmogorov–Smirnov test - Wikipedia" style="zoom:48%;" />
+
+Beschouw deze afbeelding. De blauwe lijn is onze **steekproef**. We gaan simpelweg van klein naar groot bij elk element een trapje omhoog (een beetje oversimplified). Elke waarde in de blauwe lijn geeft dus eigenlijk het percentage van elementen van de steekproef die kleiner zijn dan die waarde. De rode lijn is een **bepaalde verdeling** waarmee we onze steekproef vergelijken. We berekenen nu een waarde $D_\text{ber}$. Deze geeft de **grootste afstand** tussen de blauwe en de rode lijn. Als deze **afstand klein** is, is natuurlijk de **kans groot** dat onze steekproef de rode verdeling volgt.
+
+
 
 ### Contingentietabellen
 
-//TODO
+Als we een groep kunnen onderverdelen volgens twee kenmerken, kan je ze voorstellen in een matrix. Beschouw het volgende voorbeeld:
 
+|                              | Neurts             | Geen neurts |
+| ---------------------------- | ------------------ | ----------- |
+| Door op algoritmen test      | $x_{11}$           | $x_{12}$    |
+| Niet door op algoritmen test | $x_{21}$ (MArtijn) | $x_{22}$    |
 
+Als je nu al die waarden gaat uitschrijven in een matrix krijg je een **contigentietabel**.
+
+Voor meer info verwijs ik u vriendelijk door naar de cursus.
 
 
 
@@ -562,19 +595,217 @@ Oftewel Kolmogorov-Smirnov test. We gaan testen of een bepaalde continue verdeli
 
 # 8 - ANOVA
 
+## One-way Anova
 
+We gebruiken Anova om het gemiddelde van **meer dan twee** populaties te testen, omdat we anders super veel t-testen . Om een Anova test uit te voeren nemen we $n$ steekproeven, met ieder $k$ observaties. Deze moeten allemaal uit **normaal verdeelde populaties** komen met **vergelijkbare varianties**.
+$$
+\begin{align}
+X_{ij} &= \text{de j-de observatie binnen de -de steekproef}\\
+\overline{X_{i}} &= \text{gemiddelde van steekproef i}\\
+\overline{X} &= \text{gemiddelde van alles}
+\end{align}
+$$
+Wat we nu dus willen berekenen is de totale variantie van alle steekproeven ten opzichte van $\overline X$. Deze bedraagt:
+$$
+\frac{1}{nk-1}\sum_{i=1}^{k} \sum_{j=1}^n (X_{ij} - \overline X)^2
+$$
+De term $(X_{ij} - \overline X)^2$ kunnen we omvormen:
+$$
+\sum_{i=1}^k \sum_{j=1}^n (X_{ij} - \overline X)^2 = \sum_{i=1}^k  n(X_{i} - \overline X)^2 +
+\sum_{i=1}^k  (X_{ij} - \overline X_i)^2
+$$
+oftewel:
+$$
+\text{SST} = \text{SSTR} + \text{SSE}
+$$
+
+
+
+De $SST$ delen we door $kn-1$, want deze betreft alle waarden, de $SSTR$ delen we door het aantal steekproeven, enz.
+
+
+
+$$
+\begin{align}
+\text{MST} &= \frac{\text{SST}}{kn-1} = \text{totale gemiddelde kwadratensom}\\
+\text{MSTR} &= \frac{\text{SSTR}}{k-1} = \text{gemiddelde kwadratensom tussen de steekproeven}\\
+\text{MSE} &= \frac{\text{SSE}}{k(n-1)} = \text{gemiddelde kwadratensom binnen de steekproeven}\\
+\end{align}
+$$
+We nemen dus nu eigenlijk de verhouding tussen de variatie tussen de steekproeven ($MSTR$) en binnen de steekproeven ($MSE$). Dit geeft onze toetsingsgrootheid: 
+$$
+f_\text{ber} = \frac{\text{MSTR}}{\text{MSE}} \quad : F(k-1,k(n-1) \text{ d.f.})
+$$
+
+Met als $H_0$: $\mu_0 = \mu_1 = \dots = \mu_n$
+
+## Block design
+
+Als de waarnemingen twee per twee voorkomen, dus als voor elke categorie in de kolommen en elke categorie in de rijen maar één waarneming is, maken we gebruik van block design. 
+
+Met als $H_0$: $\mu_0 = \mu_1 = \dots = \mu_n$
+
+Hebben we als toetsingsgrootheid:
+$$
+f_\text{ber} = \frac{\text{MSTR}}{\text{MSE}} \quad : F(k-1,(k-1)(n-1) \text{ d.f.})
+$$
+
+
+## Two-way anova
+
+Bij one-way Anova kan je de verschillen maar onderzoeken per factor. Als je de invloed van **combinaties van twee factoren** wilt onderzoeken, gebruik je two-way Anova. We testen dus niet alleen de invloed van elk van de factoren, maar ook van hun interactie.
+
+Ik ga de rest even achterwege laten.
+
+//TODO 
 
 # 9 - Regressie
 
+## Enkelvoudige lineaire regressie
+
+We zoeken een rechte:
+$$
+y = \beta_0 + \beta_1x
+$$
+Aan de hand van berekeningen die mij eerlijk gezegd echt geen tering kunnen boeien, bekomen we schattingen $b_0$ en $b_1$:
+$$
+b_1 = \frac{\overline{xy} - \overline x \cdot \overline y}{\overline{x^2} - \overline{x}^2}\\
+b_0 = \overline{y} - b_1 \overline{x}
+$$
+
+
+dus:
+$$
+y - \overline y = b_1(x- \overline x)
+$$
+Hiermee kan je je regressierechte opstellen.
 
 
 
 
 
+## Correlatiecoëfficiënt van Pearson
+
+$$
+r = \frac{SS_{xy}}{\sqrt{SS_{xx} \cdot SS_{yy}}} \\
+SS_{xx} = \sum_{i=1}^{n}(x_i - \overline{x})^2, \quad SS_{yy} = \sum_{i=1}^{n}(y_i - \overline{y})^2 \quad \text{en } SS_{xy} = \sum_{i=1}^n (x_i - \overline x)(y_i - \overline y)
+$$
+
+Hoe dichter deze bij 1 komt, hoe sterker de correlatie.
+
+## Meervoudige lineaire regressie
+
+Bij meervoudige lineaire regressie kan je veranderlijke $y$ afhangen van meerdere $x$'jes.
+
+//TODO
 
 # --------------- Labo ---------------
 
-## Oefeningen matlab
+# Vervelende dingen
+
+## Ks-test
+
+```matlab
+test_cdf = makedist('Normal', 'mu', mean(x), 'sigma', std(x))
+[h, p, d] = kstest(x, 'CDF',test_cdf)
+```
+
+Om het te versimpelen, we maken een (test)normaalverdeling met als $\mu$ en $\sigma$ het gemiddelde en de standaardafwijking van onze steekproef. Deze testverdeling vergelijken we dan met onze steekproef. Als dan $h=0$, aanvaarden we de nulhypothese en kunnen we met 95% betrouwbaarheid zeggen dat onze steekproef normaal verdeeld is.
+
+Je kan dit natuurlijk ook doen met andere verdelingen, maar dat ben ik in de oefeningen precies nooit tegengekomen.
+
+### Anova
+
+> :warning: Vergeet niet dat als je Anova wilt toepassen, de veranderlijke voor elk van de verschillende niveaus normaal verdeeld moet zijn met gelijke varianties.
+
+
+
+#### One-way Anova
+
+* $H_0$: de populatiegemiddeldes voor alle steekproeven zijn gelijk
+* $H_1$: niet alle gemiddeldes zijn gelijk
+  * in dit geval moet je nog `multcompare` doen om te zien welke verschillend zijn van elkaar
+
+```
+[p, table, stats] = anova1(M)
+```
+
+Onze matrix $M$ bevat per kolom een steekproef. Onze `anova1` functie geeft een tabel terug voor elke combinatie van kolommen (één combinatie per rij). De laatste kolom van deze tabel bevat dan een p-waarde voor elke combinatie. Deze p-waarde is voor de nulhypothese die stelt dat het gemiddelde van deze twee groepen gelijk is.
+
+
+
+#### Two-way Anova
+
+Wat willen we nu eigenlijk bereiken hiermee. Dat was mij vrij onduidelijk. Ik ga het proberen uitleggen aan de hand van een voorbeeld.
+
+![image-20220514144544216](img/image-20220514144544216.png)
+
+We hebben dus types snelwegen en types asfalt. Stel je nu even voor dat er wel meerdere metingen zijn per type asfalt en snelweg. De nummertjes zijn het aantal herstellingen die gedaan moesten worden aan elke combinatie. We willen weten hoeveel invloed de snelweg of het type asfalt heeft op de hoeveelheid ongevallen, en of er interactie is tussen de twee, dus dat de snelweg en het soort asfalt elkaar beïnvloeden. We doen.
+
+```
+[p,table,stats] = anova2(A,rep)
+```
+
+* $p$ geeft 3 waarden:
+
+  * p-waarde voor de kolommen: 
+    * $H_0$:  de gemiddeldes voor aantal ongevallen zijn gelijk voor de verschillende asfalttypes
+    * dit is hoeveel invloed het type asfalt heeft op het aantal herstellingen
+    * Accepteer $H_0$ als $p < \alpha$
+  * p-waarde voor de rijen
+    * $H_0$: de gemiddeldes voor aantal ongevallen zijn gelijk voor de verschillende snelwegen
+    *  dit is hoeveel invloed de snelweg heeft op het aantal herstellingen
+    *  Accepteer $H_0$ als $p < \alpha$
+  * p-waarde voor de interactie tussen de twee (als deze $< \alpha$ is er geen interactie). 
+    * Als er interactie is tussen de twee mag je eigenlijk niet kijken naar de eerste twee p-waarden.
+
+  De rest van de output boeit eigenlijk niet zo veel
+
+  
+
+#### Verschil tussen de twee
+
+Het verschil tussen de twee is het aantal onafhankelijke variabelen. One-way heeft er één, two-way heeft er twee. Laten we dat even kaderen. 
+
+* Bij one way Anova zouden we bijvoorbeeld de relatie tussen de gebruikte schoenen (Nike, Adidas) en de looptijden van athleten bepalen.
+* Bij two way Anova zouden we dan de relatie tussen het schoenmerk, de leeftijd en de looptijden bepalen.
+  * Nu kan het natuurlijk dat de leeftijd van de loper ook invloed heeft op het schoenmerk, dit testen we natuurlijk ook. Kijk maar naar het voorbeeld hierboven.
+
+
+
+### Multcompare
+
+**Bij one-way anova**
+
+```
+M= 
+[24 14 11 7 19
+15 7 9 7 24
+21 12 7 4 19
+27 17 13 7 15            
+33 14 12 12 10
+23 16 18 18 20]
+
+[p, table, stats] = anova1(M)
+multcompare(stats)
+```
+
+Multcompare maakt een mooie grafiek voor alle gemiddeldes van de steekproeven. Die lijntjes zijn denk ik de intervallen waar de gemiddeldes in kunnen liggen. Als de lijntjes niet overlappen, zijn de gemiddeldes significant verschillend. Als ze overlappen, kunnen we met 95% (tenzij anders ingesteld) betrouwbaarheid zeggen dat de gemiddeldes gelijk zijn.
+
+<img src="img/image-20220514155101522.png" alt="image-20220514155101522" style="zoom: 33%;" />
+
+**Bij two-way anova**
+
+Hetzelfde als bij anova1, maar je moet wel zien of je de gemiddeldes per rij of per kolom wilt vergelijken:
+
+```matlab
+multcompare(stats)
+multcompare(stats, 'Estimate', 'Row') % per rij
+```
+
+
+
+# Oefeningen matlab
 
 ### Week 1
 
