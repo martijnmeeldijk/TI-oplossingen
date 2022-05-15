@@ -524,6 +524,181 @@ $$
 
 # 5 - Decrease-and-conquer
 
+**Verminderen met een constante term**
+$$
+T(n) = T(n-c) +f(n) 
+$$
+**Verminderen met een constante factor**
+$$
+T(n) = T(\frac n b) + f(n)
+$$
+**Verminderen met een variabele factor**
+$$
+T(n) = T(\frac n {b_i})
+$$
+
+## Verminderen met een constante term
+
+Als je insertion sort recursief implementeert doet hij precies dit.
+
+
+
+## Verminderen met een constante factor
+
+//TODO varianten op binair zoeken
+
+
+
+## Verminderen met een variabele factor
+
+### Quickselect
+
+#### Pivot
+
+
+
+# 6 - Divide-and-conquer en algemene sorteermethodes
+
+## Divide-and-conquer
+
+Als we een algoritme maken volgens het principe van divide-and-conquer, **verdelen** we het probleem in **meerdere onafhankelijke deelproblemen**. Deze zijn allemaal kleinere instanties van het originele probleem. Meestal wordt elk deelprobleem dan gedelegeerd door middel van een recursieve oproep, totdat het probleem zo klein is dat we bij het **basisgeval** terecht komen. We combineren dan de oplossingen van de deelproblemen tot een oplossing voor ons origineel probleem.
+
+### Algoritme van Strassen
+
+Niemand houdt van matrices. Strassen is een simp want zijn algoritme is nieteens goed volgens Simoens.
+
+//TODO
+
+
+
+## Algemene sorteermethodes
+
+We beginnen dit hoofdstuk met enkele andere aspecten van sorteren waarmee we rekening willen houden:
+
+* Geheugengebruik
+
+  * We willen weten hoeveel extra geheugen een sorteermethode nodig heeft. Als de hoeveelheid extra geheugen niet afhankelijk is van het aantal elementen, spreken we van **ter plaatse** rangschikken.
+
+* Stabiliteit
+
+  * Als het de volgorde van gegevens met dezelfde sleutels niet verandert, noemen we ons algoritme **stabiel**. Als we bijvoorbeeld een lijst van personen die op naam gesorteerd staat, op leeftijd gaan sorteren, is ons algoritme stabiel als na deze operatie de personen per leeftijd nog steeds alfabetisch gerangschikt staan.
+
+  
+
+
+
+## Shellsort
+
+<img src="img/image-20220515164615865.png" alt="image-20220515164615865" style="zoom:50%;" />
+
+Shellsort is simpel. We gaan een rij $k$-sorteren. Dit betekent dat we ervoor zorgen dat als we de rij afgaan in stappen van $k$ groot, de elementen die we tegenkomen in volgorde staan. Dit doen we met insertion sort. Nu nemen we dus telkens een kleinere $k$ totdat we aan $k=1$ zitten. Dit is dan eigenlijk gewone insertion sort, maar omdat de rij al grotendeels gesorteerd is, is het aantal inversies klein.
+
+Shellsort rangschikt **ter plaatse**, maar is **niet stabiel**. Dit komt door het rangschikken van de verschillende deelreeksen. De complexiteit hangt af van de gekozen incrementreeks (dus welke $k$'tjes je gaat kiezen), maar de theoretisch beste reeks is nog niet gevonden. 
+
+
+
+## Heapsort
+
+Neem bijvoorbeeld de reeks: `5 2 7 9 4 7`
+
+<img src="img/image-20220515165807977.png" alt="image-20220515165807977" style="zoom:50%;" />
+
+Wat als we nu van onze data een heap maken en hier gewoon telkens het grootste element uit halen? Dat is Heapsort. Een rij omvormen in een heap kost $O(n)$. We moeten dan wel telkens de heapvoorwaarde herstellen. Dit kost in totaal $O(n\log n)$. Dit is dan ook de uitvoeringstijd voor het algoritme. Het fijne aan Heapsort is dat de uitvoeringstijd heel consistent is, het gemiddelde geval wijkt nauwelijks af van het slechtste geval. Het algoritme sorteert **ter plaatse**, maar is spijtig genoeg **niet stabiel** omdat het opbouwen en herschikken van de heap de volgorde van gelijke elementen kan verstoren.
+
+
+
+## Mergesort
+
+| Voor                                                        | Na                                                          |
+| ----------------------------------------------------------- | ----------------------------------------------------------- |
+| ![image-20220515170913069](img/image-20220515170913069.png) | ![image-20220515170926739](img/image-20220515170926739.png) |
+
+Mergesort is een perfect voorbeeld van divide-and-conquer. We verdelen telkens de tabel in twee helften en sorteren elke helft apart. Op het laagste niveau bevat elke deeltabel maar één element, en is dus al gesorteerd. We moeten dus enkel weten hoe we twee reeds gesorteerde rijen moeten samenvoegen, vandaar de naam mergesort.
+
+Samenvoegen van twee gerangschikte tabellen kan heel gemakkelijk. Je vergelijkt van beide tabellen het eerste element en je neemt telkens de kleinste. Hiervoor heb je dus wel extra geheugen nodig, want je moet dat element wel ergens kunnen steken. Kopieer dus één van de twee deeltabellen naar een hulptabel. Als we bij elke samenvoeging bij de linkse deeltabel beginnen, behouden we de volgorde van gelijke sleutels en is het algoritme bijgevolg **stabiel**. Door het extra geheugengebruik rangschikt het wel **niet ter plaatse**.
+
+**Efficientie**
+$$
+\begin{cases}
+2T(\frac n 2) + cn \quad &\text{ if } n>1
+\\ 0 \quad &\text{ if } n = 0,1
+\end{cases}
+$$
+ Elke recursieve oproep splitst de rij in twee. Om deze twee samen te voegen hebben we in het slechtste geval $n-1$ sleutelvergelijkingen nodig. In het beste geval maar half zo veel. We schrijven dus gewoon $cn$ met $c$ een onbekende constante. We kunnen op deze recursieve betrekking het mastertheorema toepassen en bekomen:
+$$
+T(n) = \Theta(\log n \cdot n^{\log_b a}) = \Theta(n\log n)\\
+\text{ want } \log_b a = \log _2 2 = 1
+$$
+**Bottom-up implementatie**
+
+<img src="img/image-20220515181413265.png" alt="image-20220515181413265" style="zoom:50%;" />
+
+Je kan mergesort nog een beetje optimaliseren door in plaats van recursief te dalen, gewoon direct te beginnen bij deelrijen met lengte 1. Deze ga je dan stap voor stap mergen tot grotere rijen. Zo vermijd je de overheid van recursieve oproepen. De efficiëntie is nog steeds $\Theta(n\log n)$.
+
+**Optimalisaties**
+
+Als je een retard beta cuck bent maak je voor elke merge operatie een nieuwe hulptabel aan. Als je een alpha chad bent weet je dat je eigenlijk maar één extra tabel met grootte $n$ moet aanmaken voor mergesort.
+
+<img src="img/image-20220515182530501.png" alt="image-20220515182530501" style="zoom:50%;" />
+
+Je gaat nu gewoon de deelrijen (lengte 2 in het voorbeeld) in de hoofdtabel mergen in de hulptabel waardoor je hem overschrijft. In de volgende stap gebruik je de hulptabel als nieuwe hoofdtabel.
+
+<img src="img/image-20220515182836618.png" alt="image-20220515182836618" style="zoom:50%;" />
+
+Je kan ook nog een kleine optimalisatie doen door te starten met deeltabellen groter dan één element, en deze al te sorteren met insertion sort. 
+
+
+
+## Quicksort
+
+Om Quicksort even kort samen te vatten zal ik even beginnen met een oversimplificatie, zonder optimalisaties. 
+
+* Neem het eerste element (we noemen dit de pivot)
+* Zet alle elementen kleiner dan dat element links ervan
+* Zet alle elementen groter dan dat element rechts ervan
+* Ga recursief verder in het linkse en rechtse deel 
+* Herhaal tot je aan een deelrij van één element komt. Nu is je hele rij gesorteerd
+
+Wat moeten we nu doen om ervoor te zorgen dat de elementen kleiner dan de pivot links staat? En zodat de grotere elementen rechts staan? We hebben in één van de vorige hoofdstukken al Lomuto partitionering besproken. Dit is zeker een mogelijkheid, maar er bestaat een betere methode.
+
+### Partitiemethode van Hoare
+
+We nemen weer ter illustratie het eerste element van de rij als pivot. ...
+
+
+
+# 7 - Lineaire sorteermethodes
+
+
+
+## Counting sort
+
+
+
+## Radix sort
+
+
+
+## Bucket sort
+
+
+
+# 8 - Dynamisch programmeren
+
+
+
+
+
+# 9 - Backtracking
+
+
+
+# 10 - Gulzige algoritmen en metaheuristieken
+
+
+
+# 11 - NP-Complete problemen
+
 
 
 
