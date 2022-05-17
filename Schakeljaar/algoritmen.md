@@ -651,6 +651,8 @@ Je kan ook nog een kleine optimalisatie doen door te starten met deeltabellen gr
 
 ## Quicksort
 
+![A sort of quick guide to quicksort and Hoare's partitioning scheme in  Javascript | by Mark Sauer-Utley | ITNEXT](img/1*QlYf6-SE1Eq0_V-vKm1vtg.gif)
+
 Om Quicksort even kort samen te vatten zal ik even beginnen met een oversimplificatie, zonder optimalisaties. 
 
 * Neem het eerste element (we noemen dit de pivot)
@@ -661,43 +663,383 @@ Om Quicksort even kort samen te vatten zal ik even beginnen met een oversimplifi
 
 Wat moeten we nu doen om ervoor te zorgen dat de elementen kleiner dan de pivot links staat? En zodat de grotere elementen rechts staan? We hebben in één van de vorige hoofdstukken al Lomuto partitionering besproken. Dit is zeker een mogelijkheid, maar er bestaat een betere methode.
 
+
+
 ### Partitiemethode van Hoare
 
-We nemen weer ter illustratie het eerste element van de rij als pivot. ...
+<img src="img/image-20220515185242122.png" alt="image-20220515185242122" style="zoom: 33%;" />
+
+We nemen weer ter illustratie het eerste element van de rij als pivot. 
+
+* Laat $i$ en $j$ overeenkomen met de indices van het eerste en het laatste element.
+* Schuif $i$ naar rechts tot je een element groter dan de pivot tegenkomt
+* Schuif $j$ naar links tot je een element kleiner dan de pivot tegenkomt
+* Swap nu de elementen op plaats $i$ en $j$
+* Ga verder totdat $i$ en $j$ elkaar kruisen
+
+### Quicksort
+
+Als we deze partitionering nu telkens opnieuw uitvoeren op de deelrijen links en rechts van de pivot, zal uiteindelijk onze rij gesorteerd zijn.
+
+```c++
+void quicksort (vector<T>&v, int l, int r){
+   // Rangschikt de deelvector v[l..r-1]
+   if (l<r-1){
+     // Partitie met v[l] als spilelement
+     T pivot = v[l]; //Geen T&, geen move!
+     int i = l, j = r-1
+     while (v[j]>pivot)
+       j--;
+     while (i<j){
+        swap(v[i],v[j]);
+        i++;
+     		while (v[i]<pivot)
+          i++;
+        j--;
+        while (v[j]>pivot)
+          j--;
+     }
+     // Recursief rangschikken van beide delen
+     quicksort (v, l, j+1);
+     quicksort (v, j+1, r);
+   }
+}
+void quicksort (vector<T>&v){
+     quicksort(v, 0, v.size());
+}
+```
 
 
+
+### Efficiëntie
+
+**Beste geval**
+
+De deelrijen zijn altijd even groot:
+$$
+\begin{cases}
+2T(\frac n 2) + cn \quad &\text{ if } n>1
+\\ 0 \quad &\text{ if } n = 0,1
+\end{cases}
+$$
+Dit is dezelfde betrekking als bij Mergesort en dus $T(n) = \Theta(n\log n)$
+
+
+
+**Slechtste geval**
+
+Dan bestaat één van de twee deeltabellen telkens uit één element. Dus:
+$$
+\begin{align}
+T(n) &= cn + T(1)+T(n-1)\\
+T(n-1) &= c(n-1) + T(1) + T(n-2)\\
+ & \space \space\vdots \\
+ T(2) &= c(2) + T(1) + T(1)
+
+\end{align}
+$$
+De uitvoeringstijd is dus de som van al die dingen: $\Theta(n^2)$
+
+
+
+### Random keuze van de pivot
+
+//TODO
+
+
+
+### Varianten
+
+**Cut-off**
+
+We kunnen de recursie stoppen als de deeltabel kleiner is geworden dan een bepaalde cut-off waarde. Dan zou je oftewel deze kleine deeltabellen ieder sorteren met insertion sort, oftewel insertion soort in één keer de hele tabel laten sorteren. Dit zal zeer efficiënt uitvallen aangezien het aantal inversies laag is.
+
+**Mediaan-van-drie**
+
+Neem het eerste, middelste en het laatste element van de lijst. Sorteer deze 3 ter plaatse. De grootste en de kleinste kunnen als stopelementen dienen, de middelgrootste gebruik je als pivot. We houden deze apart door hem op de voorlaatste plaats in de rij te zetten. Voor de recursieve oproep zetten we de pivot dan nog op zijn definitieve plaats door te swappen. Deze optimalisatie blijkt in de praktijk 5% sneller dan de pivot random kiezen.
+
+**3-way partitioning**
+
+We verdelen de tabel in drie partities. 
+
+* Elementen kleiner dan de pivot
+* Elementen gelijk aan de pivot
+* Elementen groter dan de pivot
+
+**Dual pivot sort**
+
+//TODO
 
 # 7 - Lineaire sorteermethodes
 
+## Efficiëntie van rangschikken
 
+<img src="img/image-20220515214614947.png" alt="image-20220515214614947" style="zoom:50%;" />
+
+We willen een informatietheoretische ondergrens bepalen voor eender welk sorteeralgoritme op basis van sleutelvergelijkingen. Als we nu bijvoorbeeld een lijst hebben met drie waardes (a, b en c), kunnen we alle mogelijke sequenties van vergelijkingen die een sorteeralgoritme zou uitvoeren in de vorm van een beslissingsboom voorstellen. Elke inwendige knoop is een sleutelvergelijking tussen twee elementen. Elke bladknoop is een mogelijke uitkomst van het algoritme. De bladeren van deze boom bevatten dus alle mogelijke permutaties van indices onze invoerrij. Dit zijn er minstens $n!$, aangezien een sorteeralgoritme via verschillende reeksen sleutelvergelijkingen tot dezelfde permutatie kan komen.
+
+Hoe veel sleutelvergelijkingen heeft een sorteeralgoritme nu nodig in het slechtste geval? En in het gemiddelde geval? We zoeken voor beiden een ondergrens.
+
+**Slechtste geval**
+
+Het slechtste geval is de langste afstand van de wortel naar een blad, dit is per definitie de hoogte van de boom. Om een ondergrens te vinden zoeken we de minimale hoogte van een boom met $n$ bladeren.
+$$
+\begin{align}
+2^{h-1}&<n!\leq2^h \\
+h &= \lceil \log n! \rceil \\
+h&> \log(\frac n e)^n \quad \text{ *(formule van sterling)} \\
+h&>n\log n-n\log e \\
+h&= \Omega(n \log n)
+\end{align}
+$$
+**Gemiddeld geval**
+
+Ook $\Omega(n \log n)$ //TODO
 
 ## Counting sort
 
+<img src="img/Counting-sort-4_1.png" alt="Counting Sort (With Code in Python/C++/Java/C)" style="zoom: 33%;" />
 
+Counting sort is zeer nuttig om een tabel te sorteren met waarden die binnen een niet al te groot interval vallen, met veel duplicaten. Eerst en vooral hebben we het maximum en minimum van de lijst nodig. Die kunnen we vinden met Quickselect Dan doen we de volgende stappen:
+
+* Maak een frequentietabel van alle waarden, de index van deze tabel komt overeen met de waarde in de originele tabel
+* Maak hiervan een cumulatieve frequentietabel (door te overlopen en op te tellen)
+  * Elke waarde in de frequentietabel komt nu overeen met de hoogste index (in de originele tabel) van de waarde op deze index in de frequentietabel
+* Maak een nieuwe tabel voor je uitkomst
+* Nu overloop je de originele tabel van rechts naar links en voor elk element $x$ dat je tegenkomt doe je:
+  * Ga naar de index $x$ in de frequentietabel 
+  * Zet $x$ op plaats frequentietabel[x] in de uitkomsttabel
+  * Decrementeer frequentietabel[x]
+* Zo ga je door tot je aan het eerste element van de originele tabel zit
+
+Dit lijkt een beetje omslachtig, maar deze extra stappen zijn nodig zodat het algoritme **stabiel** is, omdat we vaak te maken zullen hebben met duplicaten. Spijtig genoeg rangschikt het algoritme door de extra tabellen **niet ter plaatse**.
+
+Als we $k$ verschillende sleutels hebben en $k = O(n)$, dan is ons algoritme $\Theta(n)$.
 
 ## Radix sort
+
+<img src="img/Simplistic-illustration-of-the-steps-performed-in-a-radix-sort-In-this-example-the.png" alt="Simplistic illustration of the steps performed in a radix sort. In this...  | Download Scientific Diagram" style="zoom: 50%;" />
+
+Radix sorteert een rij door elke sleutel **op te splitsen** in afzonderlijke elementen. Zo kan je een getal in cijfers opsplitsen of een string in letters. Elk afzonderlijk element wordt dan gezien als een getal in een talstelsel met een bepaalde radix (bv 26 bij letters). We kunne onze rij nu dus sorteren per afzonderlijk element. Dit doen we met counting sort. Ik zal iets dieper ingaan op de details in de volgende paragrafen.
+
+
+
+### LSD Radix sort
+
+We beginnen bij de meest rechtse (de least significant digit) en sorteren de rij op basis van dit 'getal'. Wanneer dit gedaan is gaan we eentje hoger. Enzovoort enzoverder. 
+
+Met radix $m$, aantal cijfers $d$ en is de performantie $O(dn + dm)$. Als je geen poep in je hoofd hebt neem je een kleine radix en radix sort dus $O(dn)$. Lineair dus. 
+
+
+
+### MSD Radix sort
+
+We sorteren de rij op basis van het grootste 'getal'. Dan sorteren we recursief alle deelrijen die beginnen met hetzelfde getal op basis van het tweede grootste getal. Dit doen we natuurlijk altijd met counting sort. 
+
+
+
+**Complexiteit**
+
+//TODO
+
+
 
 
 
 ## Bucket sort
 
+//TODO
+
 
 
 # 8 - Dynamisch programmeren
 
+Dynamisch programmeren is eigenlijk een upgrade van divide-and-conquer. We splitsen problemen op in kleinere **overlappende deelproblemen**. Als we een deelprobleem hebben opgelost, slaan we op de één of andere manier het resultaat op, zodat we in de andere deelproblemen gebruik kunnen maken van dit resultaat. Dit noemt men **memoisatie**. We ruilen dus geheugen voor uitvoeringstijd.
+
+Stel dat we een een algoritme willen schrijven om het $n$-de Fibonaccigetal te berekenen.
+$$
+\begin{cases}
+F_{n-1} + F_{n-2} &\text{ als } n \geq 2 \\
+1 &\text{ als } n = 1 \\
+0 &\text{ als } n = 0
+\end{cases}
+$$
+Als we nu geen big brain programmeerstrategieën zouden hebben, zouden we dit algoritme recursief kunnen implementeren. Dan laat je bijvoorbeeld het algorime twee recursieve oproepen doen om telkens de vorige twee Fibonaccigetallen te berekenen. Dit is natuurlijk vrij achterlijk, aangezien super veel getallen meerdere keren gaan berekenen. Kijk maar naar het plaatje.
+
+<img src="img/image-20220516112720610.png" alt="image-20220516112720610" style="zoom:50%;" />
+
+Om dit algoritme te verbeteren met dynamisch programmeren, kunnen we dit op twee manieren aanpakken:
+
+* **Top-down**
+  * We vertrekken vanuit de wortel van onze recursieboom en kijken welke deelproblemen moeten worden opgelost, zodat we geen onnodige problemen oplossen. We houden ook een memoruimte bij zodat we éénzelfde probleem geen twee keer op moeten lossen.
+  * We beginnen bij het grootste getal en werken zo nog steeds naar beneden, maar nu slaan we de deelresultaten $F_i$ (de reeds berekende Fibonaccigetallen) op in een tabel. We kijken dus eerst in de tabel alvorens een getal te berekenen. 
+
+* **Bottom-up**
+  * We berekenen alle deeloplossing in een bepaalde volgorde zodat als we bij een bepaald deelprobleem komen, alle onderliggende deelproblemen zijn opgelost. We gaan dus eigenlijk omhoog in een boom.
+  * Hier beginnen we onderaan. Elke keer dat we een nieuw getal berekenen houden we de vorige twee getallen bij. Deze implementatie is natuurlijk de meest efficiënte. Dat is ook meestal het geval voor een bottom-up implementatie.
 
 
 
+## Stappenplan
+
+1. Karakterisatievan de oplossing
+2. Opstellen recursieve betrekking
+3. Bepaal waarde van de optimale oplossing
+4. Bepaal structuur van de optimale oplossing
+
+
+
+Ik denk dat het bij dit hoofdstuk vooral belangrijk is dat je oefeningen maakt. Ik heb een aantal oefeningen van dit hoofdstuk uitgeschreven in C++ met wat tests. https://github.com/martijnmeeldijk/martijn_oef
+
+
+
+## Toepassingen
+
+### Optimale binaire zoekboom
+
+Stel je voor. We hebben eer reeks sleutels die op oplopende volgorde zijn gesorteerd. We hebben ook een tabel met een bepaalde reeks sleutels, met voor elke sleutel een zoekfrequentie. Hoe kunnen we nu een binaire boom opstellen die de totale zoektijd voor deze reeks sleutels  minimaliseert?
+
+We hebben dus:
+
+* Een oplopende reeks sleutels: $s_1, s_2, \dots ,s_n$
+* Zoekfrequentie $p_i$ voor elke sleutel $s_i$
+* Zoekfrequenties $q_0, q_1, \dots , q_n$ 
+  * deze liggen ieder in een interval tussen twee sleutels (of op één van de uiteindes): $]-\infty, s_1[, ]s_1,s_2[ , \dots, ]s_n, + \infty[$
+
+We zoeken naar een boomstructuur die de volgende uitdrukking minimaliseert:
+$$
+\sum_{i=1} ^n (\text{diepte}(s_i) + 1)p_i + \sum_{i=1} ^n (\text{diepte}(b_i) + 1)q_i
+$$
+Dit is dus de som van alle lengtes van de zoekpaden naar aanwezige en afwezige sleutels.
+
+//TODO
+
+
+
+### Longest common subsequence
+
+Neem twee strings. Wat is de langst opeenvolgende sequentie letters die in beide strings voorkomt? Je mag deze sequentie bekomen door uit elke string een aantal letters weg te halen.
+
+We passen het stappenplan toe:
+
+**Karakterisatie van de oplossing**
+
+On probleem heeft een **optimale deelstructuur**. Een optimale oplossing maakt gebruik van optimale oplossingen voor deelproblemen. Beschouw de volgende sequenties.
+
+```pseudocode
+LCS('CGTATGC', 'CTGAC') = LCS('CGTATG', 'CTGA') + 'C'
+LCS('CGTATG', 'CTGA') = max(LCS('CGTAT', 'CTGA'), LCS('CGTATG', 'CTG'))
+```
+
+We kunnen onze LCS uitdrukken in functie van de LCS van de string met één letter minder.
+
+**Opstellen van een recursieve betrekking**
+$$
+X = \{ x_1, x_2, \dots, x_n\} \quad Y = \{ y_1, y_2, \dots, y_m\}
+$$
+We stellen de oplossing voor in een matrix $c$. Het element $c[i,j]$ is de waarde van de LCS van de eerste $i$ letters van $X$ en de eerste $j$ letters van $Y$.
+$$
+c[i, j] = \begin{cases}
+0 &\text{ als } i = 0 \text{ of } j=0 \\
+c[i-1][j-1] &\text{ als } i > 0 \text{ en } j>0 \text{ en } x_i = y_j \\
+max(c[i][j-1], c[i - 1][j]) &\text{ als } i > 0 \text{ en } j>0 \text{ en } x_i \neq y_j
+\end{cases}
+$$
+**Waarde van de optimale oplossing**
+
+De waarden $c[i,j]$ worden dus opgeslagen in een matrix. Om de waarde van een element te berekenen hebben we de waarde links, linksboven en boven nodig. Als we gewoon vanaf het eerste element in de linkerbovenhoek vertrekken en de matrix rij per rij aflopen, kunnen we hem zo vullen met waarden om uiteindelijk rechtsonder de finale waarde te krijgen.
+
+**Opbouw van de optimale oplossing**
+
+We willen niet alleen de lengte van de langste deelsequentie, maar ook de deelsequentie zelf berekenen. We moeten hiervoor een extra tabel bijhouden die onthoudt welke vorige waarde in $c$ we hebben om elke waarde te berekenen. Dit is iets duidelijker met een plaatje erbij.
+
+<img src="img/image-20220516131522425.png" alt="image-20220516131522425" style="zoom:50%;" />
+
+De matrix $b$ wordt hier voorgesteld door de pijltjes. Als we vanaf het element rechtsonder de pijlen volgen, kunnen we zo de longest common substring vinden.
 
 # 9 - Backtracking
+
+## Combinatorische problemen
+
+Bij combinatorische problemen zoeken we naar oplossingen die de vorm hebben van een combinatorisch object zoals een combinatie of een permutatie. Bij een combinatorisch optimalisatieprobleem zoeken we een geldige oplossing met een minimale of maximale waarde. Voor de meeste combinatorische problemen zijn nog geen efficiënte oplossingen gevonden. We moeten dus kandidaat-oplossingen uitproberen. Dit proces kunnen we versnellen dankzij **backtracking**.
+
+
+
+## Backtracking
+
+Met backtracking gaan we onze oplossing **incrementeel opbouwen**. Het is belangrijk dat we het dan zo snel mogelijk ontdekken als we ons op een dood spoor bevinden. Als dit het geval is keren we terug op onze stappen. Beschouw het $n$-queens probleem. We willen $n$ koninginnen op een bord plaatsen zodat ze elkaar niet kunnen slaan. Een backtracking oplossing van dit probleem zou er zo uit kunnen zien.
+
+<img src="img/image-20220516133933621.png" alt="image-20220516133933621" style="zoom:50%;" />
+
+Als we op een ongeldige oplossing komen (een x), keren we één stap terug. Als we vast komen te zitten gaan we terug naar boven en proberen we daar verder. Dat is backtracking in een notendop. Als we nu helemaal sicko mode willen gaan en ons algoritme sneller willen maken, zullen we moeten **snoeien**.
+
+### Snoeien
+
+Omdat de grootte van onze boom vreselijk snel toeneemt, willen we het aantal knopen zo veel mogelijk beperken. We moeten onze boom dus snoeien. Hier zijn een aantal verschillende technieken voor:
+
+* **Variabelen ordenen**: we kunnen het aantal knopen beperken door de volgorde waarin variabelen worden toegevoegd te wijzigen. Als je een sudoku wilt oplossen kan je bijvoorbeeld beginnen bij het vakje waar zo weinig mogelijk verschillende cijfers in mogen.
+* **Waarden ordenen**: we kunnen de volgorde waarin de mogelijke waarden van een variabele worden uitgeprobeerd veranderen. Dit heeft geen invloed op de grootte van de boom, maar wel op de volgorde dat hij wordt overlopen. Je begint best met een waarde die zo veel mogelijk opties open houdt.
+* **Vooruit testen**: wanneer je een waarde toekent aan een variabele, kijk je of er ten minste één mogelijke waarde overblijft voor alle resterende variabelen. Als dit niet het geval is, ga je meteen naar de volgende waarde.
+* **Symmetrieën**: deelbomen die dezelfde oplossingen leveren die we al gevonden hebben, kunnen we weglaten.
+* **Branch-and-bound**: Als je een voorlopige deeloplossing hebt, maar weet dat de nog toe te wijzen variabelen onmogelijk tot een betere oplossing kunnen leiden dan de huidig beste oplossing, breek je de zoektocht af.
+
+
 
 
 
 # 10 - Gulzige algoritmen en metaheuristieken
 
+## Gulzige algoritmen
+
+//TODO
+
+
+
+## Metaheuristieken
+
+Er zijn een aantal strategieën, afgeleid uit vele probleemspecifieke heuristieken, die algemener toepasbaar blijken. Dit zijn de zogenaamde **metaheuristieken**. Deze strategieën zijn algemene recepten waar jij dan zelf nog de juiste ingrediënten voor moet kiezen. Chili con Carne
+
+Ik heb zin in Chili con Carne. Maar er is geen Chili en ook geen con Carne dus ik ben genaaid. 
+
+Je gaat metaheuristieken meestal gebruiken voor **optimalisatieproblemen**. We zullen er enkele bespreken.
+
+### Lokaal zoeken
+
+Begin van een willekeurige oplossing $s_0$. We definiëren die verzameling van naburige oplossingen $\mathcal N (s_0)$. Dit zijn oplossingen die je verkrijgt door $s_0$ een heel klein beetje aan te passen. We kiezen nu de beste oplossing $s_1$ uit $\mathcal N (s_0)$. Dit proces herhalen we tot we in een **lokaal maximum** terecht komen. Deze procedure heet dus ook **steepest hill climbing**. Belangrijk om te weten is dat dit lokaal maximum niet speciaal de beste oplossing is. Daarom kan je dit proces best nog een paar keer herhalen met andere random startoplossingen.
+
+### Simulated Annealing
+
+Simulated Annealing biedt een oplossing voor het probleem dat zich voordoet bij lokaal zoeken. We zorgen ervoor dat er een bepaalde kans is dat een slechtere oplossing aanvaardt wordt, in de hoop uit **lokale extrema te kunnen ontsnappen** en het globale maximum te vinden.
+
+Stel je voor. We hebben een oplossing $s$ en een iets slechtere oplossing $s'$. We beschikken ook over een functie $f$ om te meten hoe goed een oplossing is. De kans om een slechtere oplossing te aanvaarden hangt af van $f(s) - f(s')$. Hoe groter dit verschil, hoe kleiner de kans dat we de slechtere oplossing aanvaarden.
+
+Nu wordt het leuk. We willen ook dat we in het begin van het zoekproces vaak slechtere oplossingen uitproberen. Naarmate we verder zoeken, willen we die kans verkleinen. Deze kans moet als het ware afkoelen. Neem $T$, we noemen dit de temperatuur. We laten terwijl ons algoritme draait $T$ geleidelijk aan dalen. We kunnen dan bijvoorbeeld de Boltzmann distributie gebruiken om te bereken wat de kans dat we de foute oplossing kiezen moet zijn. 
+$$
+p(T, s's) = e^{\frac{f(s) - f(s')} T}
+$$
+Deze geeft dan altijd een waarde tussen $0$ en $1$. Onze kans dus. Naarmate $T$ daalt, zal deze functie een kleinere kans teruggeven. Hoe snel we $T$ laten dalen is een proces van trial en error. Het kans soms ook dat het beter is om $T$ te laten oscilleren.
+
+### Genetische algoritmen
+
+Ik veronderstel dat je al kunt raden van waar genetische algoritmen hun naam krijgen, dus dat zal ik even achterwege laten. Genetische algoritmen houden een populatie van kandidaatoplossingen bij. We gaan herhaaldelijk de populatie uitdunnen door de slechtste oplossingen dood te maken. Welke oplossingen moeten sterven, bepalen we met een bepaalde **fitness functie**. Dan maken we kruisingen tussen de overblijvende oplossingen, door bijvoorbeeld onderdelen te wisselen. We voegen wat willekeurige mutaties toe. Dit is ongeveer hetzelfde als een andere oplossing kiezen uit $\mathcal N (s)$. 
+
+Hoe je dit allemaal in de praktijk kunt toepassen is niet echt duidelijk. Hoe cool ze ook klinken, zijn genetische algoritmen vaak niet zo nuttig. Het wisselen van genen schaalt niet bepaald goed en we moeten voor elke oplossing een mogelijks kostelijke fitness functie evalueren.
+
+
+
 
 
 # 11 - NP-Complete problemen
+
+### Reductie
+
+
+
+### P en NP
+
+
+
+### NP-complete problemen
 
 
 

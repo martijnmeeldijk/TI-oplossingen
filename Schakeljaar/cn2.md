@@ -348,7 +348,69 @@ Er zijn maar $2^{32}$ , oftewel $4.294.967.296$ mogelijke ipv4 adressen. Om dit 
 
 Als je met je computer thuis een pakketje stuurt naar een server buiten je netwerk, zal je router het source ip adres vervangen door zijn publieke ip adres. Hij onthoudt dan jouw ip en de source poort en stuurt het pakketje door naar de server (mogelijks ook via een andere poort). Als hij antwoord krijgt van de server op diezelfde poort weet hij dat hij het pakketje naar jouw pc moet doorsturen.
 
+//TODO
 
+// heel veel dingen overgeslagen
+
+
+
+## BGP
+
+Het Border Gateway Protocol wordt gebruikt voor de routering **tussen** verschillende autonome systemen op het internet. In tegenstelling tot OSPF, dat zich bezig houdt met de routering **binnen** een autonoom systeem. Alleen routers die verbinding maken met andere autonome systemen maken gebruik van het BGP protocol. Dit zij dan ook de Border Gateways. Als ze met elkaar praten, noemen we dat *peeren*.
+
+BGP maakt gebruik van TCP in de transportlaag. Er is dus niet speciaal een rechtstreekse link tussen twee routers opdat ze BGP met elkaar kunnen praten.
+
+BGP is een **path-vector** protocol. Dit wil zeggen dat:
+
+* We houden een pad bij naar de bestemming (in plaats van een afstandsmaat)
+* De convergentie loopt beter dan bij distance-vector protocollen (we kunnen sneller loops detecteren)
+* We kunnen andere paden toelaten dan de kortste paden
+
+
+
+### Basisprincipes
+
+BGP voorziet elke AS drie dingen
+
+* **Advertise**: routers gaan adverteren tot welke prefixen of subnetten ze toegang bieden. Dus hun reachability info doorgeven aan andere routers
+* **Propagate**: Routers kunnen ontvangen reachability info propageren naar andere BGP routers.
+* **Select**: BGP routers kunnen ontvangen paden of routers selecteren aan de hand van hun eigen voorkeuren of policies.
+
+We zullen wat dieper ingaan op elk van deze principes.
+
+
+
+### Advertisement of reachability
+
+Een router laat zijn aangrenzende routers weten welke subnet prefixen hij kan bereiken. Dit is eigenlijk een *impliciete belofte* die stelt dat hij ontvangen pakketten naar deze subnet prefixen zal afleveren naar hun bestemming.
+
+Zo een advertisement bevat de volgende zaken:
+
+* AS-PATH: dit is een padvector die de definiëert welke tussenliggende AS'en moeten doorlopen worden om tot een bepaald netwerk te raken.
+* NEXT-HOP: De volgende hop die moet genomen te worden om dit netwerk te bereiken. 
+
+
+
+### Propagation
+
+<img src="img/image-20220517135631932.png" alt="image-20220517135631932" style="zoom:50%;" />
+
+Binnen een AS zullen routers gebruik maken van **iBGP** (interior BGP) om reachability informatie met elkaar te delen, het zal dan een *full mesh*\* op te zetten tussen alle routers. Zo kan de reachability info vanuit een ander AS ook binnen onze AS verder propageren. Routers die verbonden zijn met andere AS'en gebruiken dan **eBGP** (exterior BGP) om informatie met elkaar uit te wisselen. Elke keer dat een router een nieuwe prefix leert, zal hij daarvoor een entry toevoegen in zijn routeringstabel. Die tabellen kunnen in de context van het internet natuurlijk snel heel groot worden.
+
+\* *Full mesh*: elke router is verbonden met elke andere router. In deze context is deze verbinding een iBGP-sessie.
+
+Een AS kan ook beslissen om bepaalde reachability info **niet door te propageren**. Als je bijvoorbeeld enkel paketten van betalende klanten wilt doorsturen. Je hebt dus eigenlijk zelf de macht om te beslissen hoe jouw net werk wordt gebruikt, door bepaalde info wel of niet te delen. Denk terug aan de belofte van de vorige titel.
+
+
+
+### Route selection
+
+Hoe kiest een router nu welke route hij moet gebruiken als hij meerdere routes heeft naar dezelfde prefix? De volgende regels zullen overlopen worden in volgorde:
+
+1. **Local preference value**: handmatig instellen om voorkeur te geven aan paden via bepaalde AS'en.
+2. **Shortest AS-PATH**: het pad dat zo min mogelijk AS'en doorloopt.
+3. **Closest NEXT-HOP**: als de paden even lang zijn, kiezen we voor de dichtstbijzijnde router (hot potato routing)
+4. Andere criteria
 
 # Examenvragen theorie
 
