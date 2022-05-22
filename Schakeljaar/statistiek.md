@@ -701,6 +701,97 @@ Bij meervoudige lineaire regressie kan je veranderlijke $y$ afhangen van meerder
 
 # --------------- Labo ---------------
 
+# Voorbeeldexamen
+
+<img src="img/image-20220522105321144.png" alt="image-20220522105321144" style="zoom:50%;" />
+
+```matlab
+A = [0.18 0.22 0.30 0.19 0.23 0.26]
+test_cdf = makedist('Normal', 'mu', 0.25, 'sigma', std(A))
+[h,p,d] = kstest(A, 'CDF', test_cdf)
+% ja, p > 0.05
+% misschien ook een tekening maken
+```
+
+
+
+<img src="img/image-20220522105412850.png" alt="image-20220522105412850" style="zoom:50%;" />
+
+```matlab
+a_1 = norminv([0, 0.6], mean(A), std(A))
+a_2 = norminv([0, 0.6], 0.25, std(A))
+```
+
+<img src="img/image-20220522105445648.png" alt="image-20220522105445648" style="zoom:50%;" />
+
+```matlab
+A = [1 1 1 1
+1 1 0 0
+1 0 0 -1
+1 0 -1 0]
+
+max(eig(A))
+```
+
+<img src="img/image-20220522105514457.png" alt="image-20220522105514457" style="zoom:50%;" />
+
+```matlab
+s = [2 : 1000]
+S = sum((1 + 3.*s)./sqrt(s.^5))
+```
+
+<img src="img/image-20220522105549112.png" alt="image-20220522105549112" style="zoom:50%;" />
+
+```matlab
+f1 =@(x) 1-x./8
+f2 =@(x) (x.^2 -5.*x+4).*sqrt(x).*exp(1).^(-x)
+f3 =@(x) (x.^2 -5.*x+4).*sqrt(x).*exp(1).^(-x) - 1-x./8
+fplot(f1)
+hold on
+fplot(f2)
+fsolve(f3, 0) % = 0.1033
+fsolve(f3, 0.2) % = 0.3108
+```
+
+<img src="img/image-20220522105658032.png" alt="image-20220522105658032" style="zoom:50%;" />
+
+<img src="img/image-20220522105728850.png" alt="image-20220522105728850" style="zoom:50%;" />
+
+```matlab
+in = [2145 110 750
+2155 110 850
+2220 110 1000
+2260 120 750
+2266 120 850
+2334 120 1000]
+leven= in(:,1)
+voltage = [leven(1:3) leven(4:6)]
+% de clue is dat je de gegevens hier moet herschikken zodat
+% de kolommen ze opsplitsen volgens voltage
+% en de rijen ze opsplitsen volgens toerental
+% dan kan je block design anova doen
+
+[p, table ,stats] = anova2(voltage, 1)
+multcompare(stats) % voltage
+
+multcompare(stats, 'Estimate','row') % toerental
+```
+
+<img src="img/image-20220522110137908.png" alt="image-20220522110137908" style="zoom:50%;" />
+
+Volgens voltage zijn de gemiddeldes significant verschillend, volgens toerental zijn alleen die van 750 en 850 niet significant verschillend.
+
+
+
+<img src="img/image-20220522110431853.png" alt="image-20220522110431853" style="zoom:50%;" />
+
+```matlab
+std(in(:,1)) % = 72.0583
+[h,p,ci, stats]=ttest2(in(1:3, 1),in(4:6, 1), "Alpha", 0.05) % =  [-206.0803 -20.5864]
+```
+
+
+
 # Vervelende dingen
 
 ## Ks-test
@@ -714,13 +805,13 @@ Om het te versimpelen, we maken een (test)normaalverdeling met als $\mu$ en $\si
 
 Je kan dit natuurlijk ook doen met andere verdelingen, maar dat ben ik in de oefeningen precies nooit tegengekomen.
 
-### Anova
+## Anova
 
 > :warning: Vergeet niet dat als je Anova wilt toepassen, de veranderlijke voor elk van de verschillende niveaus normaal verdeeld moet zijn met gelijke varianties.
 
 
 
-#### One-way Anova
+### One-way Anova
 
 * $H_0$: de populatiegemiddeldes voor alle steekproeven zijn gelijk
 * $H_1$: niet alle gemiddeldes zijn gelijk
@@ -734,13 +825,13 @@ Onze matrix $M$ bevat per kolom een steekproef. Onze `anova1` functie geeft een 
 
 
 
-#### Two-way Anova
+### Two-way Anova
 
 Wat willen we nu eigenlijk bereiken hiermee. Dat was mij vrij onduidelijk. Ik ga het proberen uitleggen aan de hand van een voorbeeld.
 
 ![image-20220514144544216](img/image-20220514144544216.png)
 
-We hebben dus types snelwegen en types asfalt. Stel je nu even voor dat er wel meerdere metingen zijn per type asfalt en snelweg. De nummertjes zijn het aantal herstellingen die gedaan moesten worden aan elke combinatie. We willen weten hoeveel invloed de snelweg of het type asfalt heeft op de hoeveelheid ongevallen, en of er interactie is tussen de twee, dus dat de snelweg en het soort asfalt elkaar beïnvloeden. We doen.
+We hebben dus types snelwegen en types asfalt. Stel je nu even voor dat er wel meerdere metingen zijn per type asfalt en snelweg (anders is het block design). De nummertjes zijn het aantal herstellingen die gedaan moesten worden aan elke combinatie. We willen weten hoeveel invloed de snelweg of het type asfalt heeft op de hoeveelheid ongevallen, en of er interactie is tussen de twee, dus dat de snelweg en het soort asfalt elkaar beïnvloeden. We doen.
 
 ```
 [p,table,stats] = anova2(A,rep)
@@ -763,7 +854,7 @@ We hebben dus types snelwegen en types asfalt. Stel je nu even voor dat er wel m
 
   
 
-#### Verschil tussen de twee
+### Verschil tussen de twee
 
 Het verschil tussen de twee is het aantal onafhankelijke variabelen. One-way heeft er één, two-way heeft er twee. Laten we dat even kaderen. 
 
@@ -804,6 +895,28 @@ multcompare(stats, 'Estimate', 'Row') % per rij
 ```
 
 
+
+## Corrcoef
+
+* `[rho, p] = corrcoef(test1, test2)`
+  * $p > \alpha$: dan is de correlatiecoëfficient met $(1-\alpha)$ betrouwbaarheid NIET significant verschillend van 0
+  * $H_o$: er is geen correlatie
+
+## Regress
+
+* `[b, bint, r, rint, stats]= regress(y,X)`
+  * `b` bevat de schatters, de eerste is een constante, de rest komen overeen met je kolommen
+  * `bint`: bevat 95% betrouwbaarheidintervallen voor de schatters uit `b`
+    * Als je het model wilt verbeteren haal je de schatters eruit waarvoor het interval $0$ bevat
+  * `stats` bevat: $[R^2, F, p,s_2]$
+    * $R^2$ dicht bij 1 is goed regressiemodel
+    * $H_0$: het regressiemodel is niet significant
+    * $p<\alpha: H_0$ verwerpen, regressiemodel is significant met $1-\alpha$ betrouwbaarheid
+  * `r`: bevat de residues
+    * `test_cdf=makedist('Normal','mu',mean(r),'sigma',std(r));` 
+    * `[h,p]=kstest(r,'CDF',test_cdf)`
+    * $H_0$: de residues zijn normaal verdeeld
+    * Ze mogen ook geen trend volgen dus moet je er een scatterplot van maken: `scatter(1:10, r)`
 
 # Oefeningen matlab
 

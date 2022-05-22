@@ -590,20 +590,6 @@ de slides aangezien er geen IPv6 hoofdstuk opgenomen is in het boek van Kurose-R
 
 # ------------------Labo's--------------------
 
-## Vragen
-
-* Wireshark Lab 1
-  * [Is your browser running HTTP version 1.0 or 1.1? What version of HTTP is the server running?](#l1v1)
-  * [How many HTTP GET request messages did your browser send? To which Internet addresses (URL) were these GET requests sent?](#l1v16)
-  * [Can you tell whether your browser downloaded the two images serially, or whether they were downloaded from the two web sites in parallel? Explain.](#l1v17)
-  * [When your browser’s sends the HTTP GET message for the second time, what new field is included in the HTTP GET message?](#l1v19)
-* Wireshark Lab 2
-  * [How many bytes are in the IP header? How many bytes are in the payload of the IP datagram? Explain how you determined the number of payload bytes.](#l2v3)
-  * [Analyze the first fragment of the fragmented IP datagram. What information in the IP header indicates that the datagram been fragmented? What information in the IP header indicates whether this is the first fragment versus a latter fragment? How long is this IP datagram?](#l2v10)
-* DNS
-  * [Resolve de URL www.tinder.com verschillende keren na elkaar, en gebruik verschillende nameservers. Herhaal hetzelfde op de home server (log in met SSH), die andere DNS-servers gebruikt. Beschrijf wat je ziet - waarom gaat een groot bedrijf op deze manier te werk?](#dnsv3)
-  * [Start in je Linux VM het script capture_dns.sh2 op dat je downloadde; voer de lookup naar www.tinder.com opnieuw uit. Hoeveel DNS requests werden er naar de server gestuurd, hoeveel antwoorden kreeg je terug?](#dnsv4)
-
 
 # Wireshark
 

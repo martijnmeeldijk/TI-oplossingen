@@ -8,6 +8,16 @@
 
 
 
+## To Do
+
+* Duidelijk hoe je moet toevoegen en verwijderen aan redblack trees uitleggen
+* Lijst van bewijzen + verkorte mnemotechnische schemas?
+* Ondergrens sorteren op basis van sleutelvergelijkingen
+* Hoogte van een red-black tree
+* minimaliseren totale eindtijd met P processoren
+
+
+
 # ------------ Theorie ------------
 
 
@@ -56,21 +66,55 @@ Zelfde als bij BST, we houden geen rekening met de kleur, dus $O(\log n)$
 
 ### Toevoegen
 
-We gaan dus altijd toevoegen als rode knoop. Omdat we dan de zwarte hoogte van de boom niet super hard verkloten. We moeten dan gaan **roteren** om de boom terug geldig te krijgen.
+We gaan dus altijd toevoegen als rode knoop. Omdat we dan de zwarte hoogte van de boom niet super hard verkloten. Het kan nu wel dat we dan twee rode knopen achter elkaar krijgen. Om dit op te lossen moeten we gaan **roteren** en **recoloren** om de boom terug geldig te krijgen. Roteren doe je zo: 
 
 <img src="img/image-20220404153621423.png" alt="image-20220404153621423" style="zoom:50%;" />
 
-We roteren het kind naar bover zijn ouder, de deelboom van het kind wordt de deelboom van de voormalige ouder. De kost van één rotatie is $O(1)$. Om de boom te fixen kunnen we ook **recoloren**. We moeten dit doen wanneer een rode knoop rode kinderen heeft na een toevoegoperatie (double red).
+We roteren het kind naar bover zijn ouder, de deelboom van het kind wordt de deelboom van de voormalige ouder. De kost van één rotatie is $O(1)$. 
 
-// TODO verschillende gevallen
+Een rode knoop mag dus geen rode kinderen hebben. Hoe lossen we dit op? Er zijn 3 mogelijke opties.
+
+**Rode oom**
+
+<img src="img/image-20220520181809986.png" alt="image-20220520181809986" style="zoom:50%;" />
+
+De knopen $p$ en $c$ vormen een double red. Als de broer van $p$ (de oom van $c$) rood is, kan je gewoon de kleur van $u$ en $p$ wisselen met hun ouder en het probleem naar boven opschuiven (want het kan nu dat $g$ met zijn ouder een double red vormt).
+
+Als de oom van $p$ niet rood is, zijn er twee mogelijkheden:
 
 
+
+**Zwarte oom, gealigneerd**
+
+<img src="img/image-20220520182112021.png" alt="image-20220520182112021" style="zoom:50%;" />
+
+Als $c$, $p$ en $g$ op één lijn staan zal je eerst $p$ boven $g$ moeten roteren en daarna de kleur van $c$ en $g$ wisselen met die van hun ouder.
+
+**Zwarte oom, niet gealigneerd**
+
+<img src="img/image-20220520182345563.png" alt="image-20220520182345563" style="zoom:50%;" />
+
+
+
+Als $c$, $p$ en $g$ niet op één lijn staan, roteer je $c$ boven $p$. Nu is je zwarte oom wel gealigneerd en kan je het double red probleem oplossen met het vorige geval.
 
 ### Verwijderen
 
+Dit kunnen we opsplitsen in 3 gevallen:
+
+* De knoop heeft geen kinderen
+* De knoop heeft 1 kind
+* De knoop heeft 2 kinderen
+
+De eerste en tweede zijn triviaal. Als de knoop geen kinderen heeft moet je niks doen. Als je knoop één kind heeft, laat je zijn ouder gewoon wijzen naar het kind. Als je knoop twee kinderen heeft, zal je zijn in-order **voorloper** moeten vinden. Deze heeft sowieso geen rechterkind, aangezien het zijn voorloper is. Overschrijf de inhoud van de te verwijderen knoop met de inhoud van zijn voorloper en verwijder de voorloper.
+
+<img src="img/image-20220520183016838.png" alt="image-20220520183016838" style="zoom:50%;" />
+
+
+
+**Red-black voorwaarden herstellen**
+
 //TODO
-
-
 
 # 2 - Meerdimensionale gegevensstructuren
 
@@ -98,7 +142,7 @@ We kunnen onze verdelen in vakjes met behulp van een raster. We houden in elk va
 
 Je kan waarschijnlijk wel al ruiken dat een gegevensstructuur van deze aard enkel goed werkt indien de punten die hij bevat ietwat uniform verdeeld zijn. In het slechtste geval kunnen alle punten samengeklit in één rooster zitten, wat ook niet echt bevorderlijk zal werken voor de performantie.
 
-De volgende gegevensstructuren trachtten deze problemen op te lossen.
+De volgende gegevensstructuren trachten deze problemen op te lossen.
 
 
 
@@ -553,6 +597,8 @@ Als je insertion sort recursief implementeert doet hij precies dit.
 
 ### Quickselect
 
+//TODO
+
 #### Pivot
 
 
@@ -991,7 +1037,103 @@ Omdat de grootte van onze boom vreselijk snel toeneemt, willen we het aantal kno
 
 ## Gulzige algoritmen
 
-//TODO
+Hoe leuk backtracking ook is, zal zelfs met de beste snoeitechnieken ons probleem nog steeds snel vreselijk groot worden. Dit komt doordat we alle geldige configuraties afgaan om zo de beste te vinden. Dit is gedoemd om te falen bij grote combinatorische problemen. We hebben heuristieken nodig. 
+
+Een **heuristiek** is basically een vuistregel om bij het zoeken naar een oplossing om te beslissen wat we moeten doen bij de volgende stap. Heuristieken garanderen niet altijd dat de beste oplossing, of zelfs een oplossing wordt gevonden. Ze helpen ons wel in de zoektocht ernaar.
+
+Een **gulzig** (greedy) algoritme zal in elke stap kiezen voor de optie die op dat moment het best lijkt, zonder vooruit te denken. Dit geeft wonder boven wonder voor verbazend veel problemen de best mogelijke oplossing. En in andere gevallen een benaderende oplossing die vaak goed genoeg is. 
+
+Bij het wisselgeldprobleem (een bedrag betalen met zo min mogelijk biljetten en muntstukken) geeft een greedy algoritme altijd de beste oplossing. In dit geval zou je dan beginnen met telkens de hoogste munt of biljet die past in je bedrag en telkens weer de grootst mogelijke selecteren tot je het volledige bedrag hebt.
+
+Bij een GPS komt een greedy algoritme best wel van pas, maar ik vind dit voorbeeld in de cursus eigenlijk niet zo goed dus ik ga het achterwege laten. We zullen verder gaan met wat problemen waarvoor we kunnen aantonen dat de greedy oplossing ook de beste oplossing is.
+
+ 
+
+### Gemiddelde eindtijd van processortaken
+
+<img src="img/image-20220520190653796.png" alt="image-20220520190653796" style="zoom:50%;" />
+
+We hebben een processor en een bepaalde reeks taken die de processor moet uitvoeren. Elke taak heeft een bepaalde uitvoeringstijd. We willen natuurlijk dat er zo snel mogelijk zo veel mogelijk taken uitgevoerd worden, oftewel de gemiddelde eindtijd van de taken minimaliseren. De rechtse figuur toont een optimale oplossing. 
+
+Toevallig is hier de greedy methode ook de beste. We nemen gewoon de kortste taak, de tweede kortste, ... Heel leuk, maar we moeten ook nog bewijzen dat dik klopt.
+
+**Bewijs**
+
+Veronderstel dat je een optimale planning hebt in de volgorde:
+$$
+j_{i_1 }, j_{i_2 }, \dots ,j_{i_n }
+$$
+
+* De eerste taak eindigt op: $t_{i_1 }$
+* De tweede op $t_{i_1 } + t_{i_2 }$
+* De derde op $t_{i_1 } + t_{i_2 } +  t_{i_3 }$
+
+De som van al deze eindtijden is dan:
+$$
+\begin{align}
+C &= \sum_{k=1}^n (n-k+1)t_{i_k}\\
+&=(n+1) \sum_{k=1}^n t_{i_k} - \sum_{k=1}^nk \cdot t_{i_k}
+\end{align}
+$$
+De clue is dat we hier vertrekken van de optimale oplossing. We nemen twee taken die uitgevoerd worden als $x$-de en als $y$-de. Met $x>y$. Maar met $t_{i_x} < t_{i_y}$. Dus gewoon twee taken waarvan de eerste langer is dan de tweede. Als we deze twee taken nu van plaats wisselen zal de som in de laatste term van onze vergelijking groter worden, maar omdat er een min voor staat zal de som van de eindtijden krimpen. Dat kan natuurlijk niet, want onze oplossing was al de beste oplossing. Contradictie alert. 
+
+Dit betekent dat in een ideale oplossing, de taken niet in afnemende volgorde van uitvoertijd mogen staan. Hiermee bewijzen we dus dat ze in toenemende volgorde moeten staan.
+
+
+
+### Plannen van activiteiten
+
+![image-20220520220127794](img/image-20220520220127794.png)
+
+We hebben een feestzaal en we willen zo veel mogelijk feestjes geven. Elk feestje heeft een bepaalde duur, maar ze mogen niet overlappen. De 'gulzige' manier van oplossen in dit geval is door telkens het feestje met de vroegste eindtijd te nemen dat niet overlapt met het vorige gekozen feestje.
+
+We zullen even alles met cool wiskundige tekens voorstellen:
+
+* $S=\{a_1,a_2,\dots ,a_n\}$, onze verzameling van activiteiten
+* Elke activiteit heeft:
+  * Een starttijd: $s_i$
+  * Een eindtijd: $f_i$
+  * Deze vormen een halfopen interval: $[s_i,f_i[$
+  * De intervallen van twee activiteiten mogen dus niet overlappen als we ze willen inplannen.
+
+**Bewijs**
+
+Om het bewijs op te stellen moeten we nog een paar extra dingen invoeren:
+
+* $S_k = \{ a_i \in S : s_i \geq f_k\}$
+
+  * de deelverzameling van activiteiten die pas beginnen als $a_k$ is afgelopen. Dus eigenlijk de rest van de mogelijke activiteiten nadat we er al een aantal hebben ingepland.
+  * We nemen een activiteit $a_m$ met de vroegste eindtijd binnen $S_k$
+
+* $A_k$: een maximum subset van onderling compatibele activiteiten van $S_k$. Dus eigenlijk de ideale inplanning van alle resterende activiteiten.
+
+  * We nemen een activiteit $a_j$ met de vroegste eindtijd binnen $A_k$
+
+  
+
+Als $a_j = a_m$, dan is de eigenschap bewezen. Want dat betekent dat de activiteit met de vroegste eindtijd uit de mogelijk inplanbare activiteiten deel is van de ideale inplanning.
+
+Als $a_j \neq a_m$:
+
+* Neem $A'$: de verzameling die je krijgt door in $A$, $a_j$ te vervangen door $a_m$.
+* $a_m$ heeft de vroegste eindtijd van $S_k$, dus eindigt hij vroeger of tegelijk met $a_j$, want $A_k$ is een deelverzameling van $S_k$.
+  * In symbolen: $f_m \leq f_j$
+  * Hierdoor zijn alle elementen in $A_k$ dus nog steeds compatibel.
+* $A_k$ en $A_k'$ hebben evenveel elementen, want we hebben er gewoon eentje gewisseld.
+
+$A'_k$ is dus ook een maximum subset. Dit impliceert dus dat $a_m$, de activiteit met de vroegste eindtijd van de mogelijk in te plannen activiteiten deel is van een ideale oplossing.
+
+
+
+### Knapsack problem
+
+<img src="img/image-20220520224421493.png" alt="image-20220520224421493" style="zoom:33%;" />
+
+We hebben een rugzak die een bepaald aantal kilo's aan rommel kan dragen en een verzameling van rommel. Elk stuk rommel heeft een bepaalde prijs. Kunnen we nu een algoritme bedenken dat de ideale combinatie bepaalt van rommel zodat de totale hoeveelheid rommel in onze rugzak zo veel mogelijk waard is?
+
+Kort antwoord: nee
+
+Iets langer antwoord: Het knapsack probleem is NP-compleet, dus je kan zo ver we weten geen algoritme bedenken dat in polynomiale tijd eender welke rugzak kan vullen met de meest waardevolle combinatie van rommel. Er zijn wel heuristieken die de oplossing kunnen benaderen. Zo kunnen we bijvoorbeeld een gulzig algoritme schrijven dat telkens kiest voor het object met de grootste $\frac{\text {prijs}}{\text{gewicht}}$ verhouding.
 
 
 
@@ -1031,19 +1173,240 @@ Hoe je dit allemaal in de praktijk kunt toepassen is niet echt duidelijk. Hoe co
 
 # 11 - NP-Complete problemen
 
-### Reductie
+Zoals je misschien al weet, is het voor zo ver we weten niet mogelijk om alle problemen op te lossen in polynomiale uitvoeringstijd. De problemen waarvoor nog geen efficiënte oplossing bestaat en waarvoor we kunnen aantonen dat die niet bestaat, noemen we **NP-complete** problemen. Als je kan bewijzen dat je probleem NP-compleet is, hoef je eigenlijk niet meer te zoeken naar een efficiënte oplossing. Je kan je tijd beter besteden om een benadering te vinden.
+
+## Reductie
+
+Stel je voor dat we een probleem hebben waarvoor we nog geen oplossing hebben gevonden. Als we dit probleem kunnen omvormen naar een ander probleem dat wel een oplossing heeft. Dan kunnen we het originele probleem vie deze weg oplossen door de invoer om te vormen naar die van het oplosbare probleem en de oplossing die daaruit komt terug om te zetten. Dit noemt men een **reductie**. We zullen er er een aantal bespreken.
+
+**Mediaan**
+
+Stel je voor dat je geen algoritme hebt om de mediaan te berekenen. Dan zul je met een reductie het probleem moeten omvormen tot een ander probleem waarvoor je wel een oplossing hebt. We weten nu bijvoorbeeld wel hoe je een verzameling $S$ moet sorteren. Dan is dit een mogelijke oplossing:
+
+```pseudocode
+findMedian(S, <)
+	Sort S
+	return S[(S.size() - 1)/2]
+```
+
+We beschikken natuurlijk ook een functie `<` die ons kan vertellen of één element kleiner is dan een andere. We hebben het zoeken van de mediaan nu gereduceerd naar het probleem van sorteren.
+
+**Convex Hull**
+
+<img src="img/image-20220520132515296.png" alt="image-20220520132515296" style="zoom:50%;" />
+
+In dit voorbeeld beschikken we juist niet over een algoritme om een verzameling $S$ te sorteren. We hebben wel een functie die de *convex omhullende* van een verzameling van punten kan berekenen. Dit is de kleinste convexe veelhoek die je kan maken met gegeven punten. Het algoritme geeft de punten terug vanaf de kleinste $y$-coördinaat, in een bepaalde volgorde zodat als we door de lijst van punten wandelen we de veelhoek zijde per zijde kunnen tekenen.
+
+We willen nu op een manier elk getal $i$ van de verzameling $S$ omzetten naar een punt. Met de hoop dat onze functie voor de convex omhullende ons zal helpen om $S$ te sorteren. We zetten elk getal $i$ om naar een punt $(i, i^2)$. Zo ligt elk van de punten op een parabool. Een parabool is convex, en dus zal elk punt op de convex omhullende liggen. Wegens de volgorde dat onze functie voor de complex omhullende de waarden teruggeeft, zullen de punten nu gesorteerd zijn op oplopende $x$-waarden.
+
+Het aanmaken van deze punten (de transformatie dus) is $O(n)$. Als ons algoritme voor de complex omhullende te berekenen nu $O(n)$ zou zijn, hadden we de wetten van de informatietheorie gebroken. Turing zou uit zijn graf opstaan en u een klets op uw bakkes komen geven. Deze logica zullen we straks verder bespreken.
 
 
+
+### Polynomiale reductie
+
+We kunnen dus, zoals mooi verwoordt door ikzelf in de vorige paragraaf, op basis van reductie bepaalde conclusies trekken over de complexiteit van problemen. Om in het algemeen een probleem A te reduceren naar een probleem B, passen we de volgende stappen toe:
+
+* Vertaal de instantie van A naar een instantie van B
+* Los de instantie van het probleem B op met het gekende algoritme 
+* Vertaal de oplossing van probleem B naar de oplossing van het probleem A.
+
+Hieruit kunnen we twee conclusies trekken. Die zijn in de cursus mooi uitgeschreven in grote mensentaal, maar ik zal het simpel houden aangezien jullie geschatte hersencapaciteit asymptotisch begrensd is door die van een 5-jarige.
+
+1. Als je het probleem B kan oplossen met een bepaalde complexiteit, dan is de complexiteit om A op te lossen gelijk aan de complexiteit van B plus de complexiteit van de reductie.
+2. Als we een bewezen ondergrens hebben voor probleem A, dan is de ondergrens voor B gelijk aan de ondergrens van A min de reductie van A naar B. A is dus minstens even 'moeilijk' als B. 
 
 ### P en NP
 
+**De klasse P**
+
+Deze bevat alles (beslissingsproblemen) waarvoor een algoritme bestaat dat een oplossing kan **berekenen** in  $O(n^k)$ uitvoeringstijd, met $k$ een constante.
+
+**De klasse NP**
+
+Bevat alle (beslissing)problemen waarvoor we in polynomiale tijd een oplossing kunnen **verifiëren**. Deze klasse bevat dus ook de klasse P, met nog extra dingen.
 
 
-### NP-complete problemen
+
+## NP-complete problemen
+
+Een probleem is NP-compleet als:
+
+1. Het behoort tot NP
+2. Elk probleem in NP kan in polynomiale tijd worden gereduceerd naar dit probleem.
+
+Als iemand dus één NP-compleet probleem kan oplossen in polynomiale tijd, betekent dit dat alle NP-complete problemen oplosbaar zijn in polynomiale tijd. Je kan dus bewijzen dat een probleem NP-compleet is als je kan bewijzen dat het kan omzetten in een probleem waar al van is bewezen dat het NP-compleet is.
+
+Een bepaalde slimme gast heeft zonder reductie bewezen dat Boolean Satisfiability probleem NP-compleet is. Toen kon door middel van reductie de NP-compleetheid van een heleboel andere problemen aangetoond worden
+
+<img src="img/image-20220520141113513.png" alt="image-20220520141113513" style="zoom:50%;" />
+
+Als je niet weet wat al deze namen betekenen, is dat niet zo erg, want we gaan er lekker een stuk of 10 uitvoerig bestuderen. Zorg dat je je niet in een hoge verdieping met een raam bevindt als je de volgende paragrafen leest, want de snelle weg naar beneden zal plots heel verleidelijk lijken.
+
+Als je wilt bewijzen dat jouw probleem NP-compleet is, moet je dus een **gekend** NP-compleet **naar** jouw probleem weten te reduceren in polynomiale tijd.
+
+<img src="img/image-20220520141539728.png" alt="image-20220520141539728" style="zoom: 33%;" />
+
+
+
+### SAT
+
+Neem:
+
+* $\mathcal X = \{x_1, x_2, \dots x_{\left|{\mathcal X}\right|}\}$: een verzameling logische variabelen. Deze kunnen dus `true` of `false` bevatten.
+*  $\mathcal F = \{F_1, F_2, \dots F_{\left|{\mathcal F}\right|}\}$: een verzameling logische uitspraken, bestaat uit een reeks $x_i$'tjes, of hun inverse: $\overline{x_i}$
+  * Bijvoorbeeld: $F_1: x_2 \or \overline{x_5} \or x_7 \or x_8$
+  * Elke uitspraak is dus een logische `OR` tussen een aantal variabelen van $\mathcal X$.
+
+We willen nu dus aan elke $x_i$ een waarde toekennen zodat alle uitspraken in $\mathcal F$ tegelijk waar zijn. Dit komt overeen met: $F_1 \and F_2 \and \dots$ Dus een logische `AND` tussen alle uitspraken. Zoals eerder vermeld heeft een slimme ~~meneer~~ persoon dus bewezen dat dit probleem NP-compleet is.
+
+
+
+### 3SAT
+
+Dit is in essence hetzelfde probleem als SAT. De enige restrictie is dat elke uitspraak maar 3 variabelen mag bevatten. Ik zal dit proberen uitleggen aan de hand van een stackoverflow post aangezien ik niet heb genoteerd in de les en Pieter in de cursus zegt: "*Het is gemakkelijk in te zien dat we een uitspraak met meer dan drie atomen kunnen herleiden naar een reeks uitspraken met elk drie atomen zodat de uitspraak waar is als en slechts als de 3-uitspraken waar zijn.*" Sorry Pieter maar ik vind dit niet gemakkelijk.
+
+**Reductie**
+
+Elke uitspraak in ons SAT probleem heeft 1, 2, 3 of meer variabelen. We moeten elk van deze uitspraken omzetten in een uitspraak met 3 variabelen. We introduceren een verzameling hulpvariabelen $\{t, p ,q, r_1, r_2 \dots\}$ om het ons iets makkelijker te maken:
+
+* Drie variabelen: $\{x_1\or x_2\or x_3\}$
+  * Mag je gewoon zo houden
+* Twee variabelen: $\{x_1 \or x_2\}$
+  * zet je om naar $\{x_1\or x_2\or t\}$ en$\{x_1\or x_2\or \overline t\}$. 
+  * Er verandert dus eigenlijk niks, maar de twee uitspraken bevatten nu wel 3 variabelen.
+* Eén variabele: $\{x_1\}$
+  * zet je om naar $\{x_1\or p \or q\}$, $\{x_1\or \overline p \or q\}$, $\{x_1\or p \or \overline q\}$ en $\{x_1\or \overline p \or \overline q\}$
+* Meer dan drie variabelen: bv. $\{x_2\or \overline{ x}_5\or x_7\or \overline{ x}_9\or \overline{ x}_{10}\}$
+  * We volgen het principe van hierboven (ongeveer)
+  * Knip de eerste twee elementen eraf: 
+    * $\{x_2\or \overline{ x}_5\}\{ x_7\or \overline{ x}_9\or \overline{ x}_{10}\}$ 
+  * En voeg aan beide stukken een hulpvariabele $r_1$ en zijn inverse toe:
+    * $\{r_1 \or x_2\or \overline{ x}_5\}\{ \overline{r}_1 \or x_7\or \overline{ x}_9\or \overline{ x}_{10}\}$ 
+  * Het tweede stuk is nu nog steeds te groot dus je splitst nog is: 
+    * $\{r_1 \or x_2\or \overline{ x}_5\}\{ \overline{r}_1 \or x_7 \}\{ \overline{ x}_9\or \overline{ x}_{10}\}$
+  * Weeral een hulpvariabele toevoegen ($r_2$)
+    * $\{r_1 \or x_2\or \overline{ x}_5\}\{ r_2 \or \overline{r}_1 \or x_7 \}\{ \overline{r}_2 \or \overline{ x}_9\or \overline{ x}_{10}\}$
+
+**Kunnen we reduceren in polynomiale tijd?**
+
+We hebben SAT succesvol omgevormd naar 3SAT. Nu moeten we nog aantonen dat deze reductie in **polynomiale tijd** kan gebeuren. Neem een reeks uitspraken:
+
+* $(l_1 \or l_2 \or l_3 \or l_4) \and (l_5) \and (l_6 \or l_7 \or l_8) \and \dots$
+*  Die $l$'en zijn $x$'en die we in de uitspraken gestoken hebben. Het kan bijvoorbeeld dat $l_1 = x_5$ en $l_7 = \overline x_5$
+* Aangezien we om deze bepaalde reeks uitspraken om te vormen naar 3-SAT, we gewoon moeten itereren over de lijst en opsplitsen waar nodig. Is de omvorming $O(\text{lengte input})$.
+
+**Is deze oplossing van 3SAT een oplossing voor SAT?**
+
+We beginnen door een willekeurige uitspraak uit ons SAT probleem te kiezen:
+
+* $F_i : l_1 \or l_2 \or l_3 \or l_4 \or l_5$
+
+Omgevormd naar 3SAT wordt dit:
+$$
+\begin{cases} 
+l_1 \or l_2 \or p \quad &(1) \\ 
+\overline p \or l_3 \or q \quad &(2) \\ 
+\overline q \or l_4 \or l_5  \quad &(3)
+\end{cases}
+$$
+We nemen aan dat dit nu dus een oplossing van 3SAT is. We moeten eigenlijk bewijzen dat er tenminste 1 variabele ($l_1, l_2, \dots$) waar moet zijn opdat deze oplossing van 3SAT ook een oplossing is voor SAT. 
+
+* Als onze hulpvariabele $p$ `true` is, dan mogen $l_1$ en $l_2$ `false` zijn. (1)
+* $\overline p$ is dan `false`, dus
+  * Oftwel nemen we $q = $ `false`
+    * Dan moet $l_3$ waar zijn en is $F_i$ een oplossing 
+  * Nemen we $q=$ `true`
+    * Dan moet $l_4$ of $l_5$ `true` zijn en is $F_i$ bijgevolg ook een oplossing
+
+Voor uitspraken van andere groottes is het bewijs analoog. We hebben nu dus bewezen dat 3SAT NP-compleet is.
+
+
+
+### Problemen bij verzamelingen
+
+#### Set cover
+
+<img src="img/image-20220520231753126.png" alt="image-20220520231753126" style="zoom:50%;" />
+
+We hebben een verzameling $S$ (alle bolletjes) en een verzameling van deelverzamelingen $C$ (alle vormen op de tekening links). We zoeken het kleinste aantal deelverzamelingen uit $C$ zodat we in deze selectie nog steeds ten minste één van de elementen van $S$ hebben.
+
+
+
+Om aan te tonen dat Set Cover NP-compleet is, willen we aantonen dat we SAT ernaar kunnen reduceren.
+
+* Neem $S = \mathcal F \cup \mathcal X$
+  * $\mathcal F = \{F_1, F_2, \dots F_{\left|{\mathcal F}\right|}\}$
+  * $\mathcal X = \{x_1, x_2, \dots x_{\left|{\mathcal X}\right|}\}$
+* Voeg voor elke $x_i$ twee deelverzamelingen toe aan $C$
+  * $C_{x_i} = x_i \cup \{ F \in \mathcal F: x_i \in F\}$
+  * $C_{\overline x_i} = x_i \cup \{ F \in \mathcal F: \overline x_i \in F\}$
+
+Ik ben echt certified dikke neurt want ik heb er een tekening bij gemaakt. Ik vond het beter te begrijpen aan de hand van een voorbeeld.
+
+We hebben hier een voorbeeld met 4 variabelen en 3 uitspraken. 
+$$
+\begin {align}
+F_1 &= x_1 \or \overline x_3 \or x_4 \\
+F_2 &= \overline x_1\\
+F_3 &= x_2 \or \overline x_3 \or x_4
+\end{align}
+$$
+<img src="img/image-20220520235712692.png" alt="image-20220520235712692" style="zoom: 33%;" />
 
 
 
 
+
+#### Hitting set
+
+
+
+#### Set Packing
+
+
+
+#### Subset sum
+
+
+
+#### Integer partition
+
+
+
+### Gegevensopslag
+
+#### Bin packing
+
+
+
+#### Knapsack
+
+
+
+### Graafproblemen
+
+#### Vertex cover
+
+
+
+#### Graph coloring
+
+
+
+#### Clique
+
+
+
+#### Independent set
+
+
+
+#### Hamiltonian circuit
+
+
+
+#### Travelling salesman
 
 # Examen
 
@@ -1269,7 +1632,7 @@ Je hebt een stapel van n pannenkoeken, elk van verschillende grootte. Je kan een
 
 # ------------ Labo's ------------
 
-
+Hier wat dingen die ik bijgeleerd heb of anders heb gedaan.
 
 ## Red black trees
 
@@ -1524,7 +1887,179 @@ TEST_CASE("Final median wage test", "[MedianWage]")
 
 
 
-## Nuttige dingen voor de test
+## Linear Sorting
+
+### Smallest window
+
+Je moest hier de kleinste range in een lijst vinden, zodat als je die range sorteert, de hele lijst is gesorteerd. De boys van algoritmen hebben het toch wel wat beter aangepakt dan ik.
+
+Mijn oplossing:
+
+```c++
+std::pair<int, int> SmallestWindow::run(std::vector<int> numbers)
+{
+    std::cout << "sorting vector of size: " << numbers.size() << std::endl;
+
+    int left = 0;
+    int right = numbers.size() - 1;
+
+  	// Ik verzet de linkse wijzer naar rechts zolang de elementen stijgend zijn
+    while (left < numbers.size() - 1 && numbers[left] < numbers[left + 1]) {
+        left++;
+    }
+
+  	// Ik verzet de rechtse wijzer naar links zolang de elementen dalend zijn
+    while (right > left && numbers[right] > numbers[right - 1]) {
+        right--;
+    }
+		
+  	// Als ze elkaar tegenkomen is de rij gesorteerd
+    if (right == left)
+        return std::pair(0, 0);
+
+  	// Nu neem ik de linkse wijzer en verzet deze naar links zolang er een element aan zijn rechterkant zit 
+  	// dat kleiner is
+    int left_offset = 0;
+    while (left + left_offset < right) {
+        if (numbers[left + left_offset] < numbers[left]) {
+            left--;
+        } else {
+            left_offset++;
+        }
+    }
+
+  	// Idem, maar andersom met de rechtse
+    int right_offset = 0;
+    while (right + right_offset > left) {
+        if (numbers[right + right_offset] > numbers[right]) {
+            right++;
+        } else {
+            right_offset--;
+        }
+    }
+    std::cout << "left: " << left << " right: " << right << std::endl;
+    return std::pair(left + 1, right - 1);
+}
+```
+
+Deze oplossing is zo veel eleganter
+
+```c++
+std::pair<int, int> SmallestWindow::run(std::vector<int> numbers) {
+    int max = *std::min_element(numbers.begin(), numbers.end());
+    int min = *std::max_element(numbers.begin(), numbers.end());
+    int j = numbers.size() - 1;
+    int i = 0;
+
+    // loop over input from left to right
+    // keep track of max value and j which is the highest index for which
+    // numbers[n] <= max
+  	// Ze gaan van links naar rechts en houden het maximum van alle overlopen nummers bij
+  	// Zolang het volgende element niet groter is dan het maximum, zetten ze j naar rechts
+  	// dus eigenlijk zolang je een element tegenkomt dat niet op zijn plaats staat
+  	// alle elementen rechts van j zijn dan op het einde de elementen die goed staan
+    for (int n = i; n < numbers.size(); n++) {
+        if (numbers[n] > max) {
+            max = numbers[n];
+        } else {
+            j = n;
+        }
+    }
+
+    // loop over input from right to left starting at j
+    // keep track of min value and i which is the smallest index for which
+    // numbers[n] >= min
+    for (int n = j; n >= 0; n--) {
+        if (numbers[n] < min) {
+            min = numbers[n];
+        } else {
+            i = n;
+        }
+    }
+
+    return std::pair<int, int>(i, j);
+}
+```
+
+
+
+## Seam Carving
+
+Bij de `get_energy` methode heb ik te veel werk in de methode zelf gedaan. Ik had beter een abstractie gemaakt door in de functie te loopen over de rijen en de kolommen, en dan een andere functie zich bezig te laten houden met de pixels.
+
+
+
+## Dynamic Programming 
+
+### Darts
+
+Ik weet niet wat ik heb gedaan, maar ik heb een timer opgezet en mijn oplossing is 10 keer sneller dan die van de boys.
+
+```c++
+void gen_throws(std::vector<int>& arr)
+{
+    for (int mul = 1; mul <= 3; mul++) {
+        for (int hit = 1; hit <= 20; hit++) {
+            int score = hit * mul;
+            arr.push_back(score);
+        }
+    }
+    arr.push_back(25);
+    arr.push_back(50);
+}
+
+std::pair<int, int> number_of_darts(int remaining_score)
+{
+    std::vector<int> pos(remaining_score, 0);
+    std::vector<int> darts(remaining_score, INT_MAX);
+    std::vector<int> throws;
+    gen_throws(throws);
+
+    for (int j = 2; j <= 40 && j <= remaining_score; j += 2) {
+        darts[remaining_score - j] = 1;
+        pos[remaining_score - j] = 1;
+    }
+    if (remaining_score > 50) {
+        darts[remaining_score - 50] = 1;
+        pos[remaining_score - 50] = 1;
+    }
+
+    for (int i = remaining_score - 2; i >= 0; i--) {
+
+        int min = INT_MAX;
+        bool found = false;
+        for (int score : throws) {
+            if (i + score < remaining_score && darts[i + score] < min) {
+                min = darts[i + score];
+            }
+            if (i + score > remaining_score)
+                break;
+        }
+        if (min <= darts[i] && min + 1 < darts[i]) {
+            darts[i] = 1 + min;
+        }
+
+        for (int score : throws) {
+            if (i + score < remaining_score && darts[i + score] + 1 == darts[i]) {
+                pos[i] += pos[i + score];
+            }
+            if (i + score > remaining_score)
+                break;
+        }
+    }
+    // std::cout << "Possibilities: " << std::endl;
+    // printV(pos);
+    // std::cout << std::endl;
+    // std::cout << "darts: " << std::endl;
+    // printV(darts);
+    return { darts[0], pos[0] };
+}
+
+```
+
+
+
+## Nuttige dingen voor de tests
 
 ### nth-element
 
@@ -1612,5 +2147,106 @@ std::swap(v[0],v[1]);
 
 ```c++
 vector1.insert( vector1.end(), vector2.begin(), vector2.end() );
+```
+
+
+
+## Extra
+
+Mijn eigen versies van een aantal algoritmen. 
+
+### Longest common substring
+
+Deze is van een labo van vorig jaar. Om de één of andere reden is mijn oplossing weer sneller dan die van de boys
+
+```c++
+int lcs(string& A, string& B, const int m, const int n)
+{
+    std::vector<std::vector<int>> tab(m + 1, std::vector<int>(n + 1, 0));
+    for (int i = 0; i <= m; i++) {
+        for (int j = 0; j <= n; j++) {
+            if (i == 0 || j == 0) {
+                tab[i][j] = 0;
+            } else if (A[i] == B[j]) {
+                tab[i][j] = std::min(tab[i - 1][j - 1], std::min(tab[i][j - 1], tab[i - 1][j])) + 1;
+            } else if (A[i] != B[j]) {
+                tab[i][j] = std::max(tab[i - 1][j - 1], std::max(tab[i][j - 1], tab[i - 1][j]));
+            }
+        }
+    }
+
+    return tab[m][n];
+}
+```
+
+### Selection sort
+
+```c++
+#include "selectionsort.h"
+
+void SelectionSort::sort(std::vector<int>& v) const
+{
+    int index = 0;
+    while (index < v.size()) {
+        int min = std::distance(std::begin(v), std::min_element(std::begin(v) + index, std::end(v)));
+        std::swap(v[index], v[min]);
+        index++;
+    }
+}
+```
+
+### Insertion sort
+
+```c++
+#include "insertionsort.h"
+#include <iostream>
+void InsertionSort::sort(std::vector<int>& v) const
+{
+    int index = 1;
+
+    while (index < v.size()) {
+        int i = index;
+        while (i > 0 && v[index] < v[i - 1]) {
+            i--;
+        }
+        int num = v[index];
+        v.erase(v.begin() + index);
+        v.insert(v.begin() + i, num);
+
+        index++;
+    }
+}
+
+```
+
+
+
+### Shellsort
+
+```c++
+#include "shellsort.h"
+#include <iostream>
+void ShellSort::sort(std::vector<int>& v) const
+{
+    std::vector<int> seq = { 701, 301, 132, 57, 23, 10, 4, 1 };
+    for (int i : seq) {
+        n_sort(v, i);
+    }
+}
+
+void ShellSort::n_sort(std::vector<int>& v, int n) const
+{
+    for (int offset = 0; offset < n; offset++) {
+        for (int i = n; i < v.size(); i += n) {
+            int j = i;
+            int temp = v[i];
+            while (j > 0 && temp < v[j - n]) {
+                v[j] = v[j - n];
+                j -= n;
+            }
+            v[j] = temp;
+        }
+    }
+}
 ```
 
