@@ -985,7 +985,7 @@ p
 test_cdf=makedist('Normal','mu',mean(B),'sigma',std(B));
 [h,p,D] = kstest(B, test_cdf);
 p
-
+//TODO dit is fout
 [h, p ,ci, stats] = ttest(A, B) % p = 0.9033
 
 ```
