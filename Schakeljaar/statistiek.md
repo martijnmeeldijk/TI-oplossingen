@@ -760,14 +760,15 @@ S = sum((1 + 3.*s)./sqrt(s.^5))
 f1 =@(x) 1-x./8
 f2 =@(x) (x.^2 -5.*x+4).*sqrt(x).*exp(1).^(-x)
 f3 =@(x) (x.^2 -5.*x+4).*sqrt(x).*exp(1).^(-x) - 1+x./8
-fplot(f1)
+fplot(f1, [0 4])
 hold on
-fplot(f2)
+fplot(f2, [0 4])
 fsolve(f3, 0) % 0.0942
 fsolve(f3, 0.4) % 0.3753
+% is het nu goed lars?
 ```
 
-<img src="img/image-20220522105658032.png" alt="image-20220522105658032" style="zoom:50%;" />
+<img src="img/image-20220524154535131.png" alt="image-20220524154535131" style="zoom:50%;" />
 
 <img src="img/image-20220522105728850.png" alt="image-20220522105728850" style="zoom:50%;" />
 
@@ -816,17 +817,35 @@ std(in(:,1)) % = 72.0583
 
 ![image-20220524132348806](img/image-20220524132348806.png)
 
+```matlab
+n1 = 50
+n2 = 34
+N1 = 87
+N2 = 81
+x = [repmat('a', N1, 1); repmat('b',N2,1)];
+y = [repmat(1, n1, 1); repmat(2,N1-n1,1); 
+    repmat(1, n2, 1); repmat(2,N2-n2,1);];
+[table, chi2, p] = crosstab(x,y)
 ```
 
-```
+$H_0$: Kwaliteit bodem en verleden industriële activiteiten zijn onafhankelijk
+
+$H_1$: Kwaliteit bodem en verleden industriële activiteiten zijn afhankelijk
+
+$p = 0.0447 < 0.1$, $H_0$ verwerpen. We gebruiken een $\chi^2$-test
 
 
 
 ![image-20220524132413676](img/image-20220524132413676.png)
 
+Schatter voor verwachte celfrequentie: $\frac{\text{totaal rij } i \times \text{totaal kolom} j}{n}$
+
+```matlab
+n = N1+N2
+schatter = (50 + 37)*(37 + 47)/n % schatter = 43.5000
 ```
 
-```
+
 
 
 
@@ -834,9 +853,24 @@ std(in(:,1)) % = 72.0583
 
 <img src="img/image-20220524132443236.png" alt="image-20220524132443236" style="zoom:33%;" />
 
+```matlab
+A = [8 1 6 ; 3 5 7; 4 9 2]
+B = [7.5 ; 4; 12]
+x = A\B
+% volgens tanja kan dit ook
+D = [A, B]
+rref(D)
 ```
 
-```
+$$
+\begin{cases}
+   
+x&=    1.2931\\
+  y&=  0.8972\\
+  z&= -0.6236
+
+\end{cases}
+$$
 
 <img src="img/image-20220524132503592.png" alt="image-20220524132503592" style="zoom:50%;" />
 
@@ -844,31 +878,98 @@ std(in(:,1)) % = 72.0583
 
 <img src="img/image-20220524132527581.png" alt="image-20220524132527581" style="zoom:50%;" />
 
+```matlab
+syms t
+f = heaviside(t)*(4)- heaviside(t-1)*(4)+ heaviside(t-1)*(4*exp(1-t))
+laplace(f)
+
+% tanja heeft haar functie een klein beetje anders gemaakt
+% bij die van mij is hij 0 als t < 0, bij tanja is die dan 4
+% maar de oplossing is toch hetzelfde dus het maakt zo te zien niet uit
+4*heaviside(1-t) + 4*exp(1-t)*heaviside(t-1)
 ```
 
-```
+$$
+F(s) = \frac{4\,{\mathrm{e}}^{-s} }{s+1}-\frac{4\,{\mathrm{e}}^{-s} }{s}+\frac{4}{s}
+$$
 
 <img src="img/Screenshot 2022-05-24 at 13.25.53.png" alt="Screenshot 2022-05-24 at 13.25.53" style="zoom:50%;" />
 
+```matlab
+% ik neem hier effe a ipv x zodat matlab niet gaat zeiken door de vorige oefeningen
+syms a
+mat = [0 2 0; 2 a 0; 3 a a]
+eigenwaardes = eig(mat)
+fplot(eigenwaardes(1))
+hold on
+fplot(eigenwaardes(2))
+fplot(eigenwaardes(3))
 ```
 
-```
+Dit geeft:
+$$
+\left(\begin{array}{c}
+a\\
+\frac{a}{2}-\frac{\sqrt{a^2 +16}}{2}\\
+\frac{a}{2}+\frac{\sqrt{a^2 +16}}{2}
+\end{array}\right)
+$$
+Je kan op de tekening zien dat ze elkaar nooit snijden, dus er is geen oplossing.
+
+<img src="img/image-20220524145225557.png" alt="image-20220524145225557" style="zoom:50%;" />
 
 <img src="img/image-20220524132707741.png" alt="image-20220524132707741" style="zoom:50%;" />
 
+$H_0$: de gemiddeldes zijn gelijk
+
+
+
+```matlab
+hemo = [19 22 18 19 22 24 18;
+    16 22 17 16 15 12 17;
+    10 14 16 15 14 13 16]
+% nodige tests
+x = hemo(1, :)
+test_cdf=makedist('Normal','mu',mean(x),'sigma',std(x));
+[h,p,D] = kstest(x, test_cdf)
+x = hemo(2, :)
+test_cdf=makedist('Normal','mu',mean(x),'sigma',std(x));
+[h,p,D] = kstest(x, test_cdf)
+x = hemo(3, :)
+test_cdf=makedist('Normal','mu',mean(x),'sigma',std(x));
+[h,p,D] = kstest(x, test_cdf)
+
+p = vartestn([hemo(1,:)' hemo(2,:)' hemo(3,:)'], 'TestType', 'LeveneAbsolute', 'Display', 'off')
+% p = 0.7438 > 0.05
+
+hemo = hemo'
+[p, table, stats] = anova1(hemo)
+multcompare(stats)
 ```
 
-```
+Er is geen significant verschil tussen $B$ en $C$, wel tussen de andere combinaties.
+
+<img src="img/image-20220524145702010.png" alt="image-20220524145702010" style="zoom:50%;" />
 
 
 
 ![image-20220524132739359](img/image-20220524132739359.png)
 
+```matlab
+B = hemo(:,2)'
+Q1 = prctile(B, 25)
+Q3 = prctile(B, 75)
+inter = iqr(B)
+ondergrens = Q1 - 1.5*inter
+bovengrens = Q3 + 1.5*inter
+boxplot(B)
+
+% volgens Tanja is 12 geen uitschieter, maar hij ligt toch wel net buiten het interval hoor
 ```
 
-```
+22 en 12 zijn uitschieters, ze liggen buiten de grenzen. 
 
-
+<img src="img/image-20220524151548844.png" alt="image-20220524151548844" style="zoom:50%;" />
 
 ## 1ste zit 20-21, reeks C
 
