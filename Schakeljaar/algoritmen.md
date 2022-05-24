@@ -894,7 +894,7 @@ We sorteren de rij op basis van het grootste 'getal'. Dan sorteren we recursief 
 
 ## Bucket sort
 
-//TODO
+
 
 
 

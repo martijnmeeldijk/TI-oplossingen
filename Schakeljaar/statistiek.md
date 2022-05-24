@@ -699,9 +699,21 @@ Bij meervoudige lineaire regressie kan je veranderlijke $y$ afhangen van meerder
 
 //TODO
 
+
+
+# Extra
+
+dit is handig
+
+<img src="img/image-20220523225200673.png" alt="image-20220523225200673" style="zoom:50%;" />
+
+
+
 # --------------- Labo ---------------
 
 # Voorbeeldexamen
+
+> Bedankt Paolo om mij te wijzen op enkele fouten :wink:
 
 <img src="img/image-20220522105321144.png" alt="image-20220522105321144" style="zoom:50%;" />
 
@@ -745,12 +757,12 @@ S = sum((1 + 3.*s)./sqrt(s.^5))
 ```matlab
 f1 =@(x) 1-x./8
 f2 =@(x) (x.^2 -5.*x+4).*sqrt(x).*exp(1).^(-x)
-f3 =@(x) (x.^2 -5.*x+4).*sqrt(x).*exp(1).^(-x) - 1-x./8
+f3 =@(x) (x.^2 -5.*x+4).*sqrt(x).*exp(1).^(-x) - 1+x./8
 fplot(f1)
 hold on
 fplot(f2)
-fsolve(f3, 0) % = 0.1033
-fsolve(f3, 0.2) % = 0.3108
+fsolve(f3, 0) % 0.0942
+fsolve(f3, 0.4) % 0.3753
 ```
 
 <img src="img/image-20220522105658032.png" alt="image-20220522105658032" style="zoom:50%;" />
@@ -772,9 +784,13 @@ voltage = [leven(1:3) leven(4:6)]
 % dan kan je block design anova doen
 
 [p, table ,stats] = anova2(voltage, 1)
-multcompare(stats) % voltage
+multcompare(stats)
 
-multcompare(stats, 'Estimate','row') % toerental
+multcompare(stats, 'Estimate','row')
+
+[h,p,ci, stats]=ttest(in(1:3, 1),in(4:6, 1), "Alpha", 0.1) % je moet hier dus een gepaarde ttest doen
+ci
+std(in(:,1))
 ```
 
 <img src="img/image-20220522110137908.png" alt="image-20220522110137908" style="zoom:50%;" />
