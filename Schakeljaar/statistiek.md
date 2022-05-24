@@ -918,6 +918,56 @@ std(in(:,1)) % = 72.0583
 
 
 
+## 2de zit 20-21
+
+![image-20220524133747161](img/image-20220524133747161.png)
+
+```
+
+```
+
+<img src="img/image-20220524133807232.png" alt="image-20220524133807232" style="zoom:50%;" />
+
+```
+
+```
+
+![image-20220524133824078](img/image-20220524133824078.png)
+
+<img src="img/image-20220524133833509.png" alt="image-20220524133833509" style="zoom:50%;" />
+
+```
+
+```
+
+![image-20220524133846263](img/image-20220524133846263.png)
+
+<img src="img/image-20220524133900155.png" alt="image-20220524133900155" style="zoom:50%;" />
+
+```
+
+```
+
+![image-20220524133920048](img/image-20220524133920048.png)
+
+```
+
+```
+
+![Screenshot 2022-05-24 at 13.39.36](img/Screenshot 2022-05-24 at 13.39.36.png)
+
+```
+
+```
+
+![image-20220524134025917](img/image-20220524134025917.png)
+
+```
+
+```
+
+
+
 # Vervelende dingen
 
 ## Ks-test
