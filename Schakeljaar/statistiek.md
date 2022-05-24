@@ -711,6 +711,18 @@ dit is handig
 
 # --------------- Labo ---------------
 
+## Oefening checklist
+
+* Juiste $\alpha$?
+* Eénzijdig of tweezijdig?
+* Zijn de voorwaarden voor de gebruikte test voldaan?
+* Zijn de steekproeven afhankelijk of niet? 
+* Als deze dingen ook expliciet opschrijven
+* Maak een tekening
+  * op papier, maar ook in matlab voor functieonderzoek enzo
+* Nulhypothese formuleren
+* Altijd nalezen of het antwoord wel logisch mogelijk is
+
 # Voorbeeldexamens
 
 ## 1ste zit 20-21, reeks A
@@ -980,17 +992,18 @@ A = [8 1 8 8 3 5 6 4 1 8 3 3 6 2 4]
 B = [9 8 0 0 2 4 7 4 2 7 2 10 5 1 7]
 
 test_cdf=makedist('Normal','mu',mean(A),'sigma',std(A));
-[h,p,D] = kstest(A, test_cdf);
-p
+[h,p,D] = kstest(A, test_cdf); % oke 
 test_cdf=makedist('Normal','mu',mean(B),'sigma',std(B));
-[h,p,D] = kstest(B, test_cdf);
-p
-//TODO dit is fout
-[h, p ,ci, stats] = ttest(A, B) % p = 0.9033
+[h,p,D] = kstest(B, test_cdf); % oke
+p = vartestn([A' B'], 'TestType', 'LeveneAbsolute', 'Display', 'off') % ook oke
 
+[h, p ,ci, stats] = ttest2(A, B, 'Alpha',0.05 , 'Tail' , 'right') %p = 0.4513
+% je moet hier de rechterstaart hebben omdat het eenzijdig is
 ```
 
-$H_0$: de gemiddeldes zijn gelijk, $p > \alpha$ dus accepteren.
+$H_0$: de gemiddeldes zijn gelijk
+
+ $p > \alpha$, dus accepteren.
 
 ![image-20220524132927764](img/image-20220524132927764.png)
 
@@ -1004,6 +1017,14 @@ while m ~= 11
     m = m + 1;
 end
 sum(a) % ans = 6.7583
+
+% het kan nog makkelijker met een for-loopje
+a = [1:10]
+a(1) = log(10)
+for n = 2:10
+	a(n) = log(1+a(n-1));
+end
+sum(a)
 ```
 
 
@@ -1012,7 +1033,7 @@ sum(a) % ans = 6.7583
 
 ![image-20220524133110606](img/image-20220524133110606.png)
 
-```
+```matlab
 syms x
 mat = [x x 0 1
     x x 3 x
@@ -1022,7 +1043,6 @@ mat = [x x 0 1
 eq = det(mat)
 int = solve(eq > 0, x, 'ReturnConditions', true, 'Real', true)
 int.conditions
-fplot(y)
 ```
 
 $$
@@ -1044,9 +1064,9 @@ var = vpa(ans)
 
 %testen of het klopt
 k = 1
-eval(y)
+eval(y) % = 9
 k= 0.85163179316688410142613854673932
-eval(y)
+eval(y) % = 9
 % er zijn dus 2 oplossingen zo te zien
 
 ```
@@ -1058,9 +1078,12 @@ t = 0:0.1:10;
 x = sin(t).^3;
 y = cos(t) - cos(t).^4;
 plot(x, y)
+axis equal % dit heb ik van de oplossing, best handig (zie tweede afbeelding)
 ```
 
 <img src="img/image-20220524174716987.png" alt="image-20220524174716987" style="zoom:50%;" />
+
+<img src="img/image-20220524222733003.png" alt="image-20220524222733003" style="zoom:50%;" />
 
 Dit noem ik nu is een wholesome matlab moment.
 
@@ -1153,53 +1176,120 @@ test_cdf=makedist('Normal','mu',mean(r),'sigma',std(r));
 scatter(1:8,r) % kijk zelf maar, ziet er oké uit
 ```
 
-Ik ga dit model dus accepteren als waardevol.
+Ik ga dit model dus accepteren als waardevol. Ik weet niet waarom, maar Tanja doet al deze dingen niet in de verbetersleutel.
 
 ## 2de zit 20-21
 
 ![image-20220524133747161](img/image-20220524133747161.png)
 
-```
+```matlab
+voor = [38.3 39.1 40.2 37.6 38.9 38.7]
+na =   [37.2 38.4 38.6 36.7 38.2 38.2]
+
+test_cdf=makedist('Normal','mu',mean(voor),'sigma',std(voor));
+[h,p,D] = kstest(voor, test_cdf)
+test_cdf=makedist('Normal','mu',mean(na),'sigma',std(na));
+[h,p,D] = kstest(na, test_cdf)
+p = vartestn([voor' na' ], 'TestType', 'LeveneAbsolute', 'Display', 'off')
+
+[h, p ,ci, stats] = ttest(voor, na, 'Alpha', 0.05 , 'Tail' , 'right')
+
 
 ```
 
 <img src="img/image-20220524133807232.png" alt="image-20220524133807232" style="zoom:50%;" />
 
-```
-
+```matlab
+% steekproefgemiddelde is t-verdeeld en de ttest geeft ook het betrouwbaarheidsinterval voor mu
+[h, p ,ci, stats] = ttest(voor, mean(voor), "Alpha",0.1) % [38.0866 39.5134]
+[h, p ,ci, stats] = ttest(na, mean(na), "Alpha",0.1) %[37.2624 38.5042]
 ```
 
 ![image-20220524133824078](img/image-20220524133824078.png)
 
 <img src="img/image-20220524133833509.png" alt="image-20220524133833509" style="zoom:50%;" />
 
+```matlab
+syms th
+r = 1 - cos(th).*sin(3.*th)
+diff(r)
+ding = solve(diff(r),0,'Real', true)
+opl = vpa(ding(3)) % alleen die in het eerste kwadrant
+% pas op dat je het maximum zeker hebt en niet het minimum
+% theta =1.2868816403305746364928210807132
+subs(r, opl)
+% r = 1.1845043649140952478974858705339
+
+%tekening
+r = @(th)1 - cos(th).*sin(3.*th)
+theta = 0:0.1:2*pi
+polarplot(theta, r(theta))
+% tanja haar oplossing is een beetje raar
+% ze gebruikt fminbnd om dan het minimum van het tegengestelde van de
+% functie te berekenen. Moet kunnen
 ```
 
-```
+<img src="img/image-20220525001146269.png" alt="image-20220525001146269" style="zoom:50%;" />
 
 ![image-20220524133846263](img/image-20220524133846263.png)
 
 <img src="img/image-20220524133900155.png" alt="image-20220524133900155" style="zoom:50%;" />
 
-```
-
+```matlab
+syms x
+mat =[1 x 2 3
+      1 6 8 x
+      x x 0 7
+      0 2 1 x]
+opl = solve(det(mat) == -18, 'Real', true)
+vpa(opl) % = - 2.0357226804817474765241019752941
 ```
 
 ![image-20220524133920048](img/image-20220524133920048.png)
 
+```matlab
+f =@(x) exp(x) - 1
+g = @(x) 1 - x.^2
+com = @(x) exp(x) - 1 - 1 + x.^2
+fplot(f, [0, 1])
+hold on
+fplot(g, [0, 1])
+a = fsolve(com, 0) % a = 0.5373
+% tanja doet a = vpasolve(f(x) == g(x), x)
+% maar dan kan je a niet gewoon hier onder in steken
+% dan moet je die copy pasten
+opp = integral(g,0,a) - integral(f,0,a) % opp = 0.3115
 ```
 
-```
+<img src="img/image-20220524231613619.png" alt="image-20220524231613619" style="zoom:50%;" />
+
+
 
 ![Screenshot 2022-05-24 at 13.39.36](img/Screenshot 2022-05-24 at 13.39.36.png)
 
-```
+```matlab
+n1 = 252; n2 = 145; n3 = 103;
+N1 = n1+224; N2 = n2+136; N3 = n3+140;
 
+x = [repmat('a', N1, 1); repmat('b',N2,1); repmat('c',N3,1)];
+
+y = [repmat(1, n1, 1); repmat(2,N1-n1,1); 
+    repmat(1, n2, 1); repmat(2,N2-n2,1);
+    repmat(1, n3, 1); repmat(2,N3-n3,1);];
+[table, chi2, p] = crosstab(x,y)
+% p = 0.0227 < 0.05 dus er is een significant verband
+% chi2 = 7.5691
 ```
 
 ![image-20220524134025917](img/image-20220524134025917.png)
 
-```
+```matlab
+    %no  %1  %meer
+A = [252 145+103; % vax 
+     224 136+140] % no vax
+(A(1,1) + A(1,2))*(A(1,2) + A(2,2))/1000 + ...
+    (A(1,1) + A(1,2))*(A(1,2) + A(2,2))/1000 % p94 in de cursus
+% ans = 524
 
 ```
 
