@@ -975,18 +975,35 @@ boxplot(B)
 
 ![Screenshot 2022-05-24 at 13.28.28](img/Screenshot 2022-05-24 at 13.28.28.png)
 
-```
+```matlab
+A = [8 1 8 8 3 5 6 4 1 8 3 3 6 2 4]
+B = [9 8 0 0 2 4 7 4 2 7 2 10 5 1 7]
+
+test_cdf=makedist('Normal','mu',mean(A),'sigma',std(A));
+[h,p,D] = kstest(A, test_cdf);
+p
+test_cdf=makedist('Normal','mu',mean(B),'sigma',std(B));
+[h,p,D] = kstest(B, test_cdf);
+p
+
+[h, p ,ci, stats] = ttest(A, B) % p = 0.9033
 
 ```
 
-
+$H_0$: de gemiddeldes zijn gelijk, $p > \alpha$ dus accepteren.
 
 ![image-20220524132927764](img/image-20220524132927764.png)
 
 <img src="img/image-20220524132941549.png" alt="image-20220524132941549" style="zoom: 67%;" /> 
 
-```
-
+```matlab
+a = [log(10)]
+m = 2
+while m ~= 11
+    a(m) = log(1+a(m-1));
+    m = m + 1;
+end
+sum(a) % ans = 6.7583
 ```
 
 
@@ -996,28 +1013,147 @@ boxplot(B)
 ![image-20220524133110606](img/image-20220524133110606.png)
 
 ```
+syms x
+mat = [x x 0 1
+    x x 3 x
+    0 x 2 x
+    5 x 0 x]
 
+eq = det(mat)
+int = solve(eq > 0, x, 'ReturnConditions', true, 'Real', true)
+int.conditions
+fplot(y)
 ```
+
+$$
+\left(\begin{array}{c}
+x<-\frac{5}{2}\\
+0<x\wedge x<1
+\end{array}\right)
+$$
 
 ![Screenshot 2022-05-24 at 13.31.24](img/Screenshot 2022-05-24 at 13.31.24.png)
 
-```
+```matlab
+syms k
+a = [1 3*(k-1) 5]
+b = [-2, k-1, k-2]
+y = norm(cross(a,b))
+solve(y == 9, 'Real', true)
+var = vpa(ans)
+
+%testen of het klopt
+k = 1
+eval(y)
+k= 0.85163179316688410142613854673932
+eval(y)
+% er zijn dus 2 oplossingen zo te zien
 
 ```
 
 ![Screenshot 2022-05-24 at 13.31.58](img/Screenshot 2022-05-24 at 13.31.58.png)
 
+```matlab
+t = 0:0.1:10;
+x = sin(t).^3;
+y = cos(t) - cos(t).^4;
+plot(x, y)
 ```
 
-```
+<img src="img/image-20220524174716987.png" alt="image-20220524174716987" style="zoom:50%;" />
+
+Dit noem ik nu is een wholesome matlab moment.
 
 ![image-20220524133233819](img/image-20220524133233819.png)
 
+```matlab
+Y = [4 6 6 7 8 7 8 10] % kredietkaarten
+X1 = [2 2 4 4 5 5 6 6] % aantal gezinsleden
+X2 = [14 16 14 17 18 21 17 25] % inkomen
+X3 = [1 2 2 1 3 2 1 2] % aantal autos
+
+X = [ones(size(Y))' X1' X2' X3']
+[b , bint r, rint, stats] = regress(Y',X)
 ```
 
+$$
+y = 0.2861 +
+    0.6346X_1+
+    0.1995X_2+
+    0.2716X_3
+$$
+
+
+
+```matlab
+b = 4×1    
+    0.2861
+    0.6346
+    0.1995
+    0.2716
+
+bint = 4×2    
+   -3.1374    3.7095 % bevat 0
+    0.0568    1.2124
+   -0.0550    0.4541 % bevat 0
+   -0.7308    1.2741 % bevat 0
+
+stats = 1×4    
+    0.8720    9.0874    0.0294    0.7037
+   % dit is een matig model
 ```
 
+We gaan nu dus een model maken met enkel $X_1$ als voorspeller.
 
+```matlab
+X = [ones(size(Y))' X1']
+[b , bint r, rint, stats] = regress(Y',X, 0.1)
+```
+
+$$
+y =    
+    2.8714+
+    0.9714X_1
+$$
+
+  
+
+```matlab
+b = 2×1    
+    2.8714
+    0.9714
+bint = 2×2    
+    0.8727    4.8701
+    0.5273    1.4156
+stats = 1×4    
+    0.7506   18.0625    0.0054    0.9143
+		% oke	  
+```
+
+Nu zijn er eigenlijk nog een paar voorwaarden die we moeten controleren als we echt dikke neurts willen zijn:
+
+1. P-waarde F-test < $\alpha$
+
+   $0.0054 < 0.1$ oké
+
+2. Betrouwbaarheidintervallen voor $\beta_n$ bevatten geen 0
+
+   Ook oké
+
+3. De residues zijn normaal verdeeld
+
+```matlab
+test_cdf=makedist('Normal','mu',mean(r),'sigma',std(r));
+[h,p,D] = kstest(r, test_cdf); % p = 0.4509 dus ook oké
+```
+
+4. Er mag geen trend zitten in de residues.
+
+```matlab
+scatter(1:8,r) % kijk zelf maar, ziet er oké uit
+```
+
+Ik ga dit model dus accepteren als waardevol.
 
 ## 2de zit 20-21
 
