@@ -711,7 +711,9 @@ dit is handig
 
 # --------------- Labo ---------------
 
-# Voorbeeldexamen
+# Voorbeeldexamens
+
+## 1ste zit 20-21, reeks A
 
 > Bedankt Paolo om mij te wijzen op enkele fouten :wink:
 
@@ -805,6 +807,12 @@ Volgens voltage zijn de gemiddeldes significant verschillend, volgens toerental 
 std(in(:,1)) % = 72.0583
 [h,p,ci, stats]=ttest2(in(1:3, 1),in(4:6, 1), "Alpha", 0.05) % =  [-206.0803 -20.5864]
 ```
+
+
+
+
+
+## 1ste zit 20-21, reeks B
 
 
 
