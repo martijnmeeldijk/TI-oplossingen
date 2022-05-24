@@ -814,6 +814,108 @@ std(in(:,1)) % = 72.0583
 
 ## 1ste zit 20-21, reeks B
 
+![image-20220524132348806](img/image-20220524132348806.png)
+
+```
+
+```
+
+
+
+![image-20220524132413676](img/image-20220524132413676.png)
+
+```
+
+```
+
+
+
+<img src="img/image-20220524132430583.png" alt="image-20220524132430583" style="zoom:50%;" />
+
+<img src="img/image-20220524132443236.png" alt="image-20220524132443236" style="zoom:33%;" />
+
+```
+
+```
+
+<img src="img/image-20220524132503592.png" alt="image-20220524132503592" style="zoom:50%;" />
+
+<img src="img/image-20220524132516859.png" alt="image-20220524132516859" style="zoom:50%;" />
+
+<img src="img/image-20220524132527581.png" alt="image-20220524132527581" style="zoom:50%;" />
+
+```
+
+```
+
+<img src="img/Screenshot 2022-05-24 at 13.25.53.png" alt="Screenshot 2022-05-24 at 13.25.53" style="zoom:50%;" />
+
+```
+
+```
+
+<img src="img/image-20220524132707741.png" alt="image-20220524132707741" style="zoom:50%;" />
+
+```
+
+```
+
+
+
+![image-20220524132739359](img/image-20220524132739359.png)
+
+```
+
+```
+
+
+
+## 1ste zit 20-21, reeks C
+
+![Screenshot 2022-05-24 at 13.28.28](img/Screenshot 2022-05-24 at 13.28.28.png)
+
+```
+
+```
+
+
+
+![image-20220524132927764](img/image-20220524132927764.png)
+
+<img src="img/image-20220524132941549.png" alt="image-20220524132941549" style="zoom: 67%;" /> 
+
+```
+
+```
+
+
+
+![Screenshot 2022-05-24 at 13.30.21](img/Screenshot 2022-05-24 at 13.30.21.png)
+
+![image-20220524133110606](img/image-20220524133110606.png)
+
+```
+
+```
+
+![Screenshot 2022-05-24 at 13.31.24](img/Screenshot 2022-05-24 at 13.31.24.png)
+
+```
+
+```
+
+![Screenshot 2022-05-24 at 13.31.58](img/Screenshot 2022-05-24 at 13.31.58.png)
+
+```
+
+```
+
+![image-20220524133233819](img/image-20220524133233819.png)
+
+```
+
+```
+
 
 
 # Vervelende dingen
