@@ -18,29 +18,147 @@
 
 # ------------- Theorie -------------
 
+Dingen die niet op het formularium staan die je waarschijnlijk wel moet kennen
 
+* ongelijkheid van Chebychev
+* Formules discrete verdelingen
+  * binomiaalverdeling
+  * bernoulliverdeling
+  * geometrische verdeling
+  * hypergeometrische
+  * poissonverdeling
+* Momentenfunctie
+* SSE SST SSR en al die bullshit die niemand wil leren
+* Anova Fber
+* Combinaties van verdelingen
+
+## Formularium: extended edition
+
+De dingen die je ook zeker van buiten moet kennen, maar die uit sadisme niet op het formularium staan om de artificiële moeilijkheidsgraad van dit vak op peil te houden. 
+
+**Kansrekenen**
+$$
+P(A \or B) = P(A) + P(B) - P(A \and B)\\
+P(A \and B) = P(B) \cdot P(A \vert B)\\
+P(A \and \overline B) = P(A) - P(A \and B)
+$$
+**Verdelingsfuncties**
+$$
+\frac{dF}{dx} = f(x)
+$$
+
+$$
+\mu = \int_{-\infty}^{+\infty}xf(x)dx = \sum_i x_i f(x_i)\\
+\sigma^2 =  \int_{-\infty}^{+\infty}x^2f(x)dx - \mu^2 = \sum_i x^2_i f(x_i) - \mu^2
+$$
+Als de momentenfunctie van een discrete variabele $i$ gelijk is aan: $M(t) = g(t)$, dan:
+
+* $\mu = \left[\frac{dM}{dt}\right]_{t=0}$  
+* $\sigma^2 = \left[\frac{d^2M}{dt^2}\right]_{t=0} - \mu^2$
+
+**Chebychev**
+$$
+P(\lvert x-\mu \rvert \geq k\sigma) \leq \frac{1}{k^2} \quad \xLeftrightarrow{} \quad 
+P(\lvert x-\mu \rvert < k\sigma) \geq 1- \frac{1}{k^2}
+$$
+**Discrete verdelingen**
+
+| Verdeling                   | Formule                                    | Wanneer gebruiken                                            |
+| --------------------------- | ------------------------------------------ | ------------------------------------------------------------ |
+| Bernoulli verdeling         | $P(x=i)= p^i(1-p)^{1-i}$                   | $x$ kan maar 2 waarden aannemen                              |
+| Binomiale verdeling         | $P(x=i) = C^i_n p^i(1-p)^{n-i}$            | $x$ is het aantal keer dat verschijnsel $A$ optreedt bij $n$ experimenten. |
+| Geometrische verdeling      | $P(x=i) = (1-p)^{i-1} \cdot p$             | Kans dat het verschijnsel $A$ pas optreedt bij de $i$-de waarneming. |
+| Hypergeometrische verdeling | $P(x=i)=\frac{C^i_M C_{N-M}^{n-i}}{C^n_N}$ | $N$ elementen waarvan $M$ de eigenschap $A$ bezitten en $n$ getrokken elementen waarvan er $i$ de eigenschap $A$ bezitten |
+| Poisson verdeling           | $P(x=i)= \frac{e^{-\lambda}\lambda^i}{i!}$ | Aantal keren dat $i$ optreedt in een tijdsinterval           |
+
+
+
+**Continue verdelingen**
+$$
+F_{1-\alpha}(v_2, v_1) = \frac{1}{F_\alpha(v_1, v_2)}
+$$
+**Betrouwbaarheidsinterval opstellen vanuit formules op het formularium**
+
+//TODO
 
 # 1 - Kansrekenen
 
+## Wetten
+
+**Elkaar uitsluitende gebeurtenissen**
+$$
+P(A\or B) = P(A) + P(B)
+$$
+**Onafhankelijke gebeurtenissen**
+$$
+P(A \and B) = P(A)\cdot P(B)
+$$
 **De optellingswet**
 $$
-P(A \or B) = P(A) + P(B) - P(A \and B)
+P(A \or B) = P(A) + P(B) - P(A \and B)\\
+ P(A \and B)= P(A) + P(B) - P(A \or B)
 $$
 **De vermenigvuldigingswet**
 $$
-P(A \and B) = P(B)P(A \vert B)= P(A)P(B \vert A)
+P(A \and B) = P(B) \cdot P(A \vert B)= P(A) \cdot P(B \vert A) \\
+P(A \vert B)= \frac{P(A)\cdot P(B \vert A)}{P(B)} \\
+P(B \vert A) = \frac{P(A \and B)}{P(A)}
 $$
 \* *$P(A \vert B)$ is de kans dat A gebeurt, gegeven dat B gebeurt*
 
+**Wetten van Morgan**
+$$
+\overline{A \and B} = \overline A \or \overline B
+\quad \text{en} \quad 
+\overline{A \or B} = \overline A \and \overline B
+$$
+**Nog een ding**
+$$
+P(A \and \overline B) = P(A) - P(A \and B)
+$$
+**Optellingswet++**
+$$
+P(A \or B \or C) = P(A) + P(B) + P(C) - P(A \and B) - P(A \and C) - P(B \and C) + P(A \and B \and C)
+$$
+**Vermenigvuldigingswet++**
+$$
+P(A \and B \and C) = P(A)P(B \vert A) \cdot P(C \vert(A \and B))
+$$
 
+## Combinaties
 
-**Combinaties**
+Als we uit $n$ verschillende elementen er $p$ kiezen zonder terugleggen, is het aantal mogelijke combinaties:
 $$
 C^p_n = \frac{n!}{p!(n-p)!}
 $$
 
+Ik vond het altijd een beetje moeilijk om dit toe te passen. Dus ik ga het hier even verduidelijken, want het staat niet echt expliciet in de cursus. De volgende twee formules moet je met een korrel zout nemen, aangezien ze een product zijn van mijn onderontwikkelde hersens. Oké ik denk dat ik misschien gewoon per ongeluk de hypergeometrische verdeling heb uitgevonden. Ik weet het niet meer. Ik moet gaan slapen want het is veel te laat, maar statistiek is zo leuk. Ik zou echt niets liever doen op een zomeravond terwijl al mijn vrienden die niet zo achterlijk waren om schakeljaar te doen zitten te chillen.
 
-**Regel van Bayes**
+**Zonder terugleggen**
+
+We trekken $p$ dingen uit een set van $n$ dingen. Dit heeft $C^p_n$ mogelijkheden. In de set zitten $w$ dingen die we willen. In onze trekking ($p$) zitten er dan $x$ dingen die we willen. Nu wil ik de kans bepalen dat $x$ gelijk is aan een bepaalde hoeveelheid.
+$$
+P(x = x_0) = \frac{C^{x_0}_w \cdot C^{p-{x_0}}_{n-w}}{C^p_n}
+$$
+
+* $C^{x_0}_w$: Aantal combinaties van dingen die we willen in onze trekking
+* $C^{p-{x_0}}_{n-w}$: aantal combinaties van dingen die we niet willen in onze trekking
+* $C^p_n$: Totaal aantal combinaties van dingen die we kunnen trekken
+
+**Met terugleggen**
+
+Omdat je telkens teruglegt kan je gewoon de kansen bepalen:
+
+* $\frac w n$: de kans dat we iets pakken dat we willen
+* $1 - \frac w n$: de kans dat we iets trekken dat we niet willen
+
+$$
+P(x = x_0) = C^{x_0}_p (\frac w n)^{x_0}(1- \frac w n)^{p - x_0}
+$$
+
+
+
+## Regel van Bayes
 
 * Elke gebeurtenis $A_i$ kan een gebeurtenis $B$ als gevolg hebben. 
 * Gebeurtenissen $A_i$ sluiten elkaar uit
@@ -117,7 +235,7 @@ $$
 P(\lvert x-\mu \rvert \geq k\sigma) \leq \frac{1}{k^2} \quad \xLeftrightarrow{} \quad 
 P(\lvert x-\mu \rvert < k\sigma) \geq 1- \frac{1}{k^2}
 $$
-(//TODO moeten we dit bewijs kennen?)
+
 
 
 
@@ -619,19 +737,16 @@ $$
 \text{SST} = \text{SSTR} + \text{SSE}
 $$
 
+Dit in een mooi kadertje.
 
+| Ding | Betekenis                                                    | Vrijheidsgraden |      |
+| ---- | ------------------------------------------------------------ | --------------- | ---- |
+| SSTR | De variatie tussen de verschillende steekproeven in vergelijking met het globale gemiddelde. Het aantal vrijheidsgraden hang dus af van het aantal steekproeven | $k-1$           | MSTR |
+| SSE  | De variatie binnenin elke steekproef ten opzichte van hun lokale gemiddelde. Het aantal vrijheidsgraden is $kn - k$, omdat je voor alle $k$ steekproeven het gemiddelde berekent. | $k(n-1)$        | MSE  |
+| SST  | Variatie over alles                                          | $kn-1$          | MST  |
 
-De $SST$ delen we door $kn-1$, want deze betreft alle waarden, de $SSTR$ delen we door het aantal steekproeven, enz.
+SST = SSE + SSTR
 
-
-
-$$
-\begin{align}
-\text{MST} &= \frac{\text{SST}}{kn-1} = \text{totale gemiddelde kwadratensom}\\
-\text{MSTR} &= \frac{\text{SSTR}}{k-1} = \text{gemiddelde kwadratensom tussen de steekproeven}\\
-\text{MSE} &= \frac{\text{SSE}}{k(n-1)} = \text{gemiddelde kwadratensom binnen de steekproeven}\\
-\end{align}
-$$
 We nemen dus nu eigenlijk de verhouding tussen de variatie tussen de steekproeven ($MSTR$) en binnen de steekproeven ($MSE$). Dit geeft onze toetsingsgrootheid: 
 $$
 f_\text{ber} = \frac{\text{MSTR}}{\text{MSE}} \quad : F(k-1,k(n-1) \text{ d.f.})
@@ -643,6 +758,15 @@ Met als $H_0$: $\mu_0 = \mu_1 = \dots = \mu_n$
 
 Als de waarnemingen twee per twee voorkomen, dus als voor elke categorie in de kolommen en elke categorie in de rijen maar één waarneming is, maken we gebruik van block design. 
 
+| Ding | Betekenis                                                    | Vrijheidsgraden |      |
+| ---- | ------------------------------------------------------------ | --------------- | ---- |
+| SSB  | De variatie van de gemiddelde waarde per blok tegenover het globale gemiddelde. Er zijn $n$ blokken, vandaar de vrijheidsgraad. | $n-1$           | MSB  |
+| SSTR | De variatie tussen de verschillende steekproeven in vergelijking met het globale gemiddelde. Er zijn $k$ steekproeven. | $k-1$           | MSTR |
+| SSE  | De variatie binnenin elke steekproef ten opzichte van hun lokale gemiddelde, per blok. Omdat we het gemiddelde per blok en per steekproef berekenen is het aantal vrijheidsgraden $(k-1)(n-1)$ | $(k-1)(n-1)$    | MSE  |
+| SST  | Variatie over alles                                          | $kn-1$          | MST  |
+
+
+
 Met als $H_0$: $\mu_0 = \mu_1 = \dots = \mu_n$
 
 Hebben we als toetsingsgrootheid:
@@ -653,11 +777,16 @@ $$
 
 ## Two-way anova
 
-Bij one-way Anova kan je de verschillen maar onderzoeken per factor. Als je de invloed van **combinaties van twee factoren** wilt onderzoeken, gebruik je two-way Anova. We testen dus niet alleen de invloed van elk van de factoren, maar ook van hun interactie.
+Bij one-way Anova kan je de verschillen maar onderzoeken per factor. Als je de invloed van **combinaties van twee factoren** wilt onderzoeken, gebruik je two-way Anova. We testen dus niet alleen de invloed van elk van de factoren, maar ook van hun **interactie**.
 
-Ik ga de rest even achterwege laten.
+| Ding | Betekenis                                            | Vrijheidsgraden              |      |
+| ---- | ---------------------------------------------------- | ---------------------------- | ---- |
+| SSA  | De variatie tussen de groepen, gesplitst op factor A | $a-1$                        |      |
+| SSB  | De variatie tussen de groepen, gesplitst op factor B | $b-1$                        |      |
+| SSI  | De interactie tussen A en B                          | $(a-1)(b-1)$                 |      |
+| SSE  | Alles                                                | $n-1-(a-1)-(b-1)-(a-1)(b-1)$ |      |
 
-//TODO 
+Nu vind ik het wel een beetje vervelend dat het gewoon niet wordt uitgelegd in de cursus waar de vrijheidsgraden voor dit deel vandaan komen. 
 
 # 9 - Regressie
 
@@ -698,6 +827,8 @@ Hoe dichter deze bij 1 komt, hoe sterker de correlatie.
 Bij meervoudige lineaire regressie kan je veranderlijke $y$ afhangen van meerdere $x$'jes.
 
 //TODO
+
+
 
 
 
@@ -857,7 +988,7 @@ n = N1+N2
 schatter = (50 + 37)*(37 + 47)/n % schatter = 43.5000
 ```
 
-
+ 
 
 
 
