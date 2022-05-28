@@ -31,6 +31,8 @@ Dingen die niet op het formularium staan die je waarschijnlijk wel moet kennen
 * SSE SST SSR en al die bullshit die niemand wil leren
 * Anova Fber
 * Combinaties van verdelingen
+* Het centrale moment van de tweede orde van een steekproef is gelijk aan
+* Een steekproef levert voor x een gemiddelde op van 5 en een standaardafwijking van 2. Achteraf blijkt een herschaling nodig wegens het slecht afgestelde meettoestel. Wat volgt uit deze steekproef voor y=-2 x+1 ?
 
 ## Formularium: extended edition
 
@@ -42,19 +44,38 @@ P(A \or B) = P(A) + P(B) - P(A \and B)\\
 P(A \and B) = P(B) \cdot P(A \vert B)\\
 P(A \and \overline B) = P(A) - P(A \and B)
 $$
+**Beschrijvende statistiek**
+$$
+s^2 = \frac 1 {n-1}\sum_{i=1}^n (x_i - \overline x)^2\\
+M_k = \frac 1 {n-1}\sum_{i=1}^n (x_i - \overline x)^k\\ \quad s^2\text{ is dus } M_2 \text{(centraal moment van de 2de orde)}
+$$
 **Verdelingsfuncties**
-$$
-\frac{dF}{dx} = f(x)
-$$
+
+Wanneer is iets een geldige kans- of verdelingsfunctie?
+
+| Kansfunctie f(x)       | Verdelingsfunctie F(x)                                       |
+| ---------------------- | ------------------------------------------------------------ |
+| Is nooit negatief      | Is nooit negatief en is niet-dalend                          |
+| $\frac{dF}{dx} = f(x)$ | $P(a\leq x \leq b) = \int_a^b f(x)dx = P(x\leq b) - P(x \leq a) = F(b)- F(a)$ |
+| De som is 1            | $\lim_{t \to +\infty} F(x) = 1$                              |
 
 $$
 \mu = \int_{-\infty}^{+\infty}xf(x)dx = \sum_i x_i f(x_i)\\
 \sigma^2 =  \int_{-\infty}^{+\infty}x^2f(x)dx - \mu^2 = \sum_i x^2_i f(x_i) - \mu^2
 $$
-Als de momentenfunctie van een discrete variabele $i$ gelijk is aan: $M(t) = g(t)$, dan:
+$$
+M(t) = \sum_ie^{tx_i}f(x_i) = \int_{-\infty}^{+\infty}e^{tx}f(x)dx
+$$
 
 * $\mu = \left[\frac{dM}{dt}\right]_{t=0}$  
 * $\sigma^2 = \left[\frac{d^2M}{dt^2}\right]_{t=0} - \mu^2$
+
+* Mediaan: waarde voor $F(x) = \frac 1 2$
+* Modus: maximum van $f(x)$
+
+$$
+E[ax + b] = aE[x]+b \quad \text{en} \quad V[ax+b]=a^2V[x]
+$$
 
 **Chebychev**
 $$
@@ -73,10 +94,36 @@ $$
 
 
 
-**Continue verdelingen**
+**Combinaties van continue verdelingen**
+$$
+x_i \mapsto N(\mu_i, \sigma_i) \\
+y = \sum a_i x_i + b \\
+\mu_y = \sum a_i\mu_i + b\quad \text { en }\quad \sigma^2_y = \sum a_i^2\sigma_i^2
+$$
+
+$$
+z_i \mapsto N(0,1)\\
+\sum _{i=1}^n (z_i)^2 \mapsto \chi^2(n \text{ d.f.})
+$$
+
+$$
+x \mapsto \chi^2(v_1 \text{ d.f.}), \quad y \mapsto \chi^2(v_2 \text{ d.f.})\\
+x+y \mapsto \chi^2(v_1 + v_2 \text{ d.f.})
+$$
+**Eigenschap F-verdeling**
 $$
 F_{1-\alpha}(v_2, v_1) = \frac{1}{F_\alpha(v_1, v_2)}
 $$
+Bij een normale verdeling zijn het gemiddelde, de mediaan en de modus gelijk
+
+**Voorspellingsintervallen**
+$$
+t = \frac{\overline x - x_{n+1}}{s\sqrt{\frac 1 n + 1}} \mapsto t(n-1 \text{ d.f.})
+$$
+**t-verdeling**
+
+Bij $n\geq30$ benadert de t-verdeling $N(0,1)$.
+
 **Betrouwbaarheidsinterval opstellen vanuit formules op het formularium**
 
 //TODO
@@ -341,7 +388,11 @@ $$
 f(x) = \frac{1}{\theta}e^{-\frac{x}{\theta}} \quad \text{ met } x \geq 0 \text{ en } \theta > 0
 $$
 
-$\theta = \mu$
+$ \mu = \theta $
+
+$\sigma^2 = \theta^2$
+
+Wordt typisch gebruikt voor de levensduur van een toestel. 
 
 ### Normale verdeling
 
