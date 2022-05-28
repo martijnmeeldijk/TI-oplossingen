@@ -6,6 +6,8 @@
   * Test 23 mei: 20%
 * Minstens 8/20 op zowel theorie als praktijk
 
+Ik ga alle bewijzen die je moet kennen (voor zo ver ik weet) aanduiden met [bewijs], dan kan je gemakkelijk `ctrl+F`'en.
+
 
 
 ## To Do
@@ -46,17 +48,72 @@ Binaire zoekboom, waarvoor geldt:
 2. De wortel is zwart
 3. Elke virtuele knoop (NIL) is zwart
 4. Elke rode knoop heeft 2 zwarte kinderen
-5. Elk pad van een knoop naar een bladnode in zijn deelboom bevat eenzelfde aantal zwarte knopen
+5. Elk pad van een knoop naar een virtuele knoop in zijn deelboom bevat eenzelfde aantal zwarte knopen
+   * De knoop zelf wordt niet meegerekend en de (zwarte) virtuele knoop wel
 
 We definiëren het begrip **zwarte hoogte** als het aantal zwarte knopen op het pad naar een bladnode. 
 
-We willen bewijzen dat een red-black tree met wortel $x$ ten minste $2^{ZH(x)} - 1$ interne knopen bevat (met $ZH$ de zwarte hoogte)
-
-<img src="img/image-20220216092535478.png" alt="image-20220216092535478" style="zoom:50%;" />
-
-<img src="img/image-20220216092747047.png" alt="image-20220216092747047" style="zoom:50%;" />
 
 
+### Aantal interne knopen
+
+[bewijs]
+
+We willen bewijzen dat een red-black tree met wortel $x$ ten minste $2^{ZH(x)} - 1$ interne knopen bevat (met $ZH$ de zwarte hoogte). We kunnen dit bewijzen met inductie.
+
+**Hoogte 0**
+
+Een boom met hoogte 0 heeft enkel een virtuele (wortel)knoop. Vullen we dit in in de formule $2^{ZH(x)} - 1$:
+$$
+2^0 -1 = 0
+$$
+**Hoogte 1**
+
+De boom met hoogte 1 heeft een zwarte wortel met 2 virtuele kindknopen. 
+$$
+2^1 - 1 =1
+$$
+De formule houdt dus stand voor hoogte 0 en hoogte 1.
+
+**Hoogte h**
+
+We veronderstellen nu dat de formule klopt voor hoogte $h$. Als de formule nu klopt voor hoogte $h-1$, is er bewezen wat er te bewijzen viel. We nemen een willekeurige knoop, deze is de wortel van een willekeurige deelboom. Deze heeft zwarte hoogte $w$. Zijn kinderen hebben elk ofwel:
+
+<p float="left"> <img src="img/image-20220528131949206.png" alt="image-20220528131949206" style="zoom: 50%;" /><img src="img/image-20220528133123107.png" alt="image-20220528133123107" style="zoom:50%;" /></p>
+
+* Zwarte hoogte $w$ als het kind rood is, dus $2^{w} - 1$ kindknopen
+* Zwarte hoogte $w-1$ als het kind zwart is, dus $2^{w-1} - 1$ kindknopen
+
+Het aantal knopen in de boom is de wortel plus de som het aantal knopen in zijn linker en rechter deelbomen. Het aantal kindknopen in eender welke van de twee deelbomen is minstens $2^{w-1} - 1$.
+$$
+\begin{align}
+ &\geq 1 + 2(2^{w-1} - 1)\\
+ &\geq  2^{w} -1
+
+
+\end{align}
+$$
+
+
+### Hoogte
+
+We willen bewijzen dat de hoogte van een red-black tree $O(\log n)$ is.
+
+* Een rode knoop heeft altijd 2 zwarte kinderen
+* Minstens de helft van de knopen op het pad tussen de wortel en een virtuele knoop is zwart.
+
+Nu gebruiken we de formule van het deel hiervoor:
+$$
+\begin{align}
+ZH(\text{wortel}) &\geq \frac h 2 \\
+n &\geq 2^{\frac h 2} - 1 \\
+n +1  &\geq 2^{\frac h 2}  \\
+\log(n +1)  &\geq \frac h 2 \\
+2\log(n +1)  &\geq h \\
+
+\end{align}
+$$
+De hoogte is dus $O(\log n)$.
 
 ### Zoeken
 
@@ -100,6 +157,8 @@ Als $c$, $p$ en $g$ niet op één lijn staan, roteer je $c$ boven $p$. Nu is je 
 
 ### Verwijderen
 
+We verwijderen zoals we zouden verwijderen in een binaire zoekboom.
+
 Dit kunnen we opsplitsen in 3 gevallen:
 
 * De knoop heeft geen kinderen
@@ -114,7 +173,20 @@ De eerste en tweede zijn triviaal. Als de knoop geen kinderen heeft moet je niks
 
 **Red-black voorwaarden herstellen**
 
-//TODO
+We hebben nu mogelijks weer de voorwaarden van de boom naar de tering geholpen. We splitsen op in een paar gevallen.
+
+* Te verwijderen knoop is rood en heeft geen kinderen
+
+  * doe niks
+
+* Te verwijderen knoop is zwart 
+
+  * en heeft 1 rood kind.
+    * Maak rood kind zwart
+  * en heeft geen kinderen
+    * we maken zijn virtuele kindknoop "dubbel zwart", dit moeten we later wegwerken
+
+  Om dubbel zwart weg te werken zijn er 8 mogelijke gevallen //TODO
 
 # 2 - Meerdimensionale gegevensstructuren
 
@@ -181,6 +253,8 @@ Het principe van een PR Quadtree is gelijkaardig aan dat van een gewone Quadtree
 #### Hoogte
 
 De hoogte van een PR Quadtree wordt bepaald door de kleinste afstand tussen twee knopen, aangezien er telkens dieper gesplitst zal moeten worden totdat elk punt zijn eigen vakje heeft.
+
+[bewijs] (een kleintje wel)
 
 <img src="img/image-20220404174847533.png" alt="image-20220404174847533" style="float: left; zoom: 33%;" />  
 
@@ -544,6 +618,8 @@ Als je dus een recurrente betrekking kan opstellen van je algoritme, kan je d.m.
 
 ## Afschattingen van recursiebetrekkingen
 
+Godverdomme we moeten die deel niet kennen, dus sla het maar over
+
 **Logaritmische afschatting**
 $$
 T(n) \leq T(\frac n 2) + c \xRightarrow{\quad} T \text{ is } O(\log n)
@@ -562,7 +638,7 @@ T(n) \leq \frac 1 n + T(n-1) &\xRightarrow{\quad} T \text{ is } O(\log n)
 $$
 **Afschattingen met sommen**
 
-//TODO
+//TODO laat maar zitten
 
 
 
@@ -613,7 +689,7 @@ Als we een algoritme maken volgens het principe van divide-and-conquer, **verdel
 
 Niemand houdt van matrices. Strassen is een simp want zijn algoritme is nieteens goed volgens Simoens.
 
-//TODO
+//TODO je moet het niet vanbuiten kennen volgens onze meneer
 
 
 
@@ -663,7 +739,7 @@ Mergesort is een perfect voorbeeld van divide-and-conquer. We verdelen telkens d
 
 Samenvoegen van twee gerangschikte tabellen kan heel gemakkelijk. Je vergelijkt van beide tabellen het eerste element en je neemt telkens de kleinste. Hiervoor heb je dus wel extra geheugen nodig, want je moet dat element wel ergens kunnen steken. Kopieer dus één van de twee deeltabellen naar een hulptabel. Als we bij elke samenvoeging bij de linkse deeltabel beginnen, behouden we de volgorde van gelijke sleutels en is het algoritme bijgevolg **stabiel**. Door het extra geheugengebruik rangschikt het wel **niet ter plaatse**.
 
-**Efficientie**
+**Efficientie** [bewijs]
 $$
 \begin{cases}
 2T(\frac n 2) + cn \quad &\text{ if } n>1
@@ -679,7 +755,7 @@ $$
 
 <img src="img/image-20220515181413265.png" alt="image-20220515181413265" style="zoom:50%;" />
 
-Je kan mergesort nog een beetje optimaliseren door in plaats van recursief te dalen, gewoon direct te beginnen bij deelrijen met lengte 1. Deze ga je dan stap voor stap mergen tot grotere rijen. Zo vermijd je de overheid van recursieve oproepen. De efficiëntie is nog steeds $\Theta(n\log n)$.
+Je kan mergesort nog een beetje optimaliseren door in plaats van recursief te dalen, gewoon direct te beginnen bij deelrijen met lengte 1. Deze ga je dan stap voor stap mergen tot grotere rijen. Zo vermijd je de overhead van recursieve oproepen. De efficiëntie is nog steeds $\Theta(n\log n)$.
 
 **Optimalisaties**
 
@@ -755,9 +831,11 @@ void quicksort (vector<T>&v){
 }
 ```
 
-
+Quicksort sorteert **ter plaatste**, maar is **niet stabiel**. Je moet ook oppassen, want de recursieve oproepen kunnen veel ruimte op de stapel innemen.
 
 ### Efficiëntie
+
+[bewijs]
 
 **Beste geval**
 
@@ -812,13 +890,23 @@ We verdelen de tabel in drie partities.
 * Elementen gelijk aan de pivot
 * Elementen groter dan de pivot
 
+Hierdoor kunnen lijsten met veel duplicaten sneller gesorteerd worden, omdat we dan in de volgende recursieve oproep de elementen in het midden niet meenemen. Voor willekeurige tabellen is de uitvoeringstijd nog steeds $O(n\log n)$, maar voor tabellen met veel duplicaten wordt de uitvoeringstijd meer lineair.
+
 **Dual pivot sort**
 
-//TODO
+<img src="img/image-20220528160733431.png" alt="image-20220528160733431" style="zoom:50%;" />
+
+We gebruiken 2 pivots, waardoor de rij in 4 stukken wordt opgedeeld. Nu is het partitioneren natuurlijk iets ingewikkelder, dus ik ga mijn tijd toch even gebruiken om iets anders te doen.
+
+Dit algoritme blijkt 10% sneller dan gewone Quicksort, als je bij rijen van minder dan 47 elementen insertion sort gebruikt.
+
+
 
 # 7 - Lineaire sorteermethodes
 
 ## Efficiëntie van rangschikken
+
+[bewijs]
 
 <img src="img/image-20220515214614947.png" alt="image-20220515214614947" style="zoom:50%;" />
 
@@ -826,9 +914,9 @@ We willen een informatietheoretische ondergrens bepalen voor eender welk sorteer
 
 Hoe veel sleutelvergelijkingen heeft een sorteeralgoritme nu nodig in het slechtste geval? En in het gemiddelde geval? We zoeken voor beiden een ondergrens.
 
-**Slechtste geval**
+### Slechtste geval
 
-Het slechtste geval is de langste afstand van de wortel naar een blad, dit is per definitie de hoogte van de boom. Om een ondergrens te vinden zoeken we de minimale hoogte van een boom met $n$ bladeren.
+Het slechtste geval is de langste afstand van de wortel naar een blad, dit is per definitie de hoogte van de boom. Om een ondergrens te vinden zoeken we de minimale hoogte van een boom met $n!$ bladeren.
 $$
 \begin{align}
 2^{h-1}&<n!\leq2^h \\
@@ -838,9 +926,33 @@ h&>n\log n-n\log e \\
 h&= \Omega(n \log n)
 \end{align}
 $$
-**Gemiddeld geval**
+### Gemiddeld geval
 
-Ook $\Omega(n \log n)$ //TODO
+We zoeken in onze beslissingsboom de gemiddelde lengte van de wortel naar een blad. Hiervoor zoeken we eerst de som van al de weglengtes naar de bladeren. Dit is de **uitwendige weglengte**. 
+
+We bewijzen dat de uitwendige weglengte $l$ van een boom met $b$ bladeren minstens $b\log b$ is.
+
+Voor $h=0$ klopt dit, dus we kunnen de eigenschap bewijzen met inductie. We nemen nu een grotere boom met hoogte $h>0$ en veronderstellen dat de eigenschap klopt voor alle kleinere hoogten. Als we nu, rekening houdend met het vorige, kunnen bewijzen dat de eigenschap ook geldt op de boom met hoogte $h$, zijn we klaar.
+
+De wortel heeft twee deelbomen met $b_1$ en $b_2$ bladeren. En de eigenschap geldt voor de kleinere bomen:
+$$
+l \geq b_1  + b_1\log(b_1) + b_2 + b_2\log(b_2) \\
+$$
+Omdat $b = b_1 + b_2$ , kunnen we $b_2$ vervangen.
+$$
+l\geq b_1 + b_1\log(b_1) + b - b_1 + (b - b_1)\log(b_2)\\
+$$
+We kunnen de kleinst mogelijke waarde vinden door deze uitdrukking af te leiden en zijn nulpunt te zoeken (ja ik heb dit uitgewerkt want het stoorde mij):
+$$
+\begin{align}
+\frac{d}{db_1}(b_1 + b_1\log(b_1) + b - b_1 + (b - b_1)\log(b-b_1) ) &=0\\
+1 + \log(b_1) + \frac{b_1}{b_1\ln2} - 1 - \log(b-b_1) - (b-b_1)\frac{-1}{(b-b_1)\ln 2} &= 0\\
+log(b_1)-log(b-b_1) &= 0\\
+b_1 &= b-b_1\\
+2b_1 &= b
+\end{align}
+$$
+ En dus is $\frac b 2 = b_1 = b_2$. De totale weglengte is dus $b\log b$. Als we $n!$ bladeren hebben is de gemiddelde weglengte $\Omega(\log n!)$, en dus gelijk aan $\Omega(n\log n)$.
 
 ## Counting sort
 
@@ -894,11 +1006,13 @@ We sorteren de rij op basis van het grootste 'getal'. Dan sorteren we recursief 
 
 ## Bucket sort
 
+<img src="img/image-20220528151942063.png" alt="image-20220528151942063" style="zoom:50%;" />
 
-
-
+We veronderstellen dat de sleutels reële getallen zijn, die binnen een bepaald interval mooi uniform verdeeld zijn. We gaan ons interval in $m$ gelijke delen splitsen zodat we met een modulo ze in 1 operatie in het juiste interval kunnen zetten. Als je $m = \Theta(n)$ neemt, zal elk interval maar een kleine hoeveelheid sleutels bevatten, waardoor je ze dan best efficiënt kan sorteren met insertion sort.
 
 # 8 - Dynamisch programmeren
+
+Je moet van alle geziene problemen de recursieve betrekking kunnen opstellen.
 
 Dynamisch programmeren is eigenlijk een upgrade van divide-and-conquer. We splitsen problemen op in kleinere **overlappende deelproblemen**. Als we een deelprobleem hebben opgelost, slaan we op de één of andere manier het resultaat op, zodat we in de andere deelproblemen gebruik kunnen maken van dit resultaat. Dit noemt men **memoisatie**. We ruilen dus geheugen voor uitvoeringstijd.
 
@@ -943,7 +1057,7 @@ Ik denk dat het bij dit hoofdstuk vooral belangrijk is dat je oefeningen maakt. 
 
 ### Optimale binaire zoekboom
 
-Stel je voor. We hebben eer reeks sleutels die op oplopende volgorde zijn gesorteerd. We hebben ook een tabel met een bepaalde reeks sleutels, met voor elke sleutel een zoekfrequentie. Hoe kunnen we nu een binaire boom opstellen die de totale zoektijd voor deze reeks sleutels  minimaliseert?
+Stel je voor. We hebben een reeks sleutels die op oplopende volgorde zijn gesorteerd. We hebben ook een tabel met een bepaalde reeks sleutels, met voor elke sleutel een zoekfrequentie. Hoe kunnen we nu een binaire boom opstellen die de totale zoektijd voor deze reeks sleutels  minimaliseert?
 
 We hebben dus:
 
@@ -1230,6 +1344,8 @@ Bevat alle (beslissing)problemen waarvoor we in polynomiale tijd een oplossing k
 
 ## NP-complete problemen
 
+(In dit deel heb ik de problemen weggelaten die niet op het leerstofoverzicht staan)
+
 Een probleem is NP-compleet als:
 
 1. Het behoort tot NP
@@ -1327,6 +1443,8 @@ Voor uitspraken van andere groottes is het bewijs analoog. We hebben nu dus bewe
 
 #### Set cover
 
+[bewijs]
+
 <img src="img/image-20220520231753126.png" alt="image-20220520231753126" style="zoom:50%;" />
 
 We hebben een verzameling $S$ (alle bolletjes) en een verzameling van deelverzamelingen $C$ (alle vormen op de tekening links). We zoeken het kleinste aantal deelverzamelingen uit $C$ zodat we in deze selectie nog steeds ten minste één van de elementen van $S$ hebben.
@@ -1354,23 +1472,74 @@ F_3 &= x_2 \or \overline x_3 \or x_4
 $$
 <img src="img/image-20220520235712692.png" alt="image-20220520235712692" style="zoom: 33%;" />
 
+Het SAT-probleem heeft dus enkel een oplossing als er een minimum set cover is van grootte $|\mathcal X|$
+
 
 
 
 
 #### Hitting set
 
+<img src="img/image-20220528164000692.png" alt="image-20220528164000692" style="zoom:50%;" />
+
+Gegeven een verzameling $\mathcal S$ en een collectie deelverzamelingen $\mathcal C$ van $\mathcal S$. Gevraagd is de deelverzameling $\mathcal T$ van $\mathcal S$ met het kleinste aantal elementen, zodat elke deelverzameling $\mathcal C$ minstens 1 element gemeenschappelijk heeft met $\mathcal T$.
+
+We zoeken dus eigenlijk een zo klein mogelijk aantal dingen, maar we moeten van elke verzameling zeker één ding hebben. Hitting set is eigenlijk ripoff van Set Cover. 
+
+<img src="img/image-20220528164503815.png" alt="image-20220528164503815" style="zoom:50%;" />
+
+Als je voor elk element in Hitting set verwisselt met de namen van de verzamelingen waar hij inzit, krijg je Set cover.
+
+Bijvoorbeeld (hierboven):  
+$$
+3 \in B,3 \in C,3 \in D \\
+\mapsto 3 : \{B, C, D\}
+$$
 
 
 #### Set Packing
 
+<img src="img/image-20220528165301713.png" alt="image-20220528165301713" style="zoom:50%;" />
 
+We hebben een verzameling $\mathcal S$ en een verzameling van deelverzamelingen $\mathcal C$ van $\mathcal S$. Nu willen we het kleinste aantal exclusieve deelverzamelingen vinden die samen alle elementen bevatten. 
 
 #### Subset sum
 
-
+Je hebt een verzameling positieve gehele getallen en een positief geheel getal $k$. Kan je een deelverzameling vinden waarvoor de som gelijk is aan $k$.
 
 #### Integer partition
+
+<img src="img/image-20220528171403715.png" alt="image-20220528171403715" style="zoom:50%;" />
+
+Kan je een lijst met positieve gehele getallen in twee splitsen zodat de sommen van de twee delen gelijk zijn aan elkaar. 
+
+Of anders gezegd. Kan je met een doos legoblokken van verschillende grootte twee even hoge torens bouwen. Je moet wel alle blokken gebruiken.
+
+#### Reductie vanuit subset sum
+
+Bij subset sum willen we een deelverzameling van $S$ vinden waarvoor de som gelijk is aan $k$. ($k$ is kleiner dan de som van de elementen). Hoe vormen we het probleem om zodat we het kunnen oplossen met Integer partition
+
+We voegen twee elementen toe aan de verzameling $S$
+
+* $z_1=\sum_S $ de som van alle elementen van $S$
+* $z_2 = 2k$
+
+Nu hebben we de lijst $S_p = \{S, z_1, z_2\}$
+
+De som van de elementen van $S_p: \sum_{s_p} = \sum_S + \sum_S + 2k = 2(\sum_S + k)$
+
+Als we nu integer partition op deze nieuwe lijst doen krijgen we als resultaat 2 sublijsten: $S_1$ en $S_2$.
+
+* Eén lijst zal $z_1$ bevatten
+* De andere zal $z_2$ bevatten
+* Het is niet mogelijk dat één lijst ze allebei bevat, want dan zou de som van zijn elementen minstens gelijk zijn aan $z_1 + z_2 = \sum_S + 2k$ en dat is meer dan $\sum_S + k$
+
+Zullen we nu even voor de gemakkelijkheid zeggen dat $S_1$ onze $z_1$ bevat. 
+
+* $\sum_{S_1} = \frac 1 2 \sum_{S_p} = \sum_S + k$
+* Dit betekent dat als we $z_1$ weghalen uit $S_1$, de som van zijn elementen gelijk is aan $k$.
+
+$S_1 /z_1$ is dus een oplossing voor de subset sum.
 
 
 
@@ -1378,11 +1547,15 @@ $$
 
 #### Bin packing
 
+<img src="img/image-20220528183254952.png" alt="image-20220528183254952" style="zoom: 33%;" />
 
+We hebben een verzameling van goederen met elk een bepaalde afmeting. Daarnaast hebben we een verzameling van dozen met een bepaalde capaciteit. Kunnen we alle goederen opslaan in zo weinig mogelijk bakken?
+
+Je kan een oplossing van dit probleem benaderen met een gulzig algoritme: **first fit decreasing**. We sorteren alle goederen van groot naar klein. Dan beginnen we de het grootste. Past deze in de eerste doos, zetten we die erin. Dan nemen we de tweede grootste. Past deze niet in de eerste doos, zetten we hem in de tweede. Je gaat dus voor de lijst van goederen op aflopende grootte de volgende in de eerste bak steken waar nog plaats is.
 
 #### Knapsack
 
-
+We hebben een verzameling van spullen, elk met een gewicht en een waarde. We hebben een rugzak waar een bepaald aantal kilogram in kan. Hoe kunnen we nu onze rugzak vullen zodat hij zo veel mogelijk waarde bevat. 
 
 ### Graafproblemen
 
@@ -1394,15 +1567,13 @@ $$
 
 
 
-#### Clique
+
 
 
 
 #### Independent set
 
 
-
-#### Hamiltonian circuit
 
 
 
