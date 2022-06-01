@@ -84,7 +84,7 @@ We veronderstellen nu dat de formule klopt voor hoogte $h$. Als de formule nu kl
 * Zwarte hoogte $w$ als het kind rood is, dus $2^{w} - 1$ kindknopen
 * Zwarte hoogte $w-1$ als het kind zwart is, dus $2^{w-1} - 1$ kindknopen
 
-Het aantal knopen in de boom is de wortel plus de som het aantal knopen in zijn linker en rechter deelbomen. Het aantal kindknopen in eender welke van de twee deelbomen is minstens $2^{w-1} - 1$.
+Het aantal knopen in de boom is de wortel plus de som van het aantal knopen in zijn linker en rechter deelbomen. Het aantal kindknopen in eender welke van de twee deelbomen is minstens $2^{w-1} - 1$.
 $$
 \begin{align}
  &\geq 1 + 2(2^{w-1} - 1)\\
@@ -252,25 +252,34 @@ Het principe van een PR Quadtree is gelijkaardig aan dat van een gewone Quadtree
 
 #### Hoogte
 
-De hoogte van een PR Quadtree wordt bepaald door de kleinste afstand tussen twee knopen, aangezien er telkens dieper gesplitst zal moeten worden totdat elk punt zijn eigen vakje heeft.
+De hoogte van een PR Quadtree wordt bepaald door de kleinste afstand $a$ tussen twee knopen, aangezien er telkens dieper gesplitst zal moeten worden totdat elk punt zijn eigen vakje heeft.
 
-[bewijs] (een kleintje wel)
+[bewijs] 
 
-<img src="img/image-20220404174847533.png" alt="image-20220404174847533" style="float: left; zoom: 33%;" />  
+<img src="img/image-20220404174847533.png" alt="image-20220404174847533" style="zoom: 33%;" />  
 
-
-
-In een gebied met zijde $z$, is de maximale afstand tussen twee punten in een gebied op diepte $d$ gelijk aan $\frac{z \sqrt{2}}{2^d}$
-
-
-
+Neem $z$, de grootste zijde van de zoekruimte. Dit is 100 in het plaatje hierboven. De grootste zijde van een gebied op diepte $d$ is:
+$$
+\frac z {2^d}
+$$
 
 
-
-
-
-
-
+De maximale afstand tussen twee punten in dat gebied is gelijk aan de lengte van de diagonaal:
+$$
+\frac{z\sqrt 2}{2^d}
+$$
+Deze afstand is groter dan of gelijk aan onze minimale afstand $a$. 
+$$
+\frac{z\sqrt 2}{2^d} \geq a \\
+\frac{z\sqrt 2}{a} \geq 2^d \\
+\log (\frac{z\sqrt 2}{a}) \geq d \\
+\log \frac z a + \log \sqrt 2 \geq d \\
+$$
+De hoogte $h$ is de maximale diepte van van een inwendige knoop plus één. $h = d + 1$.  Stel je het zo voor. We zitten nu op $d$, het diepste gebied waar nog 2 knopen in zitten. Dan is het logisch dat we nog eentje dieper moeten gaan. Vul dit nu in in de vergelijking van hierboven en je krijgt:
+$$
+h \leq \log \frac z a + \frac 3 2
+$$
+Kleine opmerking, dit bewijs is voor een PR Quadtree met 2 dimensies. Voor $k$ dimensies moet je $\sqrt k$ nemen in plaats van $\sqrt 2$.
 
 #### Range queries
 
@@ -463,14 +472,16 @@ Belangrijk om te weten bij insertion sort, is dat het vrij goed werkt op een tab
 
 #### Efficiëntie
 
+[bewijs]
+
 * Buitenste lus wordt $n-1$ keer uitgevoerd.
-* Het aantal iteraties van de binnenste lus hangt af van de invoer. We gaan dus onderscheid maken tussen het best, slechtste en gemiddelde geval.
+* Het aantal iteraties van de binnenste lus hangt af van de invoer. We gaan dus onderscheid maken tussen het beste, slechtste en gemiddelde geval.
 
 Als we twee elementen $a[i] $ en $ a[j]$ uit de tabel nemen, met $i<j$. Dan vormen deze twee een **inversie** als $a[i] > a[j]$. Een inversie is dus simpelweg **een paar elementen dat op de verkeerde volgorde staat**. Om een beter zicht te krijgen op de performantie van ons algoritme, gaan we het aantal inversies tellen. Afhankelijk van dit aantal, kunnen we een onderscheid maken tussen drie gevallen.
 
 **Slechtste geval**
 
-De rij staat achterstevoren, elk paar elementen vormt een inversie. Dit zijn er $n(n-1)/2$, en is dus het aantal sleutelvergelijkingen. We komen op $\Theta(n^2)$.
+De rij staat achterstevoren, elk paar elementen vormt een inversie. Dit zijn er $n(n-1)/2$, en is dus even veel als het aantal sleutelvergelijkingen. We komen op $\Theta(n^2)$.
 
 **Beste geval**
 
@@ -673,9 +684,36 @@ Als je insertion sort recursief implementeert doet hij precies dit.
 
 ### Quickselect
 
-//TODO
+Ik heb niet echt zin meer om neer te schrijven hoe quickselect nu precies werkt. We zullen het enkel hebben over de performantie. 
+
+**Beste geval**
+
+Geen recursieve oproep, dus er zijn maar $n-1$ sleutelvergelijkingen nodig. Dus $\Theta(n)$
+
+**Slechtste geval**
+
+Als de pivot bij elke recursieve oproep het grootste of het kleinste element is, wordt de oproep telkens gedaan op $n-1$ elementen:
+$$
+\begin{align}
+T(n) &= n-1 + T(n-1) \\
+T(n-1) &= n-2 + T(n-2)\\
+&\space \space \vdots \\
+T(n) &= n-1 + n-2 + \cdots + 1\\ &= \frac{(n-1)n} 2
+\end{align}
+$$
+In het slechtste geval zal het $k$-de kleinste element dat we zoeken telkens in de grote deeltabel terecht komen. Dan is quickselect $\Theta(n^2)$
+
+ **Gemiddeld geval**
+
+Het gemiddeld geval is iets moeilijker. We veronderstellen de de pivot random wordt gekozen. 
+$$
+T(n,k) = n-1 + \frac 1 n \left( \sum_{i=1}^{k-1} T(n-i, k-i) + \sum_{i=k+1}^n T(i-1, k) \right)
+$$
+Die twee sommen hier stellen eigenlijk alle mogelijke posities $i$ van het gekozen spilelement voor. De linkse som is dan de uitvoeringstijd op de deelrij tot aan $i$ en de rechtse vanaf $i$. 
 
 #### Pivot
+
+//TODO
 
 
 
@@ -726,6 +764,31 @@ Neem bijvoorbeeld de reeks: `5 2 7 9 4 7`
 <img src="img/image-20220515165807977.png" alt="image-20220515165807977" style="zoom:50%;" />
 
 Wat als we nu van onze data een heap maken en hier gewoon telkens het grootste element uit halen? Dat is Heapsort. Een rij omvormen in een heap kost $O(n)$. We moeten dan wel telkens de heapvoorwaarde herstellen. Dit kost in totaal $O(n\log n)$. Dit is dan ook de uitvoeringstijd voor het algoritme. Het fijne aan Heapsort is dat de uitvoeringstijd heel consistent is, het gemiddelde geval wijkt nauwelijks af van het slechtste geval. Het algoritme sorteert **ter plaatse**, maar is spijtig genoeg **niet stabiel** omdat het opbouwen en herschikken van de heap de volgorde van gelijke elementen kan verstoren.
+
+**Performantie**
+
+[bewijs]
+
+We transformeren onze rij tot een max-heap. Dit kan in $O(n)$ door het samenvoegen van deelheaps. Nu staat het grootste element vanboven. De bedoeling is nu dat we dus telkens het grootste element pakken en deze achteraan in de tabel gooien. Nu herstellen we de heapvoorwaarde op onze heap die nu één elementje kleiner is en herhalen dit proces.
+
+Dit doen we $n-1$ keer. Elke keer dat we de heapvoorwaarde moeten herstellen zijn hier in het slechtste geval $2h$ sleutelvergelijkingen voor nodig. Dit doet zich voor als de nieuwe wortel helemaal naar beneden moet zakken en telkens met beide kinderen vergeleken moet worden.
+
+Een heap met $n$ elementen heeft hoogte $h =\lfloor \log n \rfloor$. In het slechtste geval is deze volledig gevuld op het laatste niveau, dus $2^h$ bladeren. We moeten dus de heapvoorwaarde herstellen voor een heap met $n-1$ elementen, $n-2$ elementen, $n-3$, totdat we nog maar één element over hebben. Dus:
+$$
+\begin {align}
+T(n) &\leq 2 \lfloor \log(n-1) \rfloor + 2 \lfloor \log(n-2) \rfloor + \cdots + 2\lfloor \log(1) \rfloor \\
+&\leq 2 \sum_{i=1}^{n-1} \log(i)\\
+&\leq 2 \sum_{i=1}^{n-1} \log(n-1)\\
+&\leq 2(n-1)\log (n-1)\\
+&\leq 2n\log n
+
+
+\end{align}
+$$
+
+* De initiële heap maken: $O(n)$
+* De berekening hierboven: $O(n\log n)$
+* Totaal: $O(n\log n)$
 
 
 
@@ -862,7 +925,15 @@ T(n-1) &= c(n-1) + T(1) + T(n-2)\\
 
 \end{align}
 $$
-De uitvoeringstijd is dus de som van al die dingen: $\Theta(n^2)$
+De uitvoeringstijd is dus de som van al die dingen: 
+$$
+\begin{align}
+T(n) &= c(n + (n-1) + \cdots + 3 + 2)+ nT(1)\\
+&= c(-1 + \sum_{i=1}^{n} i) + nT(1)\\
+&= c \frac{n(n+1)} 2 + nT(1) - c
+\end{align}
+$$
+dus $\Theta(n^2)$
 
 
 
@@ -1055,9 +1126,11 @@ Ik denk dat het bij dit hoofdstuk vooral belangrijk is dat je oefeningen maakt. 
 
 ## Toepassingen
 
+[bewijs]?
+
 ### Optimale binaire zoekboom
 
-Stel je voor. We hebben een reeks sleutels die op oplopende volgorde zijn gesorteerd. We hebben ook een tabel met een bepaalde reeks sleutels, met voor elke sleutel een zoekfrequentie. Hoe kunnen we nu een binaire boom opstellen die de totale zoektijd voor deze reeks sleutels  minimaliseert?
+Stel je voor. We hebben een reeks sleutels die op oplopende volgorde zijn gesorteerd. We hebben ook een tabel met een bepaalde reeks sleutels, met voor elke sleutel een zoekfrequentie. Hoe kunnen we nu een binaire boom opstellen die de totale zoektijd voor deze reeks sleutels minimaliseert?
 
 We hebben dus:
 
@@ -1169,7 +1242,7 @@ Bij een GPS komt een greedy algoritme best wel van pas, maar ik vind dit voorbee
 
 We hebben een processor en een bepaalde reeks taken die de processor moet uitvoeren. Elke taak heeft een bepaalde uitvoeringstijd. We willen natuurlijk dat er zo snel mogelijk zo veel mogelijk taken uitgevoerd worden, oftewel de gemiddelde eindtijd van de taken minimaliseren. De rechtse figuur toont een optimale oplossing. 
 
-Toevallig is hier de greedy methode ook de beste. We nemen gewoon de kortste taak, de tweede kortste, ... Heel leuk, maar we moeten ook nog bewijzen dat dik klopt.
+Toevallig is hier de greedy methode ook de beste. We nemen gewoon de kortste taak, de tweede kortste, ... Heel leuk, maar we moeten ook nog bewijzen dat dit klopt.
 
 **Bewijs**
 
@@ -1382,6 +1455,8 @@ We willen nu dus aan elke $x_i$ een waarde toekennen zodat alle uitspraken in $\
 
 Dit is in essence hetzelfde probleem als SAT. De enige restrictie is dat elke uitspraak maar 3 variabelen mag bevatten. Ik zal dit proberen uitleggen aan de hand van een stackoverflow post aangezien ik niet heb genoteerd in de les en Pieter in de cursus zegt: "*Het is gemakkelijk in te zien dat we een uitspraak met meer dan drie atomen kunnen herleiden naar een reeks uitspraken met elk drie atomen zodat de uitspraak waar is als en slechts als de 3-uitspraken waar zijn.*" Sorry Pieter maar ik vind dit niet gemakkelijk.
 
+[bewijs]
+
 **Reductie**
 
 Elke uitspraak in ons SAT probleem heeft 1, 2, 3 of meer variabelen. We moeten elk van deze uitspraken omzetten in een uitspraak met 3 variabelen. We introduceren een verzameling hulpvariabelen $\{t, p ,q, r_1, r_2 \dots\}$ om het ons iets makkelijker te maken:
@@ -1459,8 +1534,6 @@ Om aan te tonen dat Set Cover NP-compleet is, willen we aantonen dat we SAT erna
 * Voeg voor elke $x_i$ twee deelverzamelingen toe aan $C$
   * $C_{x_i} = x_i \cup \{ F \in \mathcal F: x_i \in F\}$
   * $C_{\overline x_i} = x_i \cup \{ F \in \mathcal F: \overline x_i \in F\}$
-
-Ik ben echt certified dikke neurt want ik heb er een tekening bij gemaakt. Ik vond het beter te begrijpen aan de hand van een voorbeeld.
 
 We hebben hier een voorbeeld met 4 variabelen en 3 uitspraken. 
 $$
@@ -1561,23 +1634,91 @@ We hebben een verzameling van spullen, elk met een gewicht en een waarde. We heb
 
 #### Vertex cover
 
+Je hebt een ongerichte graaf. Bestaat er een zo klein mogelijke groep knopen die één eindknoop van elke verbinding bevat? Ik vind dit niet goed uitgelegd. We zullen het eens anders verwoorden. Beschouw dit plaatje:
 
+![img](https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Couverture_de_sommets.svg/220px-Couverture_de_sommets.svg.png)
+
+De bedoeling van vertex cover is dat je een zo klein mogelijke groep bolletjes vindt zodat elk ander bolletje met ten minste één van die bolletjes verbonden is. Ziezo, nu is het ineens wel duidelijk.
+
+
+
+**Reductie vanuit 3SAT**
+
+We nemen weer ons 3SAT probleem:
+
+* $X$: een verzameling variabelen
+* $F$: een verzameling uitspraken van telkens 3 variabelen
+
+Om dit probleem om te zetten zodat we het kunnen oplossen met vertex cover moeten we enkele dingen doen:
+
+* Maak voor elk element van $X$ twee knopen en verbind die met elkaar
+* Maak voor elk element van $F$ drie knopen, één per uitspraak. 
+  * Verbind die drie met elkaar
+  * En elk van die drie met zijn bijhorende knoop van de vorige stap
+
+Ik zal het even verduidelijken met een voorbeeld (gepikt van Pieter natuurlijk)
+
+* $X :\{v_1, v_2, v_3, v_4\}$
+* $F: \{F_1, F_2\}$
+  * $F_1: \{v_1 \or \overline v_3 \or \overline v_4\}$
+  * $F_2: \{\overline v_1 \or  v_2 \or \overline v_4\}$
+
+Dit zal er dan zo uitzien:
+
+<img src="img/image-20220601121751234.png" alt="image-20220601121751234" style="zoom:50%;" />
+
+In de afbeelding is het vertex cover probleem ook al opgelost. De rode bolletjes zijn samen verbonden met elk stokje. Je kan in de bovenste rij zien dat $v_1, v_2, \overline v_3$ en $\overline v_4$ gekozen zijn. 
+
+* $v_1 = 1, v_2 = 1, v_3= 0, v_4 = 0$ is dus een oplossing voor 3SAT. Vul ze maar is in in $F_1$ en $F_2$. 
+
+
+
+**Hebben we op basis van een (veronderstelde) oplossing van 3SAT altijd een oplossing voor vertex cover?**
+
+We hebben een oplossing voor 3SAT. Dus we hebben onze $X$ en $F$. En ook een booleaanse waarde voor elke $x \in X$. We gaan nu een vertex cover maken vanuit een oplossing van 3SAT.
+
+* Voor elke variabele voegen we een knoop toe aan de vertex cover
+  * $x$: als die `true` is 
+  * $\overline x$: als die `false` is 
+  * De waarde van die variabele is dus altijd `true`
+* Voor elk van je uitspraken in $F$ is natuurlijk minstens één variabele `true`. 
+  * Voeg de andere twee toe 
+
+Nu moeten we aantonen dat dit ook een oplossing is voor het vertex cover. Bezichtig de volgende prent:
+
+<img src="img/image-20220601124059721.png" alt="image-20220601124059721" style="zoom:50%;" />
+
+Van de rij bovenaan hebben we sowieso ééntje van elk paar gekozen (diegene die `true` was). En in de driehoeken hebben we altijd 2 knopen gekozen. We hebben één knoop overgelaten. Deze was `true`. Dit betekent dus dat het knoopje in de driehoek dat we niet gekozen hebben. Deze is dus waar, en is dus sowieso verbonden met een $x$'je van de bovenste rij die we al gekozen hebben. Een oplossing voor 3SAT geeft dus ook een oplossing voor vertex cover.
+
+**Hebben we op basis van een (veronderstelde) oplossing van vertex cover altijd een oplossing voor 3SAT?**
+
+Je moet nu eigenlijk exact het omgekeerde doen van hierboven. Je begint door een vertex cover te maken. deze bevat sowieso  ééntje van elk van de paren in de bovenste rij. En de twee knopen in de driehoek die niet verbonden zijn met één van de knopen die je vanboven hebt gekozen. Dit is een oplossing voor 3SAT. 
+
+
+
+#### Clique
+
+Vind de grootste groep knopen die allemaal met elkaar verbonden zijn. Oftewel, vind de grootste vriendengroep.
 
 #### Graph coloring
 
+Hier heb je twee varianten: **Vertex coloring** en **edge coloring.**
 
+Bij vertex coloring kleur je de knopen in een graaf met zo weinig mogelijk kleuren zodat twee knopen van de zelfde kleur nooit verbonden zijn.
 
-
+Edge coloring is het omgekeerde. Je kleurt de verbindingen en je moet ervoor zorgen dat elke knoop nooit twee verbindingen van dezelfde kleur heeft.
 
 
 
 #### Independent set
 
-
+Zoek de grootste groep knopen die niet met elkaar verbonden zijn. Of zoek in een groep mensen een zo groot mogelijke groep waarin niemand elkaar kent.
 
 
 
 #### Travelling salesman
+
+Dit kennen jullie hopelijk al. Anders mag je gaan huilen want je bent sowieso gekloot dan.
 
 # Examen
 
@@ -1799,7 +1940,23 @@ Je hebt een stapel van n pannenkoeken, elk van verschillende grootte. Je kan een
 
 
 
+<img src="img/image-20220530202105530.png" alt="image-20220530202105530" style="zoom:50%;" />
 
+**Wat zou er gebeuren bij een rij met**
+
+1. De partities zijn resp $1$ en $n-1$ elementen groot
+2. De partities zijn resp $n-1$ en $n$ elementen groot
+3. De partities zijn beide ongeveer even groot
+
+
+
+**Welke factor(en) bepalen de diepte van de recursieboom bij MSD radix sort**
+
+1. De volgorde van de invoer
+2. de radix $m$
+3. Het aantal sleutels
+4. Het totaal aantal cijfers van alle sleutels samen
+5. Aantal cijfers in de grootste sleutel
 
 # ------------ Labo's ------------
 

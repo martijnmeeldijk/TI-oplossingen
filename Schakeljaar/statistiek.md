@@ -12,38 +12,39 @@
 
 
 
-# To do
 
-* Overzicht soorten oefeningen en wat te doen (bv welke belletjes er moeten rinkelen :wink:)
+
+
 
 # ------------- Theorie -------------
 
-Dingen die niet op het formularium staan die je waarschijnlijk wel moet kennen
+## To do
 
-* ongelijkheid van Chebychev
-* Formules discrete verdelingen
-  * binomiaalverdeling
-  * bernoulliverdeling
-  * geometrische verdeling
-  * hypergeometrische
-  * poissonverdeling
-* Momentenfunctie
-* SSE SST SSR en al die bullshit die niemand wil leren
 * Anova Fber
 * Combinaties van verdelingen
-* Het centrale moment van de tweede orde van een steekproef is gelijk aan
-* Een steekproef levert voor x een gemiddelde op van 5 en een standaardafwijking van 2. Achteraf blijkt een herschaling nodig wegens het slecht afgestelde meettoestel. Wat volgt uit deze steekproef voor y=-2 x+1 ?
 
 ## Formularium: extended edition
 
 De dingen die je ook zeker van buiten moet kennen, maar die uit sadisme niet op het formularium staan om de artificiële moeilijkheidsgraad van dit vak op peil te houden. 
 
 **Kansrekenen**
+
+Wetten:
 $$
 P(A \or B) = P(A) + P(B) - P(A \and B)\\
 P(A \and B) = P(B) \cdot P(A \vert B)\\
-P(A \and \overline B) = P(A) - P(A \and B)
+P(A \and \overline B) = P(A) - P(A \and B)\\
+\overline{A \and B} = \overline A \or \overline B
+\quad \text{en} \quad 
+\overline{A \or B} = \overline A \and \overline B
+\\
 $$
+Regel van Bayes
+$$
+P(A_j \vert B) = \frac{P(A_j)P(B \vert A_j)}{\sum_{i=1}^n P(A_i)P(B\vert A_i)}
+$$
+(gebeurtenissen $A_i$ moeten elkaar uitsluiten)
+
 **Beschrijvende statistiek**
 $$
 s^2 = \frac 1 {n-1}\sum_{i=1}^n (x_i - \overline x)^2\\
@@ -180,6 +181,8 @@ C^p_n = \frac{n!}{p!(n-p)!}
 $$
 
 Ik vond het altijd een beetje moeilijk om dit toe te passen. Dus ik ga het hier even verduidelijken, want het staat niet echt expliciet in de cursus. De volgende twee formules moet je met een korrel zout nemen, aangezien ze een product zijn van mijn onderontwikkelde hersens. Oké ik denk dat ik misschien gewoon per ongeluk de hypergeometrische verdeling heb uitgevonden. Ik weet het niet meer. Ik moet gaan slapen want het is veel te laat, maar statistiek is zo leuk. Ik zou echt niets liever doen op een zomeravond terwijl al mijn vrienden die niet zo achterlijk waren om schakeljaar te doen zitten te chillen.
+
+Dit gezegd zijnde verwijs ik u door naar het gedeelte [discrete verdelingen](#4---Discrete-verdelingen) want deze twee paragrafen zijn een shitshow geworden.
 
 **Zonder terugleggen**
 
@@ -766,7 +769,7 @@ Voor meer info verwijs ik u vriendelijk door naar de cursus.
 
 ## One-way Anova
 
-We gebruiken Anova om het gemiddelde van **meer dan twee** populaties te testen, omdat we anders super veel t-testen . Om een Anova test uit te voeren nemen we $n$ steekproeven, met ieder $k$ observaties. Deze moeten allemaal uit **normaal verdeelde populaties** komen met **vergelijkbare varianties**.
+We gebruiken Anova om het gemiddelde van **meer dan twee** populaties te testen, omdat we anders super veel t-testen moeten doen. Om een Anova test uit te voeren nemen we $n$ steekproeven, met ieder $k$ observaties, moeten deze allemaal uit **normaal verdeelde populaties** komen met **vergelijkbare varianties**.
 $$
 \begin{align}
 X_{ij} &= \text{de j-de observatie binnen de -de steekproef}\\
@@ -816,7 +819,7 @@ Als de waarnemingen twee per twee voorkomen, dus als voor elke categorie in de k
 | SSE  | De variatie binnenin elke steekproef ten opzichte van hun lokale gemiddelde, per blok. Omdat we het gemiddelde per blok en per steekproef berekenen is het aantal vrijheidsgraden $(k-1)(n-1)$ | $(k-1)(n-1)$    | MSE  |
 | SST  | Variatie over alles                                          | $kn-1$          | MST  |
 
-
+SST = SSTR + SSE + SSB
 
 Met als $H_0$: $\mu_0 = \mu_1 = \dots = \mu_n$
 
@@ -835,9 +838,18 @@ Bij one-way Anova kan je de verschillen maar onderzoeken per factor. Als je de i
 | SSA  | De variatie tussen de groepen, gesplitst op factor A | $a-1$                        |      |
 | SSB  | De variatie tussen de groepen, gesplitst op factor B | $b-1$                        |      |
 | SSI  | De interactie tussen A en B                          | $(a-1)(b-1)$                 |      |
-| SSE  | Alles                                                | $n-1-(a-1)-(b-1)-(a-1)(b-1)$ |      |
+| SSE  | De residuele kwadratensom                            | $n-1-(a-1)-(b-1)-(a-1)(b-1)$ |      |
+| SST  | De totale kwadratensom                               | ?                            |      |
+
+SST = SSA + SSB + SSI + SSE
 
 Nu vind ik het wel een beetje vervelend dat het gewoon niet wordt uitgelegd in de cursus waar de vrijheidsgraden voor dit deel vandaan komen. 
+
+Er zijn drie toetsingsgrootheden:
+
+* $H_0:$ er is geen interactie tussen factor A en factor B: $f = \frac{\text{MSI}}{\text{MSE}}$
+* $H_0:$ er is geen verschillend effect waar te nemen voor de verschillende niveaus van factor A: $f = \frac{\text{MSA}}{\text{MSE}}$
+* $H_0:$  er is geen verschillend effect waar te nemen voor de verschillende niveaus van factor B: $f = \frac{\text{MSB}}{\text{MSE}}$
 
 # 9 - Regressie
 
