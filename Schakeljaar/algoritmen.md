@@ -1,5 +1,14 @@
 # Algoritmen
 
+Ik heb een soort van oefenexamen gemaakt. Eigenlijk meer een verkort overzicht van de theorie in vraagvorm
+
+* [Oefenexamen](Oefeningen/Algoritmen%20oefenexamen%20(oplossingen).html)
+* [Oplossingen](Oefeningen/Algoritmen%20oefenexamen.html)
+
+
+
+## Puntenverdeling
+
 * Theorie: 60%
 * Praktijk:
   * Test 30 maart: 20%
@@ -7,6 +16,8 @@
 * Minstens 8/20 op zowel theorie als praktijk
 
 Ik ga alle bewijzen die je moet kennen (voor zo ver ik weet) aanduiden met [bewijs], dan kan je gemakkelijk `ctrl+F`'en.
+
+
 
 
 
