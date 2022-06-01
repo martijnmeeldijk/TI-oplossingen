@@ -2,8 +2,8 @@
 
 Ik heb een soort van oefenexamen gemaakt. Eigenlijk meer een verkort overzicht van de theorie in vraagvorm
 
-* [Oefenexamen](Oefeningen/Algoritmen%20oefenexamen%20(oplossingen).html)
-* [Oplossingen](Oefeningen/Algoritmen%20oefenexamen.html)
+* [Oefenexamen](Oefeningen/Algoritmen%20oefenexamen.html)
+* [Oplossingen](Oefeningen/Algoritmen%20oefenexamen%20(oplossingen).html)
 
 
 
@@ -1147,18 +1147,29 @@ We hebben dus:
 
 * Een oplopende reeks sleutels: $s_1, s_2, \dots ,s_n$
 * Zoekfrequentie $p_i$ voor elke sleutel $s_i$
-* Zoekfrequenties $q_0, q_1, \dots , q_n$ 
+* Zoekfrequenties $q_0, q_1, \dots , q_n$ voor waarden die we niet terugvinden in de boom.
   * deze liggen ieder in een interval tussen twee sleutels (of op één van de uiteindes): $]-\infty, s_1[, ]s_1,s_2[ , \dots, ]s_n, + \infty[$
 
 We zoeken naar een boomstructuur die de volgende uitdrukking minimaliseert:
 $$
 \sum_{i=1} ^n (\text{diepte}(s_i) + 1)p_i + \sum_{i=1} ^n (\text{diepte}(b_i) + 1)q_i
 $$
-Dit is dus de som van alle lengtes van de zoekpaden naar aanwezige en afwezige sleutels.
+Dit is dus de som van alle lengtes van de zoekpaden naar aanwezige en afwezige sleutels maal de kans dat we deze sleutels zoeken. We kunnen dit probleem oplossen met dynamisch programmeren. Als een zoekboom optimaal is, dan moet ook elk van zijn deelbomen optimaal zijn. Zo kunnen we dus een optimale zoekboom opbouwen. Dynamisch programmeren zal ons dan helpen.
 
-//TODO
+Neem $z(i,j)$, dit is de kleinste verwachte zoektijd voor een deelboom van sleutel $i$ tot sleutel $j$. De uiteindelijke oplossing die we zoeken zal dan $z(1, n)$ zijn. Ik ga een paar stappen overslaan om wat meer te focussen op de essentie van dit probleem.
+$$
+z(i,j) = \min_{i\leq w \leq j}\{z_w(i,j)\} = \min_{i\leq w \leq j}\{z(i,w-1) + z(w+1,j)\} +g(i,j)
+$$
+Dit lees je zo: De minimum zoektijd $z(i,j)$ is gelijk aan het minimum van alle zoektijden met een bepaalde $w$ in de deelboom als wortel. Dit is dan gelijk aan de kleinste som van de minimum zoektijden van de twee deelbomen plus de som van alle zoekfrequenties van $i$ tot $j$, want we zitten 1 niveau lager en die moeten allemaal langs de wortel.
 
+Om dit probleem op te lossen met dynamisch programmeren hebben we 3 tabellen nodig
 
+* Een tweedimensionale tabel voor alle $z(i,j)$
+* Een tweedimensionale tabel voor alle $g(i,j)$
+* Een tweedimensionale tabel voor alle $r(i,j)$
+  * $r(i,j)$ is de index (in onze rij met sleutels) van de wortel van de optimale deelboom van $i$ tot $j$
+
+De pseudocode in het boek is echt een spaghetti (en geen lekkere bolognaise van uw mama). Dus ik ga gewoon hopen dat hij niet al te veel details vraagt over dit. Ik ga gewoon onthouden dat je met dynamisch programmeren magic nu die tabellen kan invullen en zo best efficiënt een oplossing kan vinden.
 
 ### Longest common subsequence
 

@@ -1,4 +1,4 @@
-# Algoritmen oefenexamen (oplossingen)
+# Algoritmen oefenexamen
 
 ## Red-black trees
 
