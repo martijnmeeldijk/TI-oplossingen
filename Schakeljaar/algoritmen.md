@@ -197,7 +197,18 @@ We hebben nu mogelijks weer de voorwaarden van de boom naar de tering geholpen. 
   * en heeft geen kinderen
     * we maken zijn virtuele kindknoop "dubbel zwart", dit moeten we later wegwerken
 
-  Om dubbel zwart weg te werken zijn er 8 mogelijke gevallen //TODO
+
+Neem de knoop $c$, zijn broer noemen we $b$, en zijn ouder noemen we $p$. We kunnen het double black probleem opsplitsen in 4 gevallen:
+
+* Zwarte broer $b$ heeft 2 zwarte kinderen
+  * Geef het zwart van $c$ en $b$ aan $p$. Als $p$ niet rood is, wordt hij double black en verschuift het probleem naar boven
+* Zwarte broer $b$ heeft rood kind op dezelfde lijn met $p$
+  * Roteer $b$ boven $p$, nu staat $b$ vanboven
+  * Geef de kleur van $p$ aan $b$ en maak het rode kind van $b$ zwart
+* Zwarte broer $b$ heeft een zwart kind op dezelfde lijn met $p$ (en het andere kind is rood)
+  * roteer dat kind boven $b$ en wissel hun kleuren, nu heb je het vorige geval
+* Rode broer $b$
+  * roteer $b$ boven $p$ en wissel kleuren van $b$ en $p$
 
 # 2 - Meerdimensionale gegevensstructuren
 
@@ -950,7 +961,15 @@ dus $\Theta(n^2)$
 
 ### Random keuze van de pivot
 
-//TODO
+We veronderstellen dat de kans dat een sleutel wordt gekozen als pivot voor alle sleutels gelijk is. Als we dan bijvoorbeeld toevallig het kleinste element als pivot kiezen, dan wordt onze rij gepartitioneerd in $1$ en $n-1$ grote deelrijen. Als we deze redenering doortrekken voor alle mogelijke keuzes, wordt de gemiddelde uitvoeringstijd:
+$$
+T(n) = cn + \frac 1 n \sum_{i=1}^{n-1}(T(i) + T(n-i))
+$$
+Omdat we in deze som eigenlijk van voor naar achter en van achter naar voor gaan:
+$$
+T(n) = cn + \frac 2 n \sum_{i=1}^{n-1}T(i)
+$$
+Hoera :cake: we moeten de rest niet kennen blijkbaar. 
 
 
 
@@ -1091,6 +1110,34 @@ We sorteren de rij op basis van het grootste 'getal'. Dan sorteren we recursief 
 <img src="img/image-20220528151942063.png" alt="image-20220528151942063" style="zoom:50%;" />
 
 We veronderstellen dat de sleutels reële getallen zijn, die binnen een bepaald interval mooi uniform verdeeld zijn. We gaan ons interval in $m$ gelijke delen splitsen zodat we met een modulo ze in 1 operatie in het juiste interval kunnen zetten. Als je $m = \Theta(n)$ neemt, zal elk interval maar een kleine hoeveelheid sleutels bevatten, waardoor je ze dan best efficiënt kan sorteren met insertion sort.
+
+**Performantie**
+
+Om te sorteren met bucket sort, moeten we eerst $m = \Theta(n)$ deelintervallen initialiseren. De sleutels in elk deelinterval worden dan met insertion sort gesorteerd.
+$$
+T(n) = \Theta(n) + \sum_{i=1}^{m}O(n^2_i)
+$$
+In het slechtste geval komen al je sleutels in dezelfde bucket en is je performantie dus $O(n)$.
+
+
+
+Gemiddeld geval:
+$$
+E[T(n)] = \Theta(n) + \sum_{i=1}^{m}E(O[n^2_i])
+$$
+De verwachtingswaarde is lineair, dus je mag O en E wisselen:
+$$
+E[T(n)] = \Theta(n) + \sum_{i=1}^{m}O(E[n^2_i])
+$$
+Statistiek tijd. 
+$$
+P(n=k) = C^k_np^k(1-p)^{n-k}
+$$
+dus:
+$$
+E[T(n)] = \text{ik weiger om statistiek formules opnieuw vanbuiten te leren krijg de tering}
+$$
+
 
 # 8 - Dynamisch programmeren
 
@@ -1565,7 +1612,7 @@ F_2 &= \overline x_1\\
 F_3 &= x_2 \or \overline x_3 \or x_4
 \end{align}
 $$
-<img src="img/image-20220520235712692.png" alt="image-20220520235712692" style="zoom: 33%;" />
+<img src="img/image-20220520235712692.png" alt="image-20220520235712692" style="zoom: 33%;"/>
 
 Het SAT-probleem heeft dus enkel een oplossing als er een minimum set cover is van grootte $|\mathcal X|$
 

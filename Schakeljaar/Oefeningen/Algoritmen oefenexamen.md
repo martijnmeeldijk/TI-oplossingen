@@ -22,6 +22,16 @@
 
 
 
+
+
+---
+
+**Veronderstel dat een sleutel x aan een rood-zwarte boom wordt toegevoegd. Onmiddellijk daarna verwijderen we terug de sleutel x. Veronderstel bottom-up toevoegen en verwijderen. Is de roodzwarte boom na deze 2 operaties identiek aan de originele rood-zwarte boom? Toon deze eigenschap aan, of geef een tegenvoorbeeld.**
+
+
+
+
+
 ## Meerdimensionale gegevensstructuren
 
 **Teken de resulterende PR-Quadtree bij het toevoegen van de volgende punten. Maak ook een tekening in boomvorm. Alle punten vallen binnen [0, 255]**
@@ -224,6 +234,12 @@ int somBinaireRecursie(const vector<T>& v, int start, int stop){
 **Toon aan dat rangschikken van n gegevens, enkel op basis van sleutelvergelijking, in het gemiddeld geval $\Theta(n \log n)$ sleutelvergelijkingen vereist.**
 
 
+
+
+
+---
+
+**Stel een betrekking op die de uitvoeringstijd van quicksort met random pivot beschrijft.**
 
 
 

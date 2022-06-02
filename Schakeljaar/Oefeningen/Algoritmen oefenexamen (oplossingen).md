@@ -59,6 +59,16 @@ De hoogte is dus $O(\log n)$.
 
 
 
+---
+
+**Veronderstel dat een sleutel x aan een rood-zwarte boom wordt toegevoegd. Onmiddellijk daarna verwijderen we terug de sleutel x. Veronderstel bottom-up toevoegen en verwijderen. Is de roodzwarte boom na deze 2 operaties identiek aan de originele rood-zwarte boom? Toon deze eigenschap aan, of geef een tegenvoorbeeld.**
+
+De boom is niet altijd identiek na het toevoegen en verwijderen van dezelfde sleutel. Maak bijvoorbeeld een boom met sleutels: 4,7,10,23,5 (in deze volgorde toegevoegd). Voeg nu 65 toe en verwijder hem terug.
+
+
+
+
+
 ## Meerdimensionale gegevensstructuren
 
 **Teken de resulterende PR-Quadtree bij het toevoegen van de volgende punten. Maak ook een tekening in boomvorm. Alle punten vallen binnen [0, 255]**
@@ -405,6 +415,20 @@ dus $\Theta(n^2)$
 
 
 
+---
+
+**Stel een betrekking op die de uitvoeringstijd van quicksort met random pivot beschrijft.**
+
+We veronderstellen dat de kans dat een sleutel wordt gekozen als pivot voor alle sleutels gelijk is. Als we dan bijvoorbeeld toevallig het kleinste element als pivot kiezen, dan wordt onze rij gepartitioneerd in $1$ en $n-1$ grote deelrijen. Als we deze redenering doortrekken voor alle mogelijke keuzes, wordt de gemiddelde uitvoeringstijd:
+$$
+T(n) = cn + \frac 1 n \sum_{i=1}^{n-1}(T(i) + T(n-i))
+$$
+Omdat we in deze som eigenlijk van voor naar achter en van achter naar voor gaan:
+$$
+T(n) = cn + \frac 2 n \sum_{i=1}^{n-1}T(i)
+$$
+
+
 
 
 ---
@@ -720,4 +744,6 @@ Het SAT-probleem heeft dus enkel een oplossing als er een minimum set cover is v
 | Edge coloring       | Edges met zo weinig mogelijk kleuren inkleuren, nooit zelfde kleur naast elkaar. |
 | Independent set     | Grootste groep knopen die niet met elkaar verbonden is       |
 | Travelling salesman | Kortste pad dat alle steden 1 keer bezoekt en terug uitkomt bij de eerste stad |
+
+
 
