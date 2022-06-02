@@ -847,7 +847,7 @@ Je kan ook nog een kleine optimalisatie doen door te starten met deeltabellen gr
 
 ## Quicksort
 
-![A sort of quick guide to quicksort and Hoare's partitioning scheme in  Javascript | by Mark Sauer-Utley | ITNEXT](img/1*QlYf6-SE1Eq0_V-vKm1vtg.gif)
+![A sort of quick guide to quicksort and Hoare's partitioning scheme in  Javascript | by Mark Sauer-Utley | ITNEXT](img/1QlYf6-SE1Eq0_V-vKm1vtg.gif)
 
 Om Quicksort even kort samen te vatten zal ik even beginnen met een oversimplificatie, zonder optimalisaties. 
 
