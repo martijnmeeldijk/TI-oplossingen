@@ -18,7 +18,7 @@ Kijk in de sql man (bij pgadmin kan je gewoon op een tabel drukken en de sql cod
 
 Gebruik dit: 
 
-```postgreSQL
+```sql
 SELECT pg_size_pretty(pg_total_relation_size('ruimtereizen.bezoeken'));
 ```
 
@@ -57,7 +57,7 @@ Kijk in de SQL code, zoals in het vorige deel vermeld
 
 ​	Toon alle rijen met 'Cape Town' 
 
-```postgreSQL
+```sql
 explain analyze
 -- jouw shitty query
 ```
@@ -88,7 +88,7 @@ google ftw
 
 *Kan je meerdere schema’s in je zoek pad opgeven?*
 
-```postgreSQL
+```sql
 -- Bertels doet dit in de volgende vraag 
 SET search_path TO geolite,public;
 -- Trek daar maar je conclusie uit
@@ -96,7 +96,7 @@ SET search_path TO geolite,public;
 
 *Waar staat waarschijnlijk de server projektwerk.ucll.be?*
 
-```postgreSQL
+```sql
 -- Met DiG kan je op linux gemakkelijk het dns record van projektwerk 
 -- vinden. Als je hier te tam voor bent: 193.190.138.215
 
