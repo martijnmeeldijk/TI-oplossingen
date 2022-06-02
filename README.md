@@ -26,6 +26,7 @@ Je kan martipoints verdienen door iets toe te voegen aan de repo of door iets te
 | Jonas Zegers         | 3.5           | 0           | 3.5        |  
 | Karel Savonet        | 3             | 0           | 3          |               
 | Anouar Fayek         | 3             | 0           | 3          |  
+| ikbenignace          | 3             | 0           | 3          |  
 | Laurens54321         | 3             | 0           | 3          |    
 | Jasper Vandenberghen | 3             | 0           | 3          |      
 | Anderad Milanto      | 2             | 0           | 2          |  
