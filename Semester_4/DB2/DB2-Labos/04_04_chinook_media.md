@@ -10,7 +10,7 @@ No joke, dit is de effectieve titel van dit bestand.
 
 Het is het snelst met een gecorreleerde subquery
 
-```postgreSQL
+```sql
 --gebruik dit
 where 2 > (select count ("TrackId")
 		  from "Track"

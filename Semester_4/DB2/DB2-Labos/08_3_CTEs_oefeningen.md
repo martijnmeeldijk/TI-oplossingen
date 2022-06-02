@@ -14,7 +14,7 @@ Een CTE is een *Common table expression*. Met een CTE kan een tijdelijke resulta
 
 **Syntax**:
 
-```postgreSQL
+```sql
 WITH cte_name (column_list) AS (
     CTE_query_definition
 )
@@ -23,7 +23,7 @@ statement;
 
 **Voorbeeld**:
 
-```postgreSQL
+```sql
 WITH cte_film AS (
     SELECT
         film_id,
@@ -54,7 +54,7 @@ ORDER BY
 
 **Public.hemelobjecten**:
 
-```postgreSQL
+```sql
 -- Table: public.hemelobjecten
 
 -- DROP TABLE public.hemelobjecten;
@@ -80,7 +80,7 @@ GRANT ALL ON TABLE public.hemelobjecten TO u0082489;
 
 **Ruimtereizen.hemelobjecten**:
 
-```postgreSQL
+```sql
 -- Table: ruimtereizen.hemelobjecten
 
 -- DROP TABLE ruimtereizen.hemelobjecten;
@@ -124,7 +124,7 @@ In de volgende vraag zegt onze lieve Bertels ook dat er 2 manieren zijn om dit t
 
 In de slides staat dit:
 
-```postgreSQL
+```sql
 /*Optie 1, teller voor de maximum diepte*/
 WITH RECURSIVE kind_van(bijnaam, vader, moeder, diepte) AS (
 SELECT bijnaam, vader, moeder, 1
@@ -143,7 +143,7 @@ FROM kind_van;
 
 
 
-```postgreSQL
+```sql
 /*Optie 2, lussen dedecteren*/
 /*lus tabel maken*/
 DROP TABLE IF EXISTS familieboom;
@@ -206,7 +206,7 @@ Welke kies je? Waarom?
 
    Syntax:
 
-   ```postgreSQL
+   ```sql
    INSERT INTO table(column1, column2, …)
    VALUES
    	(value1, value2, …);
@@ -220,7 +220,7 @@ Welke kies je? Waarom?
 
    Syntax:
 
-   ```postgreSQL
+   ```sql
    UPDATE table_name
    SET column1 = value1, column2 = value2...., columnN = valueN
    WHERE [condition];

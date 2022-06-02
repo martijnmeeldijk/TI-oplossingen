@@ -4,7 +4,7 @@
 
 
 
-```postgreSQL
+```sql
 -- je kan het
 where o.diameter > 100000
 and b.objectnaam is null
@@ -14,7 +14,7 @@ and b.objectnaam is null
 
 2. *Maak een overzicht waarbij je voor de Maan en voor Mars aangeeft hoeveel ruimtereizen één of meer keer de betreffende bestemming bezocht hebben (d.w.z. erop geland zijn).*
 
-```postgreSQL
+```sql
 --gebruik deze subquery
 
 (select count(distinct reizen.reisnr) from reizen
@@ -34,7 +34,7 @@ deze vraag is:
 
    Oke, Bertels gaat ook ineens van 3 naar 5. Wat is er mis met 4?????
 
-   ```postgreSQL
+   ```sql
    -- spelers_xxl bevat al 1000000 rijen, doe aub geen query op spelers_xxxl behalve als ge -- 10 minuten van uw leven kwijt wilt
    ```
 
@@ -61,7 +61,7 @@ Ik zie ook goe geen indexen op eender welk van die tabellen. Ben ik blind? Lemme
 
 8. *Pas de vorige query zodanig aan dat ook de ruimtereizen waarvoor (nog) geen deelnemers zijn ingeschreven, in het overzicht verschijnen .*
 
-   ```postgreSQL
+   ```sql
    --je kan dit oplossen met een gecorreleerde subquery die...
    --oke ik ging een uitleg schrijven maar ik heb geen zin meer. Hier is de query:
    select r.reisnr,
