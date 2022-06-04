@@ -47,4 +47,4 @@ Work in progress.
 
 
 Oh ja, hier is een mapje met alle examens die ik tot nu toe heb weten te bemachtigen:
-[Examens](https://github.com/martijnmeeldijk/TI-oplossingen/tree/master/Schakeljaar/Examens%20)
+[Examens](https://github.com/martijnmeeldijk/TI-oplossingen/tree/master/Schakeljaar/Examens)
