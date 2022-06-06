@@ -768,3 +768,293 @@ Het oplossen bestaat uit twee delen:
 ### Particuliere oplossing
 
 //TODO
+
+
+
+
+
+# 10 - Lineaire Algebra
+
+
+
+## Eigenschappen matrices
+
+$I_n$ is de $n$-dimensionale eenheidsmatrix. Dan is bijvoorbeeld
+$$
+I_3 = \begin{pmatrix}
+1 & 0 & 0\\
+0&1&0\\
+0&0&1
+
+\end{pmatrix}
+$$
+$A^T$ = de getransponeerde matrix, dus de rijen zijn gewisseld met de kolommen en er geldt dat $(AB)^T = A^TB^T$
+
+
+
+
+
+### Determinant
+
+De **minor** $M_{ij}$ van een element $a_{ij}$  is de determinant van de matrix zonder de $i$-de rij en de $j$-de kolom. 
+
+De **cofactor** $A_{ij}$ van een element $a_{ij}$ is zijn minor vermenigvuldigt met $(-1)^{i+j}$
+
+Dan kunnen we de **determinant** zo berekenen: $|A| = \sum_{j=1}^{n} a_{ij}(-1)^{i+j}M_{ij}$
+
+Een matrix $A$ is **singulier** als $|A| = 0$ en is **regulier** als $|A| \neq 0$
+
+
+
+Eigenschappen van determinanten:
+
+* Waarde van determinant is onafhankelijk van de rij of kolom gekozen voor ontwikkeling
+* 2 rijen of kolommen wisselen: determinant maal $-1$
+* Rij of kolom vermenigvuldigen met $k$, determinant ook vermenigvuldigen met $k$
+* Determinant verandert niet als je rijen of kolommen bij elkaar optelt
+* $|AB| = |A||B|$
+* Voor een vierkante matrix: $|A| = |A^T| $
+
+
+
+### Adjunct en inverse
+
+De **adjunctmatrix** $A^A$ krijg je door $A$ te transponeren en elk element van $A^T$ te vervangen door zijn cofactor.
+
+De inverse matrix $A^{-1}$ is de matrix waarvoor geldt: $AA^{-1}= I_n$
+
+* $(AB)^{-1} = B^{-1}A^{-1}$
+* $|A^{-1}|= \frac 1 {|A|}$
+* $A^{-1} = \frac 1 {|A|}A^A$
+  * Dit gebruik je best om de inverse te bereken zodat je geen fakking stelsel moet oplossen
+
+
+
+### Symmetrische matrices enzo
+
+* $A$ is een **bovendriehoeksmatrix** als alle elementen onder de hoofddiagonaal $0$ zijn.
+* $A$ is een **onderdriehoeksmatrix** als alle elementen boven de hoofddiagonaal $0$ zijn.
+* $A$ is **symmetrisch** als die symmetrisch is 
+* $A$ is **antisymmetrisch** als die symmetrisch is, maar de elementen aan de andere kant van de diagonaal zijn tegengesteld
+* $\overline A = (\overline{a_{ij}})$ is de **complex toegevoegde** matrix van $A = a_{ij}$
+* $A^*$ is de **getransponeerde complex toegevoegde matrix**  $(\overline A)^T$
+* $A$ is een **hermetische matrix** als $A^* = A$
+
+
+
+## Lineaire stelsels
+
+Ik veronderstel dat je weet hoe je een lineair stelsel als een matrix moet voorstellen. Is dit niet het geval? Kus m'n kloten want ik ga die shit hier niet uittypen omdat ik het te druk heb met uw moeder te bevredigen.
+
+Dit gezegd zijnde gaan we verder met matrices.
+
+
+
+Een **hoofdmatrix** $M$ is een vierkante matrix die krijgt door rijen en kolommen te schrappen uit je matrix, waarvan de determinant niet gelijk is aan $0$. Als je dus een matrix $A$ hebt waarvan de determinant $0$, is de hoofdmatrix de grootste matrix die je uit $A$ kan halen waarvan de determinant niet $0$ is. De grootte van die matrix $M$ noem je dan de **rang** van $A$. Tanja schrijft de rang vaak als $r(A)$.
+
+Als je dus je stelsel als een matrix voorstelt, met dus gewoon de coëfficiënten in matrixvorm en de constanten aan de rechterkant van alle vergelijkingen in de laatste kolom, heb je een **uitgebreide coëfficiëntenmatrix ** $A_B$. Als je die constanten aan de rechterkant weglaat heb je gewoon de **coëfficiëntenmatrix** $A$.
+
+
+
+### Aantal oplossingen van stelsels
+
+ Als je een stelsel met $n$ onbekenden voorstelt als een matrix geldt er:
+
+* Als $r(A) +1 = r(A_B)$: Geen oplossingen
+* Als $r = r(A) = r(A_B)$: Oplossing met $n-r$ vrije variabelen
+  * Als $r=n$ dus $1$ oplossing
+  * Als $r < n$ dus $\infty^{n-r}$ oplossingen
+
+
+
+### Methode van Gauss(-Jordan)
+
+Als we een lineair niet strijdig stelsel hebben dat we voorstellen als een matrix, kan je het oplossen door het naar deze vorm om te zetten:
+$$
+\left(
+\begin{array}{ccccc|c}
+1 & a_{12} & a_{13} & \cdots &a_{1n} &b_1\\
+0 & 1 & a_{23} & \cdots &a_{2n} &b_2\\
+0 & 0 & 1 & \cdots & a_{3n} & b_3\\
+\vdots & \vdots & \vdots & \vdots & \vdots & \vdots\\
+0 &0 &0 &\cdots &1 & b_{n}
+\end{array}
+\right)
+$$
+Dit doe je met elementaire rijoperaties. Je kan bijvoorbeeld rijen bij elkaar optellen of vermenigvuldigen met een scalar. Dit is het deel van real G Gauss. Een uitbreiding van de methode, gemaakt door real G Gauss feat. lil Jordan gaat als volgt:
+
+Je moet eigenlijk gewoon hetzelfde doen en ervoor zorgen dat alle getalletjes boven de hoofddiagonaal ook $0$ zijn. 
+$$
+\left(
+\begin{array}{ccccc|c}
+1 & 0 & 0 & \cdots &0 &b_1\\
+0 & 1 & 0 & \cdots &0 &b_2\\
+0 & 0 & 1 & \cdots & 0 & b_3\\
+\vdots & \vdots & \vdots & \vdots & \vdots & \vdots\\
+0 &0 &0 & \cdots &1 & b_{n}
+\end{array}
+\right)
+$$
+Je kan dit eigenlijk gemakkelijk doen als je de vorige matrix al had. Je begint gewoon vanonder en trekt een veelvoud van de laatste rij af van de voorlaatste. Dan een veelvoud van de voorlaatste van eentje erboven. Enzovoort enzoverder.
+
+
+
+### Gauss-Jordan matrix inverteren
+
+Blijkbaar is er nog een disstrack van real G Gauss feat. lil Jordan.
+
+Je kan dus ook met de methode van hierboven de inverse van een matrix vinden, maar ik ga dit er pas in zetten als ik het ooit nodig heb sorry. 
+
+
+
+## Lineaire Transformaties
+
+### Basis
+
+Vectoren $\vec v_1, \vec v_2, \cdots, \vec v_k \in V$ zijn **lineair onafhankelijk** als $\sum_{i=1}^kc_i \vec v_i = \vec 0 \implies c_i = 0, \forall i$. Je kan dus alleen de nulvector bekomen door ze allemaal te vermenigvuldigen met nul. 
+
+Een stel vectoren $\vec v_1, \vec v_2, \cdots, \vec v_n \in \mathbb R^n$ vormen een **basis** voor de vectorruimte $(\mathbb R, \mathbb R^n, +,.)$ als ze lineair onafhankelijk zijn over $\mathbb R.$ Je kan dan elke vector in $\mathbb R^n$ schrijven als een lineaire combinatie van deze vectoren.
+
+Je kan gemakkelijk checken of je vectoren een basis vormen door ze in een matrix $A$ te gooien en de determinant te berekenen. Als $|A| \neq 0$, vormen de vectoren een basis.  
+
+Stel je voor, je hebt nu een basis $\beta = \{\vec b_1, \vec b_2, \cdots, \vec b_n\}$ en een vector $\vec v$ ten opzichte van die basis. Als we deze vector nu willen omzetten naar het referentiekader van een andere basis $\beta' = \{\vec b'_1, \vec b'_2, \cdots, \vec b'_n\}$. Dan krijg je de componenten van deze vector t.o.v. $\beta'$ in de matrix $A = B'^{-1}B$, waarbij $B$ in elke kolom de componenten van elk van de basisvectoren van $\beta$ bevat. Voor $B'^{-1}$ doe je hetzelfde, maar moet je ook nog de inverse zoeken.  
+
+
+
+### Lineaire transformatie
+
+Een **transformatie** beeldt elke vector van $\mathbb R^n$ af op een vector in $R^m$. 
+
+Een **lineaire transformatie** doet dit ook, maar is ook lineair. Dit wil zeggen dat voor een lineaire transformatie $L$ geldt dat: $L(a \vec v_1 + b \vec v_2) = aL(\vec v_1) + bL(\vec v_2)$
+
+Je kan elke lineaire transformatie uniek voorstellen door een **transformatiematrix** $A$. In deze matrix elke kolom het beeld van één van de basisvectoren als je die transformatie erop doet.
+
+Als je nu de transformatie in de andere richting wilt doen, gebruik je $A^{-1}$.
+
+Als je twee lineaire transformaties na elkaar wilt doen, zeg nu bijvoorbeeld eerst $T$ met transformatiematrix $A$ en daarna $S$ met matrix $B$, dan schrijf je dit als $S \circ T$. Je hebt dan $BA$ als transformatiematrix.
+
+
+
+### Eigenwaarden en eigenvectoren
+
+Als je een vector door een lineaire transformatie kan omzetten in een veelvoud $\lambda$ van zichzelf, is hij een **eigenvector**. De factor $\lambda$ is dan de **eigenwaarde**. Dus:
+$$
+L(\vec v ) = A \vec v = \lambda \vec v
+$$
+ Hoe vinden we die eigenwaarde nu? Zo:
+$$
+|A-\lambda I_n| = 0
+$$
+Als je deze vergelijking opgelost heb zal je één of meerdere $\lambda$'s hebben. Voor die met multipliciteit één kan je de eigenvectoren direct vinden. De eerste eigenvector $\vec w_1$ vinden we a.d.h.v. dit stelsel:
+$$
+\begin{cases}
+(a_{11} - \lambda)x_1 + a_{12}x_2 + \cdots + a_{1n}x_n &= 0\\
+a_{21}x_1 + (a_{22} - \lambda)x_2 + \cdots + a_{2n}x_n &= 0\\
+\quad \vdots\\
+a_{n1}x_1 + a_{n2}x_2 + \cdots + (a_{nn}-\lambda)x_n &= 0
+
+\end{cases}
+$$
+Bij hogere multipliciteit moet je wat verder rekenen:
+
+* $\vec w_2$ vind je met hetzelfde stelsel door uit te drukken dat $\vec w_1^T \cdot \vec w_2 = 0$
+* $\vec w_3$ door uit te drukken dat $\vec w_1^T \cdot \vec w_3 = 0$ en $\vec w_2^T \cdot \vec w_3 = 0$
+
+Dit stelsel heeft oplossingen verschillend van de nuloplossing als $|A-\lambda I_n| = 0$. De eigenwaarden bij de matrix $A$ zijn dus de oplossingen van deze vergelijking. Die noem je blijkbaar de **karakteristieke vergelijking**, en zijn oplossingenverzameling noem je het **spectrum**. 
+
+De oplossingsmethode voor oefeningen van deze aard is lang niet zo moeilijk als het hier blijkt. Kijk naar het filmpje voor de werkwijze van de oplossing van oefening 30F (werkcollege 12). 
+
+
+
+Nog een kleine toevoeging. Ik had in discussies op ufora nog iets nuttigs gevonden dat alles wat duidelijker maakte voor mij.
+
+Tim (moet wel de dt-regels nog eens herhalen) zei:
+
+> Beste,
+>
+> In oefening 30 worden vaak de eigenvectoren genormeerd zodat deze een grootte van 1 hebben maar dit gebeurd niet altijd. In oefening 30C wordt vector $v_2=\{1,0,2\}$ niet genormeerd. Zou u mij meer uitleggen kunnen geven wanneer de eigenvector genormeerd moet worden en wanneer niet? 
+
+Tanja antwoordde:
+
+> Dag Tim,
+>
+> Het normeren wordt maar uitgevoerd als we in staat zijn om een stel van eigenvectoren te vinden die loodrecht op elkaar staan (m.a.w orthogonaal). Als we niet vertrekken van een reëel, symmetrische matrix, is dit niet altijd mogelijk. 
+> Orthonormaal = orthogonaal + genormeerd.
+
+
+
+### Toepassingen
+
+#### Markov ketens
+
+Ik ga het hier proberen te verduidelijken aan de hand van een oefening
+
+Stef heeft volgende blijvende studeergewoonten: 
+
+* als hij ’s avonds studeert
+  * is er 70% kans dat hij de volgende avond niet studeert
+* als hij een avond niet studeert
+  * is er 60% kans dat hij de volgende avond ook niet studeert
+
+
+
+Hij studeert op maandagavond. Wat is de kans dat:
+
+* hij op woensdagavond van dezelfde week studeert? 
+* hij studeert op een willekeurige avond op lange termijn?
+
+
+
+$s(t)$ is de kans dat hij heeft gestudeerd op dag $t$.
+
+$l(t)$ is de kans dat hij niet heeft gestudeerd op dag $t$.
+
+Dus voor dinsdag geldt:
+$$
+\begin{cases}
+s(1) = 0.3 \space s(0) + 0.4 \space l(0)\\
+l(1) = 0.7 \space s(0) + 0.6 \space l(0)\\
+\end{cases}
+$$
+
+$$
+x(t) = \begin{pmatrix} 0.3 & 0.4 \\ 0.7 &0.6 \end{pmatrix}\begin{pmatrix} s(t-1) \\ l(t-1) \end{pmatrix}
+$$
+
+$$
+x(1) = \begin{pmatrix} s(1) \\ l(1)  \end{pmatrix} = 
+\begin{pmatrix} 0.3 & 0.4 \\ 0.7 &0.6 \end{pmatrix}\begin{pmatrix} 1 \\ 0 \end{pmatrix} = 
+\begin{pmatrix} 0.3 \\ 0.7  \end{pmatrix}
+$$
+
+Voor woensdag (dus na 2 dagen)
+$$
+x(2) = \begin{pmatrix} 0.3 & 0.4 \\ 0.7 &0.6 \end{pmatrix}^2\begin{pmatrix} 1 \\ 0 \end{pmatrix} = 
+\begin{pmatrix} 0.37 & 0.36 \\ 0.63 &0.64 \end{pmatrix}\begin{pmatrix} 1 \\ 0 \end{pmatrix} = 
+
+
+\begin{pmatrix} 0.37 \\ 0.63  \end{pmatrix}
+$$
+De kans dat hij studeert op woensdag is dus $0.37$. We willen nu weten of dit op lange termijn convergeert. We kunnen bepalen naar waar Stef z'n studiegedrag convergeert op lange termijn door de eigenvector te bepalen.
+$$
+A = \begin{pmatrix} 0.3 & 0.4 \\ 0.7 &0.6 \end{pmatrix}
+\\
+
+|A-\lambda I_2| = \begin{vmatrix} 0.3 -\lambda & 0.4  \\ 0.7 &0.6 -\lambda \end{vmatrix} \implies
+\lambda^2 - 0.9\lambda-0.1 = 0
+$$
+$A$ heeft dus als eigenwaardes $\lambda = 1$ en $\lambda = -0.1$. We willen weten wanneer het studiegedrag van Stef niet meer verandert dus we zoeken de eigenvector voor de eigenwaarde $1$.
+$$
+\begin{cases}
+-0.7s + 0.4 t &= 0\\
+0.7s - 0.4t &= 0\\
+
+\end{cases}
+$$
+
+$$
+0.7s = 0.4t \implies \vec v \in ( \frac 4 7a,  a)
+$$
+
+De kans dat hij 's avonds studeert is dus $\frac 4 {11}$ en de kans dat hij niet studeert $\frac 7 {11}$ (op lange termijn).
+
