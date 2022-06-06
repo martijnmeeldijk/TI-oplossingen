@@ -761,13 +761,11 @@ Het oplossen bestaat uit twee delen:
 
 ### Algemene oplossing
 
-
-
-//TODO
+Oké je kan eigenlijk elke oefening oplossen met het schema hierboven. De algemene oplossing is altijd ez pz. Het particuliere gedeelte soms iets vervelender.
 
 ### Particuliere oplossing
 
-//TODO
+//TODO ik ga hier waarschijnlijk niks schrijven dus maak maar effe zelf de oefeningen met je luie kutkop.
 
 
 
@@ -935,6 +933,21 @@ Als je twee lineaire transformaties na elkaar wilt doen, zeg nu bijvoorbeeld eer
 
 
 
+#### Rotatie
+
+De rotatie over een hoek $\varphi$ in tegenwijzerzin wordt voorgesteld door de transformatiematrix:
+$$
+A = \begin{pmatrix} 
+\cos \varphi & \sin \varphi\\
+-\sin \varphi & \cos \varphi\\
+
+
+
+
+\end{pmatrix}
+$$
+
+
 ### Eigenwaarden en eigenvectoren
 
 Als je een vector door een lineaire transformatie kan omzetten in een veelvoud $\lambda$ van zichzelf, is hij een **eigenvector**. De factor $\lambda$ is dan de **eigenwaarde**. Dus:
@@ -1058,3 +1071,106 @@ $$
 
 De kans dat hij 's avonds studeert is dus $\frac 4 {11}$ en de kans dat hij niet studeert $\frac 7 {11}$ (op lange termijn).
 
+
+
+
+
+# Examens
+
+Maak je geen zorgen, de oplossingen vind je ook op de site als je niet blind bent.
+
+## 20-21 Eerste zit A
+
+![image-20220606163958277](img/image-20220606163958277.png) 
+
+![image-20220606164010511](img/image-20220606164010511.png) 
+
+![image-20220606164856011](img/image-20220606164856011.png)
+
+![image-20220606164040091](img/image-20220606164040091.png) 
+
+![image-20220606164210275](img/image-20220606164210275.png)
+
+<img src="img/image-20220606164129350.png" alt="image-20220606164129350" style="zoom:50%;" />
+
+![image-20220606164256305](img/image-20220606164256305.png)
+
+![image-20220606164310837](img/image-20220606164310837.png)
+
+![image-20220606164327623](img/image-20220606164327623.png)
+
+![image-20220606164359722](img/image-20220606164359722.png)
+
+![image-20220606164415618](img/image-20220606164415618.png)
+
+![image-20220606164430915](img/image-20220606164430915.png)
+
+![image-20220606164455112](img/image-20220606164455112.png)
+
+![image-20220606164506398](img/image-20220606164506398.png)
+
+![image-20220606164515256](img/image-20220606164515256.png)
+
+![image-20220606164531581](img/image-20220606164531581.png)
+
+![image-20220606164544048](img/image-20220606164544048.png)
+
+![image-20220606164602684](img/image-20220606164602684.png)
+
+![image-20220606164613935](img/image-20220606164613935.png)
+
+![image-20220606164631570](img/image-20220606164631570.png)
+
+![image-20220606164644016](img/image-20220606164644016.png)
+
+![image-20220606164655983](img/image-20220606164655983.png)
+
+![image-20220606164707894](img/image-20220606164707894.png)
+
+![image-20220606164722006](img/image-20220606164722006.png)
+
+![image-20220606164755609](img/image-20220606164755609.png)
+
+## 20-21 Tweede zit A
+
+![image-20220606164939993](img/image-20220606164939993.png)
+
+![image-20220606164956545](img/image-20220606164956545.png)
+
+![image-20220606165010654](img/image-20220606165010654.png)
+
+![image-20220606165026105](img/image-20220606165026105.png)
+
+![image-20220606165042314](img/image-20220606165042314.png)
+
+![image-20220606165056362](img/image-20220606165056362.png)
+
+![image-20220606165111457](img/image-20220606165111457.png)
+
+![image-20220606165124631](img/image-20220606165124631.png)
+
+![image-20220606165145458](img/image-20220606165145458.png)
+
+![image-20220606165156733](img/image-20220606165156733.png)
+
+![image-20220606165208681](img/image-20220606165208681.png)
+
+![image-20220606165220122](img/image-20220606165220122.png)
+
+![image-20220606165237122](img/image-20220606165237122.png)
+
+![image-20220606165249951](img/image-20220606165249951.png)
+
+![image-20220606165313250](img/image-20220606165313250.png)
+
+![image-20220606165333452](img/image-20220606165333452.png)
+
+![image-20220606165348400](img/image-20220606165348400.png)
+
+![image-20220606165403086](img/image-20220606165403086.png)
+
+![image-20220606165415189](img/image-20220606165415189.png)
+
+![image-20220606165428128](img/image-20220606165428128.png)
+
+![image-20220606165441358](img/image-20220606165441358.png)

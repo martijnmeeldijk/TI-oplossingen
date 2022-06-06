@@ -2,8 +2,8 @@
 
 Ik heb een soort van oefenexamen gemaakt. Eigenlijk meer een verkort overzicht van de theorie in vraagvorm
 
-* [Oefenexamen](Oefeningen/Algoritmen%20oefenexamen.html)
-* [Oplossingen](Oefeningen/Algoritmen%20oefenexamen%20(oplossingen).html)
+* [Oefenexamen](Oefeningen/Algoritmen/Algoritmen%20oefenexamen.html)
+* [Oplossingen](Oefeningen/Algoritmen/Algoritmen%20oefenexamen%20(oplossingen).html)
 
 
 
