@@ -761,15 +761,45 @@ Het oplossen bestaat uit twee delen:
 
 ### Algemene oplossing
 
-Oké je kan eigenlijk elke oefening oplossen met het schema hierboven. De algemene oplossing is altijd ez pz. Het particuliere gedeelte soms iets vervelender.
+Bereken de nulpunten van de vereenvoudigde versie van het linkerlid.
+
+* 2 oplossingen: $y= C_1e^{\alpha_1x} + C_2e^{\alpha_2x} + PO$
+* 1 oplossing: $ y= C_1e^{\alpha x} + C_2xe^{\alpha x} + PO$
+* Complexe oplossingen: $y = e^{\alpha x}(C_1\cos \beta x + C_2\sin\beta x) + PO$
+
+
 
 ### Particuliere oplossing
 
-//TODO ik ga hier waarschijnlijk niks schrijven dus maak maar effe zelf de oefeningen met je luie kutkop.
+* $V_n(x)$
+  * Is $0$ geen nulpunt van het vorige deel: $PO= P_n$, anders $PO=x^p P_n(x)$
+* $e^{\alpha x}P_n(x)$
+  * Is $\alpha$ geen nulpunt, dan $PO= e^{\alpha x}P_n(x)$, anders $PO = x^pe^{\alpha x}P_n(x)$
+* $e^{\alpha x}\sin \beta x $ of $ e^{\alpha x}\cos \beta x$
+  * Is $\alpha + \beta j$ geen oplossing, dan $PO = e^{\alpha x}(a\cos\beta x + b\sin\beta x)$, anders $PO = x^pe^{\alpha x}(a\cos\beta x + b\sin\beta x)$
+* $V_n(x)\sin \beta x $ of $ V_n(x)\cos \beta x$
+  * Is $\beta j$ geen oplossing, dan $PO= P_n\sin\beta x + Q_n\cos \beta x$, anders $PO= x^p(P_n\sin\beta x + Q_n\cos \beta x)$
 
 
 
+# Extra - Overzicht differentiaalvergelijkingen
 
+* DVG eerste orde eerste graad: $M(x,y)dx + N(x,y)dy = 0$
+  * [Scheiding veranderlijken](#scheiden-van-veranderlijken): $f(x)dx = g(y)dy$
+  * [Homogene DVG](#homogene-differentiaalvergelijkingen): $f(\lambda x, \lambda y) = \lambda^n f(x,y)$
+  * [Totale DVG](#totale-differentiaalvergelijkingen): $\frac{\partial M(x,y)}{\partial y} = \frac{\partial N(x,y)}{\partial x}$
+  * [Lineaire DVG](#lineaire-differentiaalvergelijkingen): $y' + yP(x) = Q(x)$
+  * [DVG van Bernoulli](#differentiaalvergelijkingen-van-bernoulli): $y' + yP(x) = y^nQ(x)$
+* DVG eerste orde, maar niet eerste graad
+  * [oplosbaar naar y'](#6---dvg-van-eerste-orde-en-niet-eerste-graad)
+  * [oplosbaar naar y](#6---dvg-van-eerste-orde-en-niet-eerste-graad): $y = G(x,y')$
+  * [oplosbaar naar x](#6---dvg-van-eerste-orde-en-niet-eerste-graad): $x = G(y,y')$
+* DVG hogere orde
+  * [$y^{(n)} = f(x)$](#8---dvgs-hogere-orde)
+  * [$F(x,y',y'') = 0$](#tweede-orde-dvg-die-y-niet-expliciet-bevat)
+  * [$F(y,y',y'') = 0$](#tweede-orde-dvg-die-x-niet-expliciet-bevat)
+* Lineiare DVG tweede orde met constante reële coëfficiënten.
+  * [dit](#9---lineaire-dvgs)
 
 # 10 - Lineaire Algebra
 
@@ -1073,7 +1103,9 @@ De kans dat hij 's avonds studeert is dus $\frac 4 {11}$ en de kans dat hij niet
 
 
 
+#### Kwadratische naar kanonieke vorm
 
+//TODO
 
 # Examens
 
