@@ -102,7 +102,7 @@ Het model is te simpel. Sommige processen in de toestand 'niet actief' zijn klaa
   - Gereed &rarr; Actief: De scheduler kiest één van de processen in de toestand 'gereed' om uit te voeren.
 
 - **Actief** (running)
-  - Actief &rarr; Einde: Het proces word afgebroken of het geeft zelf aan dat het voltooid is.
+  - Actief &rarr; Einde: Het proces wordt afgebroken of het geeft zelf aan dat het voltooid is.
   - Actief &rarr; Gereed: Als het proces te lang bezig is (indien threshold van besturingssysteem), wordt het onderbroken. Het proces kan dit ook bijvoorbeeld doen met _sleep()_.
   - Actief &rarr; Geblokkeerd: Een proces wordt geblokkeerd als hij vraagt om iets waarop hij moet wachten. (meestal in de vorm van een system call naar I/O of wachten op een kindproces.)
 - **Geblokkeerd** (blocked)
@@ -204,7 +204,16 @@ Een **asynchrone** interrupt kan daarentegen onmiddellijk worden uitgevoerd, maa
 
 ## Vraag 15
 
-> Geef een aantal voorbeelden die aanleiding zullen geven tot het wisselen van proces. Geef een aantal voorbeelden die wellicht geen aanleiding zullen geven tot een proceswissel.
+> Geef een aantal voorbeelden die aanleiding zullen geven tot het wisselen van proces. Geef een aantal voorbeelden die wellicht geen aanleiding zullen geven tot een proceswissel. p36
+
+* Interrupts
+  * klokinterrupts: afhandeling kan uitgesteld worden
+  * I/O interrupts: afhandeling kan uitgesteld worden
+  * Paginafouten: moeten direct afgehandeld worden
+* Trap/exception: fatale fouten leiden tot een proceswisseling
+* Systeemaanroepen/software interrupts: hebben ook relatief lage prioriteit
+
+//TODO
 
 ## Vraag 16
 
@@ -258,65 +267,148 @@ Het besturingssysteem zal dan wat meer werk moeten doen
 
 ## Vraag 22
 
-> Wat zijn de nadelen van een procesloze kernel? Welke delen van een Unix- en een Windows kernel zijn procesloos?
+> Wat zijn de nadelen van een procesloze kernel? Welke delen van een Unix- en een Windows kernel zijn procesloos? p41-42
+
+Er moeten zeer vaak context- en proceswisselingen uitgevoerd worden, wat niet geweldig is voor de prestaties. 
+
+//TODO
 
 ## Vraag 23
 
-> Hoe wordt er van binnen een Unix besturingssysteem doorgaans van proces gewisseld? Hoe komt het dat dit vrij efficiënt verloopt?
+> Hoe wordt er van binnen een Unix besturingssysteem doorgaans van proces gewisseld? Hoe komt het dat dit vrij efficiënt verloopt?  p42
+
+
 
 ## Vraag 24
 
-> Hoe wordt er binnen een microkernelgeoriënteerd besturingssysteem van proces gewisseld? Wat zijn hier de voor- en nadelen?
+> Hoe wordt er binnen een microkernelgeoriënteerd besturingssysteem van proces gewisseld? Wat zijn hier de voor- en nadelen? p42
+
+De belangrijkste besturingssysteemfuncties worden gestructureerd als aparte processen, uitgevoerd in kernelmodus. Een kleine hoeveelheid code zorgt dan voor de proceswisseling.
+
+**Nadeel**
+
+Overhead door veel proceswisselingen.
+
+**Voordelen**
+
+Het besturingssysteem is hier een verzameling van verschillende modules, met eenvoudige interfaces. De processen die deze modules uitvoeren kunnen aangepaste prioriteit verweven worden met andere processen, ze moeten bovendien niet allemaal in kernelmodus uitgevoerd worden. 
+
+In een systeem met meerdere processoren kan een deel van de besturingssysteemprocessen bijvoorbeeld aan een specifieke processor toegekend worden.
 
 ## Vraag 25
 
-> Wat is de herdefinitie van een proces en de definitie van een thread?
+> Wat is de herdefinitie van een proces en de definitie van een thread? p43
+
+Vroeger was een proces een eenheid voor de verdeling van processorinstructies en de eigendom van bronnen. Toen was elke proces dus eigenlijk één thread.
+
+We splitsen deze definitie op:
+
+* We definiëren een **thread** als de eenheid van verdeling van **processorinstructies**
+* Een **proces** is dan een eenheid voor het eigendom van bronnen
 
 ## Vraag 26
 
 > Geef het procesbeeld van een multithreaded proces met drie threads. Welke delen worden er over de grenzen van een thread gedeeld.
 
+ik denk p43-44
+
 ## Vraag 27
 
-> Geef voor- en nadelen van multithreading. Welke zijn de mogelijke implementaties (enkel vernoemen volstaat)?
+> Geef voor- en nadelen van multithreading. Welke zijn de mogelijke implementaties (enkel vernoemen volstaat)? p43-46
+
+* Alle threads **delen** de **toestand** en de **bronnen** van hun proces. Doordat ook **programmacode** wordt gedeeld, kunnen toepassingen veel meer actieve threads hebben binnen dezelfde adresruimte. Hierdoor kan de processor beter bezig gehouden worden.
+* De **interprocescommunicatie** is makkelijker door het gedeeld geheugengebruik, en vereist geen tussenkomst van de kernel.
+* Het **creëren en wisselen** van threads binnen een proces heeft veel minder overhead dan hetzelfde doen met verschillende processen.
+* Als er één thread blokkeert moet niet speciaal het hele proces geblokkeerd worden, want je kan dan gewoon naar een andere thread wisselen.
+* Eén nadeel is dat threads die gebruik maken van hulpfuncties, deze reëntrant moeten uitvoeren. Elke simultane uitvoering van die functie mag enkel beroep doen op een aparte verzameling van lokale variabelen.
+
+**Mogelijke implementaties**
+
+User level threads, kernel level threads?
 
 ## Vraag 28
 
-> Wat zijn de voor- en nadelen met user level threading?
+> Wat zijn de voor- en nadelen met user level threading? p46
+
+* Ze kunnen ondersteund worden op **elk besturingssysteem**
+* **Efficiëntere** threadwisselingen, omdat er niet gewisseld moet worden naar kernelmodus.
+* Je kan het **scheduling algoritme** aanpassen naar behoren van de toepassing, want alle stuff voor threadbeheer zit binnen de adresruimte van het proces.
+* Als één thread een blokkerende systeemaanroep doet, dan worden **alle threads** van dat proces **geblokkeerd**. 
+* Werkt niet goed samen met multiprocessing, want binnen elk proces kan er maar **één thread actief** zijn.
 
 ## Vraag 29
 
-> Wat zijn de voor- en nadelen van kernel level threading?
+> Wat zijn de voor- en nadelen van kernel level threading? p47
+
+* Als er meerdere processoren zijn, kunnen er **meerdere threads** van **hetzelfde proces** tegelijk geactiveerd worden.
+* Een geblokkeerde thread **blokkeert** de andere threads van hetzelfde proces **niet**.
+* Een nadeel is dat het **wisselen** naar een andere thread een **modus en context switch** vereist. Je moet dus oppassen dat je niet te veel threads aanmaakt, dit wordt in sommige implementaties ook beperkt.
 
 ## Vraag 30
 
 > Wat is het verschil tussen coöperatieve- en preempted multitasking?
 
+//TODO
+
 ## Vraag 31
 
 > Geef het procestoestandsdiagram van een klassiek Unix besturingssysteem en bespreek elke toestandsovergang (cfr. vraag 9). Waarom is dit niet geschikt voor realtime-applicaties?
 
+//TODO
+
 ## Vraag 32
 
-> Een proces in een Windows heeft drie zaken? Benoem ze en bespreek waarvoor ze dienen.
+> Een proces in een Windows heeft drie zaken? Benoem ze en bespreek waarvoor ze dienen.p56
+
+* **Access token**
+  * Wordt ook wel het *primaire token* genoemd. Dit wordt gebruikt om te checken of de gebruiker bepaalde bewerkingen mag uitvoeren met beveiligde objecten. 
+* **Virtuele adresruimte**
+  * Deze wordt door de virtual memory manager module van de executive beheerd.
+* **Objecttabel met handles**
+  * Deze handjes verwijzen naar objecten, zoals bijvoorbeeld naar elke thread die het proces omvat. Elk element in de tabel bevat toegangsrechten van het object en statusinformatie. Als je in user mode zit, zal je de access token nagekeken worden alvorens toegang verleend wordt.
 
 ## Vraag 33
 
-> Geef het toestandsdiagram van een Windows thread? Bespreek de toestanden en de mogelijke overgangen.
+> Geef het toestandsdiagram van een Windows thread? Bespreek de toestanden en de mogelijke overgangen. p58
+
+<img src="img/image-20220611155631854.png" alt="image-20220611155631854" style="zoom: 33%;" />
+
+- **Ready** 
+  - Ready &rarr; Running: De scheduler kiest één van de processen in de toestand 'gereed' om uit te voeren.
+  - De ready thread met de hoogste prioriteit bevindt zich in de **stand-by** toestand
+
+- **Stand-by**
+  - 
+- **Running** 
+  - Running &rarr; Terminated: De thread word afgebroken of het geeft zelf aan dat het voltooid is.
+  - Running &rarr; Gereed: Als het proces te lang bezig is (indien threshold van besturingssysteem), wordt het onderbroken. Het proces kan dit ook bijvoorbeeld doen met _sleep()_.
+  - Running &rarr; Geblokkeerd: Een proces wordt geblokkeerd als hij vraagt om iets waarop hij moet wachten. (meestal in de vorm van een system call naar I/O of wachten op een kindproces.)
+- **Waiting** 
+  - Waiting &rarr; Ready: Als het ding waarop het proces aan het wachten was klaar is.
+  - Waiting &rarr; Transition: Als het ding waarop het proces aan het wachten was klaar is.
+- **Transition**
+  - 
+- **Terminated** 
+
+
 
 ## Vraag 34
 
-> Geef het toestandsdiagram van een besturingssysteem dat gebruikmaakt van user level threads en een lichtgewichtproces (cfr. Solaris). Wat zijn de verschillende toestanden en de mogelijke overgangen? Bespreek wanneer er van toestand zal worden gewisseld en geef ook aan in welke toestand de user-level thread en het lichtgewichtproces zich moeten bevinden om uitgevoerd te worden.
+> Geef het toestandsdiagram van een besturingssysteem dat gebruikmaakt van user level threads en een lichtgewichtproces (cfr. Solaris). Wat zijn de verschillende toestanden en de mogelijke overgangen? Bespreek wanneer er van toestand zal worden gewisseld en geef ook aan in welke toestand de user-level thread en het lichtgewichtproces zich moeten bevinden om uitgevoerd te worden. p54-55
+
+<img src="img/image-20220611155531113.png" alt="image-20220611155531113" style="zoom:50%;" />
 
 ## Vraag 35
 
-> Bespreek onderstaande figuur. Hoe worden de verschillende componenten aan elkaar gekoppeld.
+> Bespreek onderstaande figuur. Hoe worden de verschillende componenten aan elkaar gekoppeld. p48
 
-<img src="img/image-20220214162043154.png" alt="image-20220214162043154" style="zoom:50%;" />
+<img src="img/image-20220611160129996.png" alt="image-20220611160129996" style="zoom: 33%;" />
+
+
 
 ## Vraag 36
 
-> Bespreek elke gegeven situatie en geef ook aan waar ze ideaal voor geschikt zijn, m.a.w. waar en wanneer zullen ze worden gebruikt
+> Bespreek elke gegeven situatie en geef ook aan waar ze ideaal voor geschikt zijn, m.a.w. waar en wanneer zullen ze worden gebruikt p49
 
 <img src="img/image-20220214162104691.png" alt="image-20220214162104691" style="zoom:50%;" />
 
@@ -419,51 +511,45 @@ Antwoord van the man himself:
 
 ## Vraag 45
 
-> Aan welke vier randvoorwaarden moet ieder geheugenbeheersysteem voldoen?
+> Aan welke vier randvoorwaarden moet ieder geheugenbeheersysteem voldoen? 109-110
 
 ## Vraag 46
 
-> Bespreek de werking van vaste partitionering (vaste grootte en verschillende grootte). Wat zijn de voor- en nadelen van dit systeem? Hoe zal het besturingssysteem procesbeelden gaan plaatsen in een systeem met vaste partitionering.
+> Bespreek de werking van vaste partitionering (vaste grootte en verschillende grootte). Wat zijn de voor- en nadelen van dit systeem? Hoe zal het besturingssysteem procesbeelden gaan plaatsen in een systeem met vaste partitionering. p110-111
 
 ## Vraag 47
 
-> Bespreek de werking van dynamische partitionering. Wat zijn de voor- en nadelen? Welke zijn de verschillende plaatsingsalgoritmen en bespreek de werking en functie van elk algoritme.
+> Bespreek de werking van dynamische partitionering. Wat zijn de voor- en nadelen? Welke zijn de verschillende plaatsingsalgoritmen en bespreek de werking en functie van elk algoritme. p111-112
 
 ## Vraag 48
 
-> Hoe gebeurt adresvertaling bij dynamische partitionering?
+> Hoe gebeurt adresvertaling bij dynamische partitionering? p113-114
 
 ## Vraag 49
 
-> Bij dynamische partitionering kan je voor het geheugengebruik een bitmap of een gelinkte lijst bijhouden (maak een schets)? Hoe gebeurt dit en wat zijn de voor- en nadelen van beide systemen?
+> Bij dynamische partitionering kan je voor het geheugengebruik een bitmap of een gelinkte lijst bijhouden (maak een schets)? Hoe gebeurt dit en wat zijn de voor- en nadelen van beide systemen? p115
 
 ## Vraag 50
 
-> Bespreek de werking van paginering (zonder virtueel geheugen). Wat is het verschil tussen paginering en vaste partitionering? Hoe gebeurt de adresvertaling bij paginering (maak een schets)?
+> Bespreek de werking van paginering (zonder virtueel geheugen). Wat is het verschil tussen paginering en vaste partitionering? Hoe gebeurt de adresvertaling bij paginering (maak een schets)? p117-118
 
 ## Vraag 51
 
-> Bespreek de werking van segmentatie (zonder virtueel geheugen)? Wat is het verschil tussen dynamische partitionering en segmentatie? Waarom wordt dit model voor de gebruiker bewust zichtbaar wordt gehouden. Geef een voorbeeld waar je handig gebruik kan maken van segmenten. Hoe gebeurt de adresvertaling bij segmentatie (maak een schets)?
+> Bespreek de werking van segmentatie (zonder virtueel geheugen)? Wat is het verschil tussen dynamische partitionering en segmentatie? Waarom wordt dit model voor de gebruiker bewust zichtbaar wordt gehouden. Geef een voorbeeld waar je handig gebruik kan maken van segmenten. Hoe gebeurt de adresvertaling bij segmentatie (maak een schets)? p119-120
 
 ## Vraag 52
 
-> Bespreek de stappen die moeten ondernomen worden wanneer bij adresvertaling wordt vastgesteld dat een deel van het proces zich niet in het geheugen bevindt?
+> Bespreek de stappen die moeten ondernomen worden wanneer bij adresvertaling wordt vastgesteld dat een deel van het proces zich niet in het geheugen bevindt? p121
 
 ## Vraag 53
 
-> Wat zijn de drie voordelen van het gebruik van virtueel geheugen? Wat is het nadeel van het gebruik van virtueel geheugen?
+> Wat zijn de drie voordelen van het gebruik van virtueel geheugen? Wat is het nadeel van het gebruik van virtueel geheugen? p122
 
 ## Vraag 54
 
-> Welke twee parameters moet het besturingssysteem in de gaten houden om te zien of er bij het gebruik van virtueel geheugen te veel dan wel te weinig paginafouten optreden? Wat wordt er bedoeld met “thrashing”? Hoe kan het besturingssysteem oordeelkundig inschatten welke pagina’s in de toekomst nodig zullen zijn en welke niet?
+> Welke twee parameters moet het besturingssysteem in de gaten houden om te zien of er bij het gebruik van virtueel geheugen te veel dan wel te weinig paginafouten optreden? Wat wordt er bedoeld met “thrashing”? Hoe kan het besturingssysteem oordeelkundig inschatten welke pagina’s in de toekomst nodig zullen zijn en welke niet? p122
 
-## Vraag 55
 
-> Welke extra zaken moeten er bij paginering in de paginatabel worden bijgehouden om paginering te kunnen doen in een systeem dat virtueel geheugen gebruikt. Hoe gebeurt de adresvertaling bij paginaring met virtueel geheugen (maak een schets)?
-
-## Vraag 56
-
-> Welke parameters pleiten voor kleine paginagroottes en welke voor grote paginagroottes?
 
 # Zelftest 1 labo
 

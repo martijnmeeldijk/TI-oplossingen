@@ -668,14 +668,14 @@ Als je $x$ kan afzonderen. Te schrijven als $x = G(y,y')$.
 
 * Leid  de vergelijking af naar $y$: 
   * $\frac{dx}{dy} = \frac{\partial G(y,p)}{\partial y} + \frac{\partial G(y,p)}{\partial p} \frac{dp}{dy}$
-  * Dus gewoon de partiële afgeleide naar $x$ plus de partiële naar $p$ (met $p'$ eraan geplakt)
+  * Dus gewoon de partiële afgeleide naar $y$ plus de partiële naar $p$ (met $p'$ eraan geplakt)
   * Je hebt nu ook $\frac{1}{p}$ in het linkerlid dankzij de substitutie
   
 * Nu oplossen naar $p$ (meestal heb je meerdere oplossingen)
 
 * Vul de oplossingen van $p$ in de vergelijking waarin je $y'$ had vervangen door $p$
 
-* zie vorige paragraaf
+* zie laatste stap vorige paragraaf
 
   
 
@@ -980,7 +980,11 @@ $$
 
 ### Eigenwaarden en eigenvectoren
 
-Als je een vector door een lineaire transformatie kan omzetten in een veelvoud $\lambda$ van zichzelf, is hij een **eigenvector**. De factor $\lambda$ is dan de **eigenwaarde**. Dus:
+Als je een vector door een lineaire transformatie kan omzetten in een veelvoud $\lambda$ van zichzelf, is hij een **eigenvector**. De factor $\lambda$ is dan de **eigenwaarde**. Simpeler uitgelegd. Een eigenvector (horende bij een bepaalde lineaire transformatie) is een vector die als je die transformatie erop loslaat, niet van richting verandert. Hij gaat dan gewoon een bepaalde hoeveelheid $\lambda$ (de eigenwaarde) langer of korter geschaald worden.
+
+
+
+Dus:
 $$
 L(\vec v ) = A \vec v = \lambda \vec v
 $$
