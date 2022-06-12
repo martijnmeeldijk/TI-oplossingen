@@ -387,7 +387,7 @@ User level threads, kernel level threads?
   - Waiting &rarr; Ready: Als het ding waarop het proces aan het wachten was klaar is.
   - Waiting &rarr; Transition: Als het ding waarop het proces aan het wachten was klaar is.
 - **Transition**
-  - 
+  - //TODO
 - **Terminated** 
 
 
@@ -398,11 +398,51 @@ User level threads, kernel level threads?
 
 <img src="img/image-20220611155531113.png" alt="image-20220611155531113" style="zoom:50%;" />
 
+<u>User-level threads</u>
+
+Verschillende toestanden:
+
+* **Active**
+  * Active &rarr; Sleeping: Als een primitieve voor synchronisatie opgeroepen wordt, zal de thread slapen totdat de voorwaarde voor de synchronisatie is voldaan.
+  * Active &rarr; Stopped: een thread kan gestopt worden door zichzelf of door een andere user-level thread.
+  * Active &rarr; Runnable: een thread kan preëmptief onderbroken worden als een andere thread met hogere prioriteit uitvoerbaar wordt. Hij kan ook zichzelf preëmptief onderbreken om de controle over te dragen aan een andere thread met gelijke prioriteit.
+* **Runnable**
+  * Runnable &rarr; Stopped
+  * Runnable &rarr; Active
+* **Sleeping**
+  * Sleeping &rarr; Runnable
+  * Sleeping &rarr; Stopped
+* **Stopped**
+  * Stopped &rarr; Runnable
+
+
+
+<u>Lightweight processen</u>
+
+Een user-level thread kan gebonden zijn aan een lightweight proces. Als hij niet gebonden is aan één lightweight proces, zal hij in de toestand actief aan eentje gekoppeld worden. In de toestand actief van de user-level thread kan het corresponderende lightweight proces dan ook verschillende toestanden aannemen. De thread wordt dus pas effectief uitgevoerd als zowel de user-level thread als het lightweight proces op actief staan. Als de thread dan een blokkerende system call doet, wordt het lightweight proces geblokkeerd, maar blijft de user-level thread op actief. 
+
+Verschillende toestanden:
+
+* **Runnable**
+* **Running**
+* **Stopped**
+* **Blocked**
+
+
+
+
+
 ## Vraag 35
 
 > Bespreek onderstaande figuur. Hoe worden de verschillende componenten aan elkaar gekoppeld. p48
 
 <img src="img/image-20220611160129996.png" alt="image-20220611160129996" style="zoom: 33%;" />
+
+Sommige besturingssystemen combineren user-level en kernel-level threads. In dit geval worden verschillende user-level threads gegroepeerd gekoppeld aan een kleiner of gelijk aantal kernel-level threads. Het creëren van threads gebeurt in de user space, want dit is efficiënter.
+
+ **Hoe worden de verschillende componenten aan elkaar gekoppeld?**
+
+De user-level threadbibliotheek moet communiceren met de kernel. Dit gebeurt via **lightweight processen**. Voor de bibliotheek zien deze eruit als virtuele processoren, waar dan een user-level thread aan gekoppeld kan worden. Het besturingssysteem gebruikt dan het lightweight proces om een kernel-level thread aan onze thread te koppelen.
 
 
 
@@ -411,6 +451,17 @@ User level threads, kernel level threads?
 > Bespreek elke gegeven situatie en geef ook aan waar ze ideaal voor geschikt zijn, m.a.w. waar en wanneer zullen ze worden gebruikt p49
 
 <img src="img/image-20220214162104691.png" alt="image-20220214162104691" style="zoom:50%;" />
+
+* **Process 1**
+  * Heeft één user level thread, gebonden aan één lightweight proces. Dit is eigenlijk hetzelfde als een traditioneel unix proces.
+* **Process 2**
+  * Heeft meerdere user-level threads, allemaal gebonden met hetzelfde lightweight proces. Er kan maar één user-level thread tegelijk uitgevoerd worden, om inefficiënte threadwisselingen op kernelniveau te vermijden. Deze methode komt overeen met de zuivere user-level benadering van multithreading.
+* **Process 3**
+  * Meerdere user level threads, gekoppeld aan een kleiner of gelijk aantal lightweight processen. Dit is nuttig als threads geblokkeerd kunnen worden, bijvoorbeeld in I/O-intensieve applicaties.
+* **Process 4**
+  * Meerdere user-level threads die 1-op-1 gekoppeld zijn aan meerder lightweight processen. Dit komt overeen met de zuivere kernel-level benadering van multithreading en is nuttig bij CPU intensieve applicaties die bijvoorbeeld parallelle matrixbewerkingen moeten uitvoeren.
+* **Process 5**
+  * Hetzelfde als process 3, maar heeft één extra user-level thread gebonden aan één lightweight proces, verbonden aan één processor. Dit wordt gebruikt bij applicaties met een real-time component. 
 
 # Hoofdstuk 3 (labo)
 
@@ -513,25 +564,96 @@ Antwoord van the man himself:
 
 > Aan welke vier randvoorwaarden moet ieder geheugenbeheersysteem voldoen? 109-110
 
+
+
+1. Er moeten **zo veel mogelijk processen in het hoofdgeheugen** geladen zijn om de CPU optimaal bezig te houden. In de realiteit is er nooit genoeg plek voor alles en zullen we gebruik moeten maken van **swapping** of **virtueel geheugen**.
+2. De CPU en het besturingssysteem moeten de **verwijzingen** in de code van een programma kunnen **vertalen** in adressen van het **fysieke geheugen**.
+3. Processen mogen **niet zonder toestemming** aan de **geheugenruimte** van andere processen komen. Dit mechanisme moet wel flexibel genoeg zijn zodat het wel mogelijk is om verschillende processen toegang te geven tot gedeelde stukken geheugen, zoals gedeelde instructies of gegevensstructuren. 
+4. Het geheugenbeheersysteem moet de logische modulaire indeling van gegevens in programma's kunnen **vertalen** naar de **ééndimensionale** adresruimte van het geheugen. (dit gaat met segmentatie)
+
 ## Vraag 46
 
 > Bespreek de werking van vaste partitionering (vaste grootte en verschillende grootte). Wat zijn de voor- en nadelen van dit systeem? Hoe zal het besturingssysteem procesbeelden gaan plaatsen in een systeem met vaste partitionering. p110-111
+
+
+
+Helemaal aan het begin of het einde van het hoofdgeheugen vast deel geclaimd door het besturingssysteem. De rest van het geheugen moeten we op de één of andere manier indelen. Bij vaste partitionering wordt het geheugen verdeeld in **gebieden met vaste begrenzing**. Het besturingssysteem moet niet veel doen buiten bijhouden welke partities nog beschikbaar zijn. Het **aantal partities** dat werd ingesteld door het systeem **beperkt** wel het **aantal actieve processen**. 
+
+De partities die worden gebruikt kunnen van **gelijke** of **ongelijke** grootte zijn. Bij partities van gelijke grootte doen zich direct twee problemen voor:
+
+* Elk procesbeeld (zelfs hele kleine) bezet een hele partitie. Deze verspilling van ruimte wordt ook wel **interne fragmentatie** genoemd. Bij veel kleine processen wordt er dus ontzettend veel geheugen verspild.
+* Het procesbeeld kan te groot zijn om in één partitie te passen. Dan moeten er **overlay** technieken gebruikt worden zodat alleen de instructies en gegevens die op dat moment nodig zijn in de partitie worden gehouden. Een **overlay driver** zou er dan voor moeten zorgen dat de juiste dingen op het juiste moment in de partitie gestoken worden. (dit is kut want dat moet je zelf programmeren). 
+
+<img src="img/image-20220611212509509.png" alt="image-20220611212509509" style="zoom:33%;" />
+
+Bij partities van **ongelijke grootte** heb je meer flexibiliteit. Steek gewoon elk proces in de kleinste partitie waar hij in past. Dan heb je wel een wachtrij nodig. In plaats van een wachtrij per partitie bij te houden, maak je beter één grote wachtrij, waar dan het eerstvolgende proces in de kleinst beschikbare partitie waarin hij past wordt gestoken. Zie hieronder.
+
+![Section 4.1. Basic Memory Management | Operating Systems Design and  Implementation (3rd Edition)](img/04fig02.jpg)
+
+//TODO procesbeelden
 
 ## Vraag 47
 
 > Bespreek de werking van dynamische partitionering. Wat zijn de voor- en nadelen? Welke zijn de verschillende plaatsingsalgoritmen en bespreek de werking en functie van elk algoritme. p111-112
 
+**Bespreek de werking van dynamische partitionering. Wat zijn de voor- en nadelen? **
+
+Dynamische partitionering gebruikt een **variabel aantal partities** met ieder een **variabele grootte**. Een proces krijgt dus exact de hoeveelheid geheugen die hij nodig heeft. Processen die niet meer in de toestand 'ready' staan worden dan geswapt om plek te maken voor processen die in de toestand 'ready/suspend' staan. Als er twee partities naast elkaar vrijkomen, worden ze samengevoegd. Een groot nadeel is dat er zich op den duur **externe fragmentatie** zal voordoen. De figuur hieronder bespaart mij wat woorden. In het slechtste geval zit er tussen elke twee processen een blok verspild geheugen waar niks inpast.
+
+<center>Externe fragmentatie</center>
+
+<img src="img/image-20220611214117893.png" alt="image-20220611214117893" style="zoom:33%;" />
+
+**Welke zijn de verschillende plaatsingsalgoritmen en bespreek de werking en functie van elk algoritme.**
+
+* **Best-fit** kiest het blok met de grootte die het meest lijkt op de van het nieuwe proces.
+  * Is verassend slecht, het geheugen wordt snel verdeeld in te kleine blokken.
+* **First-fit** loopt het geheugen af en neemt het eerste blok waar het proces in past.
+  * Is meestal de beste oplossing, maar toch wordt gemiddeld zeker één derde van het geheugen onbruikbaar.
+* **Next-fit** doet hetzelfde als first fit, maar gaat telkens verder vanaf waar hij de vorige keer gestopt is.
+* **Worst-fit** neemt het grootst beschikbare blok
+
+//TODO wat bedoelt onze Wim met de functie?
+
 ## Vraag 48
 
 > Hoe gebeurt adresvertaling bij dynamische partitionering? p113-114
+
+Om het leven van de programmeurs net dat kleine beetje makkelijker te maken, mogen zij gebruikt maken van **logische adressen**. Dan hoeven zij zich niet bezig te houden met waar in het hoofdgeheugen ze nu precies moeten zitten. In het geval van dynamische partitionering wordt er gebruikt gemaakt van **relatieve adressen**. Alle adressen worden dan uitgedrukt ten opzichte van een bepaald punt, meestal het begin van het programma.
+
+Deze logische adressen moeten natuurlijk nog omgezet worden in **fysieke adressen** die begrijpbaar zijn voor de processor en het besturingssysteem. Een klein processortje, genaamd de **memory management unit** zorgt voor de vertaling in beide richtingen.
+
+![59.305 Course Notes](img/m8t1.gif)
+
+
+
+In het geval van een systeem met dynamische partitionering loopt de vertaling als volgt. Wanneer het proces in het hoofdgeheugen komt, worden zijn toegekende begin- en eindadressen in het **base register** en het **bounds register** gestoken. Nu is de vertaling simpel. Bij elk relatief adres wordt de inhoud van het base register opgeteld. Het resultaat is een fysiek adres en wordt vergeleken met het bounds register. Ligt het resultaat erbuiten, wordt er een interrupt gegenereerd. 
+
+<img src="img/relocation.png" alt="OS Test2 Flashcards | Chegg.com" style="zoom:50%;" />
 
 ## Vraag 49
 
 > Bij dynamische partitionering kan je voor het geheugengebruik een bitmap of een gelinkte lijst bijhouden (maak een schets)? Hoe gebeurt dit en wat zijn de voor- en nadelen van beide systemen? p115
 
+**Bitmap**
+
+<img src="img/image-20220612120413331.png" alt="image-20220612120413331" style="zoom: 33%;" />
+
+Het geheugen wordt verdeeld in kleine **blokjes van gelijke grootte**. Voor elk blokje wordt een bit bijgehouden die vertelt of het blokje vrij is. Kleinere blokjes betekent dus een grotere bitmap, grotere blokjes is meer geheugenverspilling. Wanneer een proces van $n$ aansluitende blokken geheugen nodig heeft, zal het geheugenbeheersysteem op zoek moeten gaan naar $n$ opeenvolgende nullen in de bitmap. Dit is natuurlijk niet zo efficiënt.
+
+
+
+**Linked list**
+
+<img src="img/image-20220612120624500.png" alt="image-20220612120624500" style="zoom: 33%;" />
+
+We kunnen onze vrije blokjes ook bijhouden in een gelinkte lijst. We kunnen dan kiezen of we alleen de vrije blokken bijhouden, of alleen de bezette blokken. Elke van beide in een aparte lijst is ook een mogelijkheid. De beste optie is blijkbaar om alleen de vrije blokken op te nemen in een dubbelgelinkte lijst, waar zowel op het begin als het einde van elke blok informatie staat over de grootte en de status van dat blok.
+
 ## Vraag 50
 
 > Bespreek de werking van paginering (zonder virtueel geheugen). Wat is het verschil tussen paginering en vaste partitionering? Hoe gebeurt de adresvertaling bij paginering (maak een schets)? p117-118
+
+
 
 ## Vraag 51
 
