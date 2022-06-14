@@ -1385,7 +1385,7 @@ lezen van commando: process substitution
 
 declare -A array: dictionary maken
 
-### 1 - Inleiding
+## 1 - Inleiding
 
 1. Welke toetsencombinatie heb je nodig om een runnend programma (een proces dus) te onderbreken?
 
@@ -1405,7 +1405,7 @@ declare -A array: dictionary maken
 
 5. In een shell kan je aan “auto completion” doen door gebruik te maken van de tab-toets. Tik de letters “les” in, en tik vervolgens op de tab-toets. Je merkt dat er automatisch less verschijnt. Nu kan het zijn dat er nog opdrachten zijn die met less beginnen. Tik nogmaals op de tab-toets om te kijken welke opdrachten er met less beginnen. Een ander handigheidje is “reverse search” om eerder ingetypte commando’s te suggereren tijdens het typen. Gebruik hiervoor “CTRL+r”.
 
-### 2 - Compileren in de Shell
+## 2 - Compileren in de Shell
 
 1. Met de opdracht man kan je alle info over een welbepaalde opdracht achterhalen. Zo zal de opdracht “man ls” de info tonen van de ls-opdracht. Man toont de informatie a.d.h.v. een pager, een programma dat de informatie niet alleen op het scherm toont maar dat ook gebruikersinteractie toelaat. Zo kan je scrollen, zoeken naar bepaalde woorden, etc. Standaard is de pager ingesteld op het commando less. Dit betekent dat wanneer je wil weten hoe je voorwaarts moet zoeken in een manpagina, je dit moet gaan zoeken bij het commando less en niet bij het commando man. Vraag de manpagina op van het commando less en ga na hoe je een tekst die met less wordt getoond kan afsluiten. Hoe kan je voorwaarts zoeken in een manpagina?
 
@@ -1466,19 +1466,19 @@ int main(){
 
 Static is dus veel groter
 
-### 3 - Profiler programma’s
+## 3 - Profiler programma’s
 
 programma geschreven met memory leaks ik heb geen zin om het over te type want ik weet niet hoe ik copy paste uit virtualbox
 
-### 4 - Een eerste programmeeropdracht
+## 4 - Een eerste programmeeropdracht
 
-### 5 - I/O-Systeemaanroepen
+## 5 - I/O-Systeemaanroepen
 
-### 6 - Processen en POSIX-threads
+## 6 - Processen en POSIX-threads
 
-### 7 - Programmeren in Bash
+## 7 - Programmeren in Bash
 
-#### Patterns, expansions en het opzoeken van hulp
+### Patterns, expansions en het opzoeken van hulp
 
 1. Met welk van de commando’s cp, dd, ln, mktemp, touch en cat kan je vlug een aantal (lege) bestanden aanmaken waarvan de namen als parameters van het commando worden opgegeven?
 
@@ -1761,7 +1761,7 @@ De accolades, want anders zou het de derde uitvoer dit zijn:
 /root/mail   /root/root
 ```
 
-#### Redirection, piping, ...
+### Redirection, piping, ...
 
 Zoals reeds bij deel V aangehaald werd, zal elk in de shell gestart programma beschikken over drie file descriptors: standaardinvoer (stdin), standaarduitvoer (stdout) en standaardfout (stderr). Gewone uitvoer wordt steeds naar standaarduitvoer gestuurd terwijl eventuele fouten terechtkomen op standaardfout. In de shell waarin je ingelogd bent is standaardinvoer meestal gelijk aan het toetsenbord (invoer wordt afgesloten met Ctrl-D voor end of file of eventueel Ctrl-C voor terminate), en worden beide uitvoerkanalen met het beeldscherm verbonden. Elk kanaal heeft een eigen nummer waarmee de shell de kanalen identificeert: 0 standaardinvoer 1 standaarduitvoer 2 standaardfout
 
@@ -1962,9 +1962,501 @@ Een aantal van deze commando's zijn syntactisch correct, maar bevatten logische 
 #geen idee //TODO
 ```
 
-#### Shellvariabelen
 
-#### Arithmetic expansion
+
+41. Welke van onderstaande constructies kun je gebruiken indien de uitvoer van de opdracht te lang is om op één scherm getoond te worden? 
+
+* du / 
+* du / | less 
+* du / | more 
+* du / | cat 
+
+```bash
+less
+```
+
+
+
+42. Bekijk hoeveel keer je het commando man in het verleden (voor de huidige inlogsessie) reeds gebruikt hebt. Gebruik hiervoor het bestand .bash_history uit je home-directory en de commando's wc en grep
+
+```bash
+cat .bash_history | grep man | wc -w
+```
+
+
+
+43. In het bestand /etc/passwd worden de velden gescheiden door een :-teken. Het eerste veld bevat de gebruikersnaam en het derde veld het gebruikersID, terwijl het vierde veld het nummer van de primaire groep is waartoe de gebruiker behoort. 
+
+    Sorteer het passwd-bestand met behulp van het sort commando, met het nummer van de primaire groep als sleutel. Zorg ervoor dat het sort commando enkel sorteert op het veld met de primaire groep (en niet op het restant van de lijn), en dit veld alfabetisch (niet-numeriek) sorteert. Bij deze sortering moet bijvoorbeeld gelden: 1 < 100 < 12. Geef de volledige commandolijn waarmee je deze opdracht hebt uitgevoerd. Voer dit commando vervolgens uit, waarbij je de uitvoer omleidt naar het bestand ~/passwd. 
+
+    ```bash
+    sort /etc/passwd -t : -k4 -d > ~/passwd
+    ```
+
+    Doe nu hetzelfde met het group-bestand. Dit bestand bevat onder meer als eerste veld de groepsnaam, terwijl het nummer van de groep nu in het derde veld staat. Sorteer opnieuw volgens dezelfde criteria, met het nummer van de groep als sleutel. Leid de uitvoer nu om naar het bestand ~/group.
+
+    ```
+    sort /etc/group -t : -k3 -d > ~/group
+    ```
+
+    
+
+44. Gebruik het commando join met aangepaste opties om op basis van de daarnet gecreëerde bestanden ~/passwd en ~/group een lijst af te drukken met op elke lijn enkel drie velden: de gebruikers-ID, de volledige gebruikersnaam en de naam van de primaire groep waartoe de gebruiker behoort. Geef de volledige commandolijn waarmee je deze opdracht hebt uitgevoerd. Hoeveel uitvoerregels zijn er? Hoe heb je dit aantal geteld? Vergelijk met het aantal regels in het passwd bestand. Indien deze aantallen niet overeenkomen heb je ofwel bij deze vraag, ofwel bij de vorige een fout gemaakt.
+
+    ```bash
+    join -t : -1 4 -2 3 -o 1.3 1.1 2.1 passwd group
+    ```
+
+
+
+45. Sorteer het /etc/passwd bestand, met behulp van het sort commando. Gebruik als primaire sleutel het vierde veld van het bestand. Zorg ervoor dat je in numerieke volgorde sorteert (12 < 100). Regels met gelijke numerieke waarden voor het vierde veld moeten gesorteerd worden met het vijfde veld als secundaire sleutel, waarbij geen onderscheid mag gemaakt worden tussen hoofdletters en kleine letters, en voor de  sorteervolgorde nu de omgekeerd alfabetische volgorde moet genomen worden. Geef de volledige commandolijn waarmee je deze opdracht hebt uitgevoerd.
+
+    ```bash
+    sort -k4,4 -k1,1r /etc/passwd
+    ```
+
+
+
+46. Gebruik het cut commando met aangepaste opties om van het bestand /etc/passwd alle gebruikersnamen te tonen. Geef opnieuw de volledige commandolijn waarmee je deze opdracht hebt uitgevoerd.
+
+    ```bash
+    cut -d : -f 1 /etc/passwd
+    ```
+
+
+
+47. Het commando tee bestandsnaam neemt de standaardinvoer, geeft de invoer ongewijzigd door aan de standaarduitvoer, en kopieert de standaardinvoer tegelijkertijd naar het opgegeven bestand. Gecombineerd met een pipe laat dit je toe de uitvoer van een programma terzelfdertijd op het beeldscherm te bekijken, en te loggen voor later gebruik. Hoe kun je ervoor zorgen dat de uitvoer van een programma tegelijkertijd op het beeldscherm verschijnt, en wordt toegevoegd aan een bestaand bestand, zonder dat de oude inhoud van dat bestand wordt overschreven?
+
+    ```
+    door de -a optie (append)
+    ```
+
+
+
+48. Zoek naar alle bestanden in de /etc directory tree waarvan de naam begint met pass
+
+    ```bash
+    find /etc -name pass*
+    ```
+
+
+
+49. Je kunt ook meerdere testen combineren. Hoe vraag je alle subdirectory's (geen bestanden) waarvoor de naam begint met sh?
+
+    ```bash
+    find / -type d -name sh* #de 'd' staat voor directory
+    ```
+
+
+
+50. Gebruik het find-commando om een lijst te bekomen van alle bestanden in de /usr directory tree met een bestandsgrootte van minstens 1 megabyte. Bij het uitprinten (één lijn per bestand) moet je het volledig pad van de gevonden bestanden laten voorafgaan door de grootte van het bestand. Geef de volledige commandolijn waarmee je deze opdracht hebt uitgevoerd. Let er ook op dat je enkel bestanden in de lijst opneemt en geen directory's.
+
+    ```bash
+    find / -type f  -size +1M -printf '%s %p\n'
+    ```
+
+
+
+51. Gebruik het find-commando om een lijst te bekomen van alle bestanden in je persoonlijke map, die gedurende de laatste twee weken gewijzigd werden. Bij het uitprinten (één lijn per bestand) moet je het volledig pad van de gevonden bestanden laten voorafgaan door het tijdstip van de laatste wijziging. Geef de volledige commandolijn waarmee je deze opdracht hebt uitgevoerd. Let er ook op dat je enkel bestanden in de lijst opneemt en geen directory's.
+
+    ```bash
+    find ~ -type f  -mtime -14 -printf '%t %p\n'
+    ```
+
+    
+
+52. Gebruik het find-commando om een lijst te bekomen van alle subdirectory's van /usr waarin zich C- of C++-headerbestanden (bestanden met suffix .h) bevinden. Gebruik een commandolijn van de gedaante 
+
+    `find … | sort | uniq`
+
+    Let erop dat enkel de namen van de directory's weergegeven worden.
+
+    ```bash
+    find /usr -type f -name *.h -printf '%h\n' | sort | uniq
+    ```
+
+53. Geef een lijst van alle directory's waar je als gewone gebruiker geen toegang toe hebt. Tip: gebruik cut en de foutuitvoer van het commando find.
+
+    ```bash
+    find . ! -perm -o=r # alle files die gebruikers in de 'others' groep niet kunnen lezen
+    # ik weet niet hoe ik dit met cut moet doen //TODO
+    ```
+
+54. Toon alle bestanden van de map /etc die rwx-rechten hebben voor de huidige gebruiker.
+
+    ```bash
+    find /usr -type f -writable -executable -readable
+    ```
+
+    
+
+### Shellvariabelen
+
+55. Naast gekende shellvariabelen, zoals PATH, kun je zelf shellvariabelen toevoegen. Tenzij je de declare-opdracht gebruikt, zijn ze steeds van het type string. Er wordt onderscheid gemaakt tussen hoofdletters en kleine letters. Voer de volgende commando's uit: 
+
+    ```bash
+    printf "PATH %s\n" $PATH 
+    printf "dag %s\n" $dag 
+    dag=jan 
+    printf "dag %s\n" $dag 
+    set # toont alle shellvariabelen
+    ```
+
+56. Definieer zelf de variabele date met een willekeurige datum als inhoud. Wat is het verschil tussen \$date, \$(date) en \${date}? Onderzoek dit met behulp van het commando echo. Je kunt bijvoorbeeld je eerste script schrijven met de volgende regels:
+
+    ```bash 
+    date="18/5/2016"
+    echo '$date:' $date # roept de shellvariabele 'date' op
+    echo '${date}:' ${date} # roept de shellvariabele 'date' op
+    echo '$(date):' $(date) # runt het commando 'date'
+    ```
+
+ 
+
+57. Bash ondersteunt vanaf versie 3 de mogelijkheid tot indirecte adressering: je kunt de inhoud van een variabele opvragen door haar naam in een tweede variabele te stoppen, die je invult in \${!varnaam}. Dit is vergelijkbaar met pointers in C en C++. Vul de inhoud van de variabele `een` willekeurig op, en geef aan de variabele `twee` als inhoud de string 'een'. 
+
+    ```
+    een = "azemrkjnazer"
+    twee = 'een'
+    ```
+
+    Voorspel het resultaat van:
+
+    ```bash
+    echo ${een} #"azemrkjnazer"
+    echo ${twee} # "een"
+    echo ${!twee} #"azemrkjnazer"
+    echo ${$twee} #"azemrkjnazer" nope het geeft ${$twee}: bad substitution
+    ```
+
+    In oudere versies van Bash kun je dit gedrag simuleren d.m.v. de opdracht eval. Hoe? //TODO
+
+
+
+58. Bekijk de inhoud van de shellvariabelen PS1, PS2, SHLVL, RANDOM, SECONDS en PWD, en zoek de betekenis ervan op in info bash of man bash, sectie Shell Variables. Vraag de inhoud van deze variabelen eerst interactief op (met echo) en schrijf vervolgens een script om de inhoud van deze variabelen op het scherm te tonen. Kan je de verschillen verklaren? 
+
+    ```
+    echo $PS1
+    echo $PS2
+    echo $SHLVL
+    echo $RANDOM
+    echo $SECONDS
+    echo $PWD
+    ```
+
+    Gewoon in console geeft
+
+    ```bash
+    [root@localhost oef]# echo $PS1
+    [\u@\h \W]\$
+    [root@localhost oef]# echo $PS2
+    >
+    [root@localhost oef]# echo $SHLVL
+    1
+    [root@localhost oef]# echo $RANDOM
+    27874
+    [root@localhost oef]# echo $SECONDS
+    3979629
+    [root@localhost oef]# echo $PWD
+    /root/oef
+    ```
+
+    In een script:
+
+    ```bash
+    
+    
+    2
+    17726
+    0
+    /root/oef #ik weet niet echt waarom de uitvoer anders is //TODO
+    ```
+
+
+
+59. Hoe kun je commentaar toevoegen in een script? 
+
+    ```bash
+    #zo
+    ```
+
+
+
+60. Hoe kun je de variabele PATH zodanig wijzigen dat je bij het aanroepen van een shellscript (dat zich in de actieve directory bevindt), niet steeds naar de actieve directory moet verwijzen? Zorg ervoor dat je oplossing werkt in eender welke directory. Het script moet dus steeds gezocht worden in de werkdirectory, zonder telkens de waarde van PATH aan te passen.
+
+    ```
+    
+    ```
+
+
+
+61. Hoe kun je ervoor zorgen dat wanneer bij de cd-opdracht een relatieve padnaam (dus niet beginnend met /) als argument opgegeven wordt, niet alleen de huidige werkdirectory als prefix uitgeprobeerd wordt, maar ook een aantal vaste directory's?
+
+    ```
+    
+    ```
+
+    
+
+62. Hoe kun je met eenzelfde opdracht regelmatig heen en terug schakelen tussen twee mappen als actieve directory? 
+
+    ```
+    
+    ```
+
+    
+
+
+
+63. Je kunt met het commando read tegelijkertijd meerdere variabelen inlezen via het standaard invoerkanaal. Test dit uit met:
+
+    ```
+    read a b c d
+    ```
+
+    Kan je dit aanpassen zodat de gegevens uit een bestand gelezen worden? Probeer dit ook eens met een script op te lossen, en merk op dat de variabelen enkel in het script bestaan! 
+
+64. Achterhaal de waarde van de bijzondere variabele IFS. Merk op dat echo \$IFS je niet veel wijzer maakt; echo "\$IFS" (met aanhalingstekens) verraadt echter al dat er een newlinekarakter in de waarde staat. De eigenlijke waarde van IFS kun je vinden met 
+
+    ```
+    
+    ```
+
+    Zoals je weet uit vorige oefeningen, zorgt \$' ' hierin voor interpretatie van de escapes. Standaard bevat IFS dus een spatie, een tab en een regeleinde. Deze karakters worden door read gebruikt voor het splitsen van invoervelden, ongeveer zoals o.a. de operator << in C++ en de Scanner-klasse in Java. 
+
+    Je kunt de waarde van IFS ook (tijdelijk) wijzigen, hetzij door een functie te gebruiken, hetzij door de IFS-variabele vóór het commando in te stellen. Gebruik het commando read om een aantal variabelen in te lezen gesplitst op spaties, dubbelepunten en komma's. Ga de werking na met read.
+
+65. Het wijzigen van IFS kan voor verwarring zorgen. Voer volgend script uit:
+
+    ```bash
+    IFS=':'
+    x=ik:ben:groot
+    echo x = $x
+    echo x = "$x"
+    echo x = '$x'
+    grep -E ^x= < <(set)
+    grep -E ^x < <(set)
+    declare -p x
+    declare -p ${!x*}
+    ```
+
+
+
+66. Je kunt de standaarduitvoer van een commando ook toekennen aan een variabele. Daarbij maak je gebruik van **command substitution**. Dit is vooral zinvol wanneer de uitvoer van een commando uit slechts één regel bestaat. Indien je slechts een deel van de uitvoer aan de variabele wilt toekennen, dan kun je proberen dit er met cut uit te halen. Voorspel de inhoud van de variabele t na volgende commando's: 
+
+    ```bash
+    t=$(du /etc/passwd)
+    t=$(cut -f1 < <(du /etc/passwd))
+    t=$(cut -f1 < <(wc -l /etc/passwd))
+    t=$( cut -d " " -f2 < <(wc -l /etc/passwd))
+    t=$(wc -l < /etc/passwd)
+    tab=( $(wc -l /etc/passwd) )
+    echo ${tab[1]}
+    ```
+
+    
+
+### Arithmetic expansion
+
+67. Normaal worden alle variabelen door de shell als strings beschouwd. Toch kun je met behulp van een specifiek intern commando rekenkundige bewerkingen op variabelen toepassen. Dit laat je niet alleen toe om optellingen (+), aftrekkingen (-), vermenigvuldigingen (*), gehele delingen (/ en %) en machtsverheffingen (**) uit te voeren, maar ook om bitoperaties (<<, >>, &, |, ^, ! en ~) of logische testoperaties (&& en ||) toe te passen. Zoek dit specifiek commando op in info bash of man bash; lees de secties Arithmetic Expansion en Arithmetic Evaluation. Pas het gevonden commando toe om het product van twee variabelen, x en y in een variabele z te stoppen. Welk intern (builtin) commando kun je hiervoor als alternatief gebruiken?
+
+    ```
+    
+    ```
+
+
+
+68. Hoe kun je in een script, met behulp van de variabele SECONDS, de uitvoeringstijd bepalen van een groep commando's? Pas dit bijvoorbeeld toe om de uitvoeringstijd (in seconden) te bepalen van de tijdrovende instructie
+
+    ```
+    ls -lR / > /dev/null 2>&1
+    ```
+
+
+
+69. Hoe kun je in een shellscript het dertiende argument aanspreken? 
+
+    ```
+    
+    ```
+
+70. Veronderstel dat een variabele x als waarde de index van een positionele parameter bevat. Hoe kun je de waarde van deze positionele parameter bekomen?
+
+    ```
+    
+    ```
+
+71. Gebruik het script dat 3 argumenten verwacht. Hoe kun je bij het aanroepen van dit script enkel het eerste en derde argument opgeven? 
+
+    ```
+    
+    ```
+
+72. In Bash zijn speciale variabelen gedefinieerd, waarvan men in shellscripts gebruik kan maken. Lees de sectie Special Parameters in man bash. Zo staat \$0 voor de naam van het script, \$\$ voor het (unieke) proces-ID of PID van het script en \$# voor het aantal argumenten ervan. Schrijf een script dat zijn eigen naam en proces-ID uitschrijft, evenals zijn totale aantal argumenten, gevolgd door het eerste en het laatste argument. 
+
+    ```
+    
+    ```
+
+73. Verder bevatten de shellvariabelen \$* en \$@ alle argumenten van het script als één string. Hoe kun je deze gebruiken om, na bijvoorbeeld één of meerdere shift-opdrachten, weer de oorspronkelijke toestand van de positionele parameters te bekomen?
+
+    ```
+    
+    ```
+
+74. Tussen \$* en \$@ bestaat een subtiel verschil, dat men in shellscripts dikwijls nuttig kan aanwenden, vooral in combinatie met for- en while-lussen. Maak de volgende twee scripts:
+
+    **74a**
+
+    ```bash
+    ./74b $*
+    ./74b $@
+    ./74b "$*"
+    ./74b "$@"
+    IFS=:
+    ./74b $*
+    ./74b $@
+    ./74b "$*"
+    ./74b "$@"
+    ```
+
+    **74b**
+
+    ```bash
+    echo $#
+    echo $1
+    echo $2
+    ```
+
+    Roep vervolgens 74a op met minimum twee argumenten
+
+75. Wat geldt voor scripts, geldt ook voor functies. Een functie heeft dus net zoals een script een exit-status. De return-opdracht zal bij een bash-functie echter de exit-status beïnvloeden en dus in tegenstelling tot wat je verwacht niet de teruggeefwaarde bepalen. Wil je iets teruggeven, gebruik dan bij het aanroepen van een functie **command** **substitution** en binnen de functie **echo/printf**. Schrijf een niet-recursieve functie die de faculteit van een getal dat als parameter wordt meegegeven, teruggeeft. 
+
+    ```
+    
+    ```
+
+76. Een functie kan ook uitvoerparameters simuleren. Schrijf een functie wissel die twee scriptparameters van waarde omwisselt. 
+
+    ```
+    
+    ```
+
+
+
+### Parameter expansion
+
+77. De bijzondere notaties \${variabele=waarde} en \${variabele-waarde} bieden een snelle oplossing voor het toewijzen of opvragen van een waarde aan een variabele indien die nog niet gedefinieerd zou zijn. Indien een variabele wel gedefinieerd is, maar leeg, dan biedt deze notatie geen oplossing. Welk alternatief heb je hiervoor, dat beide situaties aankan? Schrijf deze zo compact mogelijk. 
+
+    ```
+    
+    ```
+
+78. Schrijf een shellscript dat de laatste aantal lijnen van het bestand .bash_history in je home directory naar standaarduitvoer uitschrijft. De waarde van aantal wordt als enige argument meegegeven. Indien deze waarde ontbreekt, moeten er 10 lijnen uitgeschreven worden. Gebruik het commando tail. 
+
+    ```
+    
+    ```
+
+79. Vul een variabele `x` op met de waarde /usr/share/emacs/24.5/etc/tutorials/TUTORIAL.nl. Met welke stringoperatoren kun je x opsplitsen in een directorypad en een bestandsnaam? Los dit op twee manieren op. Hoe kun je deze twee substrings toekennen aan de variabelen dir en file? 
+
+    ```
+    
+    ```
+
+80. Vul een variabele x op met de regel "dit is een \<b>eenvoudige\<\b> en \<b>nuttige\<\b> oefening". Gebruik de stringoperatoren om de woorden eenvoudige en nuttige uit de variabele te halen. Probeer dit op twee methodes. 
+
+    ```
+    
+    ```
+
+81. Indien je in de stringoperatoren de variabele \$@ of \$* gebruikt, kun je op een relatief eenvoudige manier de laatste positionele parameter opvragen met: 
+
+    ```bash
+    echo ${@:$#:1}
+    ```
+
+    Hoe vraag je op een analoge manier de voorlaatste positionele parameter op? 
+
+    ```
+    
+    ```
+
+82. Los vorige vraag op door gebruik te maken van:
+
+    1. het mechanisme van indirecte adressering en
+
+       ```
+       
+       ```
+
+    2. de opdracht eval
+
+       ```
+       
+       ```
+
+### Arrays
+
+83. Vanaf versie 2 kent Bash arrays of tabellen. Helaas kunnen deze in Bash v2 en Bash v3 enkel met niet-negatieve (64-bit) integers geïndexeerd worden. Bash v4 laat associatieve arrays toe, vergelijkbaar met de hashes van Perl. Lees de sectie Arrays in man bash of info bash. Om de mogelijkheden van (niet-associatieve) arrays verder uit te diepen, maak je een array waarbij de gebruikte indices elkaar niet numeriek opvolgen, bijvoorbeeld: 
+
+    ```bash
+    data=( 0 1 2 3 4 )
+    data[20]=20
+    declare -p data # ter controle
+    grep ^data= < <(set) # alternatieve controle
+    ```
+
+    Vraag volgende informatie op, telkens met één statement: 
+
+    * alle getallen van deze array 
+    * het aantal getallen in de array 
+    * het getal met index 2 uit de array 
+    * het getal met index 5 uit de array (is leeg in ons voorbeeld)  
+    * het getal met index 20 uit de array 
+
+    Pas deze vragen eveneens toe op de builtin array BASH_VERSINFO. 
+
+84. Getallen op een bepaalde positie (≠ index) in een array a kun je opvragen door de volledige array a[@] door te geven aan de slice-operatie \${variable:offset:length}. Herneem de vorige oefening en bepaal in één statement
+
+    * het getal op positie 2 in de array 
+    * het getal op positie 5 in de array 
+    * het getal op positie 20 in de array (onbestaand) 
+    * het laatste getal uit de array 
+
+    ```
+    
+    ```
+
+85. Je kunt een array ook initialiseren met de uitvoer van een commando. Wat is de inhoud van regel indien je volgende toekenning uitvoert (zonder IFS te wijzigen)? 
+
+    ```
+    regel=( $(wc /etc/passwd) )
+    ```
+
+86. Hoe vraag je de bestaande indices van een array op? Hoe genereer je hieruit een tweede array, geïndexeerd door opeenvolgende gehele getallen en met als waarden de indices van een eerste? Pas toe op de array uit vorige oefening, en op de builtin array BASH_VERSINFO. 
+
+    ```
+    
+    ```
+
+87. Schrijf een script met als naam weekdag dat als enig argument een getal meekrijgt (0 t.e.m. 6) en de corresponderende weekdag (in het Nederlands) uitschrijft. De waarde 0 komt hierbij overeen met zondag. Met welke parameter kun je dit script gebruiken om de weekdag van vandaag te bekomen?
+
+    ```
+    
+    ```
+
+88. Vul een associatieve array op met als indices de namen van de weekdagen en als bijhorende waarden de corresponderende dagnummers (zondag → 0). Controleer met behulp van declare -p. Toon daarna het weekdagnummer van een specifieke weekdag. Verwijder vervolgens dit arrayelement. Geef ten slotte het aantal resterende arrayelementen weer en genereer een overzicht van de weekdagnamen (één per regel). 
+
+    ```
+    
+    ```
+
+
+
+### Herhalingsinstructies
+
+#### Output van een commando verwerken in een script
 
 89. Ontwikkel een shellscript dat als (enige) parameter een bestandsnaam heeft. Als output moet het script het gemiddelde aantal karakters per regel en het gemiddelde aantal woorden per regel uitschrijven. Gebruik de output van het commando wc en probeer met de diverse methodes die hierboven aangehaald werden (behalve de tweede) om deze output op te splitsen. Opgelet: de shell behandelt alle getallen als integers. Niettemin kun je er, met behulp van wat wiskunde, voor zorgen dat delingen correct worden afgerond. Hoe?
 
