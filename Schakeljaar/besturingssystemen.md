@@ -2184,24 +2184,26 @@ cat .bash_history | grep man | wc -w
 
 60. Hoe kun je de variabele PATH zodanig wijzigen dat je bij het aanroepen van een shellscript (dat zich in de actieve directory bevindt), niet steeds naar de actieve directory moet verwijzen? Zorg ervoor dat je oplossing werkt in eender welke directory. Het script moet dus steeds gezocht worden in de werkdirectory, zonder telkens de waarde van PATH aan te passen.
 
-    ```
-    
+    ```bash
+    #!/bin/bash
+    PATH=$(pwd)
+    echo $PATH
     ```
 
 
 
 61. Hoe kun je ervoor zorgen dat wanneer bij de cd-opdracht een relatieve padnaam (dus niet beginnend met /) als argument opgegeven wordt, niet alleen de huidige werkdirectory als prefix uitgeprobeerd wordt, maar ook een aantal vaste directory's?
 
-    ```
-    
+    ```bash
+    # Door deze toe te voegen aan de CDPATH variabele
     ```
 
     
 
 62. Hoe kun je met eenzelfde opdracht regelmatig heen en terug schakelen tussen twee mappen als actieve directory? 
 
-    ```
-    
+    ```bash‹
+    cd -
     ```
 
     
@@ -2216,10 +2218,26 @@ cat .bash_history | grep man | wc -w
 
     Kan je dit aanpassen zodat de gegevens uit een bestand gelezen worden? Probeer dit ook eens met een script op te lossen, en merk op dat de variabelen enkel in het script bestaan! 
 
+    ```bash
+    #!/bin/bash
+    FILENAME="woorden.txt"
+    exec 3<>$FILENAME # we steken de bestandsnaam in file descriptor 3
+    read -u 3 a b c d # 1 lijn lezen, 1 woord per variabelen, de rest van de woorden komen in de laatste variabele
+    
+    echo $a
+    echo $b
+    echo $c
+    echo $d
+    exec 3>&- # file descriptor sluiten
+    
+    ```
+
+    
+
 64. Achterhaal de waarde van de bijzondere variabele IFS. Merk op dat echo \$IFS je niet veel wijzer maakt; echo "\$IFS" (met aanhalingstekens) verraadt echter al dat er een newlinekarakter in de waarde staat. De eigenlijke waarde van IFS kun je vinden met 
 
-    ```
-    
+    ```bash
+    printf %q "$IFS" # geeft ' \t\n'
     ```
 
     Zoals je weet uit vorige oefeningen, zorgt \$' ' hierin voor interpretatie van de escapes. Standaard bevat IFS dus een spatie, een tab en een regeleinde. Deze karakters worden door read gebruikt voor het splitsen van invoervelden, ongeveer zoals o.a. de operator << in C++ en de Scanner-klasse in Java. 
@@ -2238,6 +2256,16 @@ cat .bash_history | grep man | wc -w
     grep -E ^x < <(set)
     declare -p x
     declare -p ${!x*}
+    
+    #output geeft:
+    x = ik ben groot
+    x = ik:ben:groot
+    x = $x
+    x=ik:ben:groot
+    x=ik:ben:groot
+    declare -- x="ik:ben:groot"
+    declare -- x="ik:ben:groot"
+    
     ```
 
 
@@ -2245,26 +2273,37 @@ cat .bash_history | grep man | wc -w
 66. Je kunt de standaarduitvoer van een commando ook toekennen aan een variabele. Daarbij maak je gebruik van **command substitution**. Dit is vooral zinvol wanneer de uitvoer van een commando uit slechts één regel bestaat. Indien je slechts een deel van de uitvoer aan de variabele wilt toekennen, dan kun je proberen dit er met cut uit te halen. Voorspel de inhoud van de variabele t na volgende commando's: 
 
     ```bash
-    t=$(du /etc/passwd)
-    t=$(cut -f1 < <(du /etc/passwd))
-    t=$(cut -f1 < <(wc -l /etc/passwd))
-    t=$( cut -d " " -f2 < <(wc -l /etc/passwd))
-    t=$(wc -l < /etc/passwd)
-    tab=( $(wc -l /etc/passwd) )
-    echo ${tab[1]}
+    t=$(du /etc/passwd) # 4	/etc/passwd
+    t=$(cut -f1 < <(du /etc/passwd)) # 4
+    t=$(cut -f1 < <(wc -l /etc/passwd)) # 47 /etc/passwd
+    t=$( cut -d " " -f2 < <(wc -l /etc/passwd)) # /etc/passwd
+    t=$(wc -l < /etc/passwd) # 47 
+    tab=( $(wc -l /etc/passwd) ) 
+    echo ${tab[1]} # /etc/passwdm
     ```
 
     
 
 ### Arithmetic expansion
 
-67. Normaal worden alle variabelen door de shell als strings beschouwd. Toch kun je met behulp van een specifiek intern commando rekenkundige bewerkingen op variabelen toepassen. Dit laat je niet alleen toe om optellingen (+), aftrekkingen (-), vermenigvuldigingen (*), gehele delingen (/ en %) en machtsverheffingen (**) uit te voeren, maar ook om bitoperaties (<<, >>, &, |, ^, ! en ~) of logische testoperaties (&& en ||) toe te passen. Zoek dit specifiek commando op in info bash of man bash; lees de secties Arithmetic Expansion en Arithmetic Evaluation. Pas het gevonden commando toe om het product van twee variabelen, x en y in een variabele z te stoppen. Welk intern (builtin) commando kun je hiervoor als alternatief gebruiken?
+67. Normaal worden alle variabelen door de shell als strings beschouwd. Toch kun je met behulp van een specifiek intern commando rekenkundige bewerkingen op variabelen toepassen. Dit laat je niet alleen toe om optellingen (+), aftrekkingen (-), vermenigvuldigingen (*), gehele delingen (/ en %) en machtsverheffingen (**) uit te voeren, maar ook om bitoperaties (<<, >>, &, |, ^, ! en ~) of logische testoperaties (&& en ||) toe te passen. Zoek dit specifiek commando op in info bash of man bash; lees de secties Arithmetic Expansion en Arithmetic Evaluation. Pas het gevonden commando toe om het product van twee variabelen, x en y in een variabele z te stoppen. 
 
+    ```bash
+    #arithmetic expansion doe je zo $((expression))
+    #!/bin/bash
+    x=5
+    y=10
+    z=$((x*y))
+    echo $z
     ```
+
+    Welk intern (builtin) commando kun je hiervoor als alternatief gebruiken?
+
+    ```bash
+    expr
+    ```
+
     
-    ```
-
-
 
 68. Hoe kun je in een script, met behulp van de variabele SECONDS, de uitvoeringstijd bepalen van een groep commando's? Pas dit bijvoorbeeld toe om de uitvoeringstijd (in seconden) te bepalen van de tijdrovende instructie
 
@@ -2272,36 +2311,76 @@ cat .bash_history | grep man | wc -w
     ls -lR / > /dev/null 2>&1
     ```
 
+    ```bash
+    #!/bin/bash
+    SECONDS=0
+    ls -lR / > /dev/null 2>&1
+    echo $SECONDS
+    ```
+
+    
+
 
 
 69. Hoe kun je in een shellscript het dertiende argument aanspreken? 
 
-    ```
-    
+    ```bash
+    #!/bin/bash
+    echo "Dertiende argument: ${13}"
+    # gewoon $13 werkt niet, want dan neemt hij $1 en zet hij er een 3 achter
+    # je kan dit testen met 
+    bash 69.sh een twee drie vier vijf zes zeven acht negen tien elf twaalf dertien
+    echo "Dertiende argument: ${13}" # geeft "dertien"
+    echo "Dertiende argument: $13" # geeft "een3"
     ```
 
 70. Veronderstel dat een variabele x als waarde de index van een positionele parameter bevat. Hoe kun je de waarde van deze positionele parameter bekomen?
 
-    ```
-    
+    ```bash
+    #!bin/bash
+    x=2
+    echo ${!x}
     ```
 
 71. Gebruik het script dat 3 argumenten verwacht. Hoe kun je bij het aanroepen van dit script enkel het eerste en derde argument opgeven? 
 
-    ```
+    ```bash
+    #!/bin/bash
+    echo $1
+    echo $2
+    echo $3
+    echo "aantal argumenten is: $#"
+    
+    # in command line
+    bash 71.sh een "" drie
+    #geeft als output
+    een
+    
+    drie
+    aantal argumenten is: 3
     
     ```
 
 72. In Bash zijn speciale variabelen gedefinieerd, waarvan men in shellscripts gebruik kan maken. Lees de sectie Special Parameters in man bash. Zo staat \$0 voor de naam van het script, \$\$ voor het (unieke) proces-ID of PID van het script en \$# voor het aantal argumenten ervan. Schrijf een script dat zijn eigen naam en proces-ID uitschrijft, evenals zijn totale aantal argumenten, gevolgd door het eerste en het laatste argument. 
 
-    ```
-    
+    ```bash
+    #!/bin/bash
+    echo "naam: $0"
+    echo "PID: $$"
+    echo "aantal $#"
+    echo "eerste: $1"
+    echo "laatste: ${!#}"
     ```
 
 73. Verder bevatten de shellvariabelen \$* en \$@ alle argumenten van het script als één string. Hoe kun je deze gebruiken om, na bijvoorbeeld één of meerdere shift-opdrachten, weer de oorspronkelijke toestand van de positionele parameters te bekomen?
 
-    ```
-    
+    ```bash
+    #!/bin/bash
+    x=$@  # Of x=$*
+    # … code …
+    shift
+    # … code …
+    set -- $x
     ```
 
 74. Tussen \$* en \$@ bestaat een subtiel verschil, dat men in shellscripts dikwijls nuttig kan aanwenden, vooral in combinatie met for- en while-lussen. Maak de volgende twee scripts:
@@ -2317,7 +2396,7 @@ cat .bash_history | grep man | wc -w
     ./74b $*
     ./74b $@
     ./74b "$*"
-    ./74b "$@"
+    ./74b "$@" //TODO nog is bekijken
     ```
 
     **74b**
@@ -2332,14 +2411,41 @@ cat .bash_history | grep man | wc -w
 
 75. Wat geldt voor scripts, geldt ook voor functies. Een functie heeft dus net zoals een script een exit-status. De return-opdracht zal bij een bash-functie echter de exit-status beïnvloeden en dus in tegenstelling tot wat je verwacht niet de teruggeefwaarde bepalen. Wil je iets teruggeven, gebruik dan bij het aanroepen van een functie **command** **substitution** en binnen de functie **echo/printf**. Schrijf een niet-recursieve functie die de faculteit van een getal dat als parameter wordt meegegeven, teruggeeft. 
 
-    ```
+    ```bash
+    #!/bin/bash
     
+    faculteit(){
+            num=$1
+            res=1
+            while [ $num -ge 1 ]
+            do
+                    res=$(($res*$num))
+                    num=$((num - 1))
+            done
+            echo $res
+    
+    }
+    
+    faculteit $1
     ```
 
 76. Een functie kan ook uitvoerparameters simuleren. Schrijf een functie wissel die twee scriptparameters van waarde omwisselt. 
 
-    ```
+    ```bash
+    #!/bin/bash
     
+    wissel(){
+    	local temp1=$1
+    	local temp2=$2
+    	eval "$1=${!temp2} $2=${!temp1}"
+    }
+    
+    a=7
+    b=12
+    
+    wissel a b  #opgelet, hier geen $-tekens gebruiken!
+    
+    printf "%d %d \n" $a $b //TODO nog is bekijken
     ```
 
 
@@ -2348,27 +2454,77 @@ cat .bash_history | grep man | wc -w
 
 77. De bijzondere notaties \${variabele=waarde} en \${variabele-waarde} bieden een snelle oplossing voor het toewijzen of opvragen van een waarde aan een variabele indien die nog niet gedefinieerd zou zijn. Indien een variabele wel gedefinieerd is, maar leeg, dan biedt deze notatie geen oplossing. Welk alternatief heb je hiervoor, dat beide situaties aankan? Schrijf deze zo compact mogelijk. 
 
-    ```
-    
+    ```bash
+    ${variabele:=waarde}
     ```
 
 78. Schrijf een shellscript dat de laatste aantal lijnen van het bestand .bash_history in je home directory naar standaarduitvoer uitschrijft. De waarde van aantal wordt als enige argument meegegeven. Indien deze waarde ontbreekt, moeten er 10 lijnen uitgeschreven worden. Gebruik het commando tail. 
 
-    ```
+    ```bash
+    #!/bin/bash
     
+    if [ $# -eq 0 ]; then
+            aantal=10
+    else
+            aantal=$1
+    fi
+    
+    tail -n ${aantal} ~/.bash_history >&1
+    
+    ## oké wim heeft me gebeat, je kan dit veel veel makkelijker
+    #!/bin/bash
+    tail -n ${1-10} ~/.bash_history
     ```
+
+    
+
+    Bekijk voor de volgende 4 vragen zeker [dit](#Stringmanipulaties)
 
 79. Vul een variabele `x` op met de waarde /usr/share/emacs/24.5/etc/tutorials/TUTORIAL.nl. Met welke stringoperatoren kun je x opsplitsen in een directorypad en een bestandsnaam? Los dit op twee manieren op. Hoe kun je deze twee substrings toekennen aan de variabelen dir en file? 
 
-    ```
+    ```bash
+    #!/bin/bash
     
+    x="/usr/share/emacs/24.5/etc/tutorials/TUTORIAL.nl"
+    dir=${x%/*}
+    file=${x##*/}
+    #  ${x  <-- from variable x
+    #  ##   <-- greedy front trim
+    #  *    <-- matches anything
+    #  /    <-- until the last '/'
+    #  }
+    printf "directory=%s bestandsnaam=%s\n" $dir $file
     ```
 
 80. Vul een variabele x op met de regel "dit is een \<b>eenvoudige\<\b> en \<b>nuttige\<\b> oefening". Gebruik de stringoperatoren om de woorden eenvoudige en nuttige uit de variabele te halen. Probeer dit op twee methodes. 
 
+    ```bash
+    #!/bin/bash
+    x="dit is een <b>eenvoudige</b> en <b>nuttige</b> oefening"
+    eerste=$x
+    eerste=${eerste#*<b>}
+    eerste=${eerste%%</b>*}
+    echo "$eerste"
+    
+    tweede=$x
+    tweede=${tweede##*<b>}
+    tweede=${tweede%</b>*}
+    echo "$tweede"
     ```
+
+    Het kan ook ~~makkelijker~~ korter volgens Wim
+
+    ```bash
+    #vanaf Bash v2
+    temp=${x/<\/b>*/""}		#geeft de string die ontstaat als je in de variabele de eerste en langste substring die aan pattern </b> voldoet, vervangt door string "".
+    vet1=${temp/*<b>/""}		#geeft de string die ontstaat als je in de variabele de eerste en langste substring die aan pattern *<b> voldoet, vervangt door string "".
+    temp=${x/*<b>/""}
+    vet2=${temp/<\/b>*/""}
+    echo "$vet1 *** $vet2"
     
     ```
+
+    
 
 81. Indien je in de stringoperatoren de variabele \$@ of \$* gebruikt, kun je op een relatief eenvoudige manier de laatste positionele parameter opvragen met: 
 
@@ -2378,22 +2534,26 @@ cat .bash_history | grep man | wc -w
 
     Hoe vraag je op een analoge manier de voorlaatste positionele parameter op? 
 
-    ```
-    
+    ```bash
+    echo ${@:$#-1:1}
     ```
 
 82. Los vorige vraag op door gebruik te maken van:
 
     1. het mechanisme van indirecte adressering en
 
-       ```
-       
+       ```bash
+       #!/bin/bash
+       pos=$(($#-1))
+       echo ${!pos}
        ```
 
     2. de opdracht eval
-
-       ```
-       
+    
+       ```bash
+       #!/bin/bash
+       pos=$(($#-1))
+       eval echo \${$pos}
        ```
 
 ### Arrays
@@ -2410,12 +2570,36 @@ cat .bash_history | grep man | wc -w
     Vraag volgende informatie op, telkens met één statement: 
 
     * alle getallen van deze array 
+
+      ```bash
+      echo ${data[@]}
+      ```
+
     * het aantal getallen in de array 
+
+      ```bash
+      echo ${#data[@]}
+      ```
+
     * het getal met index 2 uit de array 
+
+      ```bash
+      echo ${data[2]}
+      ```
+
     * het getal met index 5 uit de array (is leeg in ons voorbeeld)  
+
+      ```bash
+      echo ${data[5]}
+      ```
+
     * het getal met index 20 uit de array 
 
-    Pas deze vragen eveneens toe op de builtin array BASH_VERSINFO. 
+      ```bash
+      echo ${data[20]}
+      ```
+
+    Pas deze vragen eveneens toe op de builtin array BASH_VERSINFO. *geen zin in sorry*
 
 84. Getallen op een bepaalde positie (≠ index) in een array a kun je opvragen door de volledige array a[@] door te geven aan de slice-operatie \${variable:offset:length}. Herneem de vorige oefening en bepaal in één statement
 
@@ -2424,32 +2608,55 @@ cat .bash_history | grep man | wc -w
     * het getal op positie 20 in de array (onbestaand) 
     * het laatste getal uit de array 
 
-    ```
-    
+    ```bash
+    echo ${data[@]:2:1} ${data[@]:5:1} ${data[@]:20:1} ${data[@]:${#data[@]-1}:1}
     ```
 
 85. Je kunt een array ook initialiseren met de uitvoer van een commando. Wat is de inhoud van regel indien je volgende toekenning uitvoert (zonder IFS te wijzigen)? 
 
-    ```
-    regel=( $(wc /etc/passwd) )
+    ```bash
+    regel=( $(wc /etc/passwd) ) # Array met waarden, bestandsnaam en word count en char count enzo
     ```
 
 86. Hoe vraag je de bestaande indices van een array op? Hoe genereer je hieruit een tweede array, geïndexeerd door opeenvolgende gehele getallen en met als waarden de indices van een eerste? Pas toe op de array uit vorige oefening, en op de builtin array BASH_VERSINFO. 
 
-    ```
+    ```bash
+    #!/bin/bash
+    data=( 0 1 2 3 4 )
+    data[20]=20
     
+    indices=${!data[@]}
+    echo ${indices}
     ```
 
 87. Schrijf een script met als naam weekdag dat als enig argument een getal meekrijgt (0 t.e.m. 6) en de corresponderende weekdag (in het Nederlands) uitschrijft. De waarde 0 komt hierbij overeen met zondag. Met welke parameter kun je dit script gebruiken om de weekdag van vandaag te bekomen?
 
-    ```
-    
+    ```bash
+    #!/bin/bash
+    dagen=(zondag maandag dinsdag woensdag donderdag vrijdag zaterdag)
+    dag=$(date +%w)
+    echo ${dagen[$dag]}
     ```
 
 88. Vul een associatieve array op met als indices de namen van de weekdagen en als bijhorende waarden de corresponderende dagnummers (zondag → 0). Controleer met behulp van declare -p. Toon daarna het weekdagnummer van een specifieke weekdag. Verwijder vervolgens dit arrayelement. Geef ten slotte het aantal resterende arrayelementen weer en genereer een overzicht van de weekdagnamen (één per regel). 
 
-    ```
+    ```bash
+    #!/bin/bash
+    declare -A dagen
+    dagen[zondag]=0
+    dagen[maandag]=1
+    dagen[dinsdag]=2
+    dagen[woensdag]=3
+    dagen[donderdag]=4
+    dagen[vrijdag]=5
+    dagen[zaterdag]=6
     
+    declare -p dagen
+    echo dinsdag: ${dagen[dinsdag]}
+    unset dagen[dinsdag]
+    
+    echo array na verwijderen dinsdag:
+    printf "%s\n" "${!dagen[@]}"                           
     ```
 
 
@@ -2491,16 +2698,28 @@ read -a array < <(wc "$1")
 
 ```bash
 IFS=$':' #Internal Field Separator
-
 ```
 
 91. Ontwikkel een script om de gebruikersnaam (veld 1 van /etc/passwd) te bepalen aan de hand van een gebruikers-ID (veld 3 van /etc/passwd) dat je als (enige) parameter aan het script meegegeven hebt.
 
     Je kunt de output van het commando grep zowel met cut, read als met een array analyseren.
 
+```bash
+#!/bin/bash
+
+if [[ $# -ne 1 ]]
+then echo foute aantal args
+exit 1
+fi
+
+IFS=":"
+arr=($(grep $1 /etc/passwd))
+echo ${arr[0]}
 ```
 
-```
+
+
+#### While en until
 
 92. Ontwikkel een script dat het commando tail n simuleert. Als eerste argument moet een bestandsnaam opgegeven worden en als tweede argument mag het aantal regels opgegeven worden. Ontbreekt het tweede argument, dan worden de 10 laatste regels weergegeven. Realiseer dit op twee manieren:
     - Gebruik een while-lus met een read-commando om het bestand te overlopen en een array om de gegevens cyclisch op te slaan.
@@ -2510,23 +2729,225 @@ IFS=$':' #Internal Field Separator
 
 ```bash
 #!/bin/bash
-input=$1
-lines = "wc -l $input"
-lines = "$lines" - 10
-i = 0
-while IFS= read -r line
-do
-  if [["$i" -ge "$lines"]]
-  then
-  echo "$line"
-  fi
-  i=$((i+1))
-done
+file=$1
+if [[ ($# -ne 2) && ($# -ne 1)  ]]  
+then exit 1
+fi
+
+file=$1
+aantal=$2
+if [[ $# -eq 1 ]]
+        then aantal=10
+fi
+
+count=($(wc -l $file))
+len=${count[0]}
+
+i=0
+IFS="\n"
+while read line; do
+            
+if [[ $i -ge $((len - aantal)) ]]
+        then echo $line
+        fi  
+            
+        ((i++))
+
+done < tmp.txt
 ```
+
+
+
+93. Hoe kun je met behulp van de while- of until-lus een aantal commando's oneindig lang laten uitvoeren? Onderbreek de uitvoering met Ctrl+C.
+
+    ```
+    
+    ```
+
+94. Het bestand ping.out bevat de output van een Windows batch file:
+
+    ```
+    ping -n 1 AL005951
+    ping -n 1 AL005952
+    …
+    ```
+
+    Indien toestel xxxxxxxx actief is, wordt het commando ping beantwoord met regels van de vorm: 
+
+    ```
+    Pinging xxxxxxxx [141.96.126.137] with 32 bytes of data: 
+    Reply from 141.96.126.137: bytes=32 time=1322ms TTL=124
+    ```
+
+    Je kunt niet-actieve toestellen herkennen aan het feit dat het commando niet wordt beantwoord zoals bij actieve. De foutboodschappen die dan gegenereerd worden zijn divers. Maak een Bash-script dat uit ping.out een inventaris opmaakt van alle nietactieve toestellen (één lijn per toestel). Het script moet ook een samenvattende regel weergeven die zowel het aantal actieve als het totaal niet-aantal toestellen vermeldt. Zorg ervoor dat het script onafhankelijk is van de precieze foutboodschappen die nietactieve toestellen produceren. Construeer twee oplossingen, al dan niet gebruikmakend van associatieve arrays (enkel beschikbaar in Bash v4). 
+
+    ```
+    
+    ```
+
+95. Gebruik (enkel) het bestand /etc/passwd om voor alle groepsnummers het aantal gebruikers met hetzelfde primaire groepsnummer te tellen. Realiseer dit op twee manieren: 
+
+    * Gebruik een while-lus met een read-commando om het bestand te overlopen en arrays om de gegevens op te slaan. 
+
+      ```
+      
+      ```
+
+    * Sla eerst de gegevens geordend op in een tijdelijk bestand, en verwerk vervolgens dit bestand. 
+
+      ```
+      
+      ```
+
+96. Gebruik de bestanden /etc/group en /etc/passwd om een overzicht te maken van alle groepen, gevolgd door de volledige lijst van gebruikers die deze groep als primaire groep hebben. Gebruik een while-lus met een read-commando om het bestand /etc/group te overlopen en grep om de gebruikers op te sporen.
+
+    ```
+    
+    ```
+
+97. Ontwikkel een script met juist twee parameters. De eerste parameter is de naam van een directory tree, de tweede parameter stelt een aantal bytes voor. Het script genereert de naam van alle bestanden in de directory tree waarvan de grootte de waarde van de tweede parameter overschrijdt. Bovendien wordt het totale aantal bestanden dat aan deze voorwaarde voldoet en het totale aantal bytes in deze bestanden gerapporteerd. Tip: Gebruik het find-commando met passende opties om de individuele bestanden te vinden. Gebruik de optie -printf om de noodzakelijke informatie op te vragen tijdens het zoeken.
+
+    ```
+    
+    ```
+
+
+
+#### For
+
+98. Ontwikkel een script met als parameters een bestandnaam en een willekeurig aantal strings (minstens één). Alle stringparameters die voorkomen in het bestand moeten regel voor regel naar standaarduitvoer worden weggeschreven; de volgorde is hierbij niet van belang.
+
+    ```
+    
+    ```
+
+    
+
+99. Bepaal voor een groep, waarvan het groepsnummer als enige parameter wordt meegegeven, de volledige lijst van gebruikersaccounts die behoren tot deze groep (ook als niet-primaire groep). Construeer twee oplossingen: 
+
+    * Schrijf eerst alle gebruikersnamen weg naar een tijdelijk bestand; dubbels zijn voorlopig toegestaan. Filter vervolgens de dubbels hieruit en schrijf de resulterende gebruikerslijst uit. 
+
+      ```
+      
+      ```
+
+    * Gebruik een associatieve array, met de gebruikersnamen als sleutels. 
+
+      ```
+      
+      ```
+
+100. Ontwikkel een script dat alle parameters uitschrijft die meer dan één keer voorkomen in de argumentenlijst van het script. De volgorde waarin de minstens dubbel voorkomende parameters worden uitgeschreven heeft geen belang (sorteren mag), maar je moet er wel voor zorgen dat parameters die meer dan twee keer voorkomen toch slechts eenmaal weggeschreven worden. Laat als eerste parameter ook eventuele opties -i of -I (van ignore case) toe, die desgewenst aangeven dat er geen onderscheid mag gemaakt worden tussen hoofdletters en kleine letters. Tip: denk terug aan instructies uit voorgaande oefeningen!
+
+     ```
+     
+     ```
+
+     
 
 101. Ontwikkel een script dat een beperkte versie van het commando wc simuleert. Het script moet het aantal regels en de bestandsnaam afdrukken van elk bestand dat als parameter meegegeven wordt. Het script mag enkel interne Bash-instructies (if, for, case, let, while, read enz.) gebruiken, en behalve echo geen externe commando's; het gebruik van awk, sed, perl en wc in het bijzonder is niet toegelaten. Je zult bijgevolg elk bestand regel voor regel moeten inlezen en deze tellen. Het script moet bovendien een samenvattende regel weergeven met het totale aantal regels. Indien geen enkele parameter meegegeven wordt, neem je alle bestanden in de huidige werkdirectory in beschouwing. Los dit zo beknopt mogelijk op met de speciale notaties voor shellvariabelen
 
-102. nuttig
+     ```
+     
+     ```
+
+     
+
+102. Ontwikkel een script dat een directory maakt waarvan het pad als (enige) parameter aan het script meegegeven wordt. Indien tussenliggende directory's ook nog niet zouden bestaan, moeten deze eveneens gecreëerd worden. Het script simuleert bijgevolg mkdir -p. Het mag enkel interne Bash-instructies (if, for, case, let, while, read enz.) gebruiken, en bovendien het commando mkdir, zij het zonder de optie -p. Zorg ervoor dat zowel absolute als relatieve (t.o.v. de huidige directory) padnamen worden ondersteund. Tip: gebruik / als scheidingsteken. 
+
+     ```
+     
+     ```
+
+103. Enerzijds kun je met behulp van het commando ps -e informatie opvragen over alle processen die actief zijn. De vier kolommen in de output tonen respectievelijk het proces-ID (PID), de TTY device file van de (pseudo-)terminal, de CPU time, en het commando dat het proces opgestart heeft. Anderzijds kun je met behulp van het commando kill -KILL pid een proces met willekeurig proces-ID afbreken. Ontwikkel een script dat alle processen afbreekt waarvan het commando één van de strings bevat die als parameters bij het oproepen van het script meegegeven wordt. Indien geen enkele parameter meegegeven wordt, moet het script een gesorteerde lijst weergeven van alle unieke commandonamen van actieve processen. Behalve de interne instructies (if, for, case, let, while, read enz.) mag je ook de externe commando's grep, sort en uniq gebruiken. Om problemen te vermijden, schrijf je bij het testen de kill-opdracht uit naar standaarduitvoer i.p.v. deze daadwerkelijk uit te voeren.
+
+     ```
+     
+     ```
+
+104. Ontwikkel een script dat (zonder getopt te gebruiken) alle opties die aan het script worden meegegeven naar standaarduitvoer wegschrijft, één per regel. Je moet dus alle karakters die voorkomen in parameters die beginnen met een minteken verzamelen, en deze één voor één verwerken. Bekommer je niet om opties die meerdere keren zouden voorkomen. Voor de argumentenlijst -Ec -rq /etc/passwd -a moet het script dus als uitvoer E, c, r, q en a produceren. 
+
+     Tip: gebruik een lus en stringoperatoren.
+
+     ```
+     
+     ```
+
+105. Ontwikkel een script dat als eerste parameter een bestandsnaam heeft, en als tweede parameter de naam van een HTML-tag (em, strong, code enz.). Geef een overzicht van alle strings in het bestand die tussen de opgegeven tag staan. Je mag ervan uitgaan dat de tag maximaal één keer voorkomt per regel (zowel de open- als sluittag) en dat de sluittag op dezelfde regel staat als de opentag. Zorg er ook voor dat elke string slechts één keer wordt weergegeven.
+
+     ```
+     
+     ```
+
+106. Een for-lus kan ook gebruikt worden om de elementen van een array op te vragen. Met for i in \${a[@]} doorloopt de variabele i alle waarden die in de array a zijn opgeslagen. Vanaf Bash v3 kun je ook de indices(of sleutels) opvragen met for i in \${!a[@]}.
+
+     Pas deze constructie toe op oefening 95.
+
+     ```
+     
+     ```
+
+
+
+#### Break en continue
+
+107. Ontwikkel een script dat in een directory tree (de eerste parameter) op zoek gaat naar alle bestanden waarvan de naam voldoet aan een bepaald patroon (de tweede parameter) en met behulp van grep in de inhoud van deze bestanden op zoek gaat naar een reguliere expressie (de derde parameter). Van zodra een van de bestanden in een bepaalde directory de expressie bevat, moet de zoektocht in deze directory worden beëindigd. Gebruik een geneste for-lus, waarbij de buitenste for-lus recursief op zoek gaat naar alle directory's, en de binnenste for-lus alle bestanden in een specifieke directory afloopt (niet recursief). In beide lussen wordt de woordenlijst samengesteld op basis van een find-commando met geschikte opties
+
+     
+
+109. Herneem oefening 105, maar zorg er nu ook voor dat een tag meermaals kan voorkomen op eenzelfde regel. Je mag wel nog steeds veronderstellen dat de sluittag steeds op dezelfde regel staat als de opentag.
+
+     ```
+     
+     ```
+
+110. Herneem oefening 97. Overloop nu de array d.m.v. een oneindige while-lus, die je onderbreekt met break.
+
+     ```
+     
+     ```
+
+111. Ontwikkel een script dat een recursieve versie van het UNIX commando wc simuleert. Behalve de interne instructies (if, for, case, let, while, read enz.) mag je ook de externe commando's echo, wc en find gebruiken. Het script kan opgeroepen worden met 0 tot 3 opties (-l, -w en -c, niet noodzakelijk in die volgorde), gevolgd door een willekeurig aantal parameters. Indien er geen enkele optie meegegeven wordt, wordt aangenomen dat alle drie de opties werden vermeld. De parameters kunnen zowel bestandsnamen als namen van directory's zijn; worden geen parameters meegegeven, dan neemt het script de werkdirectory in beschouwing. De optie -l staat voor het afdrukken van het aantal regels, -w voor het aantal woorden en -c voor het aantal karakters. Deze aantallen worden berekend 
+
+     * voor elk bestand dat als parameter meegegeven wordt, 
+     * voor elk bestand in de tree van een directory die als parameter meegegeven wordt en 
+     * tot slot voor alle bestanden samen. 
+
+     ```
+     
+     ```
+
+     
+
+112. Het bestand pagefile.out bevat de uitvoer van een Windows batch file: 
+
+     ```
+     dir \\AL005951\c$\pagefile.sys
+     dir \\AL005952\c$\pagefile.sys
+     …
+     ```
+
+     Elk van de 2.901 dir-opdrachten werd beantwoord met regels van de vorm:
+
+     ```
+     C:\WINDOWS\system32>dir \\AL005951\c$\pagefile.sys
+     Volume in drive \\AL005951\c$ is WINNT
+     Volume Serial Number is D0A0-4386
+     Directory of \\AL005951\c$
+     02/08/00 02:12 146.800.640 pagefile.sys
+      1 File(s) 146.800.640 bytes
+      577.850.880 bytes free
+     ```
+
+     De regel met de woorden bytes free vermeldt de beschikbare ruimte op het volume C:. Maak een script dat een tekstbestand genereert met de namen van alle toestellen die minder dan 80 MB vrij hebben op de C: schijf, één per regel.
+
+     ```
+     
+     ```
+
+     
+
+
 
 # To do
 
@@ -2540,7 +2961,7 @@ done
 - input redirection
 -
 
-# Concepten
+# Bash overzicht
 
 ## Process substitution
 
@@ -2548,7 +2969,34 @@ done
 wc -l < <(ls ~)
 ```
 
-## Dictionary
+
+
+## Arrays
+
+```bash
+# Declare an array with 6 elements
+array0=(one two three four five six)
+# Print first element
+echo $array0 # => "one"
+# Print first element
+echo ${array0[0]} # => "one"
+# Print all elements
+echo ${array0[@]} # => "one two three four five six"
+# Print number of elements
+echo ${#array0[@]} # => "6"
+# Print number of characters in third element
+echo ${#array0[2]} # => "5"
+# Print 2 elements starting from forth
+echo ${array0[@]:3:2} # => "four five"
+# Print all elements. Each of them on new line.
+for i in "${array0[@]}"; do
+    echo "$i"
+done
+```
+
+
+
+## Dictionaries
 
 ```bash
 declare -A sounds
@@ -2576,3 +3024,136 @@ $$	#PID of shell
 $0	#Filename of the shell script
 $_	#Last argument of the previous command
 ```
+
+
+
+## Indirecte adressering
+
+Ik zal het gewoon even verduidelijken aan de hand van een voorbeeld
+
+```bash
+drol=toilet
+toilet=wcpapier
+
+echo ${drol}  # normal, drol to toilet
+# output: toilet
+
+echo ${!drol} # indirection, drol to toilet to wcpapier
+# output: wcpapier
+```
+
+dit is gelijkaardig aan `*var` in C/C++
+
+ `${!drol}` betekent eigenlijk: geef mij de inhoud van de variabele met als naam de inhoud van `drol`
+
+## Vim shenanigans
+
+### Line numbers
+
+```
+#je kan line numbers aan of uitzetten in vim met 
+:set number! 
+#of korter
+:set nu!
+```
+
+### Automatisch shebang toevoegen
+
+Je kan door aan je `.vimrc` een functie toe te voegen, ervoor zorgen dat elke `sh`-file die je aanmaakt begint met 
+
+```
+#!/bin/bash
+```
+
+voeg deze code toe aan je `.vimrc`. Ik heb dit gepikt van github, maar ik denk ook dat dit je file automatisch executable maakt.
+
+```bash
+function! Hashbang(portable, permission, RemExt)
+let shells = { 
+        \    'awk': "awk",
+        \     'sh': "bash",
+        \     'hs': "runhaskell",
+        \     'jl': "julia",
+        \    'lua': "lua",
+        \    'mak': "make",
+        \     'js': "node",
+        \      'm': "octave",
+        \     'pl': "perl", 
+        \    'php': "php",
+        \     'py': "python",
+        \      'r': "Rscript",
+        \     'rb': "ruby",
+        \  'scala': "scala",
+        \    'tcl': "tclsh",
+        \     'tk': "wish"
+        \    }
+
+let extension = expand("%:e")
+
+if has_key(shells,extension)
+	let fileshell = shells[extension]
+
+	if a:portable
+		let line =  "#! /usr/bin/env " . fileshell # ik heb dit veranderd naar "#!/bin/"
+	else 
+		let line = "#! " . system("which " . fileshell)
+	endif
+
+	0put = line
+
+	if a:permission
+		:autocmd BufWritePost * :autocmd VimLeave * :!chmod u+x %
+	endif
+
+
+	if a:RemExt
+		:autocmd BufWritePost * :autocmd VimLeave * :!mv % "%:p:r"
+	endif
+
+endif
+
+endfunction
+
+:autocmd BufNewFile *.* :call Hashbang(1,1,0)
+
+```
+
+
+
+## Regex overview
+
+| Symbol      | Meaning                                                      | Example                                                      |
+| ----------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| `*`         | matches any number of repeats of the character string or RE preceding it, including *zero* instances |                                                              |
+| `.`         | matches any one character, except a newline                  |                                                              |
+| `^`         | matches the beginning of a line, but sometimes, depending on context, negates the meaning of a set of characters in a regular expression. |                                                              |
+| `$`         | at the end of an RE matches the end of a line                | `XXX$` matches `XXX` at the end of a line                    |
+| `[]`        | enclose a set of characters to match in a single RE          | `[a-z0-9]` matches any single lowercase letter or any digit. |
+| `\`         | escapes a special character, which means that character gets interpreted literally | A `$` reverts back to its literal meaning of `$`, rather than its RE meaning of end-of-line. Likewise a `\\` has the literal meaning of `\` |
+| `\<...\>`   | mark word boundaries.                                        | `\<the\>` matches the word "the," but not the words "them," "there," "other," etc. |
+| `[:alnum:]` | matches alphabetic or numeric characters. This is equivalent to `A-Za-z0-9` |                                                              |
+| `[:alpha:]` | matches alphabetic characters. This is equivalent to `A-Za-z` |                                                              |
+| `[:upper:]` | matches uppercase alphabetic characters. This is equivalent to `A-Z`. |                                                              |
+
+
+
+### Stringmanipulaties
+
+| Manipulatie                    | Betekenis                                                    |
+| ------------------------------ | ------------------------------------------------------------ |
+| `${#variabele}`                | geeft de lengte van de waarde van de variabele in karakters  |
+| `${variabele#pattern}`         | verwijdert de **kortst** mogelijke substring vooraan de variabele die aan het pattern voldoet |
+| `${variabele##pattern}`        | verwijdert de **langst** mogelijke substring vooraan de variabele die aan het pattern voldoet |
+| `${variabele%pattern}`         | verwijdert de **kortst** mogelijke substring achteraan de variabele die aan het pattern voldoet |
+| `${variabele%%pattern}`        | verwijdert de **langst** mogelijke substring achteraan de variabele die aan het pattern voldoet |
+| `${variabele:offset}`          | geeft de deelstring vanaf positie *offset*                   |
+| `${variabele:offset:length}`   | geeft de deelstring vanaf positie *offset* met *length* tekens |
+| `${variabele/pattern/string}`  | geeft de string die ontstaat als je in de variabele de eerste en langste substring die aan pattern voldoet, vervangt door *string*. |
+| `${variabele//pattern/string}` | geeft de string die ontstaat als je in de variabele alle substrings die aan *pattern* voldoen, vervangt door *string*. |
+| `${variabele/#pattern/string}` | geeft de string die ontstaat als je de langste substring vooraan de variabele, die aan *pattern* voldoet, vervangt door *string* |
+| `${variabele/%pattern/string}` | geeft de string die ontstaat als je de langste substring achteraan de variabele, die aan *pattern* voldoet, vervangt door *string*. |
+| `${variabele^}`                | converteert de eerste letter van de string naar uppercase    |
+| `${variabele,}`                | converteert de eerste letter van de string naar lowercase    |
+| `${variabele^^}`               | converteert de volledige string naar uppercase               |
+| `${variabele^^}`               | converteert de volledige string naar lowercase               |
+
