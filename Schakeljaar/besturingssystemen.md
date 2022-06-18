@@ -21,13 +21,15 @@ We kunnen op twee manieren doen aan **symmetrische multiprocessing**:
 1. De kernel opbouwen uit **meerdere processen** of threads. Dan kunnen ze verdeeld worden over de verschillende processoren.
 2. Elke processor een **volledige kopie** van het besturingsssysteem laten uitvoeren. (is wel iets complexer omtrent communicatie en synchronisatie)
 
-Bij symmetrische multiprocessing kan de kernel dus uitgevoerd worden **op elke processor**. De complexiteit is hoger en deze werkwijze vraagt meer van ons systeem, waarvoor we in ruil wel hogere fouttolerantie en betere uitbreidingsmogelijkheden krijgen.
+Bij symmetrische multiprocessing kan de kernel dus uitgevoerd worden **op elke processor**. De complexiteit is hoger en deze werkwijze vraagt meer van ons systeem, door communicatie tussen processoren het synchroniseren van het aanspreken van bronnen. In ruil daarvoor krijgen we hogere fouttolerantie en betere uitbreidingsmogelijkheden krijgen. Als er een processor uitvalt, kan het systeem gewoon verder, maar dan met wat minder rekenkracht.
 
 ## Vraag 2
 
 > Wat moet je voorzien om op een Unix-systeem Windows applicaties te kunnen uitvoeren? p12
 
 Een **virtuele machine**. Deze zorgt ervoor dat we functioneel gebruik kunnen maken van software en hardware die niet noodzakelijk effectief aanwezig zijn op ons systeem. Hardware aanspreken via een virtuele machine vereist wel **veel meer software-instructies**, dus we moeten een afweging maken tussen efficiëntie en gebruiksvriendelijkheid.
+
+De virtuele machine is in deze context een gestandaardiseerde API, aangeboden door het besturingssysteem. Programma's kunnen dan deze API aanspreken, onafhankelijk hoe het besturingssysteem deze implementeert. 
 
 ## Vraag 3
 
@@ -47,9 +49,9 @@ Vroegere besturingssystemen hadden **één kolossale, monolithische kernel**. Al
 
 - **Gelaagde kernel**: 
 
-We delen het systeem op in **hiërarchisch gescheiden** lagen. Met de hardware helemaal vanonder en de gebruikersinterface helemaal vanboven. Elk niveau is afhankelijk van de lager gelegen niveaus, die door middel van **interfaces** hun onderliggende complexiteit verbergen. 
+We delen het systeem op in **hiërarchisch gescheiden** lagen. Met de hardware helemaal vanonder en de gebruikersinterface helemaal vanboven. Elk niveau is afhankelijk van de lager gelegen niveaus, die door middel van **interfaces** hun onderliggende complexiteit verbergen. Dit zou dus ook de uitbreiding van het systeem makkelijker moeten maken. 
 
-Dit model is verre van perfect. De volledige kernel draait in kernelmodus, waardoor elke laag rechtstreekse toegang heeft tot de hardware, waardoor een fout in één laag alles kan verkloten. Verder is het in dit model ook moeilijk om beveiliging te implementeren.  Dit model wordt dus niet echt concreet gebruikt op het niveau van een globaal besturingssysteem, maar bijvoorbeeld wel in kleinere deelmodules, zoals I/O-subsystemen
+Dit model is verre van perfect. De **volledige kernel draait in kernelmodus**, waardoor elke laag rechtstreekse toegang heeft tot de hardware, waardoor een fout in één laag alles kan verkloten. Verder is het in dit model ook moeilijk om beveiliging te implementeren.  Dit model wordt dus niet echt concreet gebruikt op het niveau van een globaal besturingssysteem, maar bijvoorbeeld wel in kleinere deelmodules, zoals I/O-subsystemen
 
 * **Microkernel**
 
@@ -57,7 +59,7 @@ Ook wel het client/server model genoemd. In dit model staat de kernel enkel in v
 
 Deze structuur vergemakkelijkt modulaire ontwikkeling van de kernel en servers aanzienlijk. Onderdelen kunnen bovendien ook weggelaten worden. Alle **hardware-afhankelijkheid zit in de microkernel**. Verder is deze benadering ook uiterst geschikt voor gedistribueerde systemen.
 
-Microkernel-systemen zijn in het algemeen **niet zo efficiënt**, onder andere door het overmatig uitwisselen van berichten. In moderne systemen gebruikt men wel verschillende modules, maar vermijdt men problemen met het definiëren van lagen en de communicatie ertussen. Elke module wordt monolithisch geïmplementeerd.
+Microkernel-systemen zijn in het algemeen **niet zo efficiënt**, onder andere door het overmatig uitwisselen van berichten. Systeemaanroepen zijn ook trager In moderne systemen gebruikt men wel verschillende modules, maar vermijdt men problemen met het definiëren van lagen en de communicatie ertussen. Elke module wordt monolithisch geïmplementeerd.
 
 * **Modulaire kernel**
 
@@ -77,9 +79,11 @@ Ook al is de kernel van Linux redelijk monolithisch geïmplementeerd, maakt het 
 
 > Geef van elke component in de “executive” aan wat de werking ervan is. p20
 
+De **executive** is het deel van het Windows NT besturingssysteem dat in kernel mode uitgevoerd wordt.
+
 * Hardware abstraction layer
 
-  * Staat in voor de **vertaling** tussen algemene opdrachten en processorspecifieke instructies. 
+  * Staat in voor de **vertaling** tussen algemene opdrachten en processorspecifieke instructies. De hogere niveaus zijn dus afhankelijk van de HAL in plaats van de hardware.
 
 * Microkernel
 
@@ -113,8 +117,8 @@ Een **programma** is een passieve entiteit. Simpelweg een verzameling van instru
 
 **Wat zijn de oorspronkelijke twee definities voor een proces?**
 
-* Een eenheid voor de verdeling van processorinstructies
-* Een eenheid voor het eigendom van bronnen
+* Een eenheid voor de verdeling van processorinstructies en het eigendom van bronnen
+* Een uitvoeringspad (spoor) door een programma
 
 
 
@@ -211,9 +215,10 @@ PCB = Process control block, een blok geheugen in de geheugenruimte van het proc
 
 > Welke stappen moet het besturingssysteem ondernemen om een nieuw proces aan te maken? p36
 
-Eerst en vooral maken we een unieke **procesidentificatiecode** (pid) aan en voegen we een nieuwe entry toe in primaire procestabel. We **wijzen ruimte toe** aan alle delen van het procesbeeld. Het besturingssysteem moet dus weten hoe veel ruimte er nodig is. Dan initialiseren we het **procesbesturingsblok** (PCB), eigenlijk vooral de procesbesturingsinformatie. Verder moeten we de **juiste koppelingen instellen**, zoals het proces in de wachtrij van 'gereed' of 'gereed/onderbroken' stoppen.
-
-Tot slot kunnen we eventuele gegevensstructuren aanmaken of andere gegevensstructuren uitbreiden.
+1. Eerst en vooral maken we een unieke **procesidentificatiecode** (pid) aan en voegen we een nieuwe entry toe in primaire procestabel. 
+2. We **wijzen ruimte toe** aan alle delen van het procesbeeld. Het besturingssysteem moet dus weten hoe veel ruimte er nodig is. 
+3. Dan initialiseren we het **procesbesturingsblok** (PCB), eigenlijk vooral de procesbesturingsinformatie. Verder moeten we de **juiste koppelingen instellen**, zoals het proces in de wachtrij van 'gereed' of 'gereed/onderbroken' stoppen en de juiste prioriteit geven.
+4. Tot slot kunnen we eventuele gegevensstructuren aanmaken of andere gegevensstructuren uitbreiden.
 
 ## Vraag 13
 
@@ -238,8 +243,6 @@ Tot slot kunnen we eventuele gegevensstructuren aanmaken of andere gegevensstruc
 De scheduler komt vrijwel altijd aan bod wanneer het besturingssysteem zijn taak heeft afgehandeld.
 
 
-
-* 
 
 ## Vraag 14
 
@@ -287,27 +290,50 @@ Het uitvoeren van systeemaanroepen voor een toepassing is doorgaans minder dring
 
 In de interruptcyclus van de instructiecyclus checkt de processor door middel van de aanwezigheid van een interruptsignaal of er interrupts zijn opgetreden. Er wordt dus periodiek gecontroleerd op interrupts.
 
+
+
 ## Vraag 20
 
 > Bespreek de stappen bij het afhandelen van een interrupt wanneer de scheduler ervoor opteert om de uitvoering verder te zetten binnen het reeds actieve proces. Wat wordt er hier bedoeld met een moduswissel en een contextwissel? p40
 
-Er wordt teruggeschakeld naar gebruikersmodus en de processortoestandsinformatie wordt hersteld in de registers. Zo wordt dus automatisch de controle terug overgedragen aan het eerder onderbroken proces.
+1. De context van het proces wordt opgeslagen (dit gebeurt hardwarematig)
+2. De programmateller wordt gezet op het beginadres van de interruptroutine
+3. Contextwissel naar kernel mode
+4. De interruptroutine wordt uitgevoerd
+5. Er wordt teruggewisseld naar user mode en de context van het proces wordt teruggezet. Zo wordt dus automatisch de controle terug overgedragen aan het eerder onderbroken proces.
 
-Het overschakelen naar gebruikersmodus is een moduswissel. Bij een contextwissel wordt de inhoud van de registers, waaronder ook de programmateller (de processortoestandsinformatie) gewisseld. In dit geval wordt deze hersteld naar de context van het onderbroken proces, op het moment dat deze voor het laatst uit de toestand _actief_ werd gewisseld.
+Het overschakelen naar gebruikersmodus (of kernelmodus) is een **moduswissel**. Bij een **contextwissel** wordt de inhoud van de registers, waaronder ook de programmateller (de processortoestandsinformatie) gewisseld. In dit geval wordt deze hersteld naar de context van het onderbroken proces, op het moment dat deze voor het laatst uit de toestand _actief_ werd gewisseld.
 
-//TODO
+
 
 ## Vraag 21
 
 > Bespreek de stappen bij het afhandelen van een interrupt wanneer de scheduler ervoor opteert om de uitvoering niet verder te zetten binnen het reeds actieve proces. Welke stappen zijn nodig om een proceswissel door te voeren? p40-41
 
-Het besturingssysteem zal dan wat meer werk moeten doen
 
-- Context van de processor opslaan + procesbesturingsinformatie van het voorgaande actieve proces bijwerken.
-- Procesbesturingsblok van het nieuwe proces naar de juiste wachtrij verplaatsen
-- Zijn procesbesturingsblok bijwerken
-- Gegevensstructuren voor geheugenbeheer bijwerken
-- Terugschakelen naar gebruikersmodus en de context wisselen naar die van het geselecteerde proces.
+
+**Bespreek de stappen bij het afhandelen van een interrupt wanneer de scheduler ervoor opteert om de uitvoering niet verder te zetten binnen het reeds actieve proces.**
+
+Het besturingssysteem zal hier wel wat meer werk moeten doen. Tijdens het wisselen kan het systeem geen andere dingen doen, dus deze keuze brengt wat overhead met zich mee.
+
+1. De context van het oude proces wordt opgeslagen (dit gebeurt hardwarematig)
+
+2. De programmateller wordt gezet op het beginadres van de interruptroutine
+
+3. Contextwissel naar kernel mode
+
+4. De interruptroutine wordt uitgevoerd
+
+5. Nu wordt er gewisseld naar een nieuw proces in plaats van het vorige
+
+   
+
+**Welke stappen zijn nodig om een proceswissel door te voeren?**
+
+1. Selectie van een nieuw proces als volgend actief proces
+2. Zijn procesbesturingsblok bijwerken
+3. Gegevensstructuren voor geheugenbeheer bijwerken
+4. Terugschakelen naar gebruikersmodus en de context wisselen naar die van het geselecteerde proces.
 
 ## Vraag 22
 
@@ -319,23 +345,51 @@ Je hebt een aantal gebruikersprocessen en de kernel. Het principe van processen 
 
 
 
+**Welke delen van een Unix- en een Windows kernel zijn procesloos?**
+
+Ik vroeg Wim of hij dit wist.
+
+> Beste Martijn
+>
+> Uiteraard weet ik dat. Dat is de code voor interruptafhandeling (cfr. de microkernel) en de code voor proceswisseling (cfr. sheduler). 
+>
+> Je kan moeilijk de code voor het wisselen van een proces in een proces gaan stoppen want dat zou betekenen dat je van proces moet wisselen om de code voor proceswisseling uit te voeren, wat natuurlijk tegenstrijdig is. 
+>
+> Dat zijn ook de delen van het OS die nooit het geheugen verlaten. Dus interruptafhandeling en proceswisseling.
+>
+> Met vriendelijke groet,
+>
+> Wim
+
 ## Vraag 23
 
 > Hoe wordt er van binnen een Unix besturingssysteem doorgaans van proces gewisseld? Hoe komt het dat dit vrij efficiënt verloopt?  p42
 
-//TODO
 
 
+Een proceswissel verloopt als volgt:
+
+1. Binnen het proces zelf wordt de context opgeslagen
+2. Een ander proces wordt geselecteerd
+3. De besturing wordt overgedragen aan een routine voor proceswisseling, waarvan de uitvoering plaatsvindt buiten alle processen om
+
+
+
+**Hoe komt het dat dit vrij efficiënt verloopt? **
+
+Alle software van het besturingssysteem wordt uitgevoerd in de context van een gebruikersproces. Het besturingssysteem wordt beschouwd als een verzameling van systeemaanroepen. Bij elk proces bevat het procesbeeld dus de programma-, gegevens- en stackgebieden voor kernelprogramma's. 
+
+Dit betekent dus dat wanneer er een van proces gewisseld moet worden, de context niet moet gewisseld worden om het besturingssysteem zijn ding te kunnen laten doen.
 
 ## Vraag 24
 
 > Hoe wordt er binnen een microkernelgeoriënteerd besturingssysteem van proces gewisseld? Wat zijn hier de voor- en nadelen? p42
 
-De belangrijkste besturingssysteemfuncties worden gestructureerd als aparte processen, uitgevoerd in kernelmodus. Een kleine hoeveelheid code zorgt dan voor de proceswisseling.
+De belangrijkste besturingssysteemfuncties worden gestructureerd als aparte processen, uitgevoerd in kernelmodus. Een kleine hoeveelheid code zorgt dan voor de proceswisseling. 
 
 **Nadeel**
 
-Overhead door veel proceswisselingen.
+Overhead door veel proceswisselingen, want er moet voor elke besturingssysteemfunctie geswitcht worden naar het proces voor deze functie, want in tegenstelling tot de typische Unix-methode, bevat het huidige proces niet de context van de besturingssysteemfuncties.
 
 **Voordelen**
 
@@ -358,17 +412,30 @@ We splitsen deze definitie op:
 
 > Geef het procesbeeld van een multithreaded proces met drie threads. Welke delen worden er over de grenzen van een thread gedeeld.
 
-ik denk p43-44
+<img src="img/image-20220618230443890.png" alt="image-20220618230443890" style="zoom: 33%;" />
+
+Elke **thread** beschikt over een afzonderlijke stack en een afzonderlijk besturingsblok, waarin onder meer de contextinformatie wordt opgeslagen. Scheduling wordt uitgevoerd per individuele thread, hierdoor moet dus ook de meeste toestandsinformatie bijgehouden worden op het threadniveau. 
+
+Op het **procesniveau**, dus over de grenzen van de threads heen is er nog steeds een procesbesturingsblok en gebruikersadresruimte. Alle threads delen de toestand en de bronnen van hun proces. Ze hebben ook toegang tot dezelfde bestanden geheugengegevens. De programmacode wordt ook gedeeld, dus toepassingen kunnen meer actieve threads hebben binnen dezelfde adresruimte, waardoor de processor beter bezig gehouden kan worden.
 
 ## Vraag 27
 
 > Geef voor- en nadelen van multithreading. Welke zijn de mogelijke implementaties (enkel vernoemen volstaat)? p43-46
 
+
+
+**Voordelen**
+
 * Alle threads **delen** de **toestand** en de **bronnen** van hun proces. Doordat ook **programmacode** wordt gedeeld, kunnen toepassingen veel meer actieve threads hebben binnen dezelfde adresruimte. Hierdoor kan de processor beter bezig gehouden worden.
 * De **interprocescommunicatie** is makkelijker door het gedeeld geheugengebruik, en vereist geen tussenkomst van de kernel.
 * Het **creëren en wisselen** van threads binnen een proces heeft veel minder overhead dan hetzelfde doen met verschillende processen.
-* Als er één thread blokkeert moet niet speciaal het hele proces geblokkeerd worden, want je kan dan gewoon naar een andere thread wisselen.
-* Eén nadeel is dat threads die gebruik maken van hulpfuncties, deze reëntrant moeten uitvoeren. Elke simultane uitvoering van die functie mag enkel beroep doen op een aparte verzameling van lokale variabelen.
+* Als er één thread blokkeert moet **niet** speciaal **het hele proces geblokkeerd** worden, want je kan dan gewoon naar een andere thread wisselen.
+
+**Nadelen**
+
+* Eén nadeel is dat threads die gebruik maken van hulpfuncties, deze reëntrant moeten uitvoeren. Elke simultane uitvoering van die functie mag enkel beroep doen op een aparte verzameling van lokale variabelen om de toestand van de functie bij te houden.
+* Multithreading is niet altijd toepasbaar of implementeerbaar
+* (deze is mijn mening) Soms is het niet nuttig om een bepaald algoritme te implementeren met multithreading, omdat de overhead door het wisselen van threads soms groter is dan de performantiewinst door multithreading. Dit hangt natuurlijk af van het algoritme dat je wilt implementeren.
 
 **Mogelijke implementaties**
 
@@ -380,15 +447,20 @@ ik denk p43-44
   * Thread pools (apache v2 webserver)
 * Combinatie van beide
 
-//TODO
+
 
 ## Vraag 28
 
 > Wat zijn de voor- en nadelen met user level threading? p46
 
+**Voordelen**
+
 * Ze kunnen ondersteund worden op **elk besturingssysteem**
 * **Efficiëntere** threadwisselingen, omdat er niet gewisseld moet worden naar kernelmodus.
 * Je kan het **scheduling algoritme** aanpassen naar behoren van de toepassing, want alle stuff voor threadbeheer zit binnen de adresruimte van het proces.
+
+**Nadelen**
+
 * Als één thread een blokkerende systeemaanroep doet, dan worden **alle threads** van dat proces **geblokkeerd**. 
 * Werkt niet goed samen met multiprocessing, want binnen elk proces kan er maar **één thread actief** zijn.
 
@@ -396,17 +468,27 @@ ik denk p43-44
 
 > Wat zijn de voor- en nadelen van kernel level threading? p47
 
+De scheduling door de kernel wordt uitgevoerd op basis van threads, niet op basis van processen.
+
+**Voordelen**
+
 * Als er meerdere processoren zijn, kunnen er **meerdere threads** van **hetzelfde proces** tegelijk geactiveerd worden.
 * Een geblokkeerde thread **blokkeert** de andere threads van hetzelfde proces **niet**.
+* We kunnen als een proces wordt aangemaakt direct meerdere threads aanmaken die wachten op werk. Dit is een **thread-pool**. Als er een taak moet uitgevoerd worden nemen we dan gewoon een vrij thread uit de pool en steken hem terug als het werk gedaan is. 
+
+**Nadelen**
+
 * Een nadeel is dat het **wisselen** naar een andere thread een **modus en context switch** vereist. Je moet dus oppassen dat je niet te veel threads aanmaakt, dit wordt in sommige implementaties ook beperkt.
 
 ## Vraag 30
 
-> Wat is het verschil tussen coöperatieve- en preempted multitasking? p51
+> Wat is het verschil tussen coöperatieve- en preempted multitasking? Wanneer kan een proces preemptief worden onderbroken? p51
 
-Bij preempted multitasking kunnen threads preëmptief door *timeslices* onderbroken worden. Dit betekent dat het besturingssysteem het lopende proces kan stoppen en de processor aan een ander proces toewijzen.
+Bij preempted multitasking kunnen threads preëmptief door **timeslices** onderbroken worden. Dit betekent dat het besturingssysteem het lopende proces kan stoppen en de processor aan een ander proces met hogere prioriteit toewijzen. Het probleem is hier wel dat het kan dat processen met lage prioriteit constant worden onderbroken door processen met hogere prioriteit.
 
-Op systemen zonder *timeslicing* moet een thread vrijwillig de controle over de processor overgeven om andere threads een kans te geven. Het besturingssysteem zal dus nooit een switch initiëren. Threads kunnen dan de controle afgeven als ze geblokkeerd zijn of ze kunnen periodiek andere threads de controle over laten nemen.
+Op systemen zonder *timeslicing* moet een thread vrijwillig de controle over de processor overgeven om andere threads een kans te geven. Dit is **cooperative multitasking**. Het besturingssysteem zal dus nooit een switch initiëren. Threads kunnen dan de controle afgeven als ze geblokkeerd zijn of ze kunnen periodiek andere threads de controle over laten nemen. Als er een belangrijke thread moet uitgevoerd worden, moet deze dus wachten totdat de huidige klaar is.
+
+
 
 ## Vraag 31
 
@@ -419,15 +501,17 @@ niet te kennen
 > Een proces in een Windows heeft drie zaken? Benoem ze en bespreek waarvoor ze dienen.p56
 
 * **Access token**
-  * Wordt ook wel het *primaire token* genoemd. Dit wordt gebruikt om te checken of de gebruiker bepaalde bewerkingen mag uitvoeren met beveiligde objecten. 
+  * Wordt ook wel het *primaire token* genoemd. Dit wordt gebruikt om te checken of de gebruiker bepaalde bewerkingen mag uitvoeren met beveiligde objecten.  
 * **Virtuele adresruimte**
-  * Deze wordt door de virtual memory manager module van de executive beheerd.
+  * Deze wordt door de virtual memory manager module van de executive beheerd. Het is logisch dat een proces geheugen moet kunnen aanspreken hoop ik.
 * **Objecttabel met handles**
-  * Deze handjes verwijzen naar objecten, zoals bijvoorbeeld naar elke thread die het proces omvat. Elk element in de tabel bevat toegangsrechten van het object en statusinformatie. Als je in user mode zit, zal je de access token nagekeken worden alvorens toegang verleend wordt.
+  * Deze handles verwijzen naar objecten, zoals bijvoorbeeld naar elke thread die het proces omvat. Elk element in de tabel bevat toegangsrechten van het object en statusinformatie. Als je in user mode zit, zal je de access token nagekeken worden alvorens toegang verleend wordt.
 
 ## Vraag 33
 
 > Geef het toestandsdiagram van een Windows thread? Bespreek de toestanden en de mogelijke overgangen. p58
+
+[tekening]
 
 <img src="img/image-20220611155631854.png" alt="image-20220611155631854" style="zoom: 33%;" />
 
@@ -455,6 +539,8 @@ niet te kennen
 ## Vraag 34
 
 > Geef het toestandsdiagram van een besturingssysteem dat gebruikmaakt van user level threads en een lichtgewichtproces (cfr. Solaris). Wat zijn de verschillende toestanden en de mogelijke overgangen? Bespreek wanneer er van toestand zal worden gewisseld en geef ook aan in welke toestand de user-level thread en het lichtgewichtproces zich moeten bevinden om uitgevoerd te worden. p54-55
+
+[tekening]
 
 <img src="img/image-20220611155531113.png" alt="image-20220611155531113" style="zoom:50%;" />
 
@@ -513,15 +599,22 @@ De user-level threadbibliotheek moet communiceren met de kernel. Dit gebeurt via
 <img src="img/image-20220214162104691.png" alt="image-20220214162104691" style="zoom:50%;" />
 
 * **Process 1**
-  * Heeft één user level thread, gebonden aan één lightweight proces. Dit is eigenlijk hetzelfde als een traditioneel unix proces.
+  * Heeft één user level thread, gebonden aan één lightweight proces. 
+  * Dit is eigenlijk hetzelfde als een traditioneel unix proces. Je gebruikt dit als gelijktijdigheid binnen het proces niet nodig is.
 * **Process 2**
-  * Heeft meerdere user-level threads, allemaal gebonden met hetzelfde lightweight proces. Er kan maar één user-level thread tegelijk uitgevoerd worden, om inefficiënte threadwisselingen op kernelniveau te vermijden. Deze methode komt overeen met de zuivere user-level benadering van multithreading.
+  * Heeft meerdere user-level threads, allemaal gebonden met hetzelfde lightweight proces. Er kan maar één user-level thread tegelijk uitgevoerd worden, om inefficiënte threadwisselingen op kernelniveau te vermijden. 
+  * Deze methode komt overeen met de zuivere user-level benadering van multithreading en wordt gebruikt voor programma's met logische parallelliteit, zoals een toepassing met meerdere vensters, waarvan er slechts één actief kan zijn.
 * **Process 3**
-  * Meerdere user level threads, gekoppeld aan een kleiner of gelijk aantal lightweight processen. Dit is nuttig als threads geblokkeerd kunnen worden, bijvoorbeeld in I/O-intensieve applicaties.
+  * Meerdere user level threads, gekoppeld aan een kleiner of gelijk aantal lightweight processen. 
+  * Dit is nuttig als threads geblokkeerd kunnen worden, bijvoorbeeld in I/O-intensieve applicaties.
 * **Process 4**
-  * Meerdere user-level threads die 1-op-1 gekoppeld zijn aan meerder lightweight processen. Dit komt overeen met de zuivere kernel-level benadering van multithreading en is nuttig bij CPU intensieve applicaties die bijvoorbeeld parallelle matrixbewerkingen moeten uitvoeren.
+  * Meerdere user-level threads die 1-op-1 gekoppeld zijn aan meerder lightweight processen. 
+  * Dit komt overeen met de zuivere kernel-level benadering van multithreading en is nuttig bij CPU intensieve applicaties die bijvoorbeeld parallelle matrixbewerkingen moeten uitvoeren.
 * **Process 5**
-  * Hetzelfde als process 3, maar heeft één extra user-level thread gebonden aan één lightweight proces, verbonden aan één processor. Dit wordt gebruikt bij applicaties met een real-time component. 
+  * Hetzelfde als process 3, maar heeft één extra user-level thread gebonden aan één lightweight proces, verbonden aan één processor. 
+  * Dit wordt gebruikt bij applicaties met een real-time component. 
+
+
 
 # Hoofdstuk 3 (labo)
 
@@ -637,9 +730,11 @@ Antwoord van the man himself:
 
 
 
-Helemaal aan het begin of het einde van het hoofdgeheugen vast deel geclaimd door het besturingssysteem. De rest van het geheugen moeten we op de één of andere manier indelen. Bij vaste partitionering wordt het geheugen verdeeld in **gebieden met vaste begrenzing**. Het besturingssysteem moet niet veel doen buiten bijhouden welke partities nog beschikbaar zijn. Het **aantal partities** dat werd ingesteld door het systeem **beperkt** wel het **aantal actieve processen**. 
+Helemaal aan het begin of het einde van het hoofdgeheugen wordt een vast deel geclaimd door het besturingssysteem. De rest van het geheugen moeten we op de één of andere manier indelen. Bij vaste partitionering wordt het geheugen verdeeld in **gebieden met vaste begrenzing**. Het besturingssysteem moet niet veel doen buiten bijhouden welke partities nog beschikbaar zijn. Het **aantal partities** dat werd ingesteld door het systeem **beperkt** wel het **aantal actieve processen**. 
 
-De partities die worden gebruikt kunnen van **gelijke** of **ongelijke** grootte zijn. Bij partities van gelijke grootte doen zich direct twee problemen voor:
+De partities die worden gebruikt kunnen van **gelijke** of **ongelijke** grootte zijn. 
+
+Bij partities van **gelijke grootte** doen zich direct twee problemen voor:
 
 * Elk procesbeeld (zelfs hele kleine) bezet een hele partitie. Deze verspilling van ruimte wordt ook wel **interne fragmentatie** genoemd. Bij veel kleine processen wordt er dus ontzettend veel geheugen verspild.
 * Het procesbeeld kan te groot zijn om in één partitie te passen. Dan moeten er **overlay** technieken gebruikt worden zodat alleen de instructies en gegevens die op dat moment nodig zijn in de partitie worden gehouden. Een **overlay driver** zou er dan voor moeten zorgen dat de juiste dingen op het juiste moment in de partitie gestoken worden. (dit is kut want dat moet je zelf programmeren). 
@@ -650,7 +745,7 @@ Bij partities van **ongelijke grootte** heb je meer flexibiliteit. Steek gewoon 
 
 ![Section 4.1. Basic Memory Management | Operating Systems Design and  Implementation (3rd Edition)](img/04fig02.jpg)
 
-//TODO procesbeelden
+
 
 ## Vraag 47
 
@@ -695,11 +790,15 @@ In het geval van een systeem met dynamische partitionering loopt de vertaling al
 
 > Bij dynamische partitionering kan je voor het geheugengebruik een bitmap of een gelinkte lijst bijhouden (maak een schets)? Hoe gebeurt dit en wat zijn de voor- en nadelen van beide systemen? p115
 
+[tekening]
+
 **Bitmap**
 
 <img src="img/image-20220612120413331.png" alt="image-20220612120413331" style="zoom: 33%;" />
 
-Het geheugen wordt verdeeld in kleine **blokjes van gelijke grootte**. Voor elk blokje wordt een bit bijgehouden die vertelt of het blokje vrij is. Kleinere blokjes betekent dus een grotere bitmap, grotere blokjes is meer geheugenverspilling. Wanneer een proces van $n$ aansluitende blokken geheugen nodig heeft, zal het geheugenbeheersysteem op zoek moeten gaan naar $n$ opeenvolgende nullen in de bitmap. Dit is natuurlijk niet zo efficiënt.
+* Het geheugen wordt verdeeld in kleine **blokjes van gelijke grootte**. Voor elk blokje wordt een bit bijgehouden die vertelt of het blokje vrij is. 
+* Kleinere blokjes betekent dus een grotere bitmap, grotere blokjes is meer geheugenverspilling. 
+* Wanneer een proces van $n$ aansluitende blokken geheugen nodig heeft, zal het geheugenbeheersysteem op zoek moeten gaan naar $n$ opeenvolgende nullen in de bitmap. Dit is natuurlijk niet zo efficiënt.
 
 
 
@@ -707,7 +806,11 @@ Het geheugen wordt verdeeld in kleine **blokjes van gelijke grootte**. Voor elk 
 
 <img src="img/image-20220612120624500.png" alt="image-20220612120624500" style="zoom: 33%;" />
 
-We kunnen onze vrije blokjes ook bijhouden in een gelinkte lijst. We kunnen dan kiezen of we alleen de vrije blokken bijhouden, of alleen de bezette blokken. Elke van beide in een aparte lijst is ook een mogelijkheid. De beste optie is blijkbaar om alleen de vrije blokken op te nemen in een dubbelgelinkte lijst, waar zowel op het begin als het einde van elke blok informatie staat over de grootte en de status van dat blok.
+We kunnen onze vrije blokjes ook bijhouden in een gelinkte lijst. We kunnen dan kiezen of we alleen de vrije blokken bijhouden, of alleen de bezette blokken. 
+
+Elke van beide in een aparte lijst is ook een mogelijkheid, dan kunnen we de lijsten sorteren op grootte.
+
+ De beste optie is blijkbaar om alleen de vrije blokken op te nemen in een dubbelgelinkte lijst, waar zowel op het begin als het einde van elke blok informatie staat over de grootte en de status van dat blok.
 
 ## Vraag 50
 
@@ -746,17 +849,24 @@ Dan bevatten:
 
 In de figuur zie je dus dat de linkerbits van het logische adres (het paginanummer), worden gebruikt als index in de procespaginatabel om het framenummer te vinden. Dit nummer wordt bij de rechterbits toegevoegd om het fysieke adres te bekomen. Het coole is hier dat alleen het besturingssysteem toegang heeft tot die tabel. Elk proces heeft zijn eigen tabel, dus het programma kan onmogelijk een adres gebruiken buiten zijn toegewezen frames. 
 
+**Wat is het verschil tussen paginering en vaste partitionering? **
+
+Dit heb ik eigenlijk al gezegd, maar nu zet ik het in een lijstje.
+
+* De partities bij paginering zijn kleiner
+* Processen bij paginering bezetten verschillende partities die niet aaneengesloten hoeven te zijn
+* Bij paginering doet zich geen externe fragmentatie voor
+* De interne fragmentatie wordt beperkt tot een deel van de laatste pagina van het proces
 
 
 
-
-Ik heb er een sport van gemaakt om de afbeeldingen van Wim zijn cursus te vinden op google images (om mijn samenvatting cool te maken). Ik vraag me af wat de implicaties omtrent copyrightwetgeving zijn in dit geval, aangezien alle afbeeldingen van deze vraag vermoedelijk onder het intellectuele eigendom van Pearson vallen.
+Ik heb er een sport van gemaakt om de hd-versie van de afbeeldingen van Wim zijn cursus te vinden op google images (om mijn samenvatting cool te maken). Ik vraag me af wat de implicaties omtrent copyrightwetgeving zijn in dit geval, aangezien alle afbeeldingen van deze vraag vermoedelijk onder het intellectuele eigendom van Pearson vallen.
 
 ## Vraag 51
 
 > Bespreek de werking van segmentatie (zonder virtueel geheugen)? Wat is het verschil tussen dynamische partitionering en segmentatie? Waarom wordt dit model voor de gebruiker bewust zichtbaar wordt gehouden. Geef een voorbeeld waar je handig gebruik kan maken van segmenten. Hoe gebeurt de adresvertaling bij segmentatie (maak een schets)? p119-120
 
-
+[tekening]
 
 **Bespreek de werking van segmentatie (zonder virtueel geheugen)? Wat is het verschil tussen dynamische partitionering en segmentatie?**
 
@@ -831,7 +941,7 @@ Zolang $L>S$, zal de disk waarop geswapt wordt niet al te hard belast worden. Al
 
 **Hoe kan het besturingssysteem oordeelkundig inschatten welke pagina’s in de toekomst nodig zullen zijn en welke niet?**
 
-Dankzij het principe van **lokaliteit** weten we dat als we een blok moeten swappen uit het geheugen, de kans groot is dat we naburige blokken in de nabije toekomst ook nodig zullen hebben. 
+Het besturingssysteem zal op basis van historiek in het recente verleden, oordeelkundig moeten schatten welke stukken wel en niet zullen gebruikt worden in de nabije toekomst. Dankzij het principe van **lokaliteit** weten we dat als we een blok moeten swappen uit het geheugen, de kans groot is dat we naburige blokken in de nabije toekomst ook nodig zullen hebben. 
 
 # Zelftest 1 labo
 
@@ -1797,7 +1907,366 @@ Output van `lspci -n`
      //skip sorry
      ```
 
-     
+
+
+4. Schrijf een C++-programma met als naam watchfiled.cc dat alle bestanden in de gaten houdt die opgesomd zijn in het tekstbestand watchfile.txt. Telkens wanneer een opgesomd bestand in het tekstbestand wordt gewijzigd, wordt een boodschap naar het scherm geschreven. Het C++-programma loopt in een oneindige lus die telkens het bestand watchfile.txt lijn per lijn inleest en nagaat of het bestand dat zich op een gegeven lijn bevindt reeds in de gaten wordt gehouden. Wanneer dit niet zo is wordt een kindproces aangemaakt dat watchfile (zie Sectie V, opdracht 7) uitvoert op het “nieuwe” bestand.
+
+   ```c
+   // dit werkt nog niet 
+   #include <fcntl.h>
+   #include <stdio.h>
+   #include <stdlib.h>
+   #include <sys/stat.h>
+   #include <sys/types.h>
+   #include <unistd.h>
+   
+   int main()
+   {
+       while (1) {
+           FILE* fp;
+           char* line = NULL;
+           size_t len = 0;
+           ssize_t read;
+   
+           fp = fopen("watchfile.txt", "r");
+           while ((read = getline(&line, &len, fp)) != -1) {
+               char* args[] = { "watchfile", line };
+               // printf("%s", line);
+               if (fork() == 0) {
+                   if (execv("./watchfile", args) < 0) {
+                   }
+               }
+           }
+           fclose(fp);
+       }
+   
+       return 0;
+   }
+   ```
+
+
+
+6. Pas de gegeven code aan zodat het ouderproces het grootste van de gegeneerde getallen bepaalt en vervolgens ieder kindproces op de hoogte brengt wie de winnaar is, ttz. welk proces het grootste getal heeft gegenereerd. De uitvoer met zes kindprocessen ziet er als volgt uit:
+
+   ```
+   Process 1819 is the winner
+   I'm the winner!
+   Process 1819 is the winner
+   Process 1819 is the winner
+   Process 1819 is the winner
+   Process 1819 is the winner
+   ```
+
+   ```c
+   #include <stdio.h>
+   #include <stdlib.h>
+   #include <sys/stat.h>
+   #include <sys/types.h>
+   #include <sys/wait.h>
+   #include <unistd.h>
+   
+   #define MAX 50
+   typedef struct { // we maken een struct
+       int pid; // pid van het huidige proces
+       int fd_PC[2]; // filedescriptoren van parent naar child
+       int fd_CP[2];// filedescriptoren van child naar parent
+       int getal; // random getal dat we gaan genereren
+   } data;
+   
+   int main(int argc, char** argv)
+   {
+       data d[MAX];
+       pid_t pid;
+       pid_t winner_pid;
+       int winner_num = 0;
+   
+       if (argc != 2) {
+           printf("(Only) One argument expected!\n");
+           exit(1);
+       } else {
+           int i;
+           for (i = 0; i < atoi(argv[1]); i++) {
+               if (pipe(d[i].fd_CP) < 0) {
+                   perror(argv[0]);
+                   return 1;
+               }
+               if (pipe(d[i].fd_PC) < 0) {
+                   perror(argv[0]);
+                   return 1;
+               }
+               d[i].pid = fork();
+   
+               if (d[i].pid == 0) { // child
+                   close(d[i].fd_PC[1]);
+                   close(d[i].fd_CP[0]);
+                 	// random nummer maken en sturen naar parent
+                   srand(getpid());
+                   int number = rand();
+                   write(d[i].fd_CP[1], &number, sizeof(int));
+   
+                 	// lezen van parent en kijken of ik de winnaar ben
+                   int winnaar;
+                   read(d[i].fd_PC[0], &winnaar, sizeof(int)); // getal lezen van parent door pipe
+                   if (winnaar == getpid()) {
+                       printf("ik win\n");
+                   } else {
+                       printf("Proces %d wint\n", winnaar);
+                   }
+                   return 0;
+   
+                   // exit(0);
+               }
+               close(d[i].fd_PC[0]); // ongebruikte filedescriptoren sluiten
+               close(d[i].fd_CP[1]);
+           }
+       }
+   
+     	// van alle kinderen de winnaar bepalen
+       for (int i = 0; i < atoi(argv[1]); i++) {
+           int number;
+           read(d[i].fd_CP[0], &number, sizeof(int));
+           if (number > winner_num) {
+               winner_num = number;
+               winner_pid = d[i].pid;
+           }
+       }
+       for (int i = 0; i < atoi(argv[1]); i++) {
+           write(d[i].fd_PC[1], &winner_pid, sizeof(int));
+       }
+       for (int i = 0; i < atoi(argv[1]); i++) {
+           waitpid(d[i].pid, NULL, 0);
+       }
+       return 0;
+   }
+   ```
+
+   
+
+### Posix-threads
+
+1. Schrijf een programma dat gebruikmaakt van vier threads die elk een verschillend cijfer naar het scherm schrijven. Wanneer een thread het bijhorend cijfer 100 keer naar het scherm heeft geschreven, stopt de thread.
+
+   ```c
+   #include <pthread.h>
+   #include <stdio.h>
+   #include <stdlib.h>
+   void* write_number(void* num)
+   {
+       int getal = *((int*)num);
+       for (int i = 0; i < 100; i++) {
+           printf("%d", getal);
+       }
+       printf("\n");
+       free(num);
+   }
+   
+   int main()
+   {
+       pthread_t thread[4];
+       for (int i = 0; i < 4; i++) {
+   
+           int* arg = malloc(sizeof(*arg));
+           *arg = i;
+           int err = pthread_create(&thread[i], NULL, write_number, arg);
+       }
+   
+       for (int i = 0; i < 4; i++) {
+           int err = pthread_join(thread[i], NULL);
+       }
+   
+       return 0;
+   }
+   ```
+
+2. Genereer 1.000.000 willekeurige reële getallen die je bijhoudt in een tabel. Schijf nu twee functies die zoeken naar respectievelijk het kleinste getal en het grootste getal en deze getallen als return-waarde teruggeven. Schrijf nu een hoofdprogramma dat gelijktijdig zoekt naar het grootste en het kleinste getal in een tabel van 1.000.000 reële getallen. Schrijf beide getallen naar het scherm.
+
+   ```c
+   #include <limits.h>
+   #include <pthread.h>
+   #include <stdio.h>
+   #include <stdlib.h>
+   #define n 1000000
+   void* vind_kleinste(void* tab)
+   {
+       int* tabel = ((int*)tab);
+       int kleinste = INT_MAX;
+       for (int i = 0; i < n; i++) {
+           if (tabel[i] < kleinste) {
+               kleinste = tabel[i];
+           }
+       }
+       printf("\n");
+       int* k = malloc(sizeof(kleinste));
+       *k = kleinste;
+       return k;
+   }
+   void* vind_grootste(void* tab)
+   {
+       int* tabel = ((int*)tab);
+       int grootste = 0;
+       for (int i = 0; i < n; i++) {
+           if (tabel[i] > grootste) {
+               grootste = tabel[i];
+           }
+       }
+       printf("\n");
+       int* k = malloc(sizeof(grootste));
+       *k = grootste;
+       return k;
+   }
+   
+   int main()
+   {
+       srand(time(NULL));
+   
+       int tab[n];
+       for (int i = 0; i < n; i++) {
+           tab[i] = rand();
+       }
+   
+       pthread_t kleinste;
+       pthread_t grootste;
+   
+       pthread_create(&kleinste, NULL, vind_kleinste, (void*)tab);
+       pthread_create(&grootste, NULL, vind_grootste, (void*)tab);
+   
+       int* kl;
+       pthread_join(kleinste, (void**)&kl);
+       printf("kleinste: %d\n", *kl);
+       int* gr;
+       pthread_join(grootste, (void**)&gr);
+       printf("grootste: %d\n", *gr);
+   
+       return 0;
+   }
+   ```
+
+3. Multithreading kan ook leiden tot snelheidswinst. Een mooi voorbeeld hiervan is bv. een matrixvermenigvuldiging. Om de snelheidswinst op te merken maak je best gebruik van twee vierkante matrices met 1000 rijen en 1000 kolommen. Ook gebruik je best vier tot acht threads om de het resultaat te berekenen. Gebruik voor de dimensie en ook voor het aantal threads constanten. 
+
+   Wanneer er bijvoorbeeld acht threads worden gebruikt, kan je het resultaat als volgt berekenen. De eerste thread laat je de 0de, de 8ste, de 16de, … rij van het resultaat bepalen. De tweede thread ontfermt zich over de 1ste, 9de, 17de, … rij van het resultaat. Iedere thread berekent dus DIM/8 rijen van het eindresultaat waarbij de rijen op een afstand van het aantal threads van elkaar liggen. 
+
+   Om het opvullen van een matrix vlot te laten verlopen, geef je het element op ide rij en op de jde kolom de waarde i+j. Dit kan eenvoudig worden geprogrammeerd a.d.h.v. een dubbele for-lus. Doe dit voor beide matrices en merk op dat je dus identieke matrices met elkaar vermenigvuldigt. 
+
+   Schrijf ook een programma dat geen Pthreads gebruikt om duidelijk het verschil in snelheid te zien.
+
+   ```c
+   // Het verschil is dat het trager is met threads en dat maakt mij boos
+   #include <pthread.h>
+   #include <stdio.h>
+   #include <stdlib.h>
+   #include <time.h>
+   #define n 1000
+   struct mat {
+       int a[n][n];
+       int b[n][n];
+       int res[n][n];
+   };
+   struct args {
+       struct mat* matrix;
+       int start;
+   };
+   void* calc_rowset(void* ar)
+   {
+       struct args* argumenten = ((struct args*)ar);
+       struct mat* com = argumenten->matrix;
+   
+       int start = argumenten->start;
+   
+       for (int row = start; row < n; row += 8) {
+           for (int i = 0; i < n; i++) {
+               int sum = 0;
+               for (int s = 0; s < n; s++) {
+                   sum += com->a[row][s] * com->b[s][i];
+               }
+               com->res[row][i] = sum;
+           }
+       }
+       free(ar);
+   }
+   void multi()
+   {
+       struct mat* ar = malloc(sizeof(*ar));
+   
+       for (int i = 0; i < n; i++) {
+           for (int j = 0; j < n; j++) {
+               ar->a[i][j] = i + j;
+               ar->b[i][j] = i + j;
+           }
+       }
+   
+       pthread_t threads[8];
+       for (int i = 0; i < 8; i++) {
+   
+           struct args* deze = malloc(sizeof(*deze));
+           deze->matrix = ar;
+           deze->start = i;
+           pthread_create(&threads[i], NULL, calc_rowset, (void*)deze);
+       }
+   
+       for (int i = 0; i < 8; i++) {
+           pthread_join(threads[i], NULL);
+       }
+   
+       printf("multi checksum: %d\n", ar->res[10][10]);
+       free(ar);
+   }
+   void single()
+   {
+       struct mat* ar = malloc(sizeof(*ar));
+   
+       for (int i = 0; i < n; i++) {
+           for (int j = 0; j < n; j++) {
+               ar->a[i][j] = i + j;
+               ar->b[i][j] = i + j;
+           }
+       }
+   
+       for (int i = 0; i < n; i++) {
+           for (int j = 0; j < n; j++) {
+               int sum = 0;
+               for (int s = 0; s < n; s++) {
+                   sum += ar->a[s][j] * ar->b[i][s];
+               }
+               ar->res[i][j] = sum;
+           }
+       }
+       printf("normaal checksum: %d\n", ar->res[10][10]);
+       free(ar);
+   }
+   int main()
+   {
+       // multithreaded
+       clock_t begin = clock();
+   
+       multi();
+   
+       clock_t end = clock();
+       double time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
+       printf("multi time: %lf\n", time_spent);
+   
+       // single thread
+       begin = clock();
+   
+       single();
+   
+       end = clock();
+       time_spent = (double)(end - begin) / CLOCKS_PER_SEC;
+       printf("single time: %lf\n", time_spent);
+       return 0;
+   }
+   ```
+
+   
+
+4. niet
+
+### Thread synchronisatie
+
+
+
+### Memory mapped I/O
+
+
 
 ## 7 - Programmeren in Bash
 
