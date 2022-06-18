@@ -1468,13 +1468,336 @@ Static is dus veel groter
 
 ## 3 - Profiler programma’s
 
-programma geschreven met memory leaks ik heb geen zin om het over te type want ik weet niet hoe ik copy paste uit virtualbox
+Schrijf een C-programma dat via malloc een tabel van 2000 gehele getallen aanmaakt en deze getallen daarna gewoon uitschrijft. Je hoeft bewust het in beslag genomen geheugen niet vrij te geven. Compileer het programma en voer het daarna uit d.m.v. “valgrind ./prog”. Herschrijf nu het programma waar je het gealloceerde geheugen vrijgeeft en controleer opnieuw met valgrind of het programma nog geheugenlekken vertoond.
+
+```c
+include <stdlib.h>
+
+int main(){
+
+        int* pointer = malloc(1000*sizeof(int));
+        for(int i = 0; i<1000;i++){
+                pointer[i] = i;
+        }
+        free(pointer);
+        return 0;
+}
+
+```
 
 ## 4 - Een eerste programmeeropdracht
 
+De bedoeling is een eigen versie van het commando “lspci -n” te programmeren in de programmeertaal C. Dit commando overloopt alle mogelijke PCI-adressen en gaat na of er zich een apparaat bevindt. Bevindt er zich een apparaat, dan wordt het adres (busnummer, devicenummer en functienummer) naar het scherm geschreven, samen met het vendorID en het deviceID. 
+
+Ik weet niet hoe de fuck ik dit werkende heb gekregen, maar het werkt.
+
+```c
+#include <stdint.h>
+#include <stdio.h>
+#include <sys/io.h>
+
+int main()
+{
+    iopl(3);
+    ioperm(0, 255, 1);
+    int uit = 0;
+    int aan = 0;
+    for (uint32_t bus = 0; bus <= 255; bus++) {
+        for (uint32_t dev = 0; dev <= 32; dev++) {
+            for (uint32_t fun = 0; fun <= 7; fun++) {
+                uint32_t f = fun << 8;
+                uint32_t d = dev << 11;
+                uint32_t b = bus << 16;
+                uint32_t getal = 0 | f | d | b | 1 << 31;
+                outl(getal, 0xcf8);
+                unsigned int ding = inl(0xcfc);
+                if (ding == 0xffffffff) {
+                    uit++;
+                } else {
+                    aan++;
+                    int vendor = ding & 0x0000ffff;
+                    int device = ding >> 16;
+                    printf("%.2x.%.2x.%x  --- VendorID: %x, deviceId: %x \n", bus, dev, fun, vendor, device);
+                }
+            }
+        }
+    }
+    printf("Devices uit: %d \nDevices aan: %d\n", uit, aan);
+
+    return 0;
+  // ik het het error gedeelte wel geskipt sorry
+}
+```
+
+Output van mijn programma:
+
+```
+00.00.0  --- VendorID: 8086, deviceId: 1237 
+00.01.0  --- VendorID: 8086, deviceId: 7000 
+00.01.1  --- VendorID: 8086, deviceId: 7111 
+00.02.0  --- VendorID: 15ad, deviceId: 405 
+00.03.0  --- VendorID: 8086, deviceId: 100e 
+00.04.0  --- VendorID: 80ee, deviceId: cafe 
+00.05.0  --- VendorID: 8086, deviceId: 2415 
+00.06.0  --- VendorID: 106b, deviceId: 3f 
+00.07.0  --- VendorID: 8086, deviceId: 7113 
+00.0b.0  --- VendorID: 8086, deviceId: 265c 
+00.0d.0  --- VendorID: 8086, deviceId: 2829 
+Devices uit: 67573 
+Devices aan: 11
+```
+
+Output van `lspci -n`
+
+```
+00:00.0 0600: 8086:1237 (rev 02)
+00:01.0 0601: 8086:7000
+00:01.1 0101: 8086:7111 (rev 01)
+00:02.0 0300: 15ad:0405
+00:03.0 0200: 8086:100e (rev 02)
+00:04.0 0880: 80ee:cafe
+00:05.0 0401: 8086:2415 (rev 01)
+00:06.0 0c03: 106b:003f
+00:07.0 0680: 8086:7113 (rev 08)
+00:0b.0 0c03: 8086:265c
+00:0d.0 0106: 8086:2829 (rev 02)
+```
+
+
+
 ## 5 - I/O-Systeemaanroepen
 
+1. Schrijf een C-programma dat een bestand van ongeveer 10MB aanmaakt met willekeurige lettertekens gelegen in het gesloten interval [a..z].
+
+   ```c
+   #include <fcntl.h>
+   #include <stdio.h>
+   #include <stdlib.h>
+   #include <sys/io.h>
+   #include <sys/stat.h>
+   #include <sys/types.h>
+   #include <unistd.h>
+   
+   int main()
+   {
+       int buffer[2000000];
+       for (int i = 0; i < 2000000; i++) {
+           char randomletter = 'a' + (rand() % 26);
+           buffer[i] = randomletter;
+       }
+       int fd = open("random.txt", O_WRONLY | O_CREAT);
+   
+       write(fd, buffer, 2000000);
+       return 0;
+   }
+   ```
+
+2. Tot nog toe werd er niets gezegd over de optimale buffergrootte. De bedoeling is een Cprogramma te ontwikkelen dat het hierboven aangemaakte bestand verschillende keren inleest en dit met buffergroottes van 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096 en tot slot 8192 bytes. De uitvoer van het programma moet er ongeveer zo uitzien:
+
+   ```
+   BUF_SIZ= 1 Time=3.60
+   BUF_SIZ= 2 Time=1.79
+   BUF_SIZ= 4 Time=0.98
+   ...
+   BUF_SIZ=2048 Time=0.00
+   BUF_SIZ=4096 Time=0.00
+   BUF_SIZ=8192 Time=0.00
+   ```
+
+   ```c
+   #include <fcntl.h>
+   #include <pthread.h>
+   #include <stdio.h>
+   #include <stdlib.h>
+   #include <sys/io.h>
+   #include <sys/stat.h>
+   #include <sys/types.h>
+   #include <unistd.h>
+   
+   int main()
+   {
+   
+       int fd = open("random.txt", O_RDONLY);
+   
+       for (int i = 1; i <= 8192; i *= 2) {
+           unsigned char buffer[i];
+           double start = clock();
+   
+           read(fd, buffer, 2000000);
+           double time = (clock() - start) / (CLOCKS_PER_SEC / 1000000);
+           printf("BUF_SIZ: %i TIME: %lf µs\n", i, time);
+       }
+   
+       return 0;
+   }
+   ```
+
+3. Doe nu hetzelfde maar voor de write-systeemaanroep. Maak voor iedere verschillende buffergrootte een bestand aan van ongeveer 10MB (cfr. vraag 1). Nadat je de tijd voor  een gegeven buffergrootte hebt opgemeten moet je vanzelfsprekend het aangemaakte bestand terug verwijderen. Een bestand verwijderen kan je doen m.b.v. de unlinksysteemaanroep.
+
+   ```
+   
+   ```
+
+5. Bestudeer gronding de werking van de shell-opdracht cat en schrijf in C een eigen versie van cat. Bekijk bv. wat er gebeurt wanneer je de opdracht “cat /etc/passwd - /etc” opgeeft of wanneer cat geen argumenten meekrijgt. Wanneer je een directory opgeeft als argument, geeft cat een foutmelding. Dit gedrag hoef je niet na te bootsen.
+
+   ```c
+   #include <fcntl.h>
+   #include <stdio.h>
+   #include <stdlib.h>
+   #include <string.h>
+   #include <sys/stat.h>
+   #include <sys/types.h>
+   #include <unistd.h>
+   
+   int main(int argc, char** argv)
+   {
+       unsigned char buffer[BUFSIZ];
+       if (argc == 1) { // geen argumenten,  stdin naar stdout
+   
+           read(0, buffer, BUFSIZ);
+           write(1, buffer, strlen(buffer));
+       }
+       if (argc == 2) { // 1 argument, bestand naar stdout
+           char* file = argv[1];
+           int fd = open(file, O_RDONLY);
+           read(fd, buffer, BUFSIZ);
+           write(1, buffer, strlen(buffer));
+       }
+     if(argc > 2){
+       //todo you get the point
+     }
+   
+       return 0;
+   }
+   ```
+
+
+
+7. Schrijf een C-programma met als naam watchfile.c dat één argument, een bestand, op de opdrachtlijn verwacht. Het programma loopt in een oneindige lus en schrijft telkens een boodschap naar het scherm wanneer het bestand dat op de opdrachtlijn werd meegegeven werd gewijzigd. Wanneer er geen argument werd opgegeven of het argument is geen gewoon bestand wordt een foutboodschap getoond en wordt het programma afgesloten met exit-status 1.
+
+   [stackoverflow post](https://stackoverflow.com/questions/9376975/c-linux-check-if-file-is-updated-changed-modified)
+
+   Ik vond dit heel moeilijk in de les, maar eigenlijk valt het goed mee. Je moet gewoon weten waar je moet kijken in de manpaginas: doe `man 2 stat`
+
+   ```c
+   #include <stdio.h>
+   #include <string.h>
+   #include <sys/stat.h>
+   #include <sys/types.h>
+   #include <unistd.h>
+   
+   int main(int argc, char** argv)
+   {
+       int last_changed;
+       char message[] = "File changed\n";
+   
+       if (argc == 2) {
+           struct stat sb;
+           while (1) {
+               if (stat(argv[1], &sb) != -1) { // stat steekt alls bestandsinfo in een struct
+                   int changed = sb.st_mtim.tv_sec;
+                 // in de manpage van stat vind je de velden van de struct stat
+                 // st_mtim is de tijd van laatste wijziging
+                 // om de een of andere reden moet je daar ook nog tv_sec achter zetten (staat ook in de 
+                 // manpage)
+                   if (changed != last_changed) {
+                     // nu kijk je dus gewoon of die tijd aangepast is
+                     // en schrijf je naar stdout als er iets is veranderd
+                       write(1, message, strlen(message));
+                       last_changed = changed;
+                   }
+               }
+           }
+   
+       } else {
+           perror("fout aantal argrumenten");
+           return 1;
+       }
+   
+       return 0;
+   }
+   ```
+
+   
+
 ## 6 - Processen en POSIX-threads
+
+### Processen
+
+2. Schrijf een programma dat drie kindprocessen aanmaakt en zorg ervoor dat ieder kindproces zijn proces-ID naar het scherm schrijft en daarna stopt. Het proces-ID kan je m.b.v. de systeemaanroep `getpid()` opvragen en een proces kan je beëindigen met de functie `exit(int exitstatus)`. De exitstatus van een correct beëindigd proces is steeds 0 terwijl een waarde verschillend van 0 duidt op een fout
+
+   ```c
+   #include <stdio.h>
+   #include <sys/types.h>
+   #include <unistd.h>
+   
+   int main()
+   {
+       if (fork() == 0) {
+           printf("%d\n", getpid());
+           exit(0);
+       } else if (fork() == 0) {
+           printf("%d\n", getpid());
+           exit(0);
+       } else if (fork() == 0) {
+           printf("%d\n", getpid());
+           exit(0);
+       }
+   
+       return 0;
+   }
+   ```
+
+
+
+3. Schrijf een C-programma writestring.c dat het proces-ID naar het scherm schrijft gevolgd door de string die als enige parameter wordt meegegeven en vervolgens 10 seconden wacht vooraleer te eindigen. 
+
+   * Herschrijf nu opdracht 2 waarbij het kindproces de systeemaanroep execv gebruikt om “writestring hello” uit te voeren. Opgelet: In het ouderproces moet je wachten tot wanneer het kindproces klaar is, waarna je nog een boodschap naar het scherm schrijft. Dit doe je door gebruik te maken van de systeemaanroep waitid of waitpid. 
+
+     ```c
+     #include <stdio.h>
+     #include <stdlib.h>
+     #include <sys/types.h>
+     #include <sys/wait.h>
+     #include <unistd.h>
+     
+     int main(int argc, int** argv)
+     {
+         char* args[] = { "writestring", "hello", 0 };
+         if (fork() == 0) {
+             if (execv("./writestring", args) == -1)
+                 perror("Could not execve");
+     
+             exit(0);
+         } else if (fork() == 0) {
+             if (execv("./writestring", args) == -1)
+                 perror("Could not execve");
+     
+             exit(0);
+     
+         } else if (fork() == 0) {
+             if (execv("./writestring", args) == -1)
+                 perror("Could not execve");
+     
+             exit(0);
+         } else {
+             wait(NULL);
+             wait(NULL);
+             wait(NULL); // ik weet niet hoe legaal dit is
+             printf("Tering\n");
+         }
+     
+         return 0;
+     }
+     ```
+
+   * Idem als deel 1 maar maak nu gebruik van de systeemaanroep execl. De laatste C-string-parameter moet (char *)0 zijn om het einde van de opsomming aan te geven. Bemerk dat gewoon 0 schrijven niet voldoende is en zelfs fout is. Wanneer de grootte van een int verschillend is van de grootte van een char *, zal het aantal argumenten dat doorgegeven wordt aan execl verkeerd zijn.
+
+     ```c
+     //skip sorry
+     ```
+
+     
 
 ## 7 - Programmeren in Bash
 
@@ -2760,8 +3083,11 @@ done < tmp.txt
 
 93. Hoe kun je met behulp van de while- of until-lus een aantal commando's oneindig lang laten uitvoeren? Onderbreek de uitvoering met Ctrl+C.
 
-    ```
-    
+    ```bash
+    #!/bin/bash
+    while true; do
+            echo pipi
+    done
     ```
 
 94. Het bestand ping.out bevat de output van een Windows batch file:
@@ -2781,34 +3107,86 @@ done < tmp.txt
 
     Je kunt niet-actieve toestellen herkennen aan het feit dat het commando niet wordt beantwoord zoals bij actieve. De foutboodschappen die dan gegenereerd worden zijn divers. Maak een Bash-script dat uit ping.out een inventaris opmaakt van alle nietactieve toestellen (één lijn per toestel). Het script moet ook een samenvattende regel weergeven die zowel het aantal actieve als het totaal niet-aantal toestellen vermeldt. Zorg ervoor dat het script onafhankelijk is van de precieze foutboodschappen die nietactieve toestellen produceren. Construeer twee oplossingen, al dan niet gebruikmakend van associatieve arrays (enkel beschikbaar in Bash v4). 
 
-    ```
+    ```bash
+    #!/bin/bash
+    file="ping.out"
+    declare -A offline
     
+    while read line; do
+    
+            if [[ $line =~ ^Pinging* ]]
+            then
+                    device=${line#Pinging }
+                    device=${device%% [*}
+                    offline["$device"]=1
+            fi
+     
+            if [[ $line =~ ^Reply* ]]
+            then
+                    unset offline["$device"]
+            fi
+    done < $file
+    
+    declare -p offline #lijst tonen
     ```
 
 95. Gebruik (enkel) het bestand /etc/passwd om voor alle groepsnummers het aantal gebruikers met hetzelfde primaire groepsnummer te tellen. Realiseer dit op twee manieren: 
 
     * Gebruik een while-lus met een read-commando om het bestand te overlopen en arrays om de gegevens op te slaan. 
 
-      ```
+      ```bash
+      #!/bin/bash
       
+      declare -A ids
+      while read line ;do
+              IFS=":"
+              list=($line)    
+              id=${list[3]}
+      
+              if [[ -z ${ids["$id"]} ]]
+              then
+                      ids["$id"]=1
+              else
+                      ids["$id"]=$(( ids["$id"] + 1 ))
+              fi
+                      
+      done < /etc/passwd
+      
+      declare -p ids
       ```
 
     * Sla eerst de gegevens geordend op in een tijdelijk bestand, en verwerk vervolgens dit bestand. 
 
-      ```
+      ```bash
+      #!/bin/bash
       
+      cut -d : -f4 /etc/passwd | sort  > sorted.txt
+      cat sorted.txt
+      #de rest heb ik effe geen zin in
       ```
 
 96. Gebruik de bestanden /etc/group en /etc/passwd om een overzicht te maken van alle groepen, gevolgd door de volledige lijst van gebruikers die deze groep als primaire groep hebben. Gebruik een while-lus met een read-commando om het bestand /etc/group te overlopen en grep om de gebruikers op te sporen.
 
-    ```
-    
+    ```bash
+    #godverdomme ik heb het echt gehad met telkens die zelfde klotebestanden
     ```
 
 97. Ontwikkel een script met juist twee parameters. De eerste parameter is de naam van een directory tree, de tweede parameter stelt een aantal bytes voor. Het script genereert de naam van alle bestanden in de directory tree waarvan de grootte de waarde van de tweede parameter overschrijdt. Bovendien wordt het totale aantal bestanden dat aan deze voorwaarde voldoet en het totale aantal bytes in deze bestanden gerapporteerd. Tip: Gebruik het find-commando met passende opties om de individuele bestanden te vinden. Gebruik de optie -printf om de noodzakelijke informatie op te vragen tijdens het zoeken.
 
-    ```
+    ```bash
+    #!/bin/bash
     
+    totaal=0
+    bytes=0
+    IFS=§
+    while read name size; do
+            echo $name $size
+            ((totaal++))
+            ((bytes += size))           
+            done < <(find $1 -type f -size +$2b -printf '%p§%s\n' 2>/dev/null)
+    
+    
+    echo aantal: $totaal, totaal aantal bytes: $bytes
     ```
 
 
@@ -2817,8 +3195,16 @@ done < tmp.txt
 
 98. Ontwikkel een script met als parameters een bestandnaam en een willekeurig aantal strings (minstens één). Alle stringparameters die voorkomen in het bestand moeten regel voor regel naar standaarduitvoer worden weggeschreven; de volgorde is hierbij niet van belang.
 
-    ```
+    ```bash
+    #!/bin/bash
+    bestand=$1
+    shift
     
+    for woord in $@ ;do
+            if grep -q $woord $bestand
+            then echo $woord 
+            fi
+    done
     ```
 
     
@@ -2827,8 +3213,8 @@ done < tmp.txt
 
     * Schrijf eerst alle gebruikersnamen weg naar een tijdelijk bestand; dubbels zijn voorlopig toegestaan. Filter vervolgens de dubbels hieruit en schrijf de resulterende gebruikerslijst uit. 
 
-      ```
-      
+      ```bash
+      #ik weiger
       ```
 
     * Gebruik een associatieve array, met de gebruikersnamen als sleutels. 
@@ -2839,8 +3225,19 @@ done < tmp.txt
 
 100. Ontwikkel een script dat alle parameters uitschrijft die meer dan één keer voorkomen in de argumentenlijst van het script. De volgorde waarin de minstens dubbel voorkomende parameters worden uitgeschreven heeft geen belang (sorteren mag), maar je moet er wel voor zorgen dat parameters die meer dan twee keer voorkomen toch slechts eenmaal weggeschreven worden. Laat als eerste parameter ook eventuele opties -i of -I (van ignore case) toe, die desgewenst aangeven dat er geen onderscheid mag gemaakt worden tussen hoofdletters en kleine letters. Tip: denk terug aan instructies uit voorgaande oefeningen!
 
-     ```
-     
+     ```bash
+     #!/bin/bash
+     if [ "$1" = "-i" ] || [ "$1" = "-I" ] 
+             then
+             shift
+             for arg; do
+                     echo ${arg,,}
+             done | sort | uniq -d
+     else
+             for arg; do
+                     echo $arg
+             done | sort | uniq -d
+     fi
      ```
 
      
@@ -3025,6 +3422,22 @@ $0	#Filename of the shell script
 $_	#Last argument of the previous command
 ```
 
+## Bash if test flags
+
+| Flag   | Betekenis                   |
+| ------ | --------------------------- |
+| `-eq`  | is equal to                 |
+| `-ne`  | is not equal to             |
+| `-gt`  | is greater than             |
+| `-ge`  | is greater than or equal to |
+| `-lt`  | is less than                |
+| `-le`  | is less than or equal to    |
+| `-z`   | is zero, of lege string     |
+| `-n`   | not null                    |
+| `-e`   | file exists                 |
+| ``-f`` | file is a regular file      |
+| `-d`   | file is a directory         |
+
 
 
 ## Indirecte adressering
@@ -3050,7 +3463,7 @@ dit is gelijkaardig aan `*var` in C/C++
 
 ### Line numbers
 
-```
+```bash
 #je kan line numbers aan of uitzetten in vim met 
 :set number! 
 #of korter
@@ -3061,7 +3474,7 @@ dit is gelijkaardig aan `*var` in C/C++
 
 Je kan door aan je `.vimrc` een functie toe te voegen, ervoor zorgen dat elke `sh`-file die je aanmaakt begint met 
 
-```
+```bash
 #!/bin/bash
 ```
 
@@ -3156,4 +3569,135 @@ endfunction
 | `${variabele,}`                | converteert de eerste letter van de string naar lowercase    |
 | `${variabele^^}`               | converteert de volledige string naar uppercase               |
 | `${variabele^^}`               | converteert de volledige string naar lowercase               |
+
+
+
+
+
+# Booster sessies
+
+## Tee
+
+[15 pt] De shell-opdracht tee schrijft de uitvoer naar het scherm en naar een aantal bestanden waarvan de namen op de opdrachtlijn worden meegegeven. Zonder parameters heeft tee dezelfde werking als cat, ttz. alles wordt van standaard invoer naar standaard uitvoer geschreven. Wanneer het minteken als bestandsnaam wordt opgegeven, wordt de uitvoer nogmaals naar standaard uitvoer geschreven. Zo zal de opdracht “tee a - b -“ alles van standaard invoer naar het bestand a, het bestand b en driemaal naar standaard uitvoer schrijven.
+
+Schrijf in de programmeertaal C een eigen versie van de opdracht tee gebruikmakend van systeemaanroepen. Het gebruik van streams (printf, scanf, ...) is NIET toegelaten! De code zelf schrijf je weg in het bestand 2.c.
+
+Opgelet: Maak geen gebruik van het /etc/passwd bestand of aanverwanten. De bestanden die je opgeeft, worden overschreven! Gebruik enkel nieuwe bestanden om uit te testen.
+
+
+
+```c
+#include <unistd.h>
+#include <fcntl.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+int main(int argc, char **argv){
+	/* 1 alle bestanden openen en de filedescriptor bijhouden in een array */
+	
+	int *fds=malloc(sizeof(int)*(argc-1));
+	int teller=0;
+	for(int i=1;i<argc;i++){
+		if (strcmp(argv[i],"-")==0) { 
+			fds[teller++]=1;
+			continue;
+		} 
+		fds[teller]=open(argv[i],O_WRONLY|O_CREAT);
+		if (fds[teller]<0){
+			perror(argv[i]);
+			continue;
+		}
+		teller++;
+	}
+	fds[teller++]=1;
+
+	/* 2 inlezen van stdin en wegschrijven naar elke uitvoer filedescriptorÂ£*/
+
+	char buffer[BUFSIZ];
+
+	int n=read(0,buffer,BUFSIZ);
+	while ( n!=0){
+		for (int i=0;i<teller;i++){
+			write(fds[i],buffer,n);
+		}
+		n=read(0,buffer,BUFSIZ);
+	}
+	if (n<0){
+		perror(argv[0]);
+	}
+
+	for (int i=0;i<teller;i++){
+		if (fds[i]==1) 
+			continue;
+		if (close(fds[i])<0){
+			perror(argv[i]);
+			continue;
+		}
+	}
+	free(fds);
+	return 0;
+}
+```
+
+
+
+## Pagefile
+
+```bash
+#!/bin/bash
+#texec {fd}< pagefile.out
+while read -r lijn; do
+    array=( $lijn )
+    if [[ "${array[0]}" =~ ADirectory ]];then
+        comp=s${array[-1]}
+        comp=${comp%c$}
+        comp=${comp//\\/}
+    fi
+
+    if [[ "${array[2]}" =~ free ]];then
+    #echo ${array[0]}
+        grootte=${array[0]//./}
+        if ((grootte<80%x1024%1024));then
+        echo $comp
+        fi
+    fi
+done < pagefile.out
+```
+
+
+
+## Wc in bash
+
+```bash
+#!/bin/bash
+function printerr(){
+	echo "Usage wc [-1] [-w] [-c] [file|directory] [file2|directory2" >&2
+}
+
+lijnen=0
+woorden=0
+kars=0
+while [[ -n "$1" ]]; do
+  case "$1" iin
+    -1) lijnen=1
+    	;;
+    -w) woorden=1
+    	;;
+    -c) kars=1
+    	;;
+		[^-]*) [[ ! -f "$1" && ! -d "$1" ]] && { printerr ; exit 1 ; }
+			;;
+		-*) printerr
+			exit 1 
+			;;
+	esac
+	shift
+done
+	exit 1
+	
+	# todo de rest
+```
 
