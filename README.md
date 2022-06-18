@@ -1,5 +1,5 @@
 # TI-oplossingen
-> :warning: **Als je deze oplossingen hebt gebruikt**: Moet je King Marti volgen op soundcloud (& Spotify)
+> :warning: **Als je deze oplossingen hebt gebruikt**: Moet je [King Marti](https://open.spotify.com/artist/0uci5famFacOkZxT65W7Mp?si=Sh2et2trQCeSp9fC5ihD9g) volgen op soundcloud (& Spotify)
 
 
 > :warning: **NODIGE DISCLAIMER**: Deze oplossingen dienen gebruikt te worden als referentiemateriaal. Neem ze niet letterlijk over en denk zelf na. 
