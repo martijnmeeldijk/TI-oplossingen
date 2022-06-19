@@ -4,13 +4,34 @@
   - Vragen uit vragenlijst
 - Labo: 50%
 
-Ik ben een nuttige idioot en ik heb ook bij elke vraag de paginanummers geschreven :wink:.
+
+
+In het theoriegedeelte volg ik de volgende structuur:
+
+
+
+> Dit is wat Wim zegt
+
+```
+beknopte mnemotechische opsomming met zo weinig mogelijk redundantie
+```
+
+uitgebreidere **uitleg** met plaatjes enzo
+
+
+
+
 
 # Hoofdstuk 1
 
 ## Vraag 1
 
 > Wat is het verschil tussen symmetrische en asymmetrische multiprocessing? p15
+
+```
+asym -> 1 master, bottleneck
+sym -> kernel verdelen of volledig kopieren, fouttolerantie
+```
 
 Bij **asymmetrische multiprocessing** wordt de kernel van het besturingssysteem altijd uitgevoerd op een bepaalde **master** processor. Hij is verantwoordelijk voor scheduling en heeft volledige controle over het geheugen.
 
@@ -27,6 +48,10 @@ Bij symmetrische multiprocessing kan de kernel dus uitgevoerd worden **op elke p
 
 > Wat moet je voorzien om op een Unix-systeem Windows applicaties te kunnen uitvoeren? p12
 
+```
+virtuele machine = gestandaardiseerde api voor system calls
+```
+
 Een **virtuele machine**. Deze zorgt ervoor dat we functioneel gebruik kunnen maken van software en hardware die niet noodzakelijk effectief aanwezig zijn op ons systeem. Hardware aanspreken via een virtuele machine vereist wel **veel meer software-instructies**, dus we moeten een afweging maken tussen efficiëntie en gebruiksvriendelijkheid.
 
 De virtuele machine is in deze context een gestandaardiseerde API, aangeboden door het besturingssysteem. Programma's kunnen dan deze API aanspreken, onafhankelijk hoe het besturingssysteem deze implementeert. 
@@ -35,6 +60,11 @@ De virtuele machine is in deze context een gestandaardiseerde API, aangeboden do
 
 > Bespreek hoe je op Windows een Unix-applicatie kan uitvoeren? Wat wordt in deze context bedoeld met een subsysteem? p20-21
 
+```
+omgevingssubsysteem = API voor apps geschreven voor andere OS'en
+bv op windows het posix subsysteem
+```
+
 **Omgevingssubsystemen** zorgen voor interactie met de gebruiker en voorzien een API set waardoor we op Windows toepassingen kunnen ondersteunen die geschreven zijn voor andere besturingssystemen, zoals Unix bijvoorbeeld. Elk subsysteem heeft zijn eigen adresruimte.
 
 Elk programma dat draait kan maar van één omgevingssubsysteem gebruik maken (het is wel logisch dat een windows programma geen UNIX system calls hoeft te doen hoop ik). Als we een Unix applicatie willen draaien, maken we dus gebruik van het POSIX-subsysteem, waarin de meeste UNIX-compatibele software kan worden gecompileerd en uitgevoerd. De API van ons POSIX-subsysteem wordt dus vertaald om toegang te krijgen tot de Executive.
@@ -42,6 +72,17 @@ Elk programma dat draait kan maar van één omgevingssubsysteem gebruik maken (h
 ## Vraag 4
 
 > Geef vier mogelijke ontwerpen van kernels. Bespreek bij elk hun voor- en nadelen en of ze nog gebruikt worden. p16-18, 22-24
+
+```
+* Mono: gedeelde geheugenruimte, oud, efficiënt, moeilijk uitbreidbaar
+
+* Gelaagd: hërarchisch gescheiden + interfaces, volledige kernel in kernelmodus, moeilijk beveiligbaar, scheiding moeilijk in realiteit, gebuikt bij I/O-subsystemen
+* Micro: kernel alleen meest essentiele func, hardware afh. in kernel, functies servers == normale processen, niet efficiënt door berichten
+
+* Modulair: kleine kern met noodz. dingen voor andere modules, onafhankelijke delen met interfaces, bij linux loadable kernel modules
+```
+
+
 
 - **Monolithische kernel**:
 
@@ -79,6 +120,13 @@ Ook al is de kernel van Linux redelijk monolithisch geïmplementeerd, maakt het 
 
 > Geef van elke component in de “executive” aan wat de werking ervan is. p20
 
+```
+HAL = hardware abstraction layer
+Microkernel = meest essentieel, scheduling, synchronisatie, traps, interrupts, herstel stroomuitval, altijd in geheugen
+
++ Lijstje van executive services
+```
+
 De **executive** is het deel van het Windows NT besturingssysteem dat in kernel mode uitgevoerd wordt.
 
 * Hardware abstraction layer
@@ -92,17 +140,18 @@ De **executive** is het deel van het Windows NT besturingssysteem dat in kernel 
 * Executive diensten 
 
   * I/O-manager: verwerkt I/O-verzoeken en is gelaagd opgebouwd om bijvoorbeeld stuurprogramma's dynamisch te laden
-
-  - Cache manager: beheert de schijfcache
-
-  - Security reference monitor: controleert alle toegang
-
-  - Object Manager: maakt en verwijdert objecten
-
+  * Cache manager: beheert de schijfcache
+  * Object Manager: maakt en verwijdert objecten
+  * Plug and play manager: zorgt ervoor dat de pc nieuwe aangesloten apparaten herkent
+  * Security reference monitor: controleert alle toegang
+  * Virtual Memory Manager: doet de vertaling tussen fysieke en virtuele geheugenadressen.
+  
   - Process Manager: beheert proces- en threadobjecten
-
-  - Virtual Memory Manager: doet de vertaling tussen fysieke en virtuele geheugenadressen.
-
+  
+  - Configuration manager: beheert low-level instellingen voor het besturingssysteem
+  
+  - Local Procedure call: communicatie tussen processen
+  
   - Windows & Graphics (Vanaf NT 4.0): bevatten de scherminterface en de grafische stuurprogrammas (voor NT 4.0 werden ze in gebruikersmodus uitgevoerd)
 
 
@@ -112,6 +161,11 @@ De **executive** is het deel van het Windows NT besturingssysteem dat in kernel 
 ## Vraag 6
 
 > Wat is het verschil tussen een programma en een proces? Wat zijn de oorspronkelijke twee definities voor een proces?p28
+
+```
+programma passief, verzameling cmds
+proces actief, uitvoeringspad / eenheid verdeling processorinstructies en eigendom bronnen
+```
 
 Een **programma** is een passieve entiteit. Simpelweg een verzameling van instructies. Een **proces** is daarentegen de effectieve uitvoering van een afzonderlijk programma. Een programma is dus passief en een proces is actief.
 
@@ -128,13 +182,26 @@ Een **programma** is een passieve entiteit. Simpelweg een verzameling van instru
 
 > Waarom is het model met twee procestoestanden actief en niet actief niet interessant? Wat is het probleem dat je hier zal tegenkomen? p30
 
+```
+te simpel: scheduler moet zoeken 
+```
+
 Het model is te simpel. Sommige processen in de toestand 'niet actief' zijn klaar om uitgevoerd te worden, terwijl anderen aan het wachten zijn op bijvoorbeeld een I/O bewerking. De scheduler moet dus telkens in de wachtrij op zoek gaan naar een proces dat niet aan het wachten is.
+
+//TODO misschien klein beetje extra uitleg
 
 ## Vraag 8
 
 > Geef alle toestanden waarin een thread zich kan bevinden? Bespreek wanneer een thread van de ene toestand in de andere zal terechtkomen. p30-31
 
 <img src="img/image-20220613122635324.png" alt="image-20220613122635324" style="zoom: 33%;" />
+
+```
+new, ready, running, exit (pijlen van links naar rechts en eentje van running naar ready)
+blocked onderaan met pijl naar ready en pijl van running
+```
+
+
 
 - **Nieuw** (new)
   - Nieuw &rarr; Gereed: Een nieuw proces wordt toegevoegd aan de lijst van uitvoerbare processen.
@@ -154,7 +221,19 @@ Het model is te simpel. Sommige processen in de toestand 'niet actief' zijn klaa
 
 > Voor processen hebben we een model met 7 toestanden, dewelke? Teken het toestandsdiagram en geef aan hoe en wanneer er van toestand zal worden gewisseld. p32-33
 
+```
+new
+ready/suspend, ready, running, exit
+blocked/suspend, blocked
+
+Je moet ook alle overgangen van de vorige vraag kennen
+```
+
+[tekening]
+
 <img src="img/image-20220313150058862.png" alt="image-20220313150058862" style="zoom: 33%;" />
+
+
 
 1. **Blocked &rarr; Blocked/Suspend**: 
    * Als er geen proces *ready* is, of er meer plaats nodig is, worden geblokkeerde processen uit het hoofdgeheugen geswapt om ruimte te maken voor andere processen.
@@ -179,6 +258,14 @@ Het model is te simpel. Sommige processen in de toestand 'niet actief' zijn klaa
 
 > Wat wordt er bedoeld met het procesbeeld? Geef aan hoe dit er uitziet en beschrijf ook wat er zich in elk deel bevindt. Het PCB mag je hier buiten beschouwing laten. p33-34
 
+```
+procesbeeld = programma, gegevens, stackgebieden
+geheugentabellen (beheren hoofd en sec geheugen)
+I/O-tabellen (beheren I/O apparaten)
+Bestandstabellen (voor bestandsbeheersysteem, info over bestanden verzin zelf)
+Procestabellen (om ze te beheren)
+```
+
 Het **procesbeeld** is de verzameling van het **programma**, de **gegevens** en de **stackgebieden**. Voordat een proces uitgevoerd wordt moet het hele procesbeeld dus in het hoofdgeheugen geladen worden. Als het programma zich in onderbroken toestand bevindt wordt het hele procesbeeld als een aaneengesloten blok geheugen op de schijf opgeslagen.
 
 - Geheugentabellen
@@ -193,6 +280,13 @@ Het **procesbeeld** is de verzameling van het **programma**, de **gegevens** en 
 ## Vraag 11
 
 > De info in het PCB kan je in drie categorieën onderverdelen. Dewelke? Bespreek ook wat er zich zoal in elk deel van het PCB bevindt. p34-36
+
+```
+identificatie: pid = index in primaire procestabel
+Processortoestandsinfo: inhoud procesregisters, als proces inactief zitten ze ergens opgeslagen
+Procesbestoringsinformatie: extra info voor OS procesbeheer (scheduling, 
+			locaties delen procesbeeld, bronnen, privileges, vlaggen)
+```
 
 PCB = Process control block, een blok geheugen in de geheugenruimte van het proces zelf met informatie omtrent procesbeheer.
 
@@ -215,6 +309,12 @@ PCB = Process control block, een blok geheugen in de geheugenruimte van het proc
 
 > Welke stappen moet het besturingssysteem ondernemen om een nieuw proces aan te maken? p36
 
+```
+nieuwe pid + entry tabel -> ruimte -> init PCB + koppelingen + prioriteit & status -> GG-structuren
+```
+
+
+
 1. Eerst en vooral maken we een unieke **procesidentificatiecode** (pid) aan en voegen we een nieuwe entry toe in primaire procestabel. 
 2. We **wijzen ruimte toe** aan alle delen van het procesbeeld. Het besturingssysteem moet dus weten hoe veel ruimte er nodig is. 
 3. Dan initialiseren we het **procesbesturingsblok** (PCB), eigenlijk vooral de procesbesturingsinformatie. Verder moeten we de **juiste koppelingen instellen**, zoals het proces in de wachtrij van 'gereed' of 'gereed/onderbroken' stoppen en de juiste prioriteit geven.
@@ -223,6 +323,13 @@ PCB = Process control block, een blok geheugen in de geheugenruimte van het proc
 ## Vraag 13
 
 > Welke opportuniteiten kan het besturingssysteem gebruiken om van proces te wisselen? Bespreek zo gedetailleerd mogelijk op welke momenten de scheduler aan bod kan komen. Geef bij elke mogelijke opportuniteit ook aan of er van proces zal/kan/moet gewisseld worden en geef zo mogelijk ook een aantal voorbeelden om je antwoord te staven. p36-38
+
+```
+Interrupts: klok (kwantum op wss wissel), I/O (kan wissel prioriteit), page fault (moet wissel)
+Traps: (als )
+```
+
+Telkens als de besturing wordt overgedragen aan het besturingssysteem kan het beslissen of het wil verdergaan met het huidige proces of het huidige proces zal onderbreken om een ander proces te kiezen.
 
 1. **Interrupts**
 
@@ -248,6 +355,11 @@ De scheduler komt vrijwel altijd aan bod wanneer het besturingssysteem zijn taak
 
 > Wat is het verschil tussen een synchrone en asynchrone interrupt? p37
 
+```
+synchroon: direct uitvoeren
+asynchroon: niet direct
+```
+
 Een **synchrone** interrupt moet onmiddellijk worden uitgevoerd. De uitvoering van het programma waaruit de interrupt is ontstaan kan niet doorgaan zolang het besturingssysteem geen actie ondernomen heeft. Het programma wordt geblokkeerd tot de interrupt afgehandeld is. Voorbeeld: paginafout
 
 Een **asynchrone** interrupt kan daarentegen onmiddellijk worden uitgevoerd, maar ook uitgesteld worden. Het programma wordt niet geblokkeerd en de uitvoering kan doorgaan. Voorbeeld: I/O-interrupt
@@ -270,11 +382,19 @@ Een **asynchrone** interrupt kan daarentegen onmiddellijk worden uitgevoerd, maa
 
 > Hoe zal men bij een microkernel-architectuur een systeemaanroep afhandelen? p38
 
-**Berichtgestuurd**: in besturingssystemen met een microkernel of client/server architectuur werkt de interface tussen client- en serverprocessen met het uitwisselen van berichten. Er wordt een kanaal tot stand gebracht tussenbeide. Wanneer een clientproces dan een aanvraag doet, laat het zich vrijwillig blokkeren tot het antwoord beschikbaar is. Als ze alle vragen hebben beantwoord, dragen de serverprocessen de controle over aan de scheduler.
+```
+berichtgestuurd: interface tussen client/server, kanaal, client bij aanvraag vrijwillig blokkeren tot antwoord, bij antwoord geeft serverproces controle aan scheduler 
+```
+
+**Berichtgestuurd**: in besturingssystemen met een microkernel of client/server architectuur werkt de interface tussen client- en serverprocessen met het uitwisselen van berichten, dit wordt beschouwd als een I/O-operatie. Er wordt een kanaal tot stand gebracht tussenbeide. Wanneer een clientproces dan een aanvraag doet, laat het zich vrijwillig blokkeren tot het antwoord beschikbaar is. Als ze alle vragen hebben beantwoord, dragen de serverprocessen de controle over aan de scheduler.
 
 ## Vraag 17
 
 > Hoe zal men bij een monolithisch kernelontwerp een systeemaanroep afhandelen? p38
+
+```
+proceduregestuurd: syscall = procedure, parameters op register + trap, dan kernel mode en code wordt uitgevoerd
+```
 
 **Proceduregestuurd**: Elke systeemaanroep komt overeen met een bibliotheekprocedure. De parameters (of adres naar een lijst van parameters) worden in een register gezet en trap gegenereerd, waarna het systeem in kernelmodus wordt gezet en de controle aan het besturingssysteem wordt overgedragen. Die kijkt met welke interne procedure de systeemaanroep overeenkomt en voert hem uit. Het doel is hier om systeemaanroepen meer te doen lijken op gewone procedures.
 
@@ -339,6 +459,11 @@ Het besturingssysteem zal hier wel wat meer werk moeten doen. Tijdens het wissel
 
 > Wat zijn de nadelen van een procesloze kernel? Welke delen van een Unix- en een Windows kernel zijn procesloos? p41-42
 
+```
+vaak context + proceswissel, bij interrupt switchen naar kernel mode
+delen: interruptafhandeling en proceswisseling
+```
+
 Er moeten zeer vaak context- en proceswisselingen uitgevoerd worden, wat niet geweldig is voor de prestaties. 
 
 Je hebt een aantal gebruikersprocessen en de kernel. Het principe van processen is enkel van toepassing op de processen, en niet op de kernel. De kernel is één monolithisch blok code dat een vaste plaats in het geheugen heeft. Bij een interrupt zal je naar kernel mode moeten overschakelen, een contextwissel moeten doen en waarschijnlijk ook een proceswissel. 
@@ -385,6 +510,12 @@ Dit betekent dus dat wanneer er een van proces gewisseld moet worden, de context
 
 > Hoe wordt er binnen een microkernelgeoriënteerd besturingssysteem van proces gewisseld? Wat zijn hier de voor- en nadelen? p42
 
+```
+OS functies als processen in kernel mode
+nadeel: veel proceswisselingen
+voordeel: OS is verschillende modules, processen met prioriteit verweven, systeem met meerdere processoren
+```
+
 De belangrijkste besturingssysteemfuncties worden gestructureerd als aparte processen, uitgevoerd in kernelmodus. Een kleine hoeveelheid code zorgt dan voor de proceswisseling. 
 
 **Nadeel**
@@ -412,17 +543,27 @@ We splitsen deze definitie op:
 
 > Geef het procesbeeld van een multithreaded proces met drie threads. Welke delen worden er over de grenzen van een thread gedeeld.
 
+```
+thread: stack, besturingsblok (met contextinformatie), scheduling per thread
+proces: pcb en adresruimte, bronnen, code
+```
+
 <img src="img/image-20220618230443890.png" alt="image-20220618230443890" style="zoom: 33%;" />
 
 Elke **thread** beschikt over een afzonderlijke stack en een afzonderlijk besturingsblok, waarin onder meer de contextinformatie wordt opgeslagen. Scheduling wordt uitgevoerd per individuele thread, hierdoor moet dus ook de meeste toestandsinformatie bijgehouden worden op het threadniveau. 
 
-Op het **procesniveau**, dus over de grenzen van de threads heen is er nog steeds een procesbesturingsblok en gebruikersadresruimte. Alle threads delen de toestand en de bronnen van hun proces. Ze hebben ook toegang tot dezelfde bestanden geheugengegevens. De programmacode wordt ook gedeeld, dus toepassingen kunnen meer actieve threads hebben binnen dezelfde adresruimte, waardoor de processor beter bezig gehouden kan worden.
+Op het **procesniveau**, dus over de grenzen van de threads heen is er nog steeds een procesbesturingsblok en gebruikersadresruimte. Alle threads delen de toestand en de bronnen van hun proces. Ze hebben ook toegang tot dezelfde bestanden en geheugengegevens. De programmacode wordt ook gedeeld, dus toepassingen kunnen meer actieve threads hebben binnen dezelfde adresruimte, waardoor de processor beter bezig gehouden kan worden.
 
 ## Vraag 27
 
 > Geef voor- en nadelen van multithreading. Welke zijn de mogelijke implementaties (enkel vernoemen volstaat)? p43-46
 
+```
+voordelen: toestand, bronnen en code gedeeld, interprocescommunicatie makkelijke door gedeeld geheugen, threads maken en wisselen minder overhead, thread blokkeert =/= proces blokkeert-> wissel thread
 
+nadelen: hulpfuncties reentrant, multithreading gaat niet altijd, 
+User level threads, kernel level threads, combinatie
+```
 
 **Voordelen**
 
@@ -453,6 +594,11 @@ Op het **procesniveau**, dus over de grenzen van de threads heen is er nog steed
 
 > Wat zijn de voor- en nadelen met user level threading? p46
 
+```
+voor: elk os, efficiente threadwisselingen, scheduling algoritme aanpassen
+na: 1 thread blokcing syscall= alle threads vast, niet goed met multiprocessing (elk proces 1 thread actief)
+```
+
 **Voordelen**
 
 * Ze kunnen ondersteund worden op **elk besturingssysteem**
@@ -467,6 +613,11 @@ Op het **procesniveau**, dus over de grenzen van de threads heen is er nog steed
 ## Vraag 29
 
 > Wat zijn de voor- en nadelen van kernel level threading? p47
+
+```
+voor: meerdere threads zelfde proces, block thread =/= block proces, thread pools
+na: wisselen thread vergt modus + context switch
+```
 
 De scheduling door de kernel wordt uitgevoerd op basis van threads, niet op basis van processen.
 
@@ -484,6 +635,11 @@ De scheduling door de kernel wordt uitgevoerd op basis van threads, niet op basi
 
 > Wat is het verschil tussen coöperatieve- en preempted multitasking? Wanneer kan een proces preemptief worden onderbroken? p51
 
+```
+preempted: os kan onderbreken
+cooperative: proces moet zelf controle afgeven
+```
+
 Bij preempted multitasking kunnen threads preëmptief door **timeslices** onderbroken worden. Dit betekent dat het besturingssysteem het lopende proces kan stoppen en de processor aan een ander proces met hogere prioriteit toewijzen. Het probleem is hier wel dat het kan dat processen met lage prioriteit constant worden onderbroken door processen met hogere prioriteit.
 
 Op systemen zonder *timeslicing* moet een thread vrijwillig de controle over de processor overgeven om andere threads een kans te geven. Dit is **cooperative multitasking**. Het besturingssysteem zal dus nooit een switch initiëren. Threads kunnen dan de controle afgeven als ze geblokkeerd zijn of ze kunnen periodiek andere threads de controle over laten nemen. Als er een belangrijke thread moet uitgevoerd worden, moet deze dus wachten totdat de huidige klaar is.
@@ -499,6 +655,14 @@ niet te kennen
 ## Vraag 32
 
 > Een proces in een Windows heeft drie zaken? Benoem ze en bespreek waarvoor ze dienen.p56
+
+```
+access token (beveiliging)
+Virtuele adresruimte (virtual memory manager v. executive)
+Objecctabel met handles (naar objecten, ook access token nakijken)
+```
+
+
 
 * **Access token**
   * Wordt ook wel het *primaire token* genoemd. Dit wordt gebruikt om te checken of de gebruiker bepaalde bewerkingen mag uitvoeren met beveiligde objecten.  
@@ -582,6 +746,11 @@ Verschillende toestanden:
 
 > Bespreek onderstaande figuur. Hoe worden de verschillende componenten aan elkaar gekoppeld. p48
 
+```
+combinatie user & kernel level threads
+kernel threads gekoppeld aan lightweight processen = ziet eruit als virtuele processor
+```
+
 <img src="img/image-20220611160129996.png" alt="image-20220611160129996" style="zoom: 33%;" />
 
 Sommige besturingssystemen combineren user-level en kernel-level threads. In dit geval worden verschillende user-level threads gegroepeerd gekoppeld aan een kleiner of gelijk aantal kernel-level threads. Het creëren van threads gebeurt in de user space, want dit is efficiënter.
@@ -622,15 +791,27 @@ De user-level threadbibliotheek moet communiceren met de kernel. Dit gebeurt via
 
 > Waarom krijg je bij het schrijven van data naar een filedescriptor die geopend werd met de O_SYNCvlag een heel trage verwerkingssnelheid (2 redenen)?
 
+
+
 Antwoord van the man himself:
 
-> Wanneer je de vlag niet meegeeft zal een proceswissel niet steeds noodzakelijk zijn. Het proces roept via een software-interrupt de systeemaanroep aan, er treedt een modewissel en contextwissel op (cfr. de CPU-registers worden, in Linux althans, op de kernelstack bewaard) en de code van de systeemaanroep wordt in kernelmode uitgevoerd. Zonder de O_SYNC-vlag leidt dit veelal tot een zuivere geheugenoperatie door het wegschrijven van 1 of meerdere bytes van de user-buffer naar de kernel-buffer. De tijd die hiervoor nodig is is zeer beperkt en na de systeemaanroep is een proceswissel dus niet steeds aan de orde. Wanneer de kernelbuffer echter vol komt, moet er een I/O-operatie gestart worden en zal het gebruikersproces moeten worden geblokkeerd tot wanneer alle bytes uit de userbuffer werden gekopieerd.
+> Wanneer je de vlag **niet meegeeft** zal een **proceswissel niet steeds noodzakelijk** zijn. Het proces roept via een software-interrupt de systeemaanroep aan, er treedt een modewissel en contextwissel op (cfr. de CPU-registers worden, in Linux althans, op de kernelstack bewaard) en de code van de systeemaanroep wordt in kernelmode uitgevoerd. **Zonder de O_SYNC-vlag** leidt dit veelal tot een **zuivere geheugenoperatie** door het wegschrijven van 1 of meerdere bytes van de **user-buffer naar de kernel-buffer**. De tijd die hiervoor nodig is is zeer beperkt en na de systeemaanroep is een proceswissel dus niet steeds aan de orde. Wanneer de **kernelbuffer echter vol** komt, moet er een **I/O-operatie gestart** worden en zal het gebruikersproces moeten worden geblokkeerd tot wanneer alle bytes uit de userbuffer werden gekopieerd.
 >
 > Bij het zetten van de O_SYNC-vlag heb je dus naast meer I/O-operaties ook steeds een extra proceswissel wat het vertragend effect nog versterkt. Iedere write-systeemaanroep wordt verplicht om een I/O-operatie te starten en het bijhorende proces te blokkeren tot wanneer de bijhorende I/O-interrupt het geblokkeerde proces deblokkeert.
+
+De O_SYNC vlag verplicht eigenlijk dat je bij het schrijven direct een I/O-operatie start. Als je deze niet aanzet, zal na een system call, moduswissel en contextwissel de inhoud van de user buffer naar de kernel buffer geschreven worden. Pas als de buffer vol is moet er een I/O-operatie gestart worden.
+
+Als je de vlag wel zet wordt je write geblokkeerd tot de I/O-operatie klaar is. Je hebt dus meer I/O-operaties en een extra proceswissel. 
 
 ## Vraag 38
 
 > Wat zijn de voor- en nadelen van (kernel/user) buffering? In de kernel wordt er default gebruikgemaakt van buffering en in het gebruikersprogramma stel je het zelf in. Bemerk dat wanneer je opeenvolgende schrijfopdrachten doet met slechts 1 byte, je per definitie geen buffering gebruikt.
+
+```
+voordelen: beperkt I/O opdrachten, deze zijn bottleneck, veel kleine I/O opdrachten worden één grote
+
+nadelen: geheugen toekennen voor buffers en in de gaten houden, complexe algoritmes voor aanvullen/leegmaken
+```
 
 Antwoord van the man himself:
 
@@ -644,15 +825,27 @@ Antwoord van the man himself:
 
 > Wanneer zal de systeemaanroep read resulteren in een geblokkeerd proces en wanneer niet. Idem voor een write-systeemaanroep. Geef nog een aantal andere systeemaanroepen die doorgaans een proces zullen blokkeren en dus bijgevolg een proceswissel zullen veroorzaken.
 
+```
+read: als buffer net moet worden aangevuld, blokkeer tot I/O buffer aangevuld, dan OS direct antwoord zonder proceswissel
+
+write: bij volle buffer flushen
+waitpid
+```
+
 Antwoord van the man himself:
 
 > Wanneer de buffer net moeten worden opgevuld, zal het OS het proces moeten blokkeren tot wanneer de achterliggende I/O-opdracht de buffer terug aangevuld heeft. Wanneer de buffer nog voldoende gevuld is zal het OS onmiddellijk de leesopdracht kunnen beantwoorden zonder te moeten wisselen van proces.
 >
-> waitpid en bv. write (bij een volle buffer die moet geflusht worden) zijn voorbeelden van systeemaanroepen die een geblokkeerd proces en dus een proceswissel zullen veroorzaken.
+> waitpid, read en bv. write (bij een volle buffer die moet geflusht worden) zijn voorbeelden van systeemaanroepen die een geblokkeerd proces en dus een proceswissel zullen veroorzaken.
 
 ## Vraag 40
 
 > Geef een kort C-codefragment waarmee je een zombie-proces aanmaakt. Wanneer een proces een zombieproces wordt, welk deel van het proces houdt de kernel dan nog in het geheugen bij en waarom?
+
+```
+code: fork zonder waitpid
+
+```
 
 Antwoord van the man himself:
 
@@ -683,6 +876,11 @@ int main(){
 
 > Na de systeemaanroep fork kan de uitvoering worden verdergezet in ofwel het kind ofwel de ouder. In welke van de twee zal de uitvoering hoogstwaarschijnlijk worden verdergezet en waarom? Wanneer zal dit niet het geval zijn?
 
+```
+in de ouder, want de scheduler gaat alleen wisselen naar een meer prioritair proces
+Het kind kan alleen eerts aan bod komen als de ouder zijn kwantum heeft opgebruikt
+```
+
 Antwoord van the man himself:
 
 > Wanneer je een systeemaanroep aanroept wordt er naar kernelmode geschakeld om de software interrupt (systeemaanroep) af te handelen. Hierna komt de scheduler (ook in kernelmode) aan bod om te kijken of er door de interrupt-afhandeling geen meer prioritaire processen werden gedeblokkeerd en zich dus in de toestand “gereed” bevinden. Dit is hier onmogelijk want de enige manier dat er preemptief van proces kan worden gewisseld is wanneer er na het afhandelen van de systeemaanroep processen gedeblokkeerd werden met een hogere prioriteit. Dus zal de uitvoering gewoon worden verdergezet in het proces dat aan zet was voor de onderbreking, de parent dus. Er is slechts één manier waarbij het kind als eerste aan bod zou kunnen komen en dat is dat bij het aanroepen van de systeemaanroep alle toegewezen tijd door de parent werd opgebruikt. Dan en enkel dan zal het kind als eerste aan bod komen
@@ -707,15 +905,26 @@ Antwoord van the man himself:
 
 > Zijn POSIX-threads (of pthreads genoemd) kernel level threads of user level threads? Hoe kom je tot dit besluit?
 
+```
+kernel level threads: linux alleen tasks, POSIX-threads clone, alles gedeeld behalve userstack, bij top -h twee processen
+```
+
 Antwoord van the man himself:
 
-> Linux kent uitsluitend tasks en maakt eigenlijk geen onderscheid tussen threads en processen. Bij het gebruik van POSIX-threads merk je op dat er achter de schermen een clone-systeemaanroep wordt gebruikt en waar dus een nieuw proces mee wordt aangemaakt waarbij alles gedeeld wordt behalve dan de userstack. Ook wanneer je kijkt met de opdracht top -H zie je hier twee processen staan waarbij het dus eerder aanleunt bij de definitie van kernelthreads dan bij de definitie van user level threads. Ter info bij user level threads is het besturingssysteem niet op de hoogte van het gebruik van threads. De scheduler kan dus onmogelijk een user level thread voor uitvoering selecteren. Alle beheer van user level threads komt dus terecht bij de applicatie zelf. Het proces moet dus de nodige code bevatten om zelf te switchen tussen threads. Blokkeert één user level thread op een I/O-bewerking, dan blokkeert het volledige proces. Ook al kunnen andere threads binnen dat proces wel verder doen.
+> Linux kent uitsluitend tasks en maakt eigenlijk geen onderscheid tussen threads en processen. Bij het gebruik van POSIX-threads merk je op dat er achter de schermen een clone-systeemaanroep wordt gebruikt en waar dus een nieuw proces mee wordt aangemaakt waarbij alles gedeeld wordt behalve dan de userstack. Ook wanneer je kijkt met de opdracht top -H zie je hier twee processen staan waarbij het dus eerder aanleunt bij de definitie van **kernelthreads** dan bij de definitie van user level threads. Ter info bij user level threads is het besturingssysteem niet op de hoogte van het gebruik van threads. De scheduler kan dus onmogelijk een user level thread voor uitvoering selecteren. Alle beheer van user level threads komt dus terecht bij de applicatie zelf. Het proces moet dus de nodige code bevatten om zelf te switchen tussen threads. Blokkeert één user level thread op een I/O-bewerking, dan blokkeert het volledige proces. Ook al kunnen andere threads binnen dat proces wel verder doen.
 
 # Hoofdstuk 4
 
 ## Vraag 45
 
 > Aan welke vier randvoorwaarden moet ieder geheugenbeheersysteem voldoen? 109-110
+
+```
+1. zo veel mogelijk processen in hoofdgeheugen
+2. vertaling
+3. toestemming + flexibel
+4. logische indeling -> eendimensionale adresruimte
+```
 
 
 
@@ -751,6 +960,14 @@ Bij partities van **ongelijke grootte** heb je meer flexibiliteit. Steek gewoon 
 
 > Bespreek de werking van dynamische partitionering. Wat zijn de voor- en nadelen? Welke zijn de verschillende plaatsingsalgoritmen en bespreek de werking en functie van elk algoritme. p111-112
 
+```
+variabel aantal partities met variabele grootte
+voordeel: geen interne fragmentatie
+nadeel: externe fragmentatie op den duur
+
+Algoritmen: best-fit, worst-fit, first-fit, next-fit
+```
+
 **Bespreek de werking van dynamische partitionering. Wat zijn de voor- en nadelen? **
 
 Dynamische partitionering gebruikt een **variabel aantal partities** met ieder een **variabele grootte**. Een proces krijgt dus exact de hoeveelheid geheugen die hij nodig heeft. Processen die niet meer in de toestand 'ready' staan worden dan geswapt om plek te maken voor processen die in de toestand 'ready/suspend' staan. Als er twee partities naast elkaar vrijkomen, worden ze samengevoegd. Een groot nadeel is dat er zich op den duur **externe fragmentatie** zal voordoen. De figuur hieronder bespaart mij wat woorden. In het slechtste geval zit er tussen elke twee processen een blok verspild geheugen waar niks inpast.
@@ -773,6 +990,14 @@ Om regelmatige compactie te vermijden wegens hoge performantieimpact, maken we g
 ## Vraag 48
 
 > Hoe gebeurt adresvertaling bij dynamische partitionering? p113-114
+
+```
+relatieve adressen -> fysieke adressen
+MMU vertaalt
+begin en eindadres proces in base en bound register
+vertaling: logisch adres + base
+> bound = fout
+```
 
 Om het leven van de programmeurs net dat kleine beetje makkelijker te maken, mogen zij gebruikt maken van **logische adressen**. Dan hoeven zij zich niet bezig te houden met waar in het hoofdgeheugen ze nu precies moeten zitten. In het geval van dynamische partitionering wordt er gebruikt gemaakt van **relatieve adressen**. Alle adressen worden dan uitgedrukt ten opzichte van een bepaald punt, meestal het begin van het programma.
 
@@ -816,6 +1041,16 @@ Elke van beide in een aparte lijst is ook een mogelijkheid, dan kunnen we de lij
 
 > Bespreek de werking van paginering (zonder virtueel geheugen). Wat is het verschil tussen paginering en vaste partitionering? Hoe gebeurt de adresvertaling bij paginering (maak een schets)? p117-118
 
+```
+frame <-> pagina zijn even groot
+logisch adres = page number + relatieve positie in pagina
+2^m logischa adresruimte, 2^n pagina-woordgrootte
+n meest rechtse bits: offset
+bits links (m-n): paginanummer -> index in process page table
+
+verschil met vaste partitionering: paginas kleiner, proces meerdere paginas, geen externe fragmentatie, interne fragmentatie beperkt
+```
+
 Paginering lijkt op vaste partitionering, de partities zijn echt een stuk kleiner. Een proces kan ook meerdere partities bezetten. Er is geen externe fragmentatie en de interne fragmentatie blijft beperkt tot het laatste stukje van de laatste pagina van elk proces. 
 
 Bij paginering verdelen we:
@@ -842,6 +1077,8 @@ Dan bevatten:
 * De $m-n$ meest significante bits van een adres het paginanummer
 * De $n$ minst significante bits de offset ten opzichte van het begin van de pagina
 
+[tekening]
+
 <p float="left">
   <img src="img/image-20220612143359080.png" alt="image-20220612143359080" style="zoom:50%;" />
   <img src="img/image-20220612143445233.png" alt="image-20220612143445233" style="zoom:40%;" />
@@ -866,7 +1103,13 @@ Ik heb er een sport van gemaakt om de hd-versie van de afbeeldingen van Wim zijn
 
 > Bespreek de werking van segmentatie (zonder virtueel geheugen)? Wat is het verschil tussen dynamische partitionering en segmentatie? Waarom wordt dit model voor de gebruiker bewust zichtbaar wordt gehouden. Geef een voorbeeld waar je handig gebruik kan maken van segmenten. Hoe gebeurt de adresvertaling bij segmentatie (maak een schets)? p119-120
 
-[tekening]
+```
+segmentatie: segmenten verschillende grootte, proces meerdere blokken
+logisch adres = segmentnummer + rel positie
+vertaling: segmentnummer uit linkerbits adres zoeken in segmenttabel, bits vervangen
+
+-> modulaire structuur doortrekken naar geheugen + sharing
+```
 
 **Bespreek de werking van segmentatie (zonder virtueel geheugen)? Wat is het verschil tussen dynamische partitionering en segmentatie?**
 
@@ -875,6 +1118,8 @@ Segmentatie lijkt op dynamische partitionering in de zin dat er ook blokken van 
 
 
 **Hoe gebeurt de adresvertaling bij segmentatie (maak een schets)?**
+
+[tekening]
 
 <p float="left">
   <img src="img/image-20220612143412875.png" alt="image-20220612143412875" style="zoom:60%;" />
