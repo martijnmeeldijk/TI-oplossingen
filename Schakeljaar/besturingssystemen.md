@@ -1723,6 +1723,74 @@ De werking is als volgt: Zowel de parent P als child C3 genereren een willekeuri
 
 Schrijf een volledig C-programma dat alle processen aanmaakt en ervoor zorgt dat C1 de som van g1 en g2\*2 naar het scherm schrijft.
 
+```c
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <unistd.h>
+int main()
+{
+
+    int P_to_C1[2];
+    int C2_to_C1[2];
+    int C3_to_C2[2];
+
+    if (pipe(P_to_C1) == -1 || pipe(C2_to_C1) == -1 || pipe(C3_to_C2) == -1) {
+        perror("pipe");
+        exit(1);
+    }
+
+    pid_t c1;
+    pid_t c2;
+    pid_t c3;
+
+    if ((c1 = fork()) == 0) {
+
+        if ((c3 = fork()) == 0) { // c3
+
+            srand(getpid());
+            int r = rand();
+            write(C3_to_C2[1], &r, sizeof(r));
+            exit(0);
+
+        } else { // C1
+            waitpid(c3, 0, 0);
+            int van_P;
+            int van_C2;
+            read(P_to_C1[0], &van_P, sizeof(van_P));
+            read(C2_to_C1[0], &van_C2, sizeof(van_C2));
+
+            int som = van_P + van_C2;
+            printf("%d\n", som);
+            write(1, &som, sizeof(som));
+        }
+    } else if ((c2 = fork()) == 0) { // c2
+        waitpid(c3, 0, 0);
+
+        int getal;
+        read(C3_to_C2[0], &getal, sizeof(getal));
+        getal *= 2;
+        write(C2_to_C1[1], &getal, sizeof(getal));
+        exit(0);
+    } else { // P
+
+        srand(getpid());
+        int r = rand();
+
+        write(P_to_C1[1], &r, sizeof(r));
+        waitpid(c1, 0, 0);
+        waitpid(c2, 0, 0);
+        waitpid(c3, 0, 0);
+    }
+
+    return 0;
+}
+```
+
+
+
 # Labo opgaven
 
 ## Commando's die ik vergeet
@@ -2505,11 +2573,152 @@ Output van `lspci -n`
 
 4. niet
 
-### Thread synchronisatie
+### Thread synchronisatie, mutexen, semaforen
+
+1. Schrijf een programma dat gebruikmaakt van 8 threads voor de verkoop van tickets. Het totaal aantal tickets wordt bijgehouden in een globale variabele waar iedere thread automatisch toegang tot heeft. Iedere thread voert dezelfde functie uit, nl. een functie die door een oneindige lus loopt waar telkens één ticket verkocht wordt. Van zodra alle tickets de deur uit zijn, rapporteert iedere thread het totale aantal tickets dat hij verkocht heeft. Om threadwissels te verzekeren plaats je in de oneindige lus de opdracht sleep(rand()%3) die een delay van 0, 1 of 2 seconden veroorzaakt. Maak gebruik van een mutex om de gedeelde bron, i.e. de globale variabele te beschermen. Bekijk ook wat er gebeurt wanneer de gedeelde bron niet wordt vergrendeld.
+
+   ```c
+   #include <pthread.h>
+   #include <stdio.h>
+   #include <stdlib.h>
+   #include <time.h>
+   #include <unistd.h>
+   
+   pthread_mutex_t mtx = PTHREAD_MUTEX_INITIALIZER;
+   int tickets = 50;
+   int checksum = 0;
+   
+   void* verkoop(void* p)
+   {
+       int mytickets = 0;
+       while (tickets > 0) {
+           pthread_mutex_lock(&mtx);
+           tickets--;
+           pthread_mutex_unlock(&mtx);
+           mytickets++;
+           printf("er zijn nog %d tickets\n", tickets);
+           sleep(rand() % 3);
+       }
+       printf("ik heb %d tickets verkocht\n", mytickets);
+       checksum += mytickets;
+   }
+   
+   int main()
+   {
+   
+       pthread_t threads[8];
+   
+       for (int i = 0; i < 8; i++) {
+           pthread_create(&threads[i], 0, verkoop, 0);
+       }
+       for (int i = 0; i < 8; i++) {
+           pthread_join(threads[i], 0);
+       }
+       printf("checksum %d", checksum);
+   
+       return 0;
+   }
+   ```
+
+2. Herneem opdracht 1 maar maak nu gebruik van semaforen om de gedeelde bron te beschermen. Aangezien er maar twee toestanden mogelijk zijn, spreekt men hier van een binaire semafoor.
+
+   ```c
+   #include <pthread.h>
+   #include <semaphore.h>
+   #include <stdio.h>
+   #include <stdlib.h>
+   #include <time.h>
+   #include <unistd.h>
+   
+   sem_t mtx;
+   int tickets = 50;
+   int checksum = 0;
+   
+   void* verkoop(void* p)
+   {
+       int mytickets = 0;
+       while (tickets > 0) {
+           sem_wait(&mtx);
+           tickets--;
+           sem_post(&mtx);
+           mytickets++;
+           printf("er zijn nog %d tickets\n", tickets);
+           sleep(rand() % 3);
+       }
+       printf("ik heb %d tickets verkocht\n", mytickets);
+       checksum += mytickets;
+   }
+   
+   int main()
+   {
+       sem_init(&mtx, 0, 1);
+   
+       pthread_t threads[8];
+   
+       for (int i = 0; i < 8; i++) {
+           pthread_create(&threads[i], 0, verkoop, 0);
+       }
+       for (int i = 0; i < 8; i++) {
+           pthread_join(threads[i], 0);
+       }
+       sem_destroy(&mtx);
+       printf("checksum %d", checksum);
+   
+       return 0;
+   }
+   ```
+
+   
 
 
 
 ### Memory mapped I/O
+
+1. Schrijf een eigen versie van cat waarbij er nu gebruikgemaakt wordt van memorymapped I/O.
+
+   ```c
+   #include <fcntl.h>
+   #include <stdio.h>
+   #include <stdlib.h>
+   #include <sys/mman.h>
+   #include <sys/stat.h>
+   #include <sys/types.h>
+   #include <unistd.h>
+   int main(int argc, char** argv)
+   {
+       struct stat sb;
+       unsigned char buffer[BUFSIZ];
+       if (argc == 1) { // dit deel is zonder mmap, ik weet niet hoe ik het moet doen met
+           int n = read(0, buffer, BUFSIZ);
+           while (n > 0) {
+               write(1, buffer, n);
+               n = read(0, buffer, BUFSIZ);
+           }
+           if (n < 0) {
+               perror(argv[0]);
+               exit(1);
+           }
+       }
+       if (argc > 1) {
+           for (int i = 1; i < argc; i++) {
+               int fd = open(argv[i], O_RDONLY);
+               fstat(fd, &sb);
+               char* file = mmap(0, sb.st_size, PROT_READ, MAP_PRIVATE, fd, 0);
+   
+               write(1, file, sb.st_size);
+               munmap(file, sb.st_size);
+           }
+       }
+   }
+   ```
+
+2. Interprocescommunicatie m.b.v. semaforen kwam tot nu toe nog niet aan bod. Schrijf een C-programma dat 200 kindprocessen aanmaakt die elk een uniek getal genereren. Het pid van het proces dat het grootste getal gegenereerd heeft, alsook het getal zelf, wordt door alle kindprocessen naar het scherm geschreven. Om een nieuw shared memory object te maken kan je de systeemaanroep shm_open gebruiken. Deze aanroep geeft een getal terug dat je bij mmap kan gebruiken als file descriptor. De initiële grootte van het shared memory object is 0. Om het shared memory object een grootte te geven kan je de systeemaanroep ftruncate gebruiken.
+
+   ```
+   
+   ```
+
+   
 
 
 
@@ -4289,6 +4498,65 @@ endfunction
 
 
 # Booster sessies
+
+## Exec
+
+[15 pt] Schrijf een programma 1.c dat twee kindprocessen aanmaakt. Het eerste kindproces voert het commando “find /etc -type f" uit en het tweede kindproces voert het programma "grep -v pass” uit. Via een pipe wordt de uitvoer van find doorgestuurd naar de invoer van grep die dan de uitvoer naar het scherm schrijft. 
+Dit komt dus eigenlijk overeen door in een bash-terminal "find /etc -type f | grep -v pass uit te voeren.
+
+```c
+
+#include <fcntl.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <unistd.h>
+int main()
+{
+
+    pid_t pid1;
+    pid_t pid2;
+    int fd[2];
+    if (pipe(fd) == -1) {
+        perror("pipe");
+        exit(1);
+    }
+
+    if ((pid1 = fork()) == 0) {
+        close(fd[0]);
+        dup2(fd[1], 1);
+        char* findargs[] = { "find", "/etc", "-type", "f", 0 };
+        if (execvp("find", findargs) < 0) {
+            perror("fout");
+            exit(1);
+        }
+        exit(0);
+    } else {
+
+        if ((pid2 = fork()) == 0) {
+            close(fd[1]);
+            dup2(fd[0], 0);
+            char* grepargs[] = { "grep", "pass", 0 }; // ik heb het commando een beetje aangepast zodat de uitvoer korter is
+            if (execvp("grep", grepargs) < 0) {
+                perror("fout");
+                exit(1);
+            }
+            exit(0);
+        } else {
+
+            waitpid(pid1, 0, 0);
+            waitpid(pid2, 0, 0);
+            close(fd[0]);
+            close(fd[1]);
+        }
+    }
+
+    return 0;
+}
+```
+
+
 
 ## Tee
 
