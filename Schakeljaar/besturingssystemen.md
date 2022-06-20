@@ -199,6 +199,7 @@ Het model is te simpel. Sommige processen in de toestand 'niet actief' zijn klaa
 ```
 new, ready, running, exit (pijlen van links naar rechts en eentje van running naar ready)
 blocked onderaan met pijl naar ready en pijl van running
+6 pijlen
 ```
 
 
@@ -227,6 +228,7 @@ ready/suspend, ready, running, exit
 blocked/suspend, blocked
 
 Je moet ook alle overgangen van de vorige vraag kennen
+13 pijlen
 ```
 
 [tekening]
@@ -243,7 +245,7 @@ Je moet ook alle overgangen van de vorige vraag kennen
    * Het besturingssysteem swapt processen terug naar het hoofdgeheugen als er geen ander proces op *ready* staat, of het huidige proces een hogere prioriteit heeft dan andere processen in de toestand *ready*.
 4. **Ready &rarr; Ready/Suspend**
    * Het besturingssysteem onderbreekt het liefst geblokkeerde processen, maar als er veel geheugen nodig is of de prioriteit van het huidige proces is hoger dan de anderen, is dit soms de enige optie.
-5. **Active &rarr; Ready/Suspend**
+5. **Running &rarr; Ready/Suspend**
    * Wordt soms uitgevoerd bij het preëmptief ingrijpen, om hoofdgeheugen vrij te maken.
 6. **Blocked/Suspend &rarr; Blocked**
    * Dit is normaal gezien niet zo verstandig, maar wordt soms pro-actief gedaan voor processen met hoge prioriteit. Of als er net veel geheugen is vrijgekomen en het ding waarop het proces wacht bijna klaar is.
@@ -271,7 +273,7 @@ Het **procesbeeld** is de verzameling van het **programma**, de **gegevens** en 
 - Geheugentabellen
   - Beheren het hoofdgeheugen en het secundaire geheugen
 - I/O-tabellen
-  - Worden door het besturingssysteem om I/O apparaten te beheren.
+  - Worden door het besturingssysteem gebruikt om I/O apparaten te beheren.
 - Bestandstabellen
   - Worden niet door het besturingssysteem, maar door het bestandsbeheersysteem bijgehouden en bevatten info over over bestanden zoals naam, locatie, status en attributen.
 - Procestabellen
@@ -1595,9 +1597,17 @@ Bij het bovenstaande heb je wellicht geen rekening gehouden met bestandsnamen di
 
 Gebruik het commando shuf om 16 getallen te genereren tussen 10 en 50 en gebruik xargs om die uit te schrijven in een raster van 4 bij 4.
 
+```bash
+shuf -i 10-50 -n 16 | xargs -n 4
+```
+
 **Vraag 7**
 
 Zelfde vraag als hierboven maar doe dit nu met printf (2 karakter per getal) en command substitution. Je zal zien dat dit een betere uitlijning geeft wanneer je “%2d” gebruikt voor ieder getal.
+
+```bash
+printf "%2d %2d %2d %2d\n" $(shuf -i 10-50 -n 16)
+```
 
 **Vraag 8**
 
@@ -1695,6 +1705,11 @@ Schrijf nu hetzelfde script als hierboven maar geef het IP-adres als een paramet
 
 Gebruik stringoperatoren om alle klinkers uit een woord te vervangen door een punt. (probeer dit ook eens uit via de externe opdracht tr)
 
+```bash
+woord=wimiscool
+echo ${woord//[aeiou]/\.}
+```
+
 **Vraag 18**
 
 Hoe kan je van een getal dat de bestandsgrootte in bytes voorstelt en waarbij digit grouping gebruikt wordt, bv. 131.273.678, één getal maken en dat getal in kilobytes naar het scherm schrijven. Hieronder volgen enkele oefeningen op C en systeemaanroepen:
@@ -1707,9 +1722,92 @@ Schrijf in C een eigen versie van het commando du. De bestandsgrootte kan je opv
 
 Schrijf in C een eigen versie van het commando “wc -l” dat van de laatste 100 bytes van de bestanden die meegegeven worden op de commandolijn het aantal lijnen bepaalt. In BASH zou je dit als volgt schrijven …. tail -c 100 bestand1 bestand2| wc -l. Doe dit zonder pipe en zonder execve syscalls maar dus louter met open/read/write/close/…!
 
+```c
+#include <fcntl.h>
+#include <stdio.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
+
+int main(int argc, char** argv)
+{
+    int total = 0;
+    for (int i = 1; i < argc; i++) {
+        int fd = open(argv[i], O_RDONLY, 0);
+        struct stat info;
+        fstat(fd, &info);
+        off_t size = info.st_size;
+
+        lseek(fd, size - 100, SEEK_CUR);
+        char buf[100];
+        read(fd, &buf, 100 * sizeof(char));
+        close(fd);
+        int lines = 0;
+        for (int i = 0; i < 100; i++) {
+            if (buf[i] == '\n')
+                lines++;
+        }
+        total += lines;
+    }
+    printf("%d\n", total);
+}
+```
+
 **Vraag 21**
 
 Doe nu hetzelfde als vorige vraag waar je wel gebruikmaakt van kindprocessen en een pipe als IPC. Gebruik ook execve of gelijkaardige syscalls om de programma’s aan te roepen.
+
+```c
+#include <fcntl.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <unistd.h>
+int main(int argc, char** argv)
+{
+    int pipefd[2];
+    if (pipe(pipefd) == -1) {
+        perror("pipe");
+        exit(1);
+    }
+
+    int total = 0;
+    pid_t pid1[argc];
+    pid_t pid2;
+    for (int i = 1; i < argc; i++) {
+
+        if ((pid1[i] = fork()) == 0) {
+            close(pipefd[0]);
+
+            char* args[] = { "tail", "-c", "100", argv[i], 0 };
+            dup2(pipefd[1], 1);
+            if (execvp("tail", args) < 0) {
+                perror("fout");
+                exit(1);
+            }
+        }
+    }
+
+    if ((pid2 = fork()) == 0) {
+        char* args[] = { "wc", "-l", 0 };
+        close(pipefd[1]);
+        dup2(pipefd[0], 0);
+        if (execvp("wc", args) < 0) {
+            perror("fout");
+            exit(1);
+        }
+
+    } else {
+        for (int i = 1; i < argc; i++) {
+            waitpid(pid1[i], 0, 0);
+        }
+    }
+
+    return 0;
+}
+```
 
 **Vraag 22**
 
@@ -4654,7 +4752,6 @@ endfunction
 Dit komt dus eigenlijk overeen door in een bash-terminal "find /etc -type f | grep -v pass uit te voeren.
 
 ```c
-
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
