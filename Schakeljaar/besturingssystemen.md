@@ -4167,7 +4167,32 @@ done < tmp.txt
 
 101. Ontwikkel een script dat een beperkte versie van het commando wc simuleert. Het script moet het aantal regels en de bestandsnaam afdrukken van elk bestand dat als parameter meegegeven wordt. Het script mag enkel interne Bash-instructies (if, for, case, let, while, read enz.) gebruiken, en behalve echo geen externe commando's; het gebruik van awk, sed, perl en wc in het bijzonder is niet toegelaten. Je zult bijgevolg elk bestand regel voor regel moeten inlezen en deze tellen. Het script moet bovendien een samenvattende regel weergeven met het totale aantal regels. Indien geen enkele parameter meegegeven wordt, neem je alle bestanden in de huidige werkdirectory in beschouwing. Los dit zo beknopt mogelijk op met de speciale notaties voor shellvariabelen
 
-     ```
+     ```bash
+     #!/bin/bash
+     
+     totallines=0
+     totalwords=0
+     totalchars=0
+     
+     for i in ${@:-*}; do
+         lines=0
+         words=0
+         chars=0
+     
+         while read line; do
+             ((lines++))
+             IFS=" "
+             wordarray=($line)
+             ((words+= ${#wordarray[@]}))
+             ((chars+= ${#line} + 1))
+         done < "$i"
+         ((totallines = totallines + lines))
+         ((totalwords = totalwords + words))
+         ((totalchars = totalchars + chars))
+         echo $i $lines $words $chars
+     done
+     
+     echo Total $totallines $totalwords $totalchars
      
      ```
 
@@ -4175,8 +4200,19 @@ done < tmp.txt
 
 102. Ontwikkel een script dat een directory maakt waarvan het pad als (enige) parameter aan het script meegegeven wordt. Indien tussenliggende directory's ook nog niet zouden bestaan, moeten deze eveneens gecreëerd worden. Het script simuleert bijgevolg mkdir -p. Het mag enkel interne Bash-instructies (if, for, case, let, while, read enz.) gebruiken, en bovendien het commando mkdir, zij het zonder de optie -p. Zorg ervoor dat zowel absolute als relatieve (t.o.v. de huidige directory) padnamen worden ondersteund. Tip: gebruik / als scheidingsteken. 
 
-     ```
-     
+     ```bash
+     #! /bin/bash
+     IFS="/"
+     path=$1
+     for dir in $path; do
+         if [[ $dir == "" ]] 
+         then 
+             cd / 
+         else
+             mkdir $dir
+             cd $dir
+         fi
+     done
      ```
 
 103. Enerzijds kun je met behulp van het commando ps -e informatie opvragen over alle processen die actief zijn. De vier kolommen in de output tonen respectievelijk het proces-ID (PID), de TTY device file van de (pseudo-)terminal, de CPU time, en het commando dat het proces opgestart heeft. Anderzijds kun je met behulp van het commando kill -KILL pid een proces met willekeurig proces-ID afbreken. Ontwikkel een script dat alle processen afbreekt waarvan het commando één van de strings bevat die als parameters bij het oproepen van het script meegegeven wordt. Indien geen enkele parameter meegegeven wordt, moet het script een gesorteerde lijst weergeven van alle unieke commandonamen van actieve processen. Behalve de interne instructies (if, for, case, let, while, read enz.) mag je ook de externe commando's grep, sort en uniq gebruiken. Om problemen te vermijden, schrijf je bij het testen de kill-opdracht uit naar standaarduitvoer i.p.v. deze daadwerkelijk uit te voeren.
@@ -4189,14 +4225,42 @@ done < tmp.txt
 
      Tip: gebruik een lus en stringoperatoren.
 
-     ```
+     ```bash
+     #!/bin/bash
+     declare -A lijst
      
+     for arg in $@; do
+     
+         if [[ $arg =~ - ]] 
+         then    
+             arg=${arg#-}
+             for (( i = 0; i < ${#arg}; i++ )); do
+                 lijst["${arg:$i:1}"]=1
+             done
+         fi
+     done 
+     
+     for word in ${!lijst[@]}; do
+         echo $word
+     done | sort
      ```
 
 105. Ontwikkel een script dat als eerste parameter een bestandsnaam heeft, en als tweede parameter de naam van een HTML-tag (em, strong, code enz.). Geef een overzicht van alle strings in het bestand die tussen de opgegeven tag staan. Je mag ervan uitgaan dat de tag maximaal één keer voorkomt per regel (zowel de open- als sluittag) en dat de sluittag op dezelfde regel staat als de opentag. Zorg er ook voor dat elke string slechts één keer wordt weergegeven.
 
-     ```
+     ```bash
+     #!/bin/bash
+     tag=$2
+     file=$1
      
+     while read line; do
+         if [[ $line =~ $tag ]]
+         then
+             string=${line##<$tag>}
+             string=${string%%</$tag>}
+             echo $string
+         fi
+     
+     done < $file
      ```
 
 106. Een for-lus kan ook gebruikt worden om de elementen van een array op te vragen. Met for i in \${a[@]} doorloopt de variabele i alle waarden die in de array a zijn opgeslagen. Vanaf Bash v3 kun je ook de indices(of sleutels) opvragen met for i in \${!a[@]}.
@@ -4213,33 +4277,95 @@ done < tmp.txt
 
 107. Ontwikkel een script dat in een directory tree (de eerste parameter) op zoek gaat naar alle bestanden waarvan de naam voldoet aan een bepaald patroon (de tweede parameter) en met behulp van grep in de inhoud van deze bestanden op zoek gaat naar een reguliere expressie (de derde parameter). Van zodra een van de bestanden in een bepaalde directory de expressie bevat, moet de zoektocht in deze directory worden beëindigd. Gebruik een geneste for-lus, waarbij de buitenste for-lus recursief op zoek gaat naar alle directory's, en de binnenste for-lus alle bestanden in een specifieke directory afloopt (niet recursief). In beide lussen wordt de woordenlijst samengesteld op basis van een find-commando met geschikte opties
 
-     
-
-109. Herneem oefening 105, maar zorg er nu ook voor dat een tag meermaals kan voorkomen op eenzelfde regel. Je mag wel nog steeds veronderstellen dat de sluittag steeds op dezelfde regel staat als de opentag.
-
      ```
      
      ```
 
-110. Herneem oefening 97. Overloop nu de array d.m.v. een oneindige while-lus, die je onderbreekt met break.
+     
+
+108. Herneem oefening 105, maar zorg er nu ook voor dat een tag meermaals kan voorkomen op eenzelfde regel. Je mag wel nog steeds veronderstellen dat de sluittag steeds op dezelfde regel staat als de opentag.
 
      ```
      
      ```
 
-111. Ontwikkel een script dat een recursieve versie van het UNIX commando wc simuleert. Behalve de interne instructies (if, for, case, let, while, read enz.) mag je ook de externe commando's echo, wc en find gebruiken. Het script kan opgeroepen worden met 0 tot 3 opties (-l, -w en -c, niet noodzakelijk in die volgorde), gevolgd door een willekeurig aantal parameters. Indien er geen enkele optie meegegeven wordt, wordt aangenomen dat alle drie de opties werden vermeld. De parameters kunnen zowel bestandsnamen als namen van directory's zijn; worden geen parameters meegegeven, dan neemt het script de werkdirectory in beschouwing. De optie -l staat voor het afdrukken van het aantal regels, -w voor het aantal woorden en -c voor het aantal karakters. Deze aantallen worden berekend 
+109. Herneem oefening 97. Overloop nu de array d.m.v. een oneindige while-lus, die je onderbreekt met break.
+
+     ```
+     
+     ```
+
+110. Ontwikkel een script dat een recursieve versie van het UNIX commando wc simuleert. Behalve de interne instructies (if, for, case, let, while, read enz.) mag je ook de externe commando's echo, wc en find gebruiken. Het script kan opgeroepen worden met 0 tot 3 opties (-l, -w en -c, niet noodzakelijk in die volgorde), gevolgd door een willekeurig aantal parameters. Indien er geen enkele optie meegegeven wordt, wordt aangenomen dat alle drie de opties werden vermeld. De parameters kunnen zowel bestandsnamen als namen van directory's zijn; worden geen parameters meegegeven, dan neemt het script de werkdirectory in beschouwing. De optie -l staat voor het afdrukken van het aantal regels, -w voor het aantal woorden en -c voor het aantal karakters. Deze aantallen worden berekend 
 
      * voor elk bestand dat als parameter meegegeven wordt, 
      * voor elk bestand in de tree van een directory die als parameter meegegeven wordt en 
      * tot slot voor alle bestanden samen. 
 
-     ```
+     ```bash
+     #!/bin/bash
+     l=0
+     w=0
+     c=0
+     opts="-"
+     totalchars=0
+     totallines=0
+     totalwords=0
+     
+     while true; do
+         case $1 in
+             "-l") 
+                 l=1 
+                 opts=${opts}l
+                 shift ;;
+             "-w") 
+                 w=1 
+                 opts=${opts}w
+                 shift ;;
+             "-c") 
+                 c=1 
+                 opts=${opts}c
+                 shift ;;
+             *) 
+                 break ;;
+         esac
+     done
+     
+     if [[ l -eq 0 && w -eq 0 && c -eq 0 ]] 
+     then
+         opts="-lwc"
+     fi
+     
+     for name in $@; do
+         if [[ -f $name ]]
+             then 
+             wc $opts $name
+             arr=($(wc $name))
+             ((totallines += ${arr[0]}))
+             ((totalwords += ${arr[1]}))
+             ((totalchars += ${arr[2]}))
+         fi
+     
+         if [[ -d $name ]]
+         then
+             for file in $(find "$name" -type f ); do 
+             wc $opts $file
+             arr=($(wc $file))
+             ((totallines += ${arr[0]}))
+             ((totalwords += ${arr[1]}))
+             ((totalchars += ${arr[2]}))
+             done
+         fi
+     
+     done
+     
+     printf "Total: %5d %5d %5d\n" $totallines $totalwords $totalchars
+     
      
      ```
 
      
 
-112. Het bestand pagefile.out bevat de uitvoer van een Windows batch file: 
+111. Het bestand pagefile.out bevat de uitvoer van een Windows batch file: 
 
      ```
      dir \\AL005951\c$\pagefile.sys
@@ -4261,8 +4387,31 @@ done < tmp.txt
 
      De regel met de woorden bytes free vermeldt de beschikbare ruimte op het volume C:. Maak een script dat een tekstbestand genereert met de namen van alle toestellen die minder dan 80 MB vrij hebben op de C: schijf, één per regel.
 
-     ```
+     ```bash
+     #!/bin/bash
      
+     prev=""
+     while read line; do
+         if [[ $line =~ ^Directory* ]] 
+         then   
+             prev=${line##*\\}
+             prev=${prev%%$}
+         fi
+     
+         if [[ $line =~ "bytes free" ]] 
+         then   
+             free=${line%% bytes*}
+             free=${free//\./}
+             if [[ $free -le 80000000 ]]
+             then
+                 echo $prev >> pagefile.txt
+             fi
+         fi
+     
+     
+     done < pagefile.out
+     
+     cat pagefile.txt
      ```
 
      
@@ -4681,5 +4830,83 @@ done
 	exit 1
 	
 	# todo de rest
+```
+
+
+
+## Romeinse cijfers
+
+[10 pt] In het talstelsel van Romeinse cijfers worden getallen genoteerd met symbolen, de eigenlijke cijfers waarvan elk een bepaalde waarde heeft die het cijfer in het getal inneemt. De Romeinse cijfers zijn:
+
+<img src="img/image-20220620173053008.png" alt="image-20220620173053008" style="zoom:50%;" /> 
+
+De volgorde van de Romeinse cijfers in een getal is niet willekeurig. De waarden van de losse cijfers worden bij elkaar opgeteld, behalve als één lager cijfer voor een hoger cijfer staat: in dat geval wordt het lagere cijfer ervan afgetrokken, 
+
+
+Schrijf een script 3.bash dat een gegeven geheel getal omzet naar de Romeinse stringvoorstelling. Deze omzetting kan het best gebeuren door onderstaande tabel van links naar rechts te doorlopen. Zolang de resterende gehele waarde groter of gelijk is aan de getalwaarde uit de tabel, voeg je de combinatie van Romeinse cijfers op de corresponderende positie achteraan toe aan het Romeins getal. De resterende waarde wordt daarna verlaagd met de waarde die bij dat toegevoegd karakter hoort. Van zodra de restwaarde kleiner wordt dan de getalwaarde uit de tabel, spring je één positie naar rechts. 
+
+![image-20220620173246617](img/image-20220620173246617.png)
+
+Het script genereert een foutboodschap en stopt wanneer het aantal argumenten verschillend is van 1 en wanneer het argument geen getal voorstelt. 
+
+```bash
+#!/bin/bash
+declare -A map
+
+map[1000]="M" map[900]="CM" map[500]="D" map[400]="CD" map[100]="C" map[90]="XC"
+map[50]="L" map[40]="XL" map[10]="X" map[5]="V" map[4]="IV" map[1]="I"
+
+array=(1000 900 500 400 100 90 50 40 10 5 4 1)
+i=0
+rom=""
+
+if [[ $# -ne 1 || !($1 =~ ^[0-9]+$) ]]
+    then echo foutboodschap
+    exit 0
+fi
+
+getal=$1
+
+while [[ $getal > 0 ]]; do
+    if [[ $getal -ge ${array[i]} ]]
+    then
+        mag=${array[i]}
+        (( getal -= mag ))
+        rom="${rom}"${map[$mag]}
+    else
+        (( i++ ))
+    fi
+
+done
+
+echo $rom
+
+```
+
+
+
+## Langste woord
+
+[5 pt] Maak een script dat in een opgegeven lijst van woorden (een bestand met 1 woord per regel) het langste woord zoekt. Het script vermeldt het gevonden woord alsook het aantal tekens in dit woord. Er mag maximum 1 bestand meegegeven worden. Indien er meerdere bestanden worden opgegeven of indien het argument geen bestand is, geef je een foutmelding en stop je het script.
+
+```bash
+#!/bin/bash
+
+if [[ $# -ne 1 ]]
+    then echo foutboodschap
+    exit 1
+fi
+
+lengte=0
+woord=""
+while read line; do 
+    if [[ ${#line} -ge $lengte ]] 
+    then
+        woord=$line
+        lengte=${#line}
+    fi
+done < $1
+
+echo $woord $lengte
 ```
 
