@@ -100,7 +100,7 @@ Ook wel het client/server model genoemd. In dit model staat de kernel enkel in v
 
 Deze structuur vergemakkelijkt modulaire ontwikkeling van de kernel en servers aanzienlijk. Onderdelen kunnen bovendien ook weggelaten worden. Alle **hardware-afhankelijkheid zit in de microkernel**. Verder is deze benadering ook uiterst geschikt voor gedistribueerde systemen.
 
-Microkernel-systemen zijn in het algemeen **niet zo efficiënt**, onder andere door het overmatig uitwisselen van berichten. Systeemaanroepen zijn ook trager In moderne systemen gebruikt men wel verschillende modules, maar vermijdt men problemen met het definiëren van lagen en de communicatie ertussen. Elke module wordt monolithisch geïmplementeerd.
+Microkernel-systemen zijn in het algemeen **niet zo efficiënt**, onder andere door het overmatig uitwisselen van berichten. Systeemaanroepen zijn ook trager. In moderne systemen gebruikt men wel verschillende modules, maar vermijdt men problemen met het definiëren van lagen en de communicatie ertussen. Elke module wordt monolithisch geïmplementeerd.
 
 * **Modulaire kernel**
 
@@ -204,19 +204,18 @@ blocked onderaan met pijl naar ready en pijl van running
 
 
 
-- **Nieuw** (new)
-  - Nieuw &rarr; Gereed: Een nieuw proces wordt toegevoegd aan de lijst van uitvoerbare processen.
-- **Gereed** (ready)
-
-  - Gereed &rarr; Actief: De scheduler kiest één van de processen in de toestand 'gereed' om uit te voeren.
-
-- **Actief** (running)
-  - Actief &rarr; Einde: Het proces wordt afgebroken of het geeft zelf aan dat het voltooid is.
-  - Actief &rarr; Gereed: Als het proces te lang bezig is (indien threshold van besturingssysteem), wordt het onderbroken. Het proces kan dit ook bijvoorbeeld doen met _sleep()_.
-  - Actief &rarr; Geblokkeerd: Een proces wordt geblokkeerd als hij vraagt om iets waarop hij moet wachten. (meestal in de vorm van een system call naar I/O of wachten op een kindproces.)
-- **Geblokkeerd** (blocked)
-  - Geblokkeerd &rarr; Gereed: Als het ding waarop het proces aan het wachten was klaar is.
-- **Einde** (exit)
+- **New** 
+  - New &rarr; Ready: Een nieuw proces wordt toegevoegd aan de lijst van uitvoerbare processen.
+- **Ready** 
+  - Ready &rarr; Running: De scheduler kiest één van de processen in de toestand 'gereed' om uit te voeren.
+  
+- **Actief** 
+  - Running &rarr; Exit: Het proces wordt afgebroken of het geeft zelf aan dat het voltooid is.
+  - Running &rarr; Ready: Als het proces te lang bezig is (indien threshold van besturingssysteem), wordt het onderbroken. Het proces kan dit ook bijvoorbeeld doen met _sleep()_.
+  - Running &rarr; Blocked: Een proces wordt geblokkeerd als hij vraagt om iets waarop hij moet wachten. (meestal in de vorm van een system call naar I/O of wachten op een kindproces.)
+- **Blocked** 
+  - Blocked &rarr; Ready: Als het ding waarop het proces aan het wachten was klaar is.
+- **Exit** 
 
 ## Vraag 9
 
@@ -273,11 +272,11 @@ Het **procesbeeld** is de verzameling van het **programma**, de **gegevens** en 
 - Geheugentabellen
   - Beheren het hoofdgeheugen en het secundaire geheugen
 - I/O-tabellen
-  - Worden door het besturingssysteem gebruikt om I/O apparaten te beheren.
+  - Worden door het besturingssysteem gebruikt om I/O apparaten te beheren voor bijvoorbeeld statusinformatie, de toewijzing aan een bepaald proces en de locatie in het geheugen die wordt gebruikt bij gegevensoverdracht.
 - Bestandstabellen
   - Worden niet door het besturingssysteem, maar door het bestandsbeheersysteem bijgehouden en bevatten info over over bestanden zoals naam, locatie, status en attributen.
 - Procestabellen
-  - Worden bijgehouden om processen te beheren.
+  - Worden bijgehouden om processen te beheren. Bevat bijvoorbeeld waar het proces zich bevindt, en attributen die noodzakelijk zijn voor het beheer van het proces
 
 ## Vraag 11
 
@@ -420,7 +419,7 @@ In de interruptcyclus van de instructiecyclus checkt de processor door middel va
 
 1. De context van het proces wordt opgeslagen (dit gebeurt hardwarematig)
 2. De programmateller wordt gezet op het beginadres van de interruptroutine
-3. Contextwissel naar kernel mode
+3. Moduswissel naar kernel mode
 4. De interruptroutine wordt uitgevoerd
 5. Er wordt teruggewisseld naar user mode en de context van het proces wordt teruggezet. Zo wordt dus automatisch de controle terug overgedragen aan het eerder onderbroken proces.
 
@@ -452,10 +451,11 @@ Het besturingssysteem zal hier wel wat meer werk moeten doen. Tijdens het wissel
 
 **Welke stappen zijn nodig om een proceswissel door te voeren?**
 
-1. Selectie van een nieuw proces als volgend actief proces
-2. Zijn procesbesturingsblok bijwerken
-3. Gegevensstructuren voor geheugenbeheer bijwerken
-4. Terugschakelen naar gebruikersmodus en de context wisselen naar die van het geselecteerde proces.
+1. Procesbesturingsblok van het oude proces bijwerken (onder andere de toestand)
+2. Selectie van een nieuw proces als volgend actief proces
+3. Zijn procesbesturingsblok bijwerken
+4. Gegevensstructuren voor geheugenbeheer bijwerken
+5. Terugschakelen naar gebruikersmodus en de context wisselen naar die van het geselecteerde proces.
 
 ## Vraag 22
 
@@ -755,7 +755,7 @@ kernel threads gekoppeld aan lightweight processen = ziet eruit als virtuele pro
 
 <img src="img/image-20220611160129996.png" alt="image-20220611160129996" style="zoom: 33%;" />
 
-Sommige besturingssystemen combineren user-level en kernel-level threads. In dit geval worden verschillende user-level threads gegroepeerd gekoppeld aan een kleiner of gelijk aantal kernel-level threads. Het creëren van threads gebeurt in de user space, want dit is efficiënter.
+Sommige besturingssystemen **combineren** user-level en kernel-level threads, een beetje the best of both worlds (Hannah Montana reference). In dit geval worden verschillende user-level threads gegroepeerd gekoppeld aan een kleiner of gelijk aantal kernel-level threads. Het **creëren en wisselen** van threads gebeurt in de **user space**, want dit is **efficiënter**. Meerdere threads kunnen parallel uitgevoerd worden op multiprocessoren.
 
  **Hoe worden de verschillende componenten aan elkaar gekoppeld?**
 
@@ -1025,7 +1025,7 @@ In het geval van een systeem met dynamische partitionering loopt de vertaling al
 
 * Het geheugen wordt verdeeld in kleine **blokjes van gelijke grootte**. Voor elk blokje wordt een bit bijgehouden die vertelt of het blokje vrij is. 
 * Kleinere blokjes betekent dus een grotere bitmap, grotere blokjes is meer geheugenverspilling. 
-* Wanneer een proces van $n$ aansluitende blokken geheugen nodig heeft, zal het geheugenbeheersysteem op zoek moeten gaan naar $n$ opeenvolgende nullen in de bitmap. Dit is natuurlijk niet zo efficiënt.
+* Wanneer een proces van $n$ aansluitende blokken geheugen nodig heeft, zal het geheugenbeheersysteem op zoek moeten gaan naar $n$ opeenvolgende nullen in de bitmap. Dit is natuurlijk niet zo efficiënt. In de praktijk worden bitmaps dus niet zo veel gebruikt. 
 
 
 
@@ -1046,7 +1046,7 @@ Elke van beide in een aparte lijst is ook een mogelijkheid, dan kunnen we de lij
 ```
 frame <-> pagina zijn even groot
 logisch adres = page number + relatieve positie in pagina
-2^m logischa adresruimte, 2^n pagina-woordgrootte
+2^m logische adresruimte, 2^n paginagrootte
 n meest rechtse bits: offset
 bits links (m-n): paginanummer -> index in process page table
 
@@ -1072,11 +1072,11 @@ Voor de grootte van pagina's en frames nemen we een macht van twee, dan kunnen w
 Hebben we:
 
 * $2^m$ logische adresruimte
-* Pagina's van woorden met grootte $2^n$ 
+* Paginagrootte $2^n$ woorden 
 
 Dan bevatten:
 
-* De $m-n$ meest significante bits van een adres het paginanummer
+* De $m-n$ meest significante bits van een logisch adres het paginanummer
 * De $n$ minst significante bits de offset ten opzichte van het begin van de pagina
 
 [tekening]
