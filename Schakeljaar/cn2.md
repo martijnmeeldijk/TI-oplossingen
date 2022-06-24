@@ -9,70 +9,95 @@
 
 # Leerstof
 
-(gewoon de lijst vanop ufora)
+(gewoon de lijst van op ufora)
+
+- [ ] Introductieles
+  - [x] Sectie 1.5 Protocollagen en servicemodel 	
+  - [ ] Sectie 2.1 Principes van netwerkapplicaties
+  - [ ] Sectie 3.2 Multiplexen en demultiplexen
+  - [ ] Sectie 6.7 Een dag in het leven van ...
+- [ ] [Week 1](#week-1)
+  - [ ] Sectie 2.4 DNS 
+    - [x] Kennisclip: Resolver
+    - [x] Kennisclip: DNS registratie
+    - [x] Kennisclip: Reverse DNS (*)*
+    - [ ] Kennisclip: DNS server (*)
+  - [ ] Sectie 2.5 Peer-to-peer bestandsdistributie
+    - [x] Kennisclip: What is een DHT? (*)*
+    - [ ] Kennisclip: Hoe werkt een DHT? (*)
+- [ ] [Week 2](#week-2)
+  - [ ] Sectie 4.3.3 IPv4 Dynamic Host Configuration Protocol
+    - [x] Kennisclip: DHCP
+    - [x] Kennisclip: DHCP renewal & relay (*)*
+    - [x] Kennisclip: DHCP server (*)
+  - [ ] Sectie 4.3.4 Network Address Translation Protocol
+    - [ ] Kennisclip: Network Address Translation
+  - [ ] Sectie 5.6 Internet Control Message Protocol (ICMP)
+    - [ ] Kennisclip: Internet Control Message Protocol (*)
+- [x] [Week 3](#week-3)
+  - [x] Sectie 6.4 Local-Areanetwerken met switches (herhaling, behalve *)
+    - [x] Kennisclip: ARP
+    - [x] Kennisclip: ARP cache management (*)
+    - [x] Kennisclip: Ethernet switching
+    - [x] Kennisclip: VLAN
+- [x] [Week 4](#week-4)
+  - [x] Sectie 7.1 - 7.2 Inleiding/Draadloze links en netwerkkenmerken
+    - [x] Kennisclip: Introductie tot draadloze netwerke
+  - [x] Sectie 7.3 Wifi: 802.11 draadloze LANs
+  - [x] Kennisclip: Draadloze LANs
+- [x] [Week 5](#week-5)
+  - [x] Sectie 5.7 Netwerkbeheer en SNMP
+    - [x] Kennisclip: Netwerk management
+    - [x] Kennisclip: SNMP
+    - [x] Kennisclip: Netwerk Automatisering en Ansible
+- [x] [Week 6](#week-6)
+  - [x] IPv6 - pagina's 1 tot 31 (leerstof)
+    - [x] Kennisclip: IPv6 address space & notatie
+    - [x] Kennisclip: IPv6 address scope
+    - [x] Kennisclip: IPv6 ULA scope
+    - [x] Kennisclip: IPv6 address type
+  - [x] IPv6 - pagina's 32 tot 35 (achtergrond)
+    - [x] Kennisclip: IPv6 header
+- [ ] [Week 7](#week-7)
+  - [ ] IPv6 - ICMPv6 - pagina's 36 tot 59 (leerstof)
+    - [x] Kennisclip: IPv6 address resolution
+    - [x] Kennisclip: IPv6 Duplicate Address Detection (DAD)
+    - [ ] Kennisclip: IPv6 StateLess Address AutoConfiguration (SLAAC)
+    - [ ] Kennisclip: IPV6 - DHCPv6
+  - [ ] IPv6 - Transition to IPv6 - pagina's 60 tot 73 (achtergrond)
+    - [ ] Kennisclip: IPv6 dual stack v6/v4
+    - [ ] Kennisclip: IPv6 (only) to an IPv4 network
+- [ ] [Week 9](#week-9)
+  - [ ] Sectie 5.1 Introductie
+    - [ ] Kennisclip: Wat is routing
+  - [ ] Sectie 5.2 Routeringsalgoritmen
+    - [ ] Kennisclip: Distance vector routin
+  - [ ] Sectie 5.3 Intra-AS routering: OSPF
+    - [ ] Kennisclip: Link-state routing en OSPF
+- [ ] [Week 10](#week-10)
+  - [ ] Sectie 1.7
+  - [ ] Sectie 5.4 Routing among the ISPs: BGP
+    - [ ] Kennisclip: Structuur van het Internet
+    - [ ] Kennisclip: BGP
+- [ ] [Week 11](#week-11)
+  - [ ] Sectie 1.6
+  - [ ] Sectie 8.9 Firewalls & IDS (leerstof)
+    - [ ] Kennisclip: Firewall and IDS
+- [ ] [Week 12](#week-12)
+  - [ ] Sectie 4.4 Gegeneraliseerde forwarding en SDN
+  - [ ] Sectie 5.5 Het SDN-controlelevel
+    - [ ] Kennisclip: SDN	
+    - [ ] Kennisclip: Netwerkvirtualisatie
 
 
 
-- Introductieles
-  - Sectie 1.5 Protocollagen en servicemodel `x`
-  - Sectie 2.1 Principes van netwerkapplicaties
-  - Sectie 3.2 Multiplexen en demultiplexen
-  - Sectie 6.7 Een dag in het leven van ...
-- Week 1
-  - Sectie 2.4 DNS 
-  - Kennisclip: Resolver
-  - Kennisclip: DNS registratie
-  - Kennisclip: Reverse DNS (*)
-  - Kennisclip: DNS server (*)
-  - Sectie 2.5 Peer-to-peer bestandsdistributie
-    - Kennisclip: What is een DHT? (*)
-    - Kennisclip: Hoe werkt een DHT? (*)
-- WEEK 2
-  - Sectie 4.3.3 IPv4 Dynamic Host Configuration Protocol
-    - Kennisclip: DHCP
-    - Kennisclip: DHCP renewal & relay (*)*
-    - *Kennisclip: DHCP server (*)
-  - Sectie 4.3.4 Network Address Translation Protocol
-    - Kennisclip: Network Address Translation
-  - Sectie 5.6 Internet Control Message Protocol (ICMP)
-    - Kennisclip: Internet Control Message Protocol (*)
-- WEEK 3
-  - Sectie 6.4 Local-Areanetwerken met switches (herhaling, behalve *)
-    - Kennisclip: ARP
-    - Kennisclip: ARP cache management (*)
-    - Kennisclip: Ethernet switching
-    - Kennisclip: VLAN
 
-
-
-
-# Notities
-
-## Week 1
-
-Sluit je een pc aan op een netwerk, stuurt hij eerst een **dhcp request**. Vervolgens wordt er een **dns request** uitgestuurd om het ip adres van de website te vinden. Het dns-pakketje, geëncapsuleerd in UDP, sturen we naar de DNS server. Hiervoor heb je ook het MAC adres van de default gateway nodig. Deze vind je met ARP.
-
-
-
-DNS is in de praktijk beide iteratief en recursief. 
-
-
-
-Three way TCP handshake 
-
-* SYN
-* ACK
-* SYNACK
-
-
-
-Een socket is een soort deurtje van de transportlaag naar je applicatie. 
-
-Oké er was dus maar 1 les. Tot zover de notities.
 
 
 
 # -------------Samenvatting-------------
+
+# Week 1
 
 ## Intro
 
@@ -241,6 +266,8 @@ Nodes slaan telkens het ip adres van hun opvolger op. Als er een node het netwer
 
 
 
+# Week 2
+
 ## DHCP
 
 Hoe stellen we op ons apparaat het juiste ip adres in? We kunnen manueel op onze host het ip adres ingeven, maar als we dan omhoog willen schalen naar meer hosts, komen we in de problemen. Hier komt **DHCP** binnen spel. We willen dat als er een pc op het netwerk wordt aangesloten, hij automatisch een ip-adres krijgt.
@@ -354,6 +381,536 @@ Als je met je computer thuis een pakketje stuurt naar een server buiten je netwe
 
 
 
+# Week 3
+
+## ARP
+
+In de header van een ip pakketje zit alleen het adres van de verzender en het adres van de bestemming. Hoe weet nu onze router dat het pakketje voor hem bestemd is? Deze vraag zullen we zo meteen beantwoorden.
+
+**Mac adres**
+
+Ook wel het fysisch adres genoemd. We dit adres enkel voor hosts die rechtstreeks met elkaar verbonden zijn. Het MAC adres wordt bepaald door de fabrikant van je netwerkadapter. Hoe kan onze computer nu het mac-adres van de router weten? Daarvoor hebben we dus ARP.
+
+**Eigenschappen **
+
+Arp is plug & play. het werkt dus gewoon direct wanneer je het aanzet. Elke node op het netwerk houdt een **lokale ARP cache** bij met een mapping tussen ARP -en IP-adressen. Als er een IP adres in de lijst staat kan je een **broadcast message** sturen om het bijhorende MAC-adres te verkrijgen. Verder hebben entries in deze tabel ook een **TTL**, en zullen periodiek vernieuwd moeten worden. Ze hebben dus met andere woorden een **soft state**.   
+
+De adresresolutie bij een ontbrekende entry gaat als volgt:
+
+* Host A wilt het MAC-adres van host B te weten komen, maar heeft alleen zijn IP-adres
+* Host A doet een ARP request op het netwerk (broadcast) met het IP-adres van host B erin
+* Host B ziet dat dit voor hem bestemd is en doet een ARP-reply naar host A, daarin zit dus ook zijn MAC adres
+
+
+
+## ARP Cache management
+
+Met `arp -a` kan je alle entries van je ARP cache opvragen. Wil je ze leegmaken doe je met `arp -d -a`. Dit kan nuttig zijn als bepaald verkeer niet bij zijn bestemming geraakt of als er een adres in dubbel gebruik is. Een specifieke entry verwijderen gaat mat `arp -d [ip adres]`. Je kan ook een mapping vastleggen die niet uit de tabel mag gehaald worden met ` arp -s [ip adres] [mac adres]`. Dit kan nuttig zijn als je het ARP-verkeer op je netwerk wilt reduceren.
+
+
+
+## Ethernet switching
+
+Verschil tussen een switch en een hub
+
+* Een hub is een **passieve repeater** die ervoor zorgt dat het lijkt alsof alle toesten die erop aangesloten zijn op hetzelfde gedeelde medium zijn aangesloten. 
+* Een switch is een stuk slimmer. Hij kijkt effectief naar de pakketjes en stuurt ze bijvoorbeeld alleen op de nodige aansluitingen door.
+
+**Ethernet switch**
+
+Een switch is een actief **store-and-forward** toestel. Hij ontvangt frames, slaat ze op in een buffer, doet een lookup in een MAC-forwarding tabel en stuurt ze door. Hij lijkt een beetje op een router, maar op laag 2. Switches werken **transparant**. Dit betekent dat hosts niet weten dat hun verkeer door een switch gaat. 
+
+Waar hubs het **collision-domain** uitbreiden, spitsen switches het op in verschillende segmenten. Frames worden dus niet zomaar doorgestuurd naar elke poort zoals bij een hub. 
+
+Hoe weet een switch nu naar waar hij de pakketjes moet forwarden. Dit kan met een combinatie van 3 technieken:
+
+* **Flooding**
+* **Spanning tree protocol**
+* **Mac-based forwarding & learning**
+
+Bij **flooding** zal de switch het pakket doorsturen op alle andere poorten buiten de poort waar het pakket vandaan kwam. Dit is natuurlijk niet zo efficiënt. Je hoeft wel niets te configureren. Er kunnen zich ook **lussen** voordoen (zie afbeelding).
+
+<img src="img/image-20220623223507072.png" alt="image-20220623223507072" style="zoom:50%;" />
+
+Om dit te voorkomen gebruiken we het **spanning tree protocol**. Dit protocol zorgt ervoor dat er automatisch poorten geblokkeerd worden om loops te voorkomen. De configuratie hiervan verloopt in 4 stappen
+
+1. Alle poorten beginnen in **blocking mode**
+2. Een **root switch** wordt geselecteerd
+3. Er wordt een minimale boomstructuur op basis van de kortste padkosten opgesteld, naar de geselecteerde root-node
+4. Poorten zullen hun toestand veranderen naar forwarding mode op basis van de spanning tree 
+
+Om te bepalen welke switch de root bridge wordt kan je prioriteiten instellen, als je dat niet doet wordt de switch met het laagste MAC-adres gekozen. 
+
+// todo misschien iets dieper ingaan op de werking
+
+
+
+**MAC-based forwarding & learning**
+
+Iedere switch heeft een **switch forwarding table**. Hier staat naar welke poort hij pakketjes voor een bepaald MAC-adres moet sturen. De switch leert automatisch op basis van het netwerkverkeer naar waar elk pakketje moet door de afzender en zijn locatie in de tabel te noteren bij passerende pakketjes. 
+
+
+
+## VLAN
+
+VLAN, oftewel **virtual LAN** voorziet een mechanisme om een LAN netwerk in meerdere logische netwerken op te splitsen, gebruik makende van dezelfde hardware. De netwerken gedragen zich alsof ze fysiek ontkoppeld zijn. Ten gevolge zullen de flooding en mac-learning processen van de switches gescheiden verlopen in de verschillende VLANs.
+
+Er zijn meerdere soorten VLANs:
+
+* **Port-based**: de poort van een switch wordt toegewezen aan een VLAN.
+* **Tag-based**: er wordt op basis van een veld in pakketjes in het netwerk aangegeven tot welke VLAN zij behoren.
+* **Protocol-based**: een VLAN per protocol (ICMP, IP, multicast, ...)
+* **Host-based**: VLAN per host/MAC
+
+**Port-based vlan**
+
+Poorten van switches kunnen enkel met elkaar communiceren indien ze zich bevinden in de zelfde VLAN. Je hebt dus een aparte link nodig per VLAN. Ook al verbinden die links dezelfde switches.
+
+**Tag-based vlan**
+
+Het vorige probleem wordt hier opgelost. We steken in elk ethernet frame ook een **tag-veld**, waardoor **vlan-aware** switches hun forwarding gedrag aan kunnen passen aan de inhoud van de tag. Ik ga hier niet verder op ingaan als je niet weet hoe VLANs werken ben je echt een loser.
+
+
+
+
+
+
+
+# Week 4
+
+## Draadloze netwerken (introductie)
+
+Hoe hoger je in frequentie gaat, hoe hoger de mogelijke bandbreedte. Spijtig genoeg zijn hogere frequenties gevoeliger aan interferentie en kunnen zij dus enkel op kleinere schaal gebruikt worden. 
+
+Belangrijkste verschillen met een bekabelde link:
+
+* Een radiosignaal **verzwakt** wanneer het zich door materie propageert (path loss)
+* Andere toestellen in het radiospectrum zorgen voor **interferentie**
+* Een radiogolf kan zich via **meerdere paden** verspreiden (door reflecties)
+
+Deze zaken maken het natuurlijk moeilijk om een betrouwbaar draadloos netwerk op te stellen. We kunnen aan de hand van 2 metrieken de kwaliteit van onze draadloze link meten. 
+
+* signal-to-noise ratio (SNR)
+  * Geeft aan hoe sterk je signaal is ten opzichte van de gemeten ruis, liefst zo hoog mogelijk dus.
+* bit-error-rate (BER)
+  * Hoeveel van de ontvangen bits foutief blijken te zijn
+
+Je kan door de sterkte van je signaal te verhogen de SNR hoger krijgen. Dit is natuurlijk niet altijd mogelijk (apparaten met batterijen). 
+
+
+
+**Elementen**
+
+* Draadloze hosts (gsm, laptop)
+* Base station (zendmast, access point)
+  * Geeft ons draadloos toegang tot een bedraad netwerk
+  * Heeft typisch een cell/area die binnen zijn bereik ligt
+* Wireless link
+  * Gebruikt om de hosts met de base station te verbinden
+
+**Complicaties**
+
+* Hidden terminal problem
+  * ![image-20220624103501335](img/image-20220624103501335.png) 
+  * Als A en C op hetzelfde kanaal zitten, maar elkaar niet kunnen horen door mount everest, kan er zich veel interferentie voordoen bij B
+* Signal attenuation
+  * ![image-20220624103805281](img/image-20220624103805281.png) 
+  * Opnieuw, A en C kunnen elkaar niet horen door de afnemende sterkte van het signaal. Hierdoor kan er zich interferentie voordoen in B
+
+**Modes**
+
+In de context van draadloze netwerken spreken we vaak over twee modes.  
+
+* **Infrastructure mode**: toestellen maken altijd via een base station verbinding met het netwerk.
+* **Ad hoc mode**: toestellen communiceren met elkaar zonder het gebruik van base stations. Ze organiseren zichzelf tot een netwerk.  
+
+ 
+
+## 802.11 LAN 
+
+![image-20220624104954581](img/image-20220624104954581.png)
+
+In het 2.4 GHz spectrum overlappen aanliggende kanalen, en zal je voor aanliggende WiFi netwerken kanalen moeten kiezen die minstens 4 kanalen van elkaar verwijderd zijn. Bij 5 GHz overlappen de mogelijke kanalen niet.
+
+
+
+Het verbinden van een een toestel met een WiFi netwerk wordt **associatie** genoemd. Dit verloopt in enkele stappen.
+
+* De host moet scannen naar **beacon frames**, deze bevatten de naam, Service Set Identifier (SSID) en MAC adres van het access point
+* De host **kiest** een access point waarmee hij wilt verbinden
+* Nu moet de host zich mogelijks **authenticeren** (MAC-based, username/pass, shared key)
+* Nu heb je verbinding en kan er een DHCP proces in gang gezet worden 
+
+Deze manier van werken noemt met ook wel **passieve scanning**. Je kan ook doen aan **actieve scanning**. Dan zal de host in plaats van te wachten op een beacon frame, zelf een **probe request** sturen, waarop access points dan kunnen antwoorden met een **probe** response. 
+
+
+
+**Shared key authentication**
+
+Wanneer een host wilt associëren met een met shared key encryption beveiligd netwerk, zal het netwerk typisch een **challenge text** sturen. De host moet deze dan encrypteren met de shared key om te bewijzen dat hij hem kent. Dan pas wordt hem de toegang tot het netwerk verleend. Er zijn 3 bekende protocollen om dit mee te doen.
+
+* WEP (wired equivalent protocol)
+  * Onveilig, keys zijn maar 40 bits lang
+* WPA (WiFi protected access)
+  * Gebruikt periodiek nieuwe encryptiesleutels per client
+  * TKIP (temporal key integrity protocol)
+* WPA2
+  * uitbreiding op WPA met ondersteuning van Ad Hoc netwerken. Gebruikt AES i.p.v. RC4 encryptie.
+
+
+
+**Multiple access**
+
+Botsingen kunnen zich voordoen net zoals op bedraadde netwerken. We hebben dus CSMA nodig om botsingen te vermijden.  Alle nodes zullen dus eerst luisteren of het medium vrij is, en dan pas starten met de transmissie van hun berichten. 
+
+**CSMA/CA**
+
+(carrier sense multiple access / collision avoidance)
+
+
+
+**Channel reservatie**
+
+<img src="img/image-20220624121039153.png" alt="image-20220624121039153" style="zoom:50%;" />
+
+Een zender kan het kanaal 'reserveren' om een groter dataframe te versturen. Dit doet hij door middel van een **request-to-send** (RTS) pakketje. De base station zal dan een **clear-to-send** (CTS) broadcasten als dit mag. Zo weten de andere nodes ook dat ze moeten wachten. De RTS en CTS frames kunnen natuurlijk ook botsen, maar doordat ze zo klein zijn is die kans minimaal.
+
+ 
+
+**IEEE Ethernet standards**
+
+<img src="img/image-20220624121129015.png" alt="image-20220624121129015" style="zoom:50%;" />
+
+De IEEE heeft de datalinklaag eigenlijk in twee sublagen gesplitst. 
+
+* De Logical Link Control layer voorziet flow control en mechanismen om bovenliggende lagen te multiplexen. Het voorziet dus een manier om bijvoorbeeld ip-pakketten te transporteren.
+* Mac Layer voorziet addressering en MAC-protocollen zoals CSMA
+
+
+
+**802.11 Frame**
+
+De 802.11 frames hebben wat extra velden in vergelijking met de 802.3 frames
+
+<img src="img/image-20220624121547498.png" alt="image-20220624121547498" style="zoom:67%;" />
+
+De belangrijkste wijzigingen zijn:
+
+* Duration: geeft het tijdsslot in ms voor het RTS/CTS gebaseerde reservatiesysteem
+
+* Seq control: zodat getracked kan worden welke frames wel of niet aangekomen zijn
+
+* Frame control: vlaggen om het type van het frame aan te geven
+
+  * To AP/from AP geven aan of de frames van/naar het access point worden gestuurd
+
+* De 4 adresvelden 
+
+  * Hoe deze worden gebruikt hangt af van de To AP/From AP velden
+  * <img src="img/image-20220624122141425.png" alt="image-20220624122141425" style="zoom: 67%;" /> 
+  * <img src="img/image-20220624123020353.png" alt="image-20220624123020353" style="zoom:33%;" /> 
+
+  * To AP en from AP beide nul:
+    * We zitten sowieso in een ad-hoc netwerken kunnen de eerste twee adressen gebruiken als bron- en bestemmingsadres. Als derde adres gebruiken we een BSSID waarde die is afgesproken tussen de verschillende nodes
+
+  * To AP staat op 1: 
+    * De node wenst een frame te sturen naar het AP op weg naar een laag 3 bestemming van het pakket. Het MAC adress van de AP zal in adres 1 gestoken worden en het bestemmingsadres in adres 3.
+  * From AP staat op 1:
+    * Het omgekeerde van het vorige geval
+  * Beide op 1
+    * Als twee AP's draadloos met elkaar verbinding maken in een wireless mesh network
+
+
+
+**Optimalisaties**
+
+* Rate adaptation
+  * Het access point zal op basis van de SNR en de BER proberen om een sweetspot te vinden door de transmissiesnelheid en redundantie in de pakketjes te veranderen. 
+*  Power management
+  * Nodes kunnen om stroom te sparen aangeven dat ze zullen 'slapen' tot het volgende beacon frame. Dan weet de AP dat hij tot dan geen pakketjes moet sturen naar deze node. De node zal dan vlak voor de volgende beacon frame 'wakker worden' en zal de AP vervolgens hem de gebufferde frames bezorgen.
+
+
+
+
+
+# Week 5
+
+## Network management
+
+Een netwerk beheerd tot dezelfde partij wordt ook wel een **autonoom systeem** genoemd. In netwerken op grote schaal is het moeilijk om alles in de gaten te houden. Hoe doen we dit? 
+
+Volgens FCAPS
+
+* **F**ault management: fouten loggen, detecteren en opsporen
+* **C**onfiguration management: het bijhouden van een inventaris van toestellen en de configuratie ervan
+* **A**ccounting management: gebruikersprofielen bepalen en per profiel instellingen voorzien voor rechten, quota, toegang, ...
+* **P**erformance management: bandbreedte, delay, worden bij ISPs in SLAs vastgelegd
+* **S**ecurity management: bv Firewalls
+
+
+
+Bij netwerkbeheer maken we onderscheid tussen 2 zaken
+
+* Network elements (NA) (bv. routers, switches, ...)
+  * Bevat een management agent (MA)
+  * Zijn verantwoordelijk voor een aantal network management objects (NMO), zaken die gemonitord of geconfigureerd moeten worden
+  * Een route op een router is een voorbeeld van een network management object
+* Network management station (NMS)
+  * Interageert met de agents van de verschillende netwerktoestellen
+  * Bevindt zich meestal in een controlekamer
+  * Draait network management applications (NMA)
+
+ 
+
+## SNMP
+
+SNMP bestaat uit 4 cruciale onderdelen
+
+* Management information base (MiB)
+  * Een datastructuur, verspreid over de verschillende netwerkelementen die alle managementdata bijhoudt
+* Structure of management information (SMI)
+  * Dit is de structuur die alle MiB objecten moeten volgen
+* SNMP protocol
+  * Connectieloos protocol om deze informatie door te geven
+* Security, administration capabilities
+  * toegevoegd in SNMPv3
+
+
+
+**MiB**
+
+Er zijn een heleboel MIB objecten gedefineerd, van een eenvoudige parameter zoals de hostname van een gegeven node, tot UDP statistieken die door een node bijgehouden kunnen worden.
+
+MiB's worden gestructureerd in een soort boomstructuur. Dit is redelijk obvious dus ik hou de uitleg kort.
+
+<img src="img/image-20220624154610311.png" alt="image-20220624154610311" style="zoom:50%;" />
+
+<img src="img/image-20220624154631679.png" alt="image-20220624154631679" style="zoom:50%;" />
+
+Dit nummertje is dus het pad van de root tot een leaf. 
+
+**SMI**
+
+Voor ieder soort managementobject in de boomstructuur moet vastgelegd worden over welk soort data het precies gaat. Hiervoor gebruiken we de SMI als **data definition language**. 
+
+
+
+### Het SNMP protocol
+
+Om deze MIB info nu effectief door te kunnen geven in ons netwerk, gebruiken we het SNMP protocol. Dit protocol is connectieloos en maakt onderliggend gebruik van UDP.
+
+Het werkt in twee modussen
+
+* Request/response mode
+  * Het management apparaat (NMS) stuurt een request naar een bepaalde MIB van een beheerd apparaat, deze stuurt dan een antwoord
+* Trap mode
+  * Beheerde apparaten sturen automatisch trap messages. Zo moet de NMS niet constant requests sturen. 
+
+Soorten SNMP messages:
+
+<img src="img/image-20220624162043982.png" alt="image-20220624162043982" style="zoom:50%;" />
+
+Doordat de MiB's voor configuratie bij veel apparaten verschillend zijn, wordt SNMP niet zo veel gebruikt voor configuratie. Het wordt eigenlijk vooral gebruikt voor monitoring.
+
+
+
+**Security**
+
+SNMP berichten kunnen sinds SNMPv3 nu ook geëncrypteerd worden. Er werden ook authenticatiemogelijkheden toegevoegd.
+
+
+
+### Net-SNMP
+
+//todo
+
+
+
+## Ansible
+
+Ansible kan zowel gebruikt worden om tests uit te voeren, alsook een gehele netwerkconfiguratie uit te rollen. Zo kan je bijvoorbeeld met Ansible automatisch nieuwe virtuele machines opstarten wanneer de load op je netwerk toeneemt. Ansible zelf is een python applicatie die bepaalde playbooks kan uitvoeren. 
+
+Ansible kan werken in twee modes
+
+* Local execution mode
+  * De playbooks worden uitgevoerd vanop een controller of een network management node, deze zullen dan remote nodes aansturen gebruik makende van protocollen zoals SNMP
+* Remote execution mode
+  * Alle Ansible logica wordt gekopiëerd naar specifieke nodes om daar uitgevoerd te worden. 
+
+**Use cases**
+
+Een paar nuttige dingen waarvoor je Ansible kan gebruiken
+
+<img src="img/image-20220624163138394.png" alt="image-20220624163138394" style="zoom:50%;" /> 
+
+
+
+**Onderdelen**
+
+<img src="img/image-20220624163257967.png" alt="image-20220624163257967" style="zoom:50%;" />
+
+* CMDB (configuration management database)
+  * Houdt alle configuratie op een version-control manier bij
+* Devices
+  * Deze wensen we te beheren of aan te sturen
+* Users
+  * De mensen die aan de hand van playbooks de devices aansturen
+* Ansible automation engine
+  * Verwerkt playbooks en interageert op basis daarvan met de devices
+  * Bevat een lijst van devices die hij moet beheren
+  * Ook een command line interface
+  * De basisfunctionaliteit van Ansible kan uitgebreid worden met plugins
+  * Via de modules kan hij met verschillende remote systemen interageren
+
+
+
+**Playbooks **
+
+Een Ansible playbook bestaat uit verschillende onderdelen
+
+<img src="img/image-20220624163815105.png" alt="image-20220624163815105" style="zoom:50%;" />
+
+Iedere **play** omvat een lijst van **tasks** die op een bepaalde host uitgevoerd moeten worden. Een task is een call naar een bepaalde Ansible **module**. Dit kan je zien als een functie die kan uitgevoerd worden. 
+
+
+
+**Wat maakt Ansible interessant?**
+
+* Agent-less
+  * Je hoeft niets te installeren op je netwerkapparatuur, ansible kan zelf uitgebreid worden aan de hand van modules die met verschillende types devices kunnen samenwerken
+* Templates
+  * Je kan makkelijke eenzelfde taak generaliseren voor veel verschillende apparaten van hetzelfde type
+  * Dit kan je met de jinja2 templatetaal
+* Modules zijn zo opgesteld dat ze de beheerder dwingen om te definiëren wat de gewenste eindtoestand is, eerder dan wat het recept is om bij die eindtoestand te geraken. Deze **declaratieve** aanpak zorgt ervoor dat de logica in de module zelf geïplementeerd wordt, en gebruiker hiervan af te schermen.
+  * Als dezelfde taak meerdere keren wordt uitgevoerd, moet hij elke keer hetzelfde resultaat geven = **idempotente uitvoering**
+
+
+
+ **Workflow in ansible**
+
+1. Maak een inventory file en zet je apparaten erin
+2. Maak een playbook
+   * Deze bevat dan de bepaalde taak die je wilt uitvoeren, gebruik makende van een bepaalde module.
+3. De playbook uitvoeren
+
+# Week 6
+
+## IPv6
+
+Een IPv6 bestaat uit twee delen:
+
+* Eerste 64 bits: (sub-)netwerkprefix
+* Laatste 64 bits: interface identifier (IID)
+
+Je kan een IPv6 adres noteren volgens een paar regels
+
+* Nullen aan het begin van elk hextet mag je weglaten
+* Opeenvolgende nullen mag je éénmalig vervangen door `::`
+* Wil je een poortnummer achter je adres zetten, moet je het adres tussen brackets `[]` zetten 
+
+
+
+**Interface identifier**
+
+De IID van een apparaat bepalen kan je op verschillende manieren:
+
+* Je hem afleiden van het MAC-adres van de host volgens EUI-64, door `ff:fe` in het midden te stoppen en de 7de bit te flippen.
+  * <img src="img/image-20220624171257896.png" alt="image-20220624171257896" style="zoom:50%;" /> 
+  * Yeey nu ben je wereldwijd traceerbaar
+* Je kan je IID ook randomizen
+
+
+
+### Address scope
+
+Een interface heeft typisch **meerdere** IPv6 adressen. Zo kan een host bijvoorbeeld een **lokaal** en een **globaal** IPv6 adres hebben.  De scope bepaalt dan tot **waar** het adres geldig is en wat dan precies het type van dat adres is (unicast multicast, ...). Hier een overzicht van alle soorten IPv6 adressen
+
+* Link-local
+  * Prefix `FE80::/10`
+  * Typisch doe je eerder `FE80/64`, maar ze gaan je op het examen sowieso proberen te foppen hiermee
+  * Dit adres wordt automatisch gegenereerd zonder hulp van een centrale server
+* Global unicast
+  * Prefix `2000::/3`
+  * Dit adres is globaal routeerbaar
+  * Worden niet zomaar toegekend, als bedrijf kan je een prefix van /48 aanvragen, dan heb je nog 16 bit
+  * Een RIR krijgt typisch een /12 of /23, de routering is dus mooi gestructureerd over de hele wereld
+  * Deze geeft dan een /32 blok aan een ISP
+* Unique local address scope
+  * Prefix `FC00::/7`
+  * Als je twee kleine netwerkjes hebt die je naar elkaar wilt kunnen routeren volstaan link-local adressen niet. Als je niet verbonden bent met een ISP kan je geen globale adressen gebruiken
+  * Eigenlijk gebruiken ze nu enkel `FD00::/8`, om `FC00::/8` vrij te houden voor toekomstig gebruik
+  * De prefix van /48 wordt pseudo-random gegenereerd, de eerste 8 bits van de prefix zijn dus `FD` en de resterende 40 zijn random. Hier kan je nu zelf subnets van maken.
+  * De IID kan je bijvoorbeeld manueel toekennen
+
+
+
+### Address types
+
+* Unicast
+  * Alle adressen hierboven zijn unicast
+  * voor 1-op-1 communicatie
+* Multicast
+  * Prefix `FF00::/8`
+  * Om meerdere apparaten aan te spreken
+  * One-to-many
+  * Heeft een aantal bits om aan te geven wat de groep is die hij beschrijft (4 flag bits, 4 scope bits)
+  * `FF02::1` betekent alle nodes binnen het LAN, is gelijkaardig aan broadcast, want echte broadcast if afgeschaft. Het is eigenlijk niet de bedoeling dat dit gebruikt wordt.
+  * Apparaten kunnen zich 'abonneren' op bepaalde multicast adressen
+* Anycast
+  * One-to nearest
+  * Dus de dichtstbijzijnde
+  * Je dit bijvoorbeeld gebruiken voor DNS servers
+  * Zorgt wel voor problemen met TCP verbindingen. Als je wisselt van nodes tijdens de verbinding is alles genaaid.
+
+Doordat broadcast is afgeschaft is `FFFF:FFFF:FFFF:FFFF` een geldig adres. Een adres met allemaal nullen dus ook.
+
+
+
+# Week 7
+
+## IPv6 Adresresolutie
+
+Bij IPv4 gebruikte de adresresolutie met een apart protocol: ARP. Bij IPv6 zit dit echter ingebouwd. In tegenstelling tot IPv4 wordt er geen broadcast, maar multicast gebruikt. Hiervoor gebruiken we het **solicited-node** multicast adres. 
+
+* Solicited node adres
+  * Prefix `FF02::1:FF00:0/104` + de laatste 24 bits van het unicast adres
+  * Als je een unicast adres configureert op een computer schrijft hij zich automatisch in op deze multicast groep
+  * Er wordt ook een multicast adres op laag 2 aangemaakt
+
+
+
+Stel je voor dat host A het fysieke adres van host B wilt krijgen. Hoe verloopt deze adresresolutie nu dan precies? 
+
+* A stuurt een **Neighbor Solicitation** naar het solicited node multicast adres van host B. 
+* Nu antwoordt B met en unicast **Neighbor Advertisement** bericht, deze bevat zijn fysieke adres
+* Host A slaat dit adres nu op in zijn **Neighbor Cache** (gelijkaardig aan een ARP table)
+
+Wat als er toevallig twee apparaten op hetzelfde solicited node multicast adres ingeschreven zijn? Op de applicatielaag zal het apparaat waarvoor het bericht niet bestemd is zien dat het gevraagde adres niet overeenkomt met die van hem en dus niet antwoorden.
+
+
+
+## Duplicate Address Detection (DAD)
+
+* Genereer een nieuw adres
+* Neem dit adres tijdelijk aan (tentative, dus je kan het nog niet als source adres gebruiken)
+* Stuur een neighbor solicitation op het netwerk
+* Als het al in gebruik is zal er iemand antwoorden, dan markeer je het adres als duplicate en gebruik je het niet
+* Als niemand antwoord, kan je het adres definitief gebruiken (preferred)
+
+Als er al een node was die het adres had, zal deze antwoorden op het `FF02::1` all nodes on link-local network adres, want anders kan dit bericht nooit aankomen bij de afzender. Normaal gezien is dit ook de enige keer dat dit adres gebruikt zou worden.
+
+ 
+
+# Week 8
+
+
+
+# Week 9
+
+
+
+# Week 10
+
 ## BGP
 
 Het Border Gateway Protocol wordt gebruikt voor de routering **tussen** verschillende autonome systemen op het internet. In tegenstelling tot OSPF, dat zich bezig houdt met de routering **binnen** een autonoom systeem. Alleen routers die verbinding maken met andere autonome systemen maken gebruik van het BGP protocol. Dit zij dan ook de Border Gateways. Als ze met elkaar praten, noemen we dat *peeren*.
@@ -411,6 +968,18 @@ Hoe kiest een router nu welke route hij moet gebruiken als hij meerdere routes h
 2. **Shortest AS-PATH**: het pad dat zo min mogelijk AS'en doorloopt.
 3. **Closest NEXT-HOP**: als de paden even lang zijn, kiezen we voor de dichtstbijzijnde router (hot potato routing)
 4. Andere criteria
+
+
+
+
+
+# Week 11
+
+
+
+# Week 12
+
+
 
 # Examenvragen theorie
 
@@ -1513,7 +2082,7 @@ A few minutes
 
 
 
-11. Both the client and the AP know the 40-bit WEP key, but how does the client know the 24-bit Initialization Vector (IV) to decrypt a packet? (hint: examine the dump-xx.cap file)
+11. Both the client and the AP know the 40-bit WEP key, but how does the client know the 24-bit Initialization Vector (IV) to decrypt a packet? (hInt: examine the dump-xx.cap file)
 
 ```
 The IV is also included in the packet
