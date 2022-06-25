@@ -20,10 +20,10 @@
   - [ ] Sectie 2.4 DNS 
     - [x] Kennisclip: Resolver
     - [x] Kennisclip: DNS registratie
-    - [x] Kennisclip: Reverse DNS (*)*
+    - [x] Kennisclip: Reverse DNS (*)
     - [ ] Kennisclip: DNS server (*)
   - [ ] Sectie 2.5 Peer-to-peer bestandsdistributie
-    - [x] Kennisclip: What is een DHT? (*)*
+    - [x] Kennisclip: What is een DHT? (*)
     - [ ] Kennisclip: Hoe werkt een DHT? (*)
 - [ ] [Week 2](#week-2)
   - [ ] Sectie 4.3.3 IPv4 Dynamic Host Configuration Protocol
@@ -35,50 +35,50 @@
   - [ ] Sectie 5.6 Internet Control Message Protocol (ICMP)
     - [ ] Kennisclip: Internet Control Message Protocol (*)
 - [x] [Week 3](#week-3)
-  - [x] Sectie 6.4 Local-Areanetwerken met switches (herhaling, behalve *)
+  - [ ] Sectie 6.4 Local-Areanetwerken met switches (herhaling, behalve *)
     - [x] Kennisclip: ARP
     - [x] Kennisclip: ARP cache management (*)
     - [x] Kennisclip: Ethernet switching
     - [x] Kennisclip: VLAN
 - [x] [Week 4](#week-4)
-  - [x] Sectie 7.1 - 7.2 Inleiding/Draadloze links en netwerkkenmerken
+  - [ ] Sectie 7.1 - 7.2 Inleiding/Draadloze links en netwerkkenmerken
     - [x] Kennisclip: Introductie tot draadloze netwerke
-  - [x] Sectie 7.3 Wifi: 802.11 draadloze LANs
+  - [ ] Sectie 7.3 Wifi: 802.11 draadloze LANs
   - [x] Kennisclip: Draadloze LANs
 - [x] [Week 5](#week-5)
-  - [x] Sectie 5.7 Netwerkbeheer en SNMP
+  - [ ] Sectie 5.7 Netwerkbeheer en SNMP
     - [x] Kennisclip: Netwerk management
     - [x] Kennisclip: SNMP
     - [x] Kennisclip: Netwerk Automatisering en Ansible
-- [x] [Week 6](#week-6)
-  - [x] IPv6 - pagina's 1 tot 31 (leerstof)
+- [ ] [Week 6](#week-6)
+  - [ ] IPv6 - pagina's 1 tot 31 (leerstof)
     - [x] Kennisclip: IPv6 address space & notatie
     - [x] Kennisclip: IPv6 address scope
     - [x] Kennisclip: IPv6 ULA scope
     - [x] Kennisclip: IPv6 address type
-  - [x] IPv6 - pagina's 32 tot 35 (achtergrond)
+  - [ ] IPv6 - pagina's 32 tot 35 (achtergrond)
     - [x] Kennisclip: IPv6 header
 - [ ] [Week 7](#week-7)
   - [ ] IPv6 - ICMPv6 - pagina's 36 tot 59 (leerstof)
     - [x] Kennisclip: IPv6 address resolution
     - [x] Kennisclip: IPv6 Duplicate Address Detection (DAD)
-    - [ ] Kennisclip: IPv6 StateLess Address AutoConfiguration (SLAAC)
-    - [ ] Kennisclip: IPV6 - DHCPv6
+    - [x] Kennisclip: IPv6 StateLess Address AutoConfiguration (SLAAC)
+    - [x] Kennisclip: IPV6 - DHCPv6
   - [ ] IPv6 - Transition to IPv6 - pagina's 60 tot 73 (achtergrond)
-    - [ ] Kennisclip: IPv6 dual stack v6/v4
-    - [ ] Kennisclip: IPv6 (only) to an IPv4 network
+    - [x] Kennisclip: IPv6 dual stack v6/v4
+    - [x] Kennisclip: IPv6 (only) to an IPv4 network
 - [ ] [Week 9](#week-9)
   - [ ] Sectie 5.1 Introductie
-    - [ ] Kennisclip: Wat is routing
+    - [x] Kennisclip: Wat is routing
   - [ ] Sectie 5.2 Routeringsalgoritmen
-    - [ ] Kennisclip: Distance vector routin
+    - [x] Kennisclip: Distance vector routing
   - [ ] Sectie 5.3 Intra-AS routering: OSPF
-    - [ ] Kennisclip: Link-state routing en OSPF
+    - [x] Kennisclip: Link-state routing en OSPF
 - [ ] [Week 10](#week-10)
   - [ ] Sectie 1.7
   - [ ] Sectie 5.4 Routing among the ISPs: BGP
     - [ ] Kennisclip: Structuur van het Internet
-    - [ ] Kennisclip: BGP
+    - [x] Kennisclip: BGP
 - [ ] [Week 11](#week-11)
   - [ ] Sectie 1.6
   - [ ] Sectie 8.9 Firewalls & IDS (leerstof)
@@ -897,15 +897,212 @@ Wat als er toevallig twee apparaten op hetzelfde solicited node multicast adres 
 * Als het al in gebruik is zal er iemand antwoorden, dan markeer je het adres als duplicate en gebruik je het niet
 * Als niemand antwoord, kan je het adres definitief gebruiken (preferred)
 
-Als er al een node was die het adres had, zal deze antwoorden op het `FF02::1` all nodes on link-local network adres, want anders kan dit bericht nooit aankomen bij de afzender. Normaal gezien is dit ook de enige keer dat dit adres gebruikt zou worden.
-
- 
-
-# Week 8
+Als er al een node was die het adres had, zal deze antwoorden op het `FF02::1` all nodes on link-local network adres, want anders kan dit bericht nooit aankomen bij de afzender van de neighbor solicitation. Normaal gezien is dit ook de enige keer dat dit adres gebruikt zou worden.
 
 
+
+##  SLAAC
+
+(StateLess Address AutoConfiguration)
+
+
+
+Het Neighbor Discovery Protocol definieert 5 types ICMPv6 pakketten:
+
+* Neighbor sollicitation
+* Neighbor advertisement
+  * Voor link-layer address resolution en DAD
+* Router Solicitation (RS)
+* Router Advertisement (RA)
+  * Address Autoconfiguration (dit gaan we dus doen)
+  * Router discovery
+* Redirect message
+
+We willen met een minimale configuratie, zonder DHCP server onze apparaten globale IP-adressen kunnen geven. Dit kunnen we met SLAAC volgens de volgende stappen
+
+1. Een **link-local adres genereren**
+   * Dit hebben we nodig om met de router te kunnen praten, we doen in deze stap alle stappen van het vorige hoofdstuk (DAD)
+2. We doen een **Router Solicitation**
+   * Naar het all-routers multicast adres `FF02::2`
+   * Dan antwoordt de router met een **Router Advertisement** naar `FF02::1` (deze bevat geen DNS info)
+   * Nu kan je de prefix van de router nemen en er een eigen gegenereerde IID aanplakken
+   * Nu moet je weer DAD doen om te verifiëren dat dit adres uniek is binnen je netwerk
+   * Nu weet je ook de default gateway, want dit is de router die op je solicitation heeft geantwoord
+
+
+
+## DHCPv6
+
+Een DHCP server is niet noodzakelijk in een IPv6 netwerk. We kunnen het nog steeds doen als we dat willen, om bijvoorbeeld DNS informatie te verspreiden, want dit zit niet standaard in de router advertisements bij SLAAC. 
+
+Als SLAAC heeft plaatsgevonden kan er in de router advertisement een flag aangezet worden die aangeeft dat er ook een DHCP server aanwezig is. Als deze aanstaat weten we dat we nadien ook op zoek moeten gaan naar een DHCPv6 server in het netwerk. Deze server zal dan extra informatie aanbieden waaronder DNS en NTP informatie.
+
+Je kan DHCPv6 op twee manieren gebruiken:
+
+* Stateless: bovenop de stateless adressen gegenereerd door SLAAC geeft de DHCP-server extra informatie (DNS, NTP, ...), zonder bij te houden aan wie hij die informatie allemaal heeft uitgedeeld
+* Stateful: de server gaat effectief managen in het netwerk zoals bij een klassieke DHCP server. Hij gaat ook adressen uitdelen en houdt bij wie welk adres heeft ontvangen.
+
+Bij een stateful DHCPv6 server zullen de volgende pakketjes uitgewisseld worden, analoog aan DHCP bij IPv4:
+
+* Solicit (DHCPDISCOVER bij IPv4)
+* Advertise (DHCPOFFER bij IPv4)
+* Request (DHCPREQUEST bij IPv4)
+* Reply (DHCPACK bij IPv4)
+
+
+
+## Dual Stack
+
+Hoe kunnen we nu IPv6 gebruiken in een wereld waar alles op IPv4 draait?
+
+Je computer heeft zowel een IPv4 als een IPv6 adres. Als je dus surft naar een website die IPv6 gebruikt, zal je computer het IPv6 adres gebruiken. Dankzij Dual Stack kunnen we IPv6 geleidelijk aan invoeren. Het probleem is nu natuurlijk dat we veel dubbel werk moeten doen. 
+
+Zo wordt er bij DNS het AAAA record toegevoegd om IPv6 adressen te ondersteunen. Nu zal je de reverse zone wel helemaal opnieuw moeten opbouwen. Dual-stack apparaten vragen dus naar het A record en het AAAA record en kan dan in principe kiezen welke hij gebruikt. 
+
+
+
+## IPv6 only to IPv4
+
+Wat als we nu een netwerk hebben dat alleen nog maar IPv6 gebruikt? Hoe kan dit netwerk nu communiceren met het internet dat nog steeds grotendeels op IPv4 draait? We moeten een oplossing, soortgelijk aan NAT gebruiken. Dit noemen ze NAT64 (NAT 6 to 4).
+
+De IPv6 payload wordt geplaatst in een IPv4 pakketje. Dit is natuurlijk wel moeilijk schaalbaar, want je moet een tabel bijhouden van alle mappings.
+
+
+
+Neem het volgende voorbeeld. We willen met ons IPv6 only apparaat een request doen naar minerva.ugent.be. Deze server draait enkel IPv4. 
+
+<img src="img/image-20220624212056172.png" alt="image-20220624212056172" style="zoom:50%;" />
+
+Als je van je IPv6 client een DNS query doet, kan je alleen vragen naar een AAAA record. Als jouw DNS server dit doorstuurt naar een gewone DNS server, zal hij spijtig genoeg geen antwoord krijgen. Je DNS server zal dan een gewone query moeten doen en het antwoord (een A record) inpakken in een IPv6 pakketje met een AAAA record. Hiervoor wordt een specifieke prefix gebruikt.
+
+<img src="img/image-20220624212659560.png" alt="image-20220624212659560" style="zoom:50%;" />
+
+Als jij nu een request wilt sturen naar de server, zal je het IPv4 adres van de server moet en prefixen met de Well-known NAT64 prefix. Op het moment dat het pakketje de router bereikt op de rand van je IPv6 netwerk, zal hij een entry moeten toevoegen (nat zoals bij NAT) waarin jouw IPv6 adres gemapt wordt op een IPv4 adres. Deze router zal dan een IPv4 verbinding opzetten met de server.
 
 # Week 9
+
+## Wat is routing?
+
+Routing is het proces dat gebruikt wordt door routers om te bepalen welk pad moet genomen worden naar een gegeven bestemming. Hiervoor kunnen ze gebruikmaken van gecentraliseerde of gedistribueerde algoritmen om de kortste route of de kleinste afstand te bepalen tussen het begin en eindnetwerk.
+
+Om deze routes te kunnen vinden, moeten routers informatie met elkaar uitwisselen volgens een bepaald protocol, en dan met een bepaald algoritme het pad naar elke bestemming berekenen. Het is natuurlijk niet mogelijk elke router in het internet met elke andere router in het internet informatie uit te laten wisselen. Daarom is het internet georganiseerd in autonome systemen.
+
+Een **autonoom systeem** is netwerk van routers dat beheerd wordt door dezelfde instantie. Dit kunnen grote bedrijven zijn zoals ISPs of organisaties zoals Belnet. Hierdoor ontstaat er een hiërarchisch systeem van routering. We gebruiken dan twee soorten protocollen:
+
+* **Intra-AS** routeringsprotocollen tussen routers van dezelfde autonome systemen
+* **Inter-AS** routeringsprotocollen tussen routers van verschillende autonome systemen
+
+
+
+Routers kunnen verschillende types informatie uitwisselen om routes te berekenen:
+
+* **Link-states**
+  * Bv. Er is een link van A naar B met kost x
+  * **Link-state** protocollen (OSPF, IS-IS)
+* **Afstanden** naar bepaalde bestemmingen
+  * Bv. Node C kan node D bereiken met afstand y
+  * **Distance-Vector** protocollen
+* **Paden** naar bepaalde bestemmingen
+  * Bv. Node E kan node F bereiken via [G,H,I,J]
+  * **Path-Vector** protocollen
+
+Binnen AS'en wordt er het meeste gebruik gemaakt van link-state protocollen. Voor inter-AS routering wordt vrijwel alleen BGP gebruikt.
+
+
+
+## Distance Vector Routing
+
+Bij distance-vector routerings houdt iedere router een vector bij met de afstanden naar alle routers in het netwerk. Elke link tussen twee routers krijgt een bepaalde 'afstand'
+
+1. De vector wordt binnen de router geïnitialiseerd met enkel de afstand naar zichzelf. (nul dus)
+2. Elke router gaat zijn distance vector adverteren naar zijn buren
+3. Gegeven de ontvangen distance vectors gaat elke router nu zijn eigen distance vector updaten
+   * Nieuwe bestemmingen worden gewoon toegevoegd in de vector
+   * Als hij een bestemming binnenkrijgt die hij al heeft, neemt hij de kortste. Als de nieuwe afstand plus de afstand tot de node van wie hij die heeft gekregen kleiner is dan de afstand die hij al had, kiest hij dus het nieuwe pad.
+
+Dit proces wordt voortdurend herhaald zodat uiteindelijk de paden convergeren.
+
+
+
+**Count to infinity**
+
+Er doet zich wel een probleem voor bij deze manier van routes vinden. Goed nieuws verspreid zich snel, maar slecht nieuws trager. Als er een sneller pad opduikt, zullen routers dit snel oppikken en zal er sneller geconvergeerd worden naar dit snellere pad. Als de kost van een link plots verhoogt, zal het echter zeer lang duren voordat routers dit doorhebben.
+
+Aanschouw onderstaand afbeeldsel.
+
+<img src="img/image-20220624224749715.png" alt="image-20220624224749715" style="zoom:50%;" />
+
+De link tussen C en B verhoogt in kost. C zal zijn distance vector updaten en neemt het kortste pad (naar B) over van A, met kost 5. Het probleem is dat het kortste pad van A naar B ook via C ging. C neemt dit foute pad over, telt er 1 bij op en zet het in zijn distance vector. Dit proces blijft zich herhalen tot we aan 50 komen en C eindelijk door gaat hebben dat het kortste pad naar B via A loopt.
+
+Hoe lossen we dit probleem op?
+
+* Split horizon: geef nooit de distance aan een buur voor een bestemming die gebruik maakt van die buur
+* Poisoned reverse: geef wel de distance aan een buur voor een bestemming die gebruik maakt van die buur, maar zet die op oneindig.
+
+### RIP 
+
+RIP is een simpel routeringsprotocol, gemakkelijk te gebruiken in kleine netwerken. De afstandsmetriek die wordt gebruikt is een simpele **hop count**, in plaats van een link kost. Elke advertisement kan maximum een lijst van afstanden naar 25 subnetten bevatten. Routers wisselen elke 30 distance vectors distance vectors uit met hun buren. Als een router langer dan 180 seconden niets van zich laat weten, wordt hij dood verklaard en worden alle routes via hem ongeldig verklaard.
+
+
+
+## Link State routing
+
+Distance vector protocollen zijn in staat om kortste paden te gebruiken naar gegeven bestemmingen zonder dat individuele nodes beschikken over de route naar die bestemming. Ze houden enkel vectoren bij met de afstanden naar die bestemmingen en hebben geen inzicht in de topologie van het netwerk.
+
+Link-state routeringsprotocollen hebben kennis van de **volledige topologie** van het netwerk en bekomen dit door de uitwisseling van **link-states**. Dit verloopt in de volgende stappen.
+
+* Elke router maakt een lijst van de links waarmee hij verbonden is, bij elke link hoort ook een state. In dit geval zullen we de hop count nemen als state.
+* Elke router stuurt zijn lijst met link states door naar zijn buren. Die buren gaan dan op hun beurt die link states doorsturen (ook wel **flooden** genoemd) naar de rest van het netwerk. Om te voorkomen dat die link states oneindig blijven rondgestuurd worden, maken we gebruik van **sequence numbers**. Link states afkomstig van dezelfde bron en een zelfde of ouder sequence number hebben, zullen genegeerd worden.
+* Elke router kan nu dankzij de bekomen informatie zijn **link state database** vullen. Vervolgens kan hij een volledige kaart van de netwerktopologie opbouwen en met het algoritme van Dijkstra de kortste paden berekenen.
+* Met deze informatie kan onze router nu zijn **routing table** opstellen.
+
+Belangrijk is dat elke router in ons netwerk beschikt over dezelfde topologie-informatie en gebruik maakt van hetzelfde kortste-pad-algoritme. Als er een link wegvalt is het dus mogelijk dat door inconsistenties in de topologie-informatie er zich tijdelijk (voor enkele seconden) lussen voordoen. 
+
+
+
+### OSPF
+
+Link state routeringsprotocollen zijn de **eerste keus** voor grote netwerken van één autonoom systeem. Ze hebben **geen count-to-infinity** probleem en convergeren over het algemeen heel erg snel. Het nadeel is dat ze **meer computationeel vermogen** van de individuele routers vergen.
+
+Open Shortest Path First is één van de voornaamste link state routeringsprotocollen. Het ondersteunt zowel IPv4 als IPv6 en er zijn veel open-source implementaties beschikbaar. OSPF maakt gebruik van **advertisements** om link states te verspreiden. Die worden gebundeld per bronrouter en geflood over het hele netwerk. Links zijn **niet alleen links tussen routers**, maar ook links van routers naar andere **stub-netwerken** waartoe ze toegang geven.
+
+OSPF heeft een aantal eigenschappen die het aantrekkelijk maken voor grote bedrijven:
+
+* **Security**: OSPF berichten kunnen geauthentificeerd worden, zodat stoute mensen niet zomaar link-state berichten kunnen verspreiden.
+* **Multiple same-cost paths**: als er meerdere korste paden zijn, kunnen die geconfigureerd worden in de forwarding tabel (als dit ondersteund is door de router natuurlijk)
+* **Integrated uni- and multicast support**: OSPF kan dus ook multicast routeren
+* **Hierarchical OSPF**: OSPF kan gebruik maken van areas en een hiërarchie om het protocol schaalbaarder te maken.
+
+
+
+**Hierarchical OSPF**
+
+Bij grote netwerken heb je natuurlijk veel overhead door constante updates van link states, omdat bij elke update onze routers hun kortste paden moeten herberekenen. Om dit te voorkomen kan je je netwerk opdelen in hiërarchische areas om het protocol beter te laten schalen. Iedere area gaat alleen link state informatie verspreiden binnen zichzelf. De korste paden worden dus enkel berekend binnen elke area
+
+<img src="img/image-20220625114205298.png" alt="image-20220625114205298" style="zoom:50%;" />
+
+In deze voorstelling voorziet een **backbone** de verbinding tussen verschillende areas, verkeer tussen de verschillende areas moet hier altijd door. Er is telkens een **edge router** die verbinding heeft met twee areas, deze routers noemen we ook wel area gateway routers of **area border routers**. De edge routers moeten de netwerken zo veel mogelijk aggregeren om de belasting te beperken. 
+
+Uit dit voorbeeld kunnen we een paar concepten halen waarmee we binnen OSPF zullen werken:
+
+* **Two-level hierarchy**: er wordt een hiërarchie van twee niveaus gebruikt, met een backbone op het hoogste niveau
+* **Internal routers:** link states worden enkel binnen hun eigen area, zodat elke router over een topologie beschikt van zijn eigen area, maar niet naar bestemmingen in andere areas
+* **Area border routers:** moeten bereikbaarheid 'samenvatten' voor hun eigen area en adverteren naar andere area border routers via de backbone
+* **Backbone routers:** draaien het link state protocol enkel onder de routers van de backbone
+* **Boundary routers:** maken verbinding met andere autonome systemen
+
+
+
+## Link State vs Distance Vector
+
+| Link State Routing                         | Distance Vector Routing                        |
+| ------------------------------------------ | ---------------------------------------------- |
+| Elke router kent de volledige topologie    | Router kent enkel de lengte van het korste pad |
+| Meer CPU en geheugen                       | Minder resources nodig                         |
+| Dijkstra                                   | Bellman-Ford                                   |
+| Update na elke link change                 | Periodieke updates                             |
+| Reageert snel op wijzigingen               | Trage convergentie                             |
+| Bruikbaar in netwerken met duizenden nodes | Kleine netwerken (hop limit 15)                |
 
 
 
