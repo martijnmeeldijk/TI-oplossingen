@@ -31,7 +31,7 @@
     - [x] Kennisclip: DHCP renewal & relay (*)*
     - [x] Kennisclip: DHCP server (*)
   - [ ] Sectie 4.3.4 Network Address Translation Protocol
-    - [ ] Kennisclip: Network Address Translation
+    - [x] Kennisclip: Network Address Translation
   - [ ] Sectie 5.6 Internet Control Message Protocol (ICMP)
     - [ ] Kennisclip: Internet Control Message Protocol (*)
 - [x] [Week 3](#week-3)
@@ -82,12 +82,12 @@
 - [ ] [Week 11](#week-11)
   - [ ] Sectie 1.6
   - [ ] Sectie 8.9 Firewalls & IDS (leerstof)
-    - [ ] Kennisclip: Firewall and IDS
+    - [x] Kennisclip: Firewall and IDS
 - [ ] [Week 12](#week-12)
   - [ ] Sectie 4.4 Gegeneraliseerde forwarding en SDN
   - [ ] Sectie 5.5 Het SDN-controlelevel
-    - [ ] Kennisclip: SDN	
-    - [ ] Kennisclip: Netwerkvirtualisatie
+    - [x] Kennisclip: SDN	
+    - [x] Kennisclip: Netwerkvirtualisatie
 
 
 
@@ -246,7 +246,11 @@ Wat zit er allemaal in een zone file?
 
 ### Bittorrent
 
-Bij bittorrent worden bestanden opgesplitst in **chunks** van 512KB. Een **torrent** is dan een groep van **peers** (computers) die een bestand delen met elkaar. Een **tracker** is een node die de actieve peers van een torrent bijhoudt. Om een download te starten moeten we dus eerst van de tracker een lijst van peers krijgen. Hiermee kunnen we dan bestanden uitwisselen.
+Bij bittorrent worden bestanden opgesplitst in **chunks** van 512KB. Een **torrent** is dan een groep van **peers** (computers) die een bestand delen met elkaar. Een **tracker** is een node die de actieve peers van een torrent bijhoudt. Om een download te starten moeten we dus eerst van de tracker een lijst van peers krijgen. Hiermee kunnen we dan bestanden uitwisselen. Om een bestand te downloaden met bittorrent nemen we de volgende stappen:
+
+* Gebruiker meldt zich aan
+* Hij haalt een lijst van peers op voor het gewenste bestand via een tracker
+* Nu kan hij chunks uitwisselen met de andere peers
 
 Trackers zijn eigenlijk de bottleneck van het hele gebeuren. Als we het hele systeem willen verkloten moeten we enkel de trackers uitschakelen en niemand kan nog files downloaden. Zijn er alternatieven waar dit niet het geval is?
 
@@ -254,9 +258,12 @@ Trackers zijn eigenlijk de bottleneck van het hele gebeuren. Als we het hele sys
 
 ### Distributed hash table (DHT)
 
-We gebruiken in plaats van een tracker een gedistribueerde hashtabel. De key-value paren van een gewone hashtabel worden verdeeld over verschillende nodes. Elke node krijgt een id. We maken vervolgens een hashfunctie die elke sleutel afbeeldt op een node en een record binnen die node.
+We gebruiken in plaats van een tracker een gedistribueerde hashtabel. We zien **de bestandsnaam en het nummer van de chunk** als **key** en de lijst van **IP-adressen van de trackers** als **value**. De key-value paren van deze hashtabel worden vervolgens verdeeld over verschillende nodes. Elke node krijgt een id. We maken vervolgens een hashfunctie die elke key afbeeldt op een node.
 
-Hier onstaat dan natuurlijk weer een probleem. Wat moeten we doen als we op een id uitkomen die niet hoort bij een node? Dan gaan we simpelweg naar de eerstvolgende node.
+Hier onstaat dan natuurlijk weer een probleem. Wat moeten we doen als we op een id uitkomen die niet hoort bij een node? Dus als niet elke id een overeenkomstige node heeft. 
+
+* We mappen het key-value paar op de eerste node met een id groter dan of gelijk aan de berekende id.
+* Nu zetten we de id's in een cirkel, de node met het laagste id is dan de opvolger van de node met het hoogste id
 
 <img src="img/image-20220228170856251.png" alt="image-20220228170856251" style="zoom:50%;" />
 
@@ -371,15 +378,92 @@ lease 192.168.1.108 {
 
 ## NAT
 
-Er zijn maar $2^{32}$ , oftewel $4.294.967.296$ mogelijke ipv4 adressen. Om dit probleem om te lossen laten we typisch alle toestellen binnen één netwerk hetzelfde ip adres gebruiken. In het geval van je thuisnetwerk heeft je router dan enkel een ip adres. De toestellen binnen je netwerk gebruiken dan een private ip. (192.168.0.22 bijvoorbeeld).
-
-Als je met je computer thuis een pakketje stuurt naar een server buiten je netwerk, zal je router het source ip adres vervangen door zijn publieke ip adres. Hij onthoudt dan jouw ip en de source poort en stuurt het pakketje door naar de server (mogelijks ook via een andere poort). Als hij antwoord krijgt van de server op diezelfde poort weet hij dat hij het pakketje naar jouw pc moet doorsturen.
-
-//TODO
-
-// heel veel dingen overgeslagen
+Er zijn maar $2^{32}$ , oftewel $4.294.967.296$ mogelijke IPv4 adressen. Om dit probleem om te lossen laten we typisch alle toestellen binnen één netwerk hetzelfde IP-adres gebruiken. In het geval van je thuisnetwerk heeft je modem dan enkel een IP-adres. De toestellen binnen je netwerk gebruiken dan een private IP. (192.168.0.22 bijvoorbeeld).
 
 
+
+<img src="img/image-20220625155508882.png" alt="image-20220625155508882" style="zoom: 33%;" />
+
+Als je met je computer thuis een pakketje stuurt naar een server buiten je netwerk, zal je router het **source IP-adres vervangen** door zijn **publieke IP-adres**. Hij onthoudt dan jouw IP en de source poort en stuurt het pakketje door naar de server (mogelijks ook via een andere poort). Als hij antwoord krijgt van de server op diezelfde poort weet hij dat hij het pakketje naar jouw pc moet doorsturen.
+
+Dit wordt een beetje moeilijker als het toestel in het private netwerk als webserver wilt fungeren. We zullen moeten doen aan **port-forwarding**. We moeten in onze NAT-router een regel toevoegen in de vertalingstabel die poort 80 mapt met het interne IP-adres. Als het verkeer op poort 80 op het publieke adres van de router wordt dan doorgesluisd naar onze webserver.
+
+Buiten het beperken van het aantal gebruikte IPv4 adressen, werkt NAT dus eigenlijk ook als een soort firewall. We kunnen niet aan de devices binnen het netwerk, zolang er geen NAT-regel is toegevoegd. Dit noemt met net **NAT traversal probleem**. De mogelijke oplossingen voor dit probleem betreffen:
+
+* **Statisch** een regel toevoegen in de tabel (zoals hierboven)
+* **UPNP** en **IGD**:
+  * Universal Plug and Play: wordt niet uitgelegd in de video
+  * Het Internet Gateway Device protocol laat toe om een server in het private netwerk automatisch te laten leren wat het publieke IP-adres is van je NAT-router en **dynamisch** regels toe te voegen die ervoor zorgen dat binnenkomend verkeer op een gegeven poort doorgesluisd wordt naar de server.
+* **Relay** 
+  * De client initieert een verbinding met een publieke relay server. De andere partij, die mogelijks ook achter NAT zit, doet dit ook. De relay koppelt dan beide verbindingen aan elkaar om communicatie tussenbeide mogelijk te maken. Die is hoe systemen zoals messenger en skype werken.
+
+
+
+**Voordelen van NAT**
+
+* **Berperkt** het aantal gebruikte IP-adressen
+* IP-adressen in het private netwerk kunnen **wijzigen** zonder invloed op de buitenwereld
+* Je kan van ISP veranderen zonder dat de adressen in je lokale netwerk moeten veranderen
+* Apparaten binnen je netwerk zijn niet expliciet adresseerbaar, omdat je NAT werkt als een soort firewall. Dit is natuurlijk goed voor **security**
+
+**Nadelen**
+
+* Het gebruik van transportlaagpoorten om pakketten naar het juiste device te krijgen is een inbreuk op het model van verschillende lagen, dit is bovendien enkel mogelijk zo lang er poorten vrij zijn op de NAT-router
+* Het NAT-traversal probleem zorgt dat het moeilijker is om servertoepassingen draaiende te krijgen op het private netwerk 
+* Applicatieontwikkelaars moeten rekening houden met het feit dat NAT hun toepassingen kan dwarsbomen.
+
+
+
+### NAT444
+
+In Aziatische landen kregen sommige ISPs maar één publiek IP-adres, in plaats van een heel adresblok. Hiervoor hebben ze **carrier grade NAT**, oftewel NAT444 bedacht. Hier wordt NAT twee maal achter elkaar gebruikt. In het voorbeeld hieronder krijgen dan de klanten een 'publiek' IP-adres uit de 10.0.0.0/8 range. Hun apparaten krijgen dan een adres uit de 192.168.0.0/16 range.
+
+<img src="img/image-20220625174613647.png" alt="image-20220625174613647" style="zoom: 50%;" />
+
+
+
+Hier doen zich twee problemen voor
+
+* De ISP moet erop toezien dat de adressen die de klanten gebruiken niet overlappen met de adressen van de infrastructuur van de ISP.
+* Communicatie tussen klantennetwerken volgt niet noodzakelijk het kortste pad, omdat ze altijd de NAT van de ISP moeten gebruiken. 
+
+
+
+
+
+## ICMP
+
+Of langer: Internet Control Message Protocol
+
+ICMP voorziet diagnosemechanismen voor
+
+* Bereikbaarheid van hosts (`ping`)
+  * Of ze aan zijn
+  * Round-trip tijd
+* Routeringsproblemen (`icmpredirect`)
+  * Kijken of bepaalde routes korter kunnen
+* Route discovery (`traceroute`)
+  * Detecteren wat de tussenliggende hops zijn op een route naar een bepaalde host
+* Nog dingen ...
+
+
+
+ICMP werkt rechtstreeks bovenop laag 3, bovenop de IP-header en gebruikt dus geen transportlaagprotocol. Er zijn 2 soorten ICMP-berichten:
+
+* Error
+* Query-response 
+
+
+
+**ICMP redirect**
+
+<img src="img/image-20220625180456796.png" alt="image-20220625180456796" style="zoom:50%;" />
+
+Als wij met onze computer een pakketje willen sturen naar het subnet achter router B, maar enkel A als default gateway hebben, zal het pakketje dus eerst richting router A vertrekken. A ziet dat hij het pakket moet terugsturen op het interface waarop hij het heeft ontvangen en stuurt een ICMP redirect met de correcte gateway naar onze computer. A is lief en stuurt het pakketje de juiste richting uit. Door de ICMP redirect kunnen wij nu onze routeringstabel updaten en zullen toekomstige pakketjes voor het subnet achter router B direct in de juiste richting gestuurd worden.
+
+**Traceroute**
+
+Traceroute maakt gebruik van het TTL veld van IP-pakketjes. Door telkens IP-pakketjes te sturen met een toenemende TTL, zullen de pakketjes één voor een gedropt worden door de verschillende hops naar de bestemming. Als een router een pakketje dropt zal hij een ICMP error: Time Exceeded genereren en die naar ons terugsturen om te laten weten dat het pakketje zijn bestemming niet heeft bereikt. Dit kunnen we dan handig gebruiken om het pad dat onze pakketjes afleggen naar een bepaalde bestemming te achterhalen.
 
 # Week 3
 
@@ -1172,42 +1256,210 @@ Hoe kiest een router nu welke route hij moet gebruiken als hij meerdere routes h
 
 # Week 11
 
+## Firewalls
+
+Een firewall is eigenlijk een soort router, maar hij zal niet zomaar alle IP-pakketten doorsturen. Hij zal elk IP-pakket bekijken om te zien of het verkeer is dat we wensen in ons netwerk. Op die manier trachten we pakketjes van boeven, schurken en stinkende IT'ers met te veel tijd aan hun handen tot een minimum beperken.
+
+Er zijn verschillende soorten firewalls. We zullen er zo meteen enkele ter sprake brengen.
+
+
+
+### Stateless packet filtering
+
+Een packet filter zal elk pakket dat door de firewall passeert onafhankelijk beoordelen. Je kan hiervoor regels opstellen die bijvoorbeeld beslissingen zullen nemen op basis van het **source** en **destination** ip-adressen of poortnummers. Zo kunnen we dan een **access control list** (ACL) opstellen. 
+
+**Access Control Lists**
+
+Een tabel van regels die bepalen welk verkeer er wel of niet door de firewall mag passeren. De regels worden van boven naar onder toegepast. Typisch zet je dan onderaan je tabel een regel die van toepassing is op alle pakketten.
+
+
+
+### Stateful packet filtering 
+
+Een stateful packet filter kan bijvoorbeeld kijken naar een hele TCP connectie en zien of die wel 'klopt'. Zo kan hij dan bijvoorbeeld geen ACK pakketten van buitenaf toelaten als daar niet een SYN van binnenin het netwerk op voorafging. Daarvoor houdt de firewall een **connection state table** bij. 
+
+
+
+### Application gateways
+
+Die zorgen ervoor dat er alleen heel specifieke soorten applicatiedata naar buiten mogen. Zij worden typisch gecombineerd met een stateless of stateful packet filter. Een voorbeeld hiervan is een proxy server. Deze gaat eigenlijk in jouw plaats een HTTP verbinding maken met een server. De packet filters zorgen er dus voor dat alleen de proxy server mag surfen op het internet. Hierdoor ben je dus verplicht om de proxy te gebruiken binnen dit netwerk.
+
+<img src="img/image-20220625143152954.png" alt="image-20220625143152954" style="zoom:50%;" />
+
+### Intrusion detection system
+
+(IDS)
+
+Intrusion detection systems doen nog een stapje extra bovenop wat packet filters doen. 
+
+* **Deep packet inspection**: De inhoud van pakketjes wordt gecontroleerd en vergeleken met een database van bekende virussen of schadelijke strings
+* **Correlatie** tussen pakketjes wordt ook onderzocht. Om bepaalde aanvallen te detecteren zoals:
+  * port scanning
+  * network mapping
+  * (D)DoS aanvallen
+
+Typisch zet je meerdere IDSen op verschillende plekken in je netwerk
+
+<img src="img/image-20220625144106785.png" alt="image-20220625144106785" style="zoom:50%;" />
+
 
 
 # Week 12
 
+### SDN
 
+Onze netwerkinfrastructuur lijdt aan dezelfde problemen als computers in de jaren 80'. Er waren slechts een handvol grote spelers die computers produceerden, met ieder hun eigen hardware, eigen besturingssysteem en features. Met de komst van de persoonlijke computers kwamen er architecturen met gestandaardiseerde API's waar verschillende besturingssystemen en applicaties op konden draaien. 
+
+Het kernidee van software defined networking bestaat erin om net zoals bij persoonlijke computers ook bij de netwerktoestellen open interfaces te voorzien zodat iedereen snel zijn eigen besturingsysteem en applicaties kan schrijven.
+
+Onderaan dit model hebben we **switching hardware**. Hierboven hebben we een **control plane** besturingssysteem, waarop we verschillende **applicaties** zelf kunnen programmeren.
+
+Dit idee kwam van een student van Stanford en heette het **OpenFlow** project. Zo konden er nieuwe soorten netwerkbedrijven ontstaan. Bedrijven die alleen controleapplicaties schrijven die op eender welke soort OpenFlow hardware konden uitgevoerd worden. 
+
+### OpenFlow
+
+Openflow is een soort protocol dat wordt gesproken tussen de **control plane** en de **data plane**. Dus eigenlijk een protocol dat je kan gebruiken om te spreken met switching hardware om deze te configureren.
+
+* **Control plane**: bestaat uit één of meer gecentraliseerde controllers. Je kan dit zien als een soort krachtige server in een datacenter die interageert met vele switches. Deze zal dan een ssl verbinding maken met de OpenFlow agent van die switches
+
+<img src="img/image-20220625150948865.png" alt="image-20220625150948865" style="zoom:50%;" />
+
+Alle configuratie in een programmeerbare switch wordt door OpenFlow geabstraheerd in een **flow table**. De controller kan die flow table gaan configureren aan de hand van een OpenFlow instructie.
+
+* **Data plane**: 
+  * Een regel in zo een **flow table** heeft drie velden:
+    * **Rule**: een matching regel die beschrijft welk protocol de instructie omvat
+    * **Action**: wat er gedaan moet worden. Bv. het pakket sturen naar de controller
+    * **Stats**: voor iedere regel worden er statistieken bijgehouden. Bv. hoe vaak hij werd toegepast.
+
+
+
+<img src="img/image-20220625151342952.png" alt="image-20220625151342952" style="zoom:50%;" />
+
+Dit is best wel gek. Door de mogelijkheden van OpenFlow kan je zelfs een switch als router of firewall gebruiken. 
+
+OpenFlow voorziet twee manieren om flows toe te voegen aan een tabel:
+
+* Reactive Flow Insertion
+  * Pas een regel aan de flow table toevoegen nadat er eerst een pakket van die flow werd ontvangen in een switch. Dit eerste pakket wordt dan doorgestuurd naar de controller die op basis daarvan een nieuwe regel toevoegt in de flow table van de switch. Dan zal de switch alle pakketten van diezelfde flow behandelen volgens dezelfde regel.
+* Proactive Flow Insertion
+  * De controller kan ook proactief regels regels configureren in de flowtabel zonder dat er een pakket werd ontvangen in de switch. Zo kan ook het eerste pakket van die flow direct in de data plane afgehandeld worden.
+
+
+
+### SDN Architectuur
+
+De SDN netwerkachitectuur bestaat uit drie delen:
+
+* **Goedkope switches** met een open API
+* **SDN controller** die netwerkgegevens vergaart en een aantal abstracties voorziet om op basis daarvan routeringsapplicaties te schrijven.
+* De **applicatie** zelf: vormt het brein van het netwerk en bepaalt hoe de routering, access control of load balancing in je netwerk zal verlopen
+
+Je kan nu dus alles in software schrijven en aanpassen aan je eigen eisen.
+
+
+
+## Netwerkvirtualisatie
+
+Virtualisatie is het principe waarin een bepaalde functie wordt ontkoppeld van de specifieke hardware waarop ze wordt uitgevoerd. Door die ontkoppeling kunnen we sneller en robuuster omgaan met de omstandigheden.
+
+Dit willen we dus ook doen met onze netwerkinfrastructuur. Als we dynamisch virtuele machines kunnen toevoegen en verwijderen op basis van hoe zwaar ons netwerk belast wordt, kunnen we veel efficiënter omgaan met onze resources en dus een stuk minder geld uit het raam smijten.
+
+Om een lang verhaal kort te maken. In een datacenter heb je een hele fysieke netwerkinfrastructuur met routers en switches. Bovenaan zitten Top of Rack (ToR) switches die fysieke servers met elkaar verbinden. Op elke server zit een besturingssysteem dat toelaat dat dezelfde hardware kan gedeeld worden door verschillende virtuele machines. Deze kunnen virtuele applicaties zoals webservers en database-servers draaien. Mogelijks moeten deze virtuele machines met elkaar verbonden worden alsof ze tot hetzelfde LAN-netwerk behoren. Hiervoor hebben we **virtuele switches** nodig. 
+
+<img src="img/image-20220625154841692.png" alt="image-20220625154841692" style="zoom:50%;" />
+
+**Virtuele switch**
+
+Een virtuele switch is een switch die volledig in software geschreven is. Hij kan verschillende virtuele interfaces van virtuele machines met elkaar verbinden alsof ze verbonden zijn met een echte ethernet switch. Een bekende open-source implementatie hiervan is **Open VSwitch** (OVS). De werking van OVS ga ik even achterwege laten. 
+
+
+
+**VXLAN** (Virtual eXtensible Local Area Network)
+
+Nu wordt het gek. In datacenters gaan ze ervoor zorgen dat laag 2 pakketten over IP kunnen getransporteerd worden. Dit gebeurt aan de hand van een **VXLAN** (een soort tunnel). De eindpunten van deze tunnels worden **VTEP**s (virtual tunnel endpoints) genoemd. Zo kunnen dan virtuele machines, ook al zijn ze gescheiden door routers, met elkaar praten alsof ze zich in hetzelfde LAN bevinden. De details ga ik nogmaals achterwege laten.
+
+<img src="img/image-20220625154637431.png" alt="image-20220625154637431"  />
+
+
+
+
+
+ 
 
 # Examenvragen theorie
 
 ## Hoofdstuk 2
 
-1. DNS is een hiërarchisch gedecentraliseerd systeem. Geef a.d.h.v. een voorbeeld aan hoe
-   dit werkt.
-
+1. > DNS is een hiërarchisch gedecentraliseerd systeem. Geef a.d.h.v. een voorbeeld aan hoe dit werkt.
+   
+   We zullen aan de hand van de FQDN amerigo.ugent.be. het DNS-systeem overlopen.
+   
+   Er zijn over de wereld een aantal **root DNS servers**, deze bevatten resource records voor elk van de top level domains (com, edu, be, ...). Deze vertellen ons eigenlijk waar we de volgende server kunnen vinden. Ze zullen ons dus vertellen waar we de server verantwoordelijk voor het **be** gedeelte van onze url kunnen vinden, waarschijnlijk ergens in belgië. Eenmaal doorverwezen, komen we bij de **top level domain servers**. Deze worden beheerd door **registry operators** en zullen ons vertellen waar we het ip adres van een bepaald domein kunnen vinden (ugent, gov, nokia, ...). Zij zullen ons vervolgens vertellen waar de **authoritatieve DNS server** voor de naam **ugent.be** zich bevindt. Deze server zal waarschijnlijk ook verantwoordelijk zijn voor het subdomein **amerigo.ugent.be**. 
    
    
-2. Een lokale DNS-server werkt meestal zowel op recursieve als iteratieve wijze. Bespreek
-   beide werkwijzen. Leg uit welke methode gebruikt wordt voor lokale hosts.
+   
+2. > Een lokale DNS-server werkt meestal zowel op recursieve als iteratieve wijze. Bespreek beide werkwijzen. Leg uit welke methode gebruikt wordt voor lokale hosts.
+   
+   Als we een DNS-query doen, kan deze op twee manieren opgelost worden:
+   
+   * **Recursief**: de server waarnaar we de query sturen, zal zelf op zoek gaan naar het gezochte IP-adres door de vraag te stellen aan de nodige sequentie DNS-servers. In een puur recursieve implementatie zal onze DNS-server de query ook weer doorgeven en zal de volgende server (bv. de TLD nameserver) verder zoeken. In het echt zal een TLD server waarschijnlijk geen werk willen doen dat je eigenlijk zelf kan doen.
+   * **Iteratief**: we sturen een query naar onze DNS-server. Deze antwoordt, hij weet het gevraagd IP-adres voor de domeinnaam niet, maar hij weet bijvoorbeeld wel waar de TLD nameserver zich bevindt en verwijst ons door. Nu stellen we onze vraag opnieuw aan de TLD server, die ons vervolgens weer zal doorverwijzen. We herhalen dit proces tot we het IP-adres hebben gevonden. 
+   
+   In de praktijk zullen we waarschijnlijk een combinatie van beide methodes gebruiken. Als we een query naar onze lokale DNS server sturen, zal hij die **iteratief** voor ons oplossen. Van het standpunt van onze host wordt de query dus **recursief** opgelost. 
+   
+   
+   
+3. > Wat is (in de context van DNS) : RR, A, NS, CNAME, MX (geef ook een voorbeeld)
 
-3. Wat is (in de context van DNS) : RR, A, NS, CNAME, MX (geef ook een voorbeeld)
+   **RR** staat voor resource records. Een resource record is een veld in een DNS record. Er zijn verschillende types van resource records:
 
-4. Wat is reverse DNS en hoe werkt het?
+   * **A record**: een alias record bevat bijvoorbeeld de naam van je website (martijniscool.be ofzo) en mapt deze op een IP-adres
+   * **NS record**: een nameserver record duidt de authoritatieve DNS server van het domein aan, dus welke server verantwoordelijk is voor de naam van jouw website. Dit ziet er typisch zo uit: ns1.example.com 
+   * **CNAME**: een canonical name record mapt een domeinnaam naar een andere domeinnaam. Zo kan je bijvoorbeeld je domein laten doorverwijzen naar een ander domein.
+   * **MX**: een mail exchanger record vertelt je welke mailserver er verantwoordelijk is voor email-berichten naar email-adressen onder het domein. 
 
-5. Leg het principe van sockets uit en hoe je in de praktijk de actieve sockets op je Linux-
-   systeem kan opvragen.
+4. > Wat is reverse DNS en hoe werkt het?
 
-6. Bespreek de werking en functie van een DHT in peer-to-peer netwerken.
+   Met reverse DNS kan je DNS doen in de andere richting. Je kan dus achterhalen welke domeinnaam er bij een bepaald IP-adres hoort. 
 
+   Neem bijvoorbeeld het adres 200.123.222.111. We maken een FQDN (fully qualified domain name) van dit adres door het ip adres achterstevoren te zetten, dit geeft ons **111.222.123.200.in-addr.arpa**. Als er een **PTR-record** aanwezig is voor het gezochte IP-adres, kunnen we nu eigenlijk een gewone DNS-lookup doen, gebruik makende van de FQDN die we net hebben opgesteld. Deze lookup zal beginnen bij het '200'-gedeelte van de FQDN en op deze manier ons adres aflopen analoog aan forward DNS.
+
+5. > Leg het principe van sockets uit en hoe je in de praktijk de actieve sockets op je Linux- systeem kan opvragen.
+   
+   Een socket is één endpoint in een tweerichtingscommunicatielink tussen twee applicaties op een netwerk. Dit is een combinatie van een IP-adres en een poortnummer. 
+   
+   
+   
+   Openstaande sockets kan je opvragen met `ss`. Sockets die bovendien ook aan het luisteren zijn kan je opvragen met `ss -l`. 
+   
+   
+   
+6. > Bespreek de werking en functie van een DHT in peer-to-peer netwerken.
+   
+   DHT staat voor **distributed hash table**. In een peer-to-peer netwerk worden bestanden in chunks opgedeeld. Deze worden verdeeld over verschillende nodes. Om te weten wie welke bestanden heeft kan men gebruik maken van een DHT. We maken een hashtabel met als key de bestandsnaam en chunknummer, en met als value de lijst met hosts die deze chunks bezitten. 
+   
+   <img src="img/image-20220228170856251.png" alt="image-20220228170856251" style="zoom: 33%;" />
+   
+   Een DHT werkt hetzelfde als een gewone hastabel, buiten het feit dat zijn sleutels worden verdeeld over verschillende nodes. Door de keys te **hashen** krijgen we een bepaalde range van mogelijke id's voor de nodes. We hebben typisch minder nodes dan id's, dus zorgen we ervoor dat een gegeven id overeenkomt met een node waarvoor de id groter of gelijk aan de gegeven id is. Door dit schema dan in een cirkel te zetten waarbij de kleinste id de opvolger is van de grootste, kunnen we ervoor zorgen dat elke id overeenkomt met een node. 
+   
+   In het voorbeeld hierboven zullen dus alle keys die als id 4, 5, 6, 7 of 0 opleveren terecht komen bij de node met id 0.
+   
    
 
 ## Hoofdstuk 4
 
 1. Leg NAT uit aan de hand van een voorbeeld. Bespreek de voor- en nadelen van NAT.
 
-2. Stel een packet flow diagram op, waar één client in een netwerk een DHCP adres
-   aanvraagt, maar waar er twee DHCP servers in het netwerk voorkomen. Leg aan de hand
-   hiervan de werking van DHCP uit.
+   
+
+   
+
+   
+
+2. Stel een packet flow diagram op, waar één client in een netwerk een DHCP adres aanvraagt, maar waar er twee DHCP servers in het netwerk voorkomen. Leg aan de hand hiervan de werking van DHCP uit.
+   
+   ![dhcp](img/dhcp.gif)
 
 3. Wat is DHCP relay en waarvoor dient het?
 
@@ -1352,7 +1604,94 @@ de slides aangezien er geen IPv6 hoofdstuk opgenomen is in het boek van Kurose-R
 8. De overgang van IPv4 van IPv6 wordt georganiseerd in DNS records. Leg uit hoe dit
    mechanisme werkt.
 
-   
+
+
+
+# Afkortingen overzicht
+
+Met het commando
+
+```bash
+grep -oE [A-Z][A-Z]+ cn2.md |sort|uniq >> afkortingen.txt
+```
+
+kan je een overzicht maken van alle woorden in drukletters. Als je daar dan een paar nutteloze dingen uithaalt, heb je een easy overzicht van alle afkortingen. (bedankt Wim)
+
+| Afkorting | Betekenis                                                    |
+| --------- | ------------------------------------------------------------ |
+| ACL       | Access Control List                                          |
+| AES       | Advanced Encryption standard                                 |
+| AP        | Access Point                                                 |
+| API       | Application Programming Interface                            |
+| ARP       | Address Resolution Protocol                                  |
+| AS        | Autonomous System                                            |
+| BER       | Bit-error-rate                                               |
+| BGP       | Border Gateway Protocol                                      |
+| BSSID     | Basic Service Set Identifier                                 |
+| CMDB      | Configuration management database                            |
+| CSMA/CA   | Carrier sense multiple access / collision avoidance          |
+| CTS       | Clear-to-send                                                |
+| DAD       | Duplicate address detection                                  |
+| DHCP      | Dynamic host configuration protocol                          |
+| DHT       | Distributed hash table                                       |
+| DNS       | Domain name system                                           |
+| EUI-64    | Extended unique identifier                                   |
+| FCAPS     | Fault, configuration, accounting, performance en security management |
+| GW        | gateway                                                      |
+| ICANN     | Internet Corporation for Assigned Names and Numbers          |
+| ICMP      | Internet control message protocol                            |
+| IDS       | Intrusion detection system                                   |
+| IEEE      | Institute of Electrical and Electronics Engineers            |
+| IGD       | Internet Gateway Device protocol                             |
+| IID       | Interface Identifier                                         |
+| IMAP      | Internet mail access protocol                                |
+| IP        | Internet protocol                                            |
+| IS-IS     | Intermediate System to Intermediate System protocol          |
+| ISC       | Internet Systems Consortium                                  |
+| ISP       | Internet Service Provider                                    |
+| LAN       | Local Area Network                                           |
+| LL        | Link-Local                                                   |
+| MAC       | Medium access control                                        |
+| MIB       | Management information base                                  |
+| NAT       | Network Address Translation                                  |
+| NMA       | Network management applications                              |
+| NMO       | Network management objects                                   |
+| NMS       | Network management station                                   |
+| NTP       | Network time protocol                                        |
+| OID       | Object Identifier                                            |
+| OSI       | Open Systems Interconnection (model)                         |
+| OSPF      | Open Shortest Path First                                     |
+| OVS       | Open VSwitch                                                 |
+| PPP       | Point-to-Point Protocol                                      |
+| RC4       | Rivest Cipher 4                                              |
+| RIB       | Routing information base                                     |
+| RIP       | Routing information protocol                                 |
+| RIR       | Regional internet registry                                   |
+| RR        | Resource Record                                              |
+| RS        | Router Solicitation                                          |
+| RTS       | Request to Send                                              |
+| SDN       | Software defined networking                                  |
+| SLA       | Service level agreement                                      |
+| SLAAC     | Stateless address autoconfiguration                          |
+| SMI       | Structure of management information                          |
+| SNMP      | Simple network management protocol                           |
+| SNR       | Signal to noise ratio                                        |
+| SOA       | Start of authority                                           |
+| SSH       | Secure shell protocol                                        |
+| SSID      | Service set identifier                                       |
+| SSL       | Secure sockets layer                                         |
+| STP       | Spanning tree protocol                                       |
+| TCP       | Transport control protocol                                   |
+| TKIP      | Temporal key integrity protocol                              |
+| TTL       | Time to live                                                 |
+| UDP       | User datagram protocol                                       |
+| ULA       | Unique local address                                         |
+| UPNP      | Universal Plug and Play protocol                             |
+| VLAN      | Virtual local area network                                   |
+| VTEP      | Virtual tunnel endpoint                                      |
+| VXLAN     | Virtual extensible local area network                        |
+| WEP       | Wired equivalent protocol                                    |
+| WPA       | WiFi Protected Access                                        |
 
 # ------------------Labo's--------------------
 
@@ -2577,7 +2916,7 @@ Show ipv6 ripng
 
 ## Voorbereiden van labo-omgeving
 
-### Afhalen en uitpakken van de labo bestanden
+**Afhalen en uitpakken van de labo bestanden**
 
 In de folder `/home/student` (de default folder), doe je het volgende vanuit een terminalscherm:
 
@@ -2585,7 +2924,7 @@ In de folder `/home/student` (de default folder), doe je het volgende vanuit een
 student@cnet:~# wget https://www.dropbox.com/s/3qhlpldbi7jsat1/ripnglabo.py
 ```
 
-### Mininet
+**Mininet**
 
 Dit labo maakt opnieuw gebruik van [Mininet](http://mininet.org). Iedere node (host, router of switch) in Mininet gedraagt zich alsof het bijna een volledig afgezonderde virtuele machine is:
 
@@ -2614,7 +2953,7 @@ Andere praktische tips:
   - aangezien het bestandssysteem gedeeld wordt door alle mininetnodes, kun je meteen de bestanden gebruiken op een bepaalde Mininet node
 - **copy/paste van commando's** kan niet in de `xterm` vensters, maar wel in de Mininet-terminal
 
-### Linux command-line
+**Linux command-line**
 
 De volgende tabel geeft bij wijze van herhaling een overzicht van mogelijks nuttige commando's die je kunt gebruiken in de command line interface op je Linuxomgeving.
 
@@ -2636,7 +2975,7 @@ Start het netwerk in Mininet als volgt:
 root# python3 ripnglabo.py
 ```
 
-### Analyse van het netwerk en routering
+**Analyse van het netwerk en routering**
 
 In eerste instantie proberen we de onderdelen van de topologie te begrijpen en analyseren. Om dit proces bij te staan kunnen we gebruik maken van de volgende netwerkfiguur en onderstaande tabel.  Aan de hand van Mininet en de draaiende RIPng daemons op routers kunnen de nodenamen, subnetadressen en distance metrics gecontroleerd worden. 
 <u>Let op</u>: niet alle gegevens zijn op de figuur te zien.
@@ -2651,7 +2990,7 @@ In eerste instantie proberen we de onderdelen van de topologie te begrijpen en a
 | r2-r3 | 2001:db8:1341:23::/64 | r7-c    | 2001:db8:1341:c7::/64  |
 | r3-r7 | 2001:db8:1341:37::/64 |         |                        |
 
-#### FRRouting
+**FRRouting**
 
 De uitgerolde setup maakt gebruik van [FRRouting](https://frrouting.org) software. Informatie i.v.m. de [RIP](http://docs.frrouting.org/en/latest/ripd.html) en [RIPng](http://docs.frrouting.org/en/latest/ripngd.html) daemons vind je inde vermelde links. Via de management interface van FRRouting kun je inloggen op de routers via telnet op een specifieke poort per routing protocol. De RIPng management interface kan gevonden worden op poort 2603.
 
@@ -2696,7 +3035,7 @@ misschien door de distance metrics
 
 
 
-### RIPng analyse
+**RIPng analyse**
 
 Ieder routeringsprotocol maakt gebruik van berichten die tussen routers worden uitgewisseld. Start `wireshark` op vanuit `r1` of `r3` om de uitgewisselde RIPng berichten tussen `r1` en `r3` te analyseren. Je kunt [Wireshark](https://www.wireshark.org) gebruiken om live te capturen, maar je kunt ook de eerste 10 RIPng pakketten ontvangen op de routers analyseren uit de tracefiles `/home/student/labo9/ripng-rx-trace.pcap` die zijn gecreëerd tijdens het opstarten van het netwerk.
 
@@ -2790,7 +3129,7 @@ fe80::/64 dev r3-eth0 proto kernel metric 256 pref medium
 
 
 
-### RIPng configuratie met FRRouting
+**RIPng configuratie met FRRouting**
 
 ==Een router in de gegeven topologie is nog niet geconfigureerd a.d.h.v. RIPng. over welke router gaat het precies?==
 
@@ -2804,7 +3143,7 @@ Om die router te configureren met behulp van FRRouting software, moeten we twee 
 
 De bedoeling is dat alle links van de router optimaal gebruikt worden en dat **alle link costs op 0** worden gezet.
 
-#### Zebra IP routing manager
+**Zebra IP routing manager**
 
 De Zebra IP routing manager verzorgt de interface tussen de Linux kernel en de specifieke routing daemons. Deze manager moet geconfigureerd worden op de betrokken node, vooraleer het specifieke routing proces kan gestart worden.
 
@@ -2848,7 +3187,7 @@ interface r1-eth2
 > Eenmaal je de bijhorende configuratie hebt aangepast voor de ontbrekende router, activeer je zebra op de router als volgt (in een `xterm`): `zebra -f <configfile> -u root`. 
 > Je kunt het proces stoppen a.d.h.v. CTRL+C.
 
-#### RIPng configuratie
+**RIPng configuratie**
 
 Wanneer Zebra is geconfigureerd en opgestart, kun je het RIPng proces voor de betrokken router configureren. Dit doe je ook a.d.h.v. een configuratiebestand. Hieronder vinden we een voorbeeld van de configuratie van router `r1`. 
 
@@ -2925,8 +3264,7 @@ Controleer de routingtabel van de router eenmaal zowel zebra als ripng zijn gest
 | -------------- | -------- | ------- | -------- |
 | ...            |          |         |          |
 
-
-#### Connectiviteit tussen host a en host c
+**Connectiviteit tussen host a en host c**
 
 Het activeren van RIPng op de betrokken router zal er hoogstwaarschijnlijk voor zorgen dat het gebruikte netwerkpad tussen host `a` en host `c` verandert. 
 
@@ -2944,7 +3282,7 @@ Routingprotocollen hebben ook tijd nodig om nieuwe netwerksituaties te verwerken
 > [!Tip] 
 > Maak gebruik van `ping` en `wireshark` om de activatietijd te bekomen.
 
-### Convergentie van RIPng bij falende link `r1`-`r7`
+**Convergentie van RIPng bij falende link `r1`-`r7`**
 
 Eenmaal alle routers naar behoren werken en dat alle routingtabellen stabiel zijn, kunnen we nagaan hoe RIPng omgaat met netwerkfouten. 
 
@@ -2971,7 +3309,7 @@ In dit labo gaan we onderzoeken hoe routering werkt in het Internet tussen versc
 
 ![[Linux command-line]]
 
-### Afhalen en uitpakken van de labobestanden
+**Afhalen en uitpakken van de labobestanden**
 
 Op de VM, in de folder `/home/student` (de default folder) doe je het volgende in een shell:
 
@@ -3088,7 +3426,7 @@ In het bestand `\home\student\labo10\bgp-r1r2-trace.pcap` vind je de eerste 30 u
 - Welke informatie heeft `r1` over dit netwerkprefix gedeeld met `r2`? `next hop 192.168.0.2`
 - Hoe heeft `r2` dit verwerkt (hoe check je dit)?
 
-#### Netwerkfout
+**Netwerkfout**
 
 Netwerkfouten in het Internet zijn legio. Om te achterhalen hoe BGP omgaat met een linkfout, gaan we een klein experiment uitvoeren. Achterhaal via Mininet de gebruikte interfaces voor de link tussen router `r1` en `r2`. 
 
@@ -3117,7 +3455,7 @@ ongeveer 0.1 (1 pakketje is weggevallen)
 
 ==Kon BGP pas de nieuwe route activeren toen het gedetecteerd had dat de BGP sessie tussen `r2` en `r1` niet meer actief was? Geef een mogelijke uitleg.==
 
-#### Heractivering van de link
+**Heractivering** van de link
 
 In dit onderdeel ga je de link en bijhorende BGP sessie tussen `r1` en `r2` heractiveren en de invloed ervan in BGP achterhalen. ==Ga hiervoor als volgt te werk==:
 
@@ -3180,7 +3518,7 @@ Hiervoor kan BGP gebruik maken van 2 mechanismen:
 1. Beperken aan wie bepaalde routes beschikbaar worden gemaakt
 2. Kiezen of ordenen welke van de ontvangen routes naar een gegeven bestemming worden verkozen boven alternatieve routes
 
-#### No transit AS2
+**No transit AS2**
 
 AS2 heeft een centrale ligging in ons mini-Internet. Bijgevolg ligt AS2 vaak op het kortste pad tussen verschillende nodes in het netwerk. Je kunt dit bijvoorbeeld nagaan door de route tussen `hr4` en `hr7` in beide richtingen te inspecteren.
 
@@ -3235,7 +3573,7 @@ Documenteer voor welke router(s) en interfaces je dit proces hebt gevolgd.
 > 2. Verwijder de routemap a.d.h.v. `no route-map <routemapnaam>` in de configuratieomgeving
 > 3. Configureer de routemap opnieuw zoals de configuratie die reeds beschikbaar was in de routemap voordat je hem verwijderde. Deze kan je terugvinden in de BGP configuratiebestanden van de routers in het bestand `\tmp\bgpd_rx.cfg` voor router `rx`. Ook die andere reeds bestaande regels hoor je opnieuw toe te voegen voor een goede werking. 
 
-#### Lokale policy in AS5
+**Lokale policy in AS5**
 
 Eenmaal bovenstaande oefening succesvol is uitgevoerd, verloopt veel verkeer via de link tussen AS5 en AS4. Nu kan het immers niet wenselijk zijn dat verkeer die link gebruikt (bvb. lage bandbreedte), waardoor de netwerkbeheerders van AS5 en AS4 verkiezen dat verkeer via AS6 loopt i.p.v. via de link tussen AS5 en AS4.
 
