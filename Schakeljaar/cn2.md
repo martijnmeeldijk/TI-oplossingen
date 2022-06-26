@@ -863,7 +863,7 @@ Iedere **play** omvat een lijst van **tasks** die op een bepaalde host uitgevoer
 * Agent-less
   * Je hoeft niets te installeren op je netwerkapparatuur, ansible kan zelf uitgebreid worden aan de hand van modules die met verschillende types devices kunnen samenwerken
 * Templates
-  * Je kan makkelijke eenzelfde taak generaliseren voor veel verschillende apparaten van hetzelfde type
+  * Je kan makkelijk eenzelfde taak generaliseren voor veel verschillende apparaten van hetzelfde type
   * Dit kan je met de jinja2 templatetaal
 * Modules zijn zo opgesteld dat ze de beheerder dwingen om te definiëren wat de gewenste eindtoestand is, eerder dan wat het recept is om bij die eindtoestand te geraken. Deze **declaratieve** aanpak zorgt ervoor dat de logica in de module zelf geïplementeerd wordt, en gebruiker hiervan af te schermen.
   * Als dezelfde taak meerdere keren wordt uitgevoerd, moet hij elke keer hetzelfde resultaat geven = **idempotente uitvoering**
@@ -1312,7 +1312,7 @@ Onze netwerkinfrastructuur lijdt aan dezelfde problemen als computers in de jare
 
 Het kernidee van software defined networking bestaat erin om net zoals bij persoonlijke computers ook bij de netwerktoestellen open interfaces te voorzien zodat iedereen snel zijn eigen besturingsysteem en applicaties kan schrijven.
 
-Onderaan dit model hebben we **switching hardware**. Hierboven hebben we een **control plane** besturingssysteem, waarop we verschillende **applicaties** zelf kunnen programmeren.
+Onderaan dit model hebben we **switching hardware**. Hierboven hebben we een besturingssysteem, waarop we verschillende **applicaties** zelf kunnen programmeren.
 
 Dit idee kwam van een student van Stanford en heette het **OpenFlow** project. Zo konden er nieuwe soorten netwerkbedrijven ontstaan. Bedrijven die alleen controleapplicaties schrijven die op eender welke soort OpenFlow hardware konden uitgevoerd worden. 
 
@@ -1449,118 +1449,244 @@ Nu wordt het gek. In datacenters gaan ze ervoor zorgen dat laag 2 pakketten over
 
 ## Hoofdstuk 4
 
-1. Leg NAT uit aan de hand van een voorbeeld. Bespreek de voor- en nadelen van NAT.
+1. > Leg NAT uit aan de hand van een voorbeeld. Bespreek de voor- en nadelen van NAT.
+
+   We zitten thuis in ons thuisnetwerk. Elk apparaat krijgt een privé IP-adres in de range 192.168.0.0/16. Onze modem van Telenet kan doet NAT (**network address translation**) voor ons. Dit wil zeggen dat hij, omdat hij maar één globaal routeerbaar IP-adres heeft gekregen, het source adres in onze pakketjes zal vervangen door het IP-adres dat hij heeft gekregen van Telenet. 
+
+   Als ik nu met mijn laptop een pakketje stuur naar [deze coole site](https://www.youtube.com/watch?v=dQw4w9WgXcQ) , zal de modem mijn IP vervangen door het publieke ip, het pakketje doorsturen en onthouden vanaf welke poort hij het heeft verstuurd. Als er nu een pakketje terugkomt op diezelfde poort, weet hij dat het voor mij bestemd is.
+
+   **Voordelen**
+
+   * We hebben **minder** globaal routeerbare **IP-adressen** nodig
+   * Je kan de **adressen** binnen het netwerk **wijzigen** zonder invloed op de buitenwereld
+   * Je kan van **ISP veranderen** zonder dat de adressen binnen je netwerk moeten veranderen
+   * De NAT werkt als een soort **firewall**, zonder expliciet port-forwarding regels in te stellen kunnen apparaten van buitenaf niet aan apparaten in mijn netwerk
+
+   **Nadelen**
+
+   * Het gebruik van poorten om pakketjes op de juiste plek te krijgen is een **inbreuk op het gelaagd principe** dat wordt gehanteerd binnen het vak.
+   * Het **NAT-traversal** probleem, we kunnen geen servertoepassingen draaien op ons privé netwerk zonder port-forwarding zonder extra protocollen zoals **UPNP** en **IGD**
+   * **Applicatieontwikkelaars** moeten rekening houden met NAT
 
    
 
    
 
-   
+2. > Stel een packet flow diagram op, waar één client in een netwerk een DHCP adres aanvraagt, maar waar er twee DHCP servers in het netwerk voorkomen. Leg aan de hand hiervan de werking van DHCP uit.
+   >
 
-2. Stel een packet flow diagram op, waar één client in een netwerk een DHCP adres aanvraagt, maar waar er twee DHCP servers in het netwerk voorkomen. Leg aan de hand hiervan de werking van DHCP uit.
-   
    ![dhcp](img/dhcp.gif)
 
-3. Wat is DHCP relay en waarvoor dient het?
+   //TODO
 
-4. Leg het werkingsprincipe uit van Software-Defined Networking. Wat zijn de voordelen.
+3. > Wat is DHCP relay en waarvoor dient het?
+   >
 
+   //TODO
+
+4. > Leg het werkingsprincipe uit van Software-Defined Networking. Wat zijn de voordelen.
+   >
+   
+   Bij SDN gebruiken we typisch goedkope switches, deze beschikken over een open interface dat verschillende fabrikanten toelaat om (analoog aan moderne pc's) er besturingssystemen voor te schrijven. Door de flexibiliteit van deze aanpak kan een switch als verschillende netwerktoestellen fungeren. Typisch zullen we dan gebruik maken van een gecentraliseerde **controller** om al deze switches te configureren. De configuratie zullen we dan, net zoals bij softwareontwikkeling, aan de hand van versiebeheer onderhouden. 
+   
+   **Voordelen**
+   
+   We gebruiken goedkopere switches en bovendien wordt het netwerkbeheer **gecentraliseerd** en **geautomatiseerd**, hierdoor kan zeker wat geld uitgespaard worden. Verder wordt het ook gemakkelijker om het netwerk te **onderhouden** en wijzigingen kunnen **sneller** worden doorgevoerd. Men kan gebruik maken van een **testomgeving** om testconfiguraties uit te proberen. Na afwerking kunnen deze **automatisch** uitgerold worden naar productie, en kan men een **roll-back** doen indien er zich fouten voordoen. Dit kan dankzij het versiebeheersysteem. 
+   
    
 
 ## Hoofdstuk 5
 
-1. Wat is een AS ? Geef 3 types (waarom is het belangrijk een onderscheid te maken).
+1. > Wat is een AS ? Geef 3 types (waarom is het belangrijk een onderscheid te maken).
+   >
+
+   Een **autonoom systeem** is een netwerk van **routers** dat beheerd wordt door dezelfde instantie.
+
+   * **Stub AS**: deze maakt slechts via één connectie verbinding met het internet en heeft typisch geen nummer toegewezen gekregen
+   * **Transit AS**: Dit AS verbindt meerdere AS'en met elkaar.
+   * **Multi connected AS**: Deze heeft via meerdere verbindingen toegang tot meerdere AS'en, maar hij zal nooit doorgaand verkeer behandelen. De meerdere verbindingen dienen enkel als backup. Vaak gebruikt door banken.
+
+   Voor **stub AS**'en kunnen we gemakkelijk een default gateway voorzien, dus hoeven we hiervoor geen BGP te gebruiken.
 
    
 
-2. Bespreek het verschil tussen intra- en inter-AS routering.
+2. > Bespreek het verschil tussen intra- en inter-AS routering.
+   >
+
+   **Intra-AS routering** betreft de routering binnen een autonoom systeem. Dit is een netwerk van routers beheerd door eenzelfde instantie. Hier wordt gebruik gemaakt van protocollen zoals OSPF en RIP
+
+   Als we pakketjes routeren tussen AS'en spreken we over **inter-AS routering**. Hier maken we dan voornamelijk gebruik van BGP.
 
    
 
-3. Leg het werkingsprincipe van distance vector en link-state routering uit. Geef een
-   voorbeeld voor beide strategieën.
+3. > Leg het werkingsprincipe van distance vector en link-state routering uit. Geef een voorbeeld voor beide strategieën.
+   >
+
+   * **Distance vector**	
+
+     Elke router houdt een vector bij met voor elke bestemming een afstand om tot bij die bestemming te raken. Routers adverteren aan hun buren welke netwerken ze kunnen bereiken en geven ook de afstand mee. Zo kan dan elke router een tabel opstellen van alle bereikbare bestemmingen en hun afstanden. Dit soort protocol kan je gebruiken in je thuisnetwerk. (RIP)
+   
+   * **Link-state**
+   
+     Bij link-state protocollen stuurt elke router een lijst van al zijn links, met per link een bijhorende kostmetriek door naar alle verbonden routers (**flooding**). Zo kan elke router een soort kaart van de volledige netwerktopologie maken (**link state database**). Met deze info kan hij zijn routing table opstellen. Dit wordt vooral gebruikt in grote bedrijven. (OSPF)
+   
+   
+   
+4. > Hoe gaan distance vector en link-state routering om met problemen in het netwerk Evalueer de voor- en nadelen van beide strategieën.
+   >
+
+   * **Distance vector**
+
+     Als een link wegvalt of verhoogt in kost zullen distance vector protocollen hier niet goed mee omgaan. Er doet zich het [count-to-infinity](#distance-vector-routing) probleem voor en het duurt zeer lang voordat het protocol weer convergeert. Dit kan opgelost worden met split-horizon of poisoned-reverse. Los van deze oplossingen zal het protocol periodiek updates over links versturen, waardoor het nog steeds relatief lang duurt voordat een fout is opgespoord.
+   
+     * Voor- en nadelen
+   
+       Distance-vector protocollen gebruiken **weinig resources**, maar nemen wel **veel tijd** om te convergeren en ondersteunen **maximum 15 hops** (bij RIP). Hierdoor kan je ze enkel in kleine netwerken gebruiken.
+   
+   * **Link-state**
+   
+     Link-state protocollen reageren snel op wijzigingen of problemen. 
+   
+     * Voor- en nadelen
+   
+       Ze gebruiken een stuk **meer geheugen en CPU** , omdat elke router beschikt over de **volledige netwerktopologie**. Bij **elke wijziging** wordt er een **update** gestuurd. Dit kan beperkt worden door bv. hiërarchische OSPF. Je kan link-state protocollen gebruiken in netwerken van **duizenden nodes**. 
+   
+     
+   
+5. > Bespreek hierarchical OSPF. Waarom is dat nuttig ?
+   >
+
+   Hiërarchische OSPF (open shortest path first) laat toe om het netwerk in **verschillende areas** op te delen. De **internal routers** in elke zone beschikken enkel over de topologie binnen deze zone. De areas worden met elkaar verbonden via **edge routers**. In een **two-level** hiërarchie wordt het netwerk typisch ingedeeld in zonet besproken areas, evenals een **backbone**. De backbone voorziet een verbinding tussen alle areas, waarbij de **backbone routers** eigenlijk ook een eigen zone vormen. Een **boundary router** die verbinding maakt met een ander autonoom systeem zou zich dan hier bevinden. 
+
+   Dankzij deze techniek hoeft niet elke router de volledige netwerktopologie te kennen en kan er bespaard worden op **geheugen- en CPU-gebruik**
 
    
 
-4. Hoe gaan distance vector en link-state routering om met problemen in het netwerk?
-   Evalueer de voor- en nadelen van beide strategieën.
+6. > Bespreek een voorbeeld van BGP. Waarom heeft men I-BGP en E-BGP ?
+   >
 
    
 
-5. Bespreek hierarchical OSPF. Waarom is dat nuttig ?
+7. > Wat is een AS-PATH ? Wat is een NEXT-HOP ?
+   >
 
    
 
-6. Bespreek een voorbeeld van BGP. Waarom heeft men I-BGP en E-BGP ?
+8. > Wat is policy based routing in BGP ? Geef een voorbeeld.
+   >
 
    
 
-7. Wat is een AS-PATH ? Wat is een NEXT-HOP ?
+9. > Wat is ICMP ? Geef een voorbeeld bij het gebruik in een redirect en traceroute.
+   >
 
    
 
-8. Wat is policy based routing in BGP ? Geef een voorbeeld.
-
-   
-
-9. Wat is ICMP ? Geef een voorbeeld bij het gebruik in een redirect en traceroute.
-
-   
-
-10. Leg de basisprincipes van SNMP uit (wat, waarom, hoe, ...). Verwerk het woord MIB en
-    OID in je antwoord.
+10. > Leg de basisprincipes van SNMP uit (wat, waarom, hoe, ...). Verwerk het woord MIB en
+    > OID in je antwoord.
 
     
 
-11. Hoe kan Ansible ingezet worden voor netwerkautomatisering, en wat zijn de nodige
-    basiscompomenten en protocollen van Ansible?
-
+11. > Hoe kan Ansible ingezet worden voor netwerkautomatisering, en wat zijn de nodige basiscompomenten en protocollen van Ansible?
     
-
-12. Wat is netwerkvirtualisatie en waarom wordt het gebruikt?
-
+    Met Ansible kan je aan de hand van een **playbook** de configuratie en het testen van netwerkapparatuur automatiseren. 
+    
+    Een playbook bevat:
+    
+    * **Plays**: lijsten van tasks die op een apparaat moeten uitgevoerd worden
+    * **Tasks**: Dit is een call naar een Ansible **module** en komt overeen met een bepaalde functie die uitgevoerd moet worden.
+    
+    //TODO
+    
+    
+    
+12. > Wat is netwerkvirtualisatie en waarom wordt het gebruikt?
+    >
+    
     
 
 ## Hoofdstuk 6
 
-1. Hoe werkt een Ethernet switch.
+1. > Hoe werkt een Ethernet switch.
+   >
+
+   En switch is een **actief store-and-forward** toestel dat draait op de **datalink-laag**. Hij splitst het **collision-domain** op in verschillende segmenten.
+
+   Een switch kan frames op 3 manieren forwarden:
+
+   * **Flooding**: elk pakketje wordt op alle andere poorten doorgestuurd
+   * **Spanning tree protocol**: STP zal bepaalde poorten blokkeren om loops te voorkomen die zich kunnen voordoen bij flooding
+   * **MAC-based forwarding & learning**: De switch zal op basis van de source MAC-addressen van frames die binnenkomen onthouden op welke poort deze apparaten zijn aangesloten. Gebruik makende van deze info stuurt hij binnenkomende frames enkel door op de poort waaraan de bestemming is aangesloten.
+
+    
+
+   Verder is een switch **transparant**, dus hosts merken niet dat hij bestaat. Hij is **plug-and-play** en leert zoals zonet besproken vanzelf waar pakketten heen moeten.
 
    
 
-2. Hoe worden de switchtabellen ingevuld ? En hoe worden ze gebruikt ?
+2. > Hoe worden de switchtabellen ingevuld ? En hoe worden ze gebruikt ?
+   >
+
+   De switch zal op basis van de source MAC-addressen van frames die binnenkomen noteren op welke poort deze apparaten zijn aangesloten in zijn switchtabel. Gebruik makende van deze tabel stuurt hij binnenkomende frames enkel door op de poort waaraan de bestemming is aangesloten.
+
+   Wanneer je gebruik maakt van VLANS zullen deze ook gebruikt worden door de switch om te weten waarheen frames gestuurd moeten worden.
 
    
 
-3. Bespreek STP en geef een voorbeeld.
+3. > Bespreek STP en geef een voorbeeld.
+   >
 
    
 
-4. Wat is een VLAN ? Bespreek de relatie tussen VLANs en subnetten.
+4. > Wat is een VLAN ? Bespreek de relatie tussen VLANs en subnetten.
+   >
 
    
 
-5. Geef een aantal voor- en nadelen van switches (versus routers).
+5. > Geef een aantal voor- en nadelen van switches (versus routers).
+
+   * Switches zijn **plug-and-play** en vergen bijna geen configuratie
+   * Switches **vergroten** het broadcast domein en routers **splitsen** het broadcast domein op.
+   * //TODO
 
 ## Hoofdstuk 7
 
-1. Bespreek de voornaamste verschillen tussen draadloze netwerken en bekabelde
-   netwerken (bv. welke problemen kunnen optreden in draadloze netwerken, die je niet
-   hebt in bekabelde netwerken)?
-
+1. > Bespreek de voornaamste verschillen tussen draadloze netwerken en bekabelde netwerken (bv. welke problemen kunnen optreden in draadloze netwerken, die je niet hebt in bekabelde netwerken)?
+   >
    
-
-2. Hoe werkt het IEEE 802.11 MAC protocol?
-
+   * **Path loss**: een radiosignaal verzwakt wanneer het zich door materie propageert
+   * **Interferentie** veroorzaakt door andere apparaten op het radiospectrum
+   * **Reflecties**: een radiogolf kan zich via meerdere paden verspreiden
    
-
-3. Bespreek de werking van de adresvelden bij IEEE 802.11 netwerken.
-
+   Er kunnen zich ook complicaties voordoen zoals het **hidden terminal problem** en **signal attenuation**, beide problemen doen zich voor als twee hosts die elkaar niet kunnen bereiken tegelijk tegen een andere host praten. Er kan zich dan interferentie voordoen wij de andere host. 
    
+   
+   
+2. > Hoe werkt het IEEE 802.11 MAC protocol?
+   >
+
+   //TODO
+
+3. > Bespreek de werking van de adresvelden bij IEEE 802.11 netwerken.
+   >
+   
+   Afhankelijk van de **ToAP** en **FromAP** flags zullen de vier adresvelden andere soorten adressen bevatten.
+   
+   |                               | To AP | From AP | Address 1              | Address 2                 | Address 3    | Address 4 |
+   | ----------------------------- | ----- | ------- | ---------------------- | ------------------------- | ------------ | --------- |
+   | Ad-hoc mode                   | 0     | 0       | Destination            | Source                    | Common BSSID |           |
+   | Infrastructure mode (to AP)   | 1     | 0       | Access Point           | Source                    | Destination  |           |
+   | Infrastructure mode (from AP) | 0     | 1       | Destination            | Access Point              | Source       |           |
+   | Wireless distribution bridge  | 1     | 1       | Receiving Access Point | Transmitting Access Point | Destination  | Source    |
+   
+   * Ad-hoc mode: er is geen access point, dus het pakketje gaat rechtstreeks van source naar destination
+   * Infrastructure mode: als we een pakketje sturen naar iemand, zal deze eerst naar langs de access point moeten. Daarom moet het adres van de AP in het eerste veld. Hetzelfde, maar omgekeerd in de andere richting
+   * //TODO
 
 ## Hoofdstuk 8
 
-1. Bespreek pakketfiltering “packet firewall: stateless en stateful” en toepassingsgateway
-   “application gateway”
+1. > Bespreek pakketfiltering “packet firewall: stateless en stateful” en toepassingsgateway “application gateway”
+   >
 
    
 
@@ -1569,42 +1695,92 @@ Nu wordt het gek. In datacenters gaan ze ervoor zorgen dat laag 2 pakketten over
 De slides van dit hoofdstuk bevatten tekstuele verduidelijking in de notes; deze notes vullen
 de slides aangezien er geen IPv6 hoofdstuk opgenomen is in het boek van Kurose-Ross.
 
-1. Bespreek de verschillende types adressen bij IPv6 (“Address Type”).
+1. > Bespreek de verschillende types adressen bij IPv6 (“Address Type”).
+   >
 
+   * **Unicast** wordt gebruikt voor 1-op-1 communicatie
+
+   * Met **multicast** kan je meerdere apparaten aanspreken. Deze zijn dan ingeschreven in een bepaalde multicast group. Multicast adressen hebben als prefix `FF00::/8`, alle nodes zijn ingeschreven op `FF02::1` adres, maar dit gebruiken we liefst zo weinig mogelijk.
+
+   * **Anycast** dient om meerdere apparaten aan te spreken, als er maar één moet antwoorden. Dit is handig voor CDN's en DNS servers, maar veroorzaakt wel problemen met TCP-verbindingen als er van node wordt gewisseld terwijl de verbinding openstaat.
+
+     
+
+2. > Leg uit: fe80::/10, 2000::/3, fc00::/7. Waarvoor worden deze verschillende scopes gebruikt?
+   >
+
+   * `FE80::/10`: **Link-local** adressen, deze komen overeen met de private address ranges van IPv4. Je kan ze enkel binnen je lokale netwerk gebruiken, ze zijn dus niet globaal routeerbaar.
+
+   * `2000::/3`: **Global Unicast**. Dit zijn globaal routeerbare IPv6 adressen. Je kan ze dus niet zomaar genereren. Ze moeten dus aangevraagd worden bij een ISP of dergelijke instantie.
    
-
-2. Leg uit: fe80::/10, 2000::/3, fc00::/7. Waarvoor worden deze verschillende scopes
-   gebruikt?
-
+   * `FC00::/7`: **Unique Local Address Scope**: link-local adressen volstaan niet als je een privénetwerk wilt opstellen met routers, aangezien Link-Local adressen niet worden gerouteerd. Wil je kunnen routeren binnen je netwerk, zal je Unique Local adressen moeten gebruiken. Momenteel wordt alleen het `FD00::/8` bereik gebruikt.
    
-
-3. Wat zijn de belangrijkste verschillen tussen een IPv4 en IPv6 header ? Waarom heeft
-   men die verschillen ingevoerd ?
-
+     
    
+3. > Wat zijn de belangrijkste verschillen tussen een IPv4 en IPv6 header ? Waarom heeft men die verschillen ingevoerd ?
+   >
 
-4. Geef een voorbeeld van IPv6 adresresolutie en leg uit wat “solicited-node address” is.
+   * De **adresvelden** zijn 128 bits lang in plaats van 32, zo kunnen we veel meer adressen ondersteunen.
 
+   * De header heeft een **vaste grootte**. Bij IPv4 konden er opties aan de header toegevoegd worden, bij IPv6 kan je meerdere headers achter elkaar zetten voor extra info. Dit kan sneller verwerkt worden omdat er niet moet gecheckt worden hoelang de header is.
    
-
-5. Leg uit: IPv6 DAD.
-
+   * Er zijn een aantal weinig gebruikte velden verwijderd waaronder de **checksum** en de **fragmentatie** (kan je wel nog in de extra headers zetten)
    
-
-6. Een IPv6 node met meerdere interfaces (e.g. een router), gebruikt intern steeds een
-   zone index.
-   Leg uit waarom.
-
+   * Er is een **flow label** veld toegevoegd, dit kan gebruikt worden om een sequentie van pakketten te labelen.
    
-
-7. Bespreek de verschillende autoconfiguratiestappen van IPv6.
-
+     
    
+4. > Geef een voorbeeld van IPv6 adresresolutie en leg uit wat “solicited-node address” is.
+   >
 
-8. De overgang van IPv4 van IPv6 wordt georganiseerd in DNS records. Leg uit hoe dit
-   mechanisme werkt.
+   Adresresolutie zit **ingebouwd** in IPv6 en maakt in plaats van een broadcast adres gebruik van het **solicited-node adres**. Dit adres krijg je door het unicast adres met een lange sequentie (die ik niet vanbuiten ga leren) te prefixen. Elk apparaat dat IPv6 gebruikt schrijft zich automatisch in op dit multicast adres.
 
+   Neem nu mijn 7 jaar oude macbook die in de zomer buiten de werkuren ook fungeert als barbecue. Ik wil met mijn laptop een bericht sturen naar mijn Samsung Smart Fridge©, maar ik heb zijn linklaag-adres niet. 
 
+   * Ik stuur een **Neighbor Sollicitation** naar het solicited-node multicast adres van mijn koelkast (in dit geval multikast)
+
+   * Mijn koelkast antwoordt met een **Neighbor Advertisement**, deze bevat zijn linklaag-adres
+
+   * Nu sla ik dit op in mijn **Neighbor Cache**, dit komt overeen met een ARP table bij IPv4
+
+     
+
+5. > Leg uit: IPv6 DAD.
+   >
+
+   IPv6 duplicate address detection werkt als volgt
+
+   * Genereer een IPv6 adres
+   * We nemen dit adres **tentative** aan, dit wil zeggen dat we het tijdelijk gebruiken en het nog niet als source adres kunnen gebruiken. 
+   * We sturen een **neighbor sollicitation** op het netwerk naar het solicited-node adres afgeleid van ons tentative adres
+   * Als het in gebruik is zal de eigenaar antwoorden op het `FF02::1` all nodes on link-local multicast adres en moeten we opnieuw proberen met een ander adres
+   * Als er niemand antwoordt na een bepaalde timeout kunnen we het adres als **preferred** instellen en het dus definitief gebruiken.
+
+6. > Een IPv6 node met meerdere interfaces (e.g. een router), gebruikt intern steeds een zone index.
+   > Leg uit waarom.
+   
+   Als een netwerkapparaat met meerdere interfaces verbonden is aan verschillende netwerken, kan het apparaat aan de hand van link-local adressen niet afleiden welke interface het moet gebruiken. Daarom maken we gebruik van **zone id's**. 
+   
+   Als ik nu met de router een ping wil sturen naar een link-local adres op interface eth0 zal ik `ping [adres]%eth0` moeten invoeren. Zone id's zijn geïmplementeerd op het niveau van het besturingssysteem en worden enkel gebruikt door de host (niet doorgestuurd). Op windows zou ik dan bijvoorbeeld `ping [adres]%1` moeten uitvoeren.
+   
+7. > Bespreek de verschillende autoconfiguratiestappen van IPv6.
+   >
+
+   SLAAC, oftewel StateLess Address AutoConfiguration werkt als volgt:
+
+   * We genereren een **link-local adres** (dus ook alle stappen van DAD)
+
+   * Dan sturen we een **Router Sollicitation** naar het **all routers multicast adres** `FF02::2`
+
+   * Dan antwoordt de router met een **Router Advertisement** op `FF02::1`
+
+   * We stellen het adres van het antwoord van de router in als **default gateway**, nemen zijn prefix over en zetten onze IID erachter, nu doen we nogmaals DAD.
+
+     
+
+8. > De overgang van IPv4 van IPv6 wordt georganiseerd in DNS records. Leg uit hoe dit mechanisme werkt.
+
+   Ik wil met mijn IPv6 only computer naar ketnet.be nu nog stappen//TODO
 
 
 # Afkortingen overzicht
