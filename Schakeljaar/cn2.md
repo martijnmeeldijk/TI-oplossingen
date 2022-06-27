@@ -11,6 +11,8 @@
 
 (gewoon de lijst van op ufora)
 
+De aangevinkte dingen heb ik verwerkt in mijn samenvatting.
+
 - [ ] Introductieles
   - [x] Sectie 1.5 Protocollagen en servicemodel 	
   - [ ] Sectie 2.1 Principes van netwerkapplicaties
@@ -21,10 +23,10 @@
     - [x] Kennisclip: Resolver
     - [x] Kennisclip: DNS registratie
     - [x] Kennisclip: Reverse DNS (*)
-    - [ ] Kennisclip: DNS server (*)
+    - [x] Kennisclip: DNS server (*)
   - [ ] Sectie 2.5 Peer-to-peer bestandsdistributie
     - [x] Kennisclip: What is een DHT? (*)
-    - [ ] Kennisclip: Hoe werkt een DHT? (*)
+    - [x] Kennisclip: Hoe werkt een DHT? (*)
 - [ ] [Week 2](#week-2)
   - [ ] Sectie 4.3.3 IPv4 Dynamic Host Configuration Protocol
     - [x] Kennisclip: DHCP
@@ -33,7 +35,7 @@
   - [ ] Sectie 4.3.4 Network Address Translation Protocol
     - [x] Kennisclip: Network Address Translation
   - [ ] Sectie 5.6 Internet Control Message Protocol (ICMP)
-    - [ ] Kennisclip: Internet Control Message Protocol (*)
+    - [x] Kennisclip: Internet Control Message Protocol (*)
 - [x] [Week 3](#week-3)
   - [ ] Sectie 6.4 Local-Areanetwerken met switches (herhaling, behalve *)
     - [x] Kennisclip: ARP
@@ -150,8 +152,6 @@ Dit is natuurlijk niet de enige protocolstack (wel de meest gebruikte). In de se
 
 Om het even kort te houden. Deze afbeelding legt het concept vrij goed uit. Ons pakketje wordt telkens ingepakt in een pakket van de bovenliggende laag en weer uitgepakt tot waar nodig.
 
-//TODO 2.1, 3.2, 6.7
-
 
 
 ## DNS
@@ -194,7 +194,7 @@ Met het commando `whois` kan je opzoeken wie de eigenaar is van een domein.
 
 Met reverse dns kan je de domeinnaam vinden die bij een bepaald ipadres hoort. Dit is niet zo makkelijk als het klinkt, want je kan niet zomaar alle DNS servers gaan doorzoeken om het record te vinden dat bij een bepaald ip adres hoort. Om reverse queries toe te laten, werd er een nieuw top level domain, genaamd arpa aangemaakt. Binnen het in-addr subdomein heb je dan een subdomein per octet van het ip adres.
 
-Het proces van reverse DNS gaat dus eigenlijk in dezelfde volgorde als gewone DNS.
+Het proces van reverse DNS gaat dus eigenlijk in dezelfde volgorde als gewone DNS. Bij het onderdeel [examenvragen](#Examenvragen-theorie) ga ik hier iets dieper op in.
 
 <img src="img/image-20220228113631667.png" alt="image-20220228113631667" style="zoom: 33%;" />
 
@@ -1419,15 +1419,21 @@ Nu wordt het gek. In datacenters gaan ze ervoor zorgen dat laag 2 pakketten over
    * **CNAME**: een canonical name record mapt een domeinnaam naar een andere domeinnaam. Zo kan je bijvoorbeeld je domein laten doorverwijzen naar een ander domein.
    * **MX**: een mail exchanger record vertelt je welke mailserver er verantwoordelijk is voor email-berichten naar email-adressen onder het domein. 
 
+   
+
 4. > Wat is reverse DNS en hoe werkt het?
 
    Met reverse DNS kan je DNS doen in de andere richting. Je kan dus achterhalen welke domeinnaam er bij een bepaald IP-adres hoort. 
 
    Neem bijvoorbeeld het adres 200.123.222.111. We maken een FQDN (fully qualified domain name) van dit adres door het ip adres achterstevoren te zetten, dit geeft ons **111.222.123.200.in-addr.arpa**. Als er een **PTR-record** aanwezig is voor het gezochte IP-adres, kunnen we nu eigenlijk een gewone DNS-lookup doen, gebruik makende van de FQDN die we net hebben opgesteld. Deze lookup zal beginnen bij het '200'-gedeelte van de FQDN en op deze manier ons adres aflopen analoog aan forward DNS.
 
+   
+
 5. > Leg het principe van sockets uit en hoe je in de praktijk de actieve sockets op je Linux- systeem kan opvragen.
    
-   Een socket is één endpoint in een tweerichtingscommunicatielink tussen twee applicaties op een netwerk. Dit is een combinatie van een IP-adres en een poortnummer. 
+   Een socket is één endpoint in een tweerichtingscommunicatielink tussen twee applicaties op een netwerk. Dit is een combinatie van een IP-adres en een poortnummer. Zij zorgen ervoor dat we informatie kunnen uitwisselen tussen processen op dezelfde machine of verschillende machines over een netwerk. 
+   
+   Een socket is een soort deurtje van de transportlaag naar je applicatie.
    
    
    
@@ -1473,17 +1479,29 @@ Nu wordt het gek. In datacenters gaan ze ervoor zorgen dat laag 2 pakketten over
    
 
 2. > Stel een packet flow diagram op, waar één client in een netwerk een DHCP adres aanvraagt, maar waar er twee DHCP servers in het netwerk voorkomen. Leg aan de hand hiervan de werking van DHCP uit.
-   >
-
+   
+   Beschouw uitsluitend de linkerhelft van onderstaand diagram dat ik schaamteloos heb geplagieerd van het internet.
+   
    ![dhcp](img/dhcp.gif)
-
-   //TODO
-
+   
+   * De client wilt een IP-adres aanvragen en stuurt een DHCPDISCOVER
+   * Beide DHCP-servers antwoorden met een DHCPOFFER, deze bevat een IP-adres dat de client zou mogen gebruiken. In dit geval krijgen we dus twee offers.
+   * De client kiest één van de twee offers (waarschijnlijk de eerste die aankwam, we nemen ter illustratie server 1) en bevestigt met een DHCPREQUEST dat hij het IP-adres wilt gebruiken
+   * Server bevestigt het request met een DHCPACK
+   
+   Een kleine sidenote hier. Alle pakketjes worden op het broadcast-adres gestuurd, dus zal de DHCPREQUEST een veld moeten bevatten dat aangeeft voor welke server het eigenlijk bestemd is. (DHCP server ID)
+   
+   
+   
 3. > Wat is DHCP relay en waarvoor dient het?
    >
 
-   //TODO
+   Een DHCP relay zorgt ervoor dat we een netwerk met verschillende subnetten van DHCP kunnen voorzien zonder in elk subnet een DHCP server te moeten zetten. Omdat hosts die nog geen IP-adres hebben niet kunnen communiceren naar buiten hun subnet, zullen we in elk subnet een DHCP relay voorzien die de broadcast DHCP-berichten van hosts per unicast doorstuurt naar de DHCP server en andersom. De host merkt niet dat hij met een relay praat in plaats van een echte server. 
 
+   De meeste routers hebben dit ingebouwd.
+   
+   
+   
 4. > Leg het werkingsprincipe uit van Software-Defined Networking. Wat zijn de voordelen.
    >
    
@@ -1563,45 +1581,123 @@ Nu wordt het gek. In datacenters gaan ze ervoor zorgen dat laag 2 pakketten over
    
 
 6. > Bespreek een voorbeeld van BGP. Waarom heeft men I-BGP en E-BGP ?
-   >
-
    
-
+   Inspecteer het eerstkomende dessin van een netwerk gebruik makende van het **border gateway protocol**. 
+   
+   <img src="img/image-20220517135631932.png" alt="image-20220517135631932" style="zoom: 33%;" />
+   
+   BGP is een **path-vector** protocol. Dit betekent:
+   
+   * We houden een pad bij naar elke bestemming
+   * Snellere convergentie dan **distance-vector** protocollen
+   * We kunnen andere paden toelaten dan de kortste paden
+   
+   BGP voorziet drie dingen:
+   
+   * **Advertise**: routers adverteren reachability informatie
+   * **Propagate**: routers propageren ontvangen reachability informatie door
+   * **Select**: routers kunnen ontvangen paden selecteren op basis van hun eigen voorkeuren of policies
+   
+   
+   
+   Waarom heeft men I-BGP en E-BGP?
+   
+   * Routers die verbonden zijn met meerdere AS'en zullen gebruik maken van **external-BGP** en zullen dus reachability informatie propageren naar andere AS'en. 
+   
+   * Routers binnen een AS, die niet verbonden zijn met andere AS'en, maken gebruikt van **internal-BGP**. Er wordt een full mesh opgezet tussen al deze routers. Zo kunnen we reachability informatie ook binnen ons netwerk bij alle routers krijgen. 
+   * Zo kan in het voorbeeld bijvoorbeeld router 1C (een border router) de reachability informatie die hij heeft gekregen van AS3 met i-BGP doorgeven aan router 1B. Hij zal dan op zijn beurt e-BGP gebruiken om deze info door te geven aan AS2. 
+   
+   
+   
 7. > Wat is een AS-PATH ? Wat is een NEXT-HOP ?
-   >
-
    
-
+   Dit zijn onderdelen van het BGP-protocol
+   
+   * **AS-PATH**: de padvector die aangeeft welke tussenliggende autonome systemen moeten overlopen worden om tot een bepaald netwerk te geraken.
+   
+   * **NEXT-HOP**: de volgende hop die moet genomen om dat bepaald netwerk te bereiken
+   
+     
+   
 8. > Wat is policy based routing in BGP ? Geef een voorbeeld.
    >
 
-   
+   Een autonoom systeem kan beslissen om bepaalde **reachability informatie** niet door te propageren afhankelijk van businessrelaties, bijvoorbeeld:
 
+   * Alleen reachability informatie doorgeven aan betalende klanten
+   * Niet doorgeven aan concurrenten
+   
+   Hiervoor maken ze gebruik van **propagation policies**. Reachability informatie niet doorgeven voorkomt dat aanliggende AS'en jouw AS als doorgang gebruiken. Je hebt dus zelf de macht om te beslissen hoe jouw netwerk gebruikt wordt.
+   
+   Neem onderstaand digitaal portret in acht:
+   
+   <img src="img/image-20220626214636917.png" alt="image-20220626214636917" style="zoom:50%;" />
+   
+   In mijn fantasie is AS54 een transit AS beheerd door Telenet. Ik ben een betalende klant en mijn AS krijgt dus reachability informatie toegestuurd van AS54 over alle netwerken waartoe hij toegang heeft en alle netwerken waarvoor hij dient als transit zone. Andy heeft zijn rekeningen niet betaald, en krijgt bijgevolg van Telenet geen reachability informatie over de netwerken die hun AS als transit zone. Hij heeft wel nog toegang tot de netwerken die AS54 rechtstreeks kan bereiken (zoals de webtool waarmee je je rekeningen kan betalen)
+   
+   
+   
 9. > Wat is ICMP ? Geef een voorbeeld bij het gebruik in een redirect en traceroute.
    >
 
-   
+   Het **internet control message protocol** voorziet onder meer mechanismen om de bereikbaarheid van hosts te controleren, routeringsproblemen op te lossen en het afgelegde pad van een pakketje te traceren.
 
+   * **Redirect**: Als je een een bericht naar de foute router stuurt (omdat je een fout hebt in je routing table), waardoor hij het op dezelfde interface terug moet sturen om het pakketje tot zijn bestemming te krijgen, zal hij jou een ICMP-redirect sturen. Deze bevat de juiste gateway die je zal moeten gebruiken om toekomstige pakketjes in de juiste richting te sturen.
+   
+   *  **Traceroute**: traceroute stuurt een reeks pakketjes met incrementeel toenemende TTL. Zo zal bij elke router op het pad naar de bestemming de TTL verlopen, waardoor deze router je een **ICMP Error: time expired** zal toesturen. Zo kan je het volledige pad tot aan je bestemming achterhalen (als de beheerders van de routers dit niet uit hebben gezet om te besparen)
+   
+     
+   
 10. > Leg de basisprincipes van SNMP uit (wat, waarom, hoe, ...). Verwerk het woord MIB en
     > OID in je antwoord.
 
-    
+    Het **simple network management protocol** dient om netwerkapparatuur van een gezamenlijke taal te voorzien om informatie uit te kunnen wisselen met een Network Management System (NMS). Zo kan netwerkapparatuur gecentraliseerd **geconfigureerd, beheerd en gemonitord** worden. 
 
+    Er worden MIB(**management information base**)-objecten  voorzien. Deze komen overeen met bepaalde instellingen, metrieken of statistieken van een bepaald apparaat en worden in een boomstructuur georganiseerd. De OID (object identifier) is dan een getal van de vorm (x.x.x.x.x.x.x ...). Dit getal stelt een pad in de boom tot aan een bepaald blad voor en komt overeen met een MIB-object.
+    
+    Het SNMP-protocol zelf kan je in twee modussen gebruiken:
+    
+    * Request/response: het NMS stuurt zelf een request voor een bepaald MiB-object van een apparaat
+    * Trap mode: de apparaten sturen zelf periodiek berichten met deze informatie (traps). Dan moet de NMS hier niet de hele tijd achter vragen.
+    
+     
+    
 11. > Hoe kan Ansible ingezet worden voor netwerkautomatisering, en wat zijn de nodige basiscompomenten en protocollen van Ansible?
     
-    Met Ansible kan je aan de hand van een **playbook** de configuratie en het testen van netwerkapparatuur automatiseren. 
+    Met Ansible kan je aan de hand van een **playbook** de configuratie en het testen van netwerkapparatuur automatiseren. Je kan rollbacks doen en rapporten genereren.
     
     Een playbook bevat:
     
     * **Plays**: lijsten van tasks die op een apparaat moeten uitgevoerd worden
     * **Tasks**: Dit is een call naar een Ansible **module** en komt overeen met een bepaalde functie die uitgevoerd moet worden.
     
-    //TODO
+    Dankzij Ansible kan je snel een grote hoeveelheid gelijkaardige netwerkapparaten configureren aan de hand van templates (jinja2). Bovendien zorgt Ansible voor **idempotente uitvoering**. Als een taak meerdere keren wordt uitgevoerd, zal hij iedere keer hetzelfde resultaat geven.
+    
+    
+    
+    Ansible heeft vier hoofdcomponenten:
+    
+    * De **CMDB** (configuration management database) houdt alle configuratie bij met versiebeheer
+    * De **devices** die we willen beheren of aansturen
+    * De **gebruikers** die aan de hand van playbooks de apparaten aansturen
+    * De **ansible automation engine** verwerkt playbooks en beheert apparaten
+    
+    
+    
+    Ansible gebruikt typisch **SSH** om commando's uit te voeren op apparaten, maar kan bijvoorbeeld ook gebruik maken van **SNMP** voor het configureren van apparaten.
     
     
     
 12. > Wat is netwerkvirtualisatie en waarom wordt het gebruikt?
     >
+    
+    Virtualisatie is het principe waarin een bepaalde functie wordt ontkoppeld van de specifieke hardware waarop ze wordt uitgevoerd. Door die ontkoppeling kunnen we sneller en robuuster omgaan met de omstandigheden.
+    
+    Netwerkvirtualisatie betreft het toepassen van dit principe om een virtuele netwerkinfrastructuur te maken waarbij er automatisch apparaten kunnen toegevoegd of verwijderd worden. Dit kan in bijvoorbeeld een datacenter van pas komen. We kunnen meerdere virtuele machines dynamisch uitrollen en aan de **virtuele switches** ervoor zorgen dat deze met elkaar kunnen communiceren alsof ze zich in hetzelfde netwerk bevinden. Het maakt niet uit of deze VM's op dezelfde machine worden uitgevoerd. 
+    
+    * Hiervoor maken we gebruik van een **VXLAN (virtual extensible local area network)**. Dit kan je vergelijken met een tunnel.
+    * Beide apparaten worden aangesloten aan een **VTEP (virtual tunnel endpoint)**.
+    * Hierdoor kunnen ze zelfs als ze gescheiden worden door verschillende routers met elkaar communiceren op de alsof ze in hetzelfde LAN zitten.
     
     
 
@@ -1627,7 +1723,7 @@ Nu wordt het gek. In datacenters gaan ze ervoor zorgen dat laag 2 pakketten over
 2. > Hoe worden de switchtabellen ingevuld ? En hoe worden ze gebruikt ?
    >
 
-   De switch zal op basis van de source MAC-addressen van frames die binnenkomen noteren op welke poort deze apparaten zijn aangesloten in zijn switchtabel. Gebruik makende van deze tabel stuurt hij binnenkomende frames enkel door op de poort waaraan de bestemming is aangesloten.
+   De switch zal op basis van de source MAC-addressen van frames die binnenkomen noteren op welke poort deze apparaten zijn aangesloten in zijn **switch forwarding table**. Gebruik makende van deze tabel stuurt hij binnenkomende frames enkel door op de poort waaraan de bestemming is aangesloten.
 
    Wanneer je gebruik maakt van VLANS zullen deze ook gebruikt worden door de switch om te weten waarheen frames gestuurd moeten worden.
 
@@ -1636,18 +1732,39 @@ Nu wordt het gek. In datacenters gaan ze ervoor zorgen dat laag 2 pakketten over
 3. > Bespreek STP en geef een voorbeeld.
    >
 
-   
+   Het **spanning tree protocol** voorkomt loops in je infrastructuur op de datalinklaag. Dit protocol zorgt ervoor dat bepaalde switchpoorten automatisch geblokkeerd zullen worden. De werking gaat als volgt.
 
+   * Alle poorten beginnen in **blocking mode**
+   * Er wordt een **root switch** geselecteerd. Dit is op basis van de prioriteiten die je zelf instelt, de switch met de laagste prioriteit wordt gekozen. Als de prioriteiten van twee switches gelijk zijn zal diegene met het laagste MAC-adres gekozen worden. (deze twee samen noem je de **switch id**)
+   * Nu wordt er een **minimum spanning tree** berekend met een algoritme dat we reeds kennen van de cursus discrete wiskunde (sike)
+   * De poorten van de switches worden ingesteld op basis van de spanning tree
+     * Elke poort die naar het kortste pad naar de root switch leidt wordt een **root port**
+     * Er wordt voor elk netwerksegment bepaald wat de poort is die leidt naar het kortste pad naar de root switch. Deze poorten worden elk een **designated port**. Als er twee poorten tot een even lang pad tot de root switch leiden, word diegene met de kleinste switch id gekozen.
+     * Alle andere poorten worden een **blocked port** 
+   
+   Het spanning tree protocol zal zelfs in ingewikkelde topologieën convergeren in 30-60 seconden. Dit is niet goed genoeg in voor hele grote netwerken. Dan kan je gebruik maken van het **rapid spanning tree protocol** gebruiken. Dit protocol staat ook toe om meerder spanning trees voor verschillende VLANs te gebruiken.
+   
 4. > Wat is een VLAN ? Bespreek de relatie tussen VLANs en subnetten.
    >
 
-   
+   **Virtual LAN** voorziet een mechanisme om een LAN-netwerk in meerdere logische netwerken op te splitsen. Processen zoals **flooding** en **mac-learning** van verschillende VLANs zullen dan gescheiden verlopen, ook al kan het dat deze op dezelfde infrastructuur verlopen.
 
+   Wij hebben twee soorten VLANs besproken in de cursus:
+   
+   * **Port-based**: we stellen een poort in op een VLAN. Alleen poorten in dezelfde VLAN kunnen met elkaar communiceren
+   * **Tag-based**: elk frame krijgt een tag die aangeeft bij welke VLAN hij hoort. 
+   
+   Twee VLANs zijn logisch gescheiden netwerken, en zullen dus ook behoren tot **verschillende subnetten** waartussen gerouteerd zal moeten worden (kan bijvoorbeeld a.d.h.v. router-on-a-stick)
+   
 5. > Geef een aantal voor- en nadelen van switches (versus routers).
 
+   Een router is eigenlijk een switch op laag 3
+   
    * Switches zijn **plug-and-play** en vergen bijna geen configuratie
-   * Switches **vergroten** het broadcast domein en routers **splitsen** het broadcast domein op.
-   * //TODO
+   * Switches **vergroten** het broadcast domein en routers **splitsen** het broadcast domein op. Als het broadcast domein te groot wordt zullen er te veel ARP-pakketjes moeten verstuurd worden.
+   * Switches hebben een **hogere forwarding snelheid** dan routers, omdat routers datagrams tot aan laag 3 moeten decapsuleren.
+   * Switches zijn vatbaar aan **broadcast storms**. Als een host sicko mode gaat en super veel pakketjes stuurt zal de switch ze allemaal blijven forwarden. Daarenboven kunnen frames **blijven doorgestuurd worden** omdat ze niet beschikken over een TTL. Bovendien kunnen routers volgens het handboek ook beschikken over firewalls om broadcast storms te voorkomen.
+   * Bij een switch zal je een **spanning tree** moeten gebruiken om loops te voorkomen, waardoor pakketjes niet speciaal het **kortste pad** volgen, dit probleem heb je niet met routers.
 
 ## Hoofdstuk 7
 
@@ -1665,30 +1782,56 @@ Nu wordt het gek. In datacenters gaan ze ervoor zorgen dat laag 2 pakketten over
 2. > Hoe werkt het IEEE 802.11 MAC protocol?
    >
 
-   //TODO
+   Ook wel bekend als WiFi.
 
+   Verbinden met een WiFi netwerk, ook wel **associatie** genoemd, verloopt volgens de volgende stappen:
+   
+   * De host scant naar **beacon frames**, deze bevatten de naam, SSID (service set identifier) en het MAC-adres van het access point.
+   * De host kiest een **access point** om mee te verbinden
+   * De host zal zich vervolgens waarschijnlijk moeten **authenticeren**, als de access point gebruik maakt van WEP, WPA of WPA2
+   * Nu zijn we verbonden
+   
+   
+   
+   Om botsingen om het gedeelde medium te voorkomen, wordt er gebruik gemaakt van **CSMA/CA (carrier sense multiple access / collision avoidance)**. Als een zender het kanaal wilt gebruiken om veel bits te versturen zal hij:
+   
+   * Een **RTS (request-to-send)** sturen. 
+   * Als er niemand anders op hetzelfde moment een RTS stuurde, zal de **base station** met een **CTS (clear-to-send)** antwoorden en kan de overdracht beginnen
+   * Is dit niet het geval, zal onze host een random tijdsinterval **wachten** voor hij de volgende RTS stuurt.
+   
+   
+   
 3. > Bespreek de werking van de adresvelden bij IEEE 802.11 netwerken.
    >
    
    Afhankelijk van de **ToAP** en **FromAP** flags zullen de vier adresvelden andere soorten adressen bevatten.
    
-   |                               | To AP | From AP | Address 1              | Address 2                 | Address 3    | Address 4 |
+   |                               | To AP | From AP | Address 1 (ontvanger)  | Address 2 (afzender)      | Address 3    | Address 4 |
    | ----------------------------- | ----- | ------- | ---------------------- | ------------------------- | ------------ | --------- |
    | Ad-hoc mode                   | 0     | 0       | Destination            | Source                    | Common BSSID |           |
    | Infrastructure mode (to AP)   | 1     | 0       | Access Point           | Source                    | Destination  |           |
    | Infrastructure mode (from AP) | 0     | 1       | Destination            | Access Point              | Source       |           |
    | Wireless distribution bridge  | 1     | 1       | Receiving Access Point | Transmitting Access Point | Destination  | Source    |
    
-   * Ad-hoc mode: er is geen access point, dus het pakketje gaat rechtstreeks van source naar destination
-   * Infrastructure mode: als we een pakketje sturen naar iemand, zal deze eerst naar langs de access point moeten. Daarom moet het adres van de AP in het eerste veld. Hetzelfde, maar omgekeerd in de andere richting
-   * //TODO
+   * Ad-hoc mode: er is geen access point, dus het pakketje gaat rechtstreeks van source naar destination. Het derde veld is een BSSID-waarde die is afgesproken tussen alle nodes.
+   * Infrastructure mode: als we een pakketje sturen naar iemand, zal deze eerst naar langs de access point moeten. Daarom moet het adres van de AP in het eerste veld. Voor een pakketje komend van de AP is dit hetzelfde, maar omgekeerd.
+   * Wireless distribution bridge: twee AP's sturen draadloos data naar elkaar door in een **wireless mesh network**. 
 
 ## Hoofdstuk 8
 
 1. > Bespreek pakketfiltering “packet firewall: stateless en stateful” en toepassingsgateway “application gateway”
    >
 
+   * Bij **stateless packet filtering** zal men een bepaalde **ACL (access control list)** opstellen met toegelaten IP-adressen, protocollen en poortnummers. Deze zal aangeven of een pakketje dat overeenkomt met een bepaalde regel zal doorgelaten worden. De regels worden van boven naar onder toegepast. Typisch zet je dan achteraan een regel die ofwel alle pakketjes tegenhoudt of blokkeert.
+   * **Stateful packet filtering** doet daar nog een schepje bovenop en zal over meerdere berichten heen conclusies trekken. Zo kan hij bijvoorbeeld ACK-pakketjes blokkeren als er geen SYN op voorafging.
    
+   
+   
+   Als je in een bedrijf gebruik maakt van een application gateway, zet je deze typisch tussen twee packet filters. Deze laten alleen verkeer van en naar deze gateway toe. 
+   
+   Een voorbeeld hiervan is een proxy server. Alle apparaten in een bedrijfsnetwerk zullen verbinding moeten maken met de proxy als ze willen surfen op het internet. De proxy zal dan voor hun een verbinding aangaan met de desbetreffende webserver.
+   
+   <img src="img/image-20220625143152954.png" alt="image-20220625143152954" style="zoom:50%;" />
 
 ## Hoofdstuk 4* : IPv6
 
@@ -1780,7 +1923,27 @@ de slides aangezien er geen IPv6 hoofdstuk opgenomen is in het boek van Kurose-R
 
 8. > De overgang van IPv4 van IPv6 wordt georganiseerd in DNS records. Leg uit hoe dit mechanisme werkt.
 
-   Ik wil met mijn IPv6 only computer naar ketnet.be nu nog stappen//TODO
+   Ik zal het verduidelijken aan de hand van het volgende scenario. Ik heb een netwerk dat enkel IPv6 draait. Nu wil ik graag surfen naar ketnet.be. Ketnet loopt een beetje achter en ondersteunt alleen IPv4. Wat zal er nu moeten gebeuren?
+   
+   * We zullen moeten gebruikmaken van een **DNS64** server
+   * We vragen het AAAA record voor ketnet.be op, onze DNS-server heeft deze niet, dus zal hij vraag stellen aan één of andere authoritatieve DNS-server. 
+   * Deze server heeft geen AAAA record voor ketnet.be en dus zal onze server het A record moeten vragen. 
+   *  Dit A-record zal door een **NAT64** server moeten omgezet worden in een AAAA record, en zal dus het IPv4 adres van ketnet.be moeten prefixen met de **well-known NAT64 prefix**. 
+   * Nu hebben we een IPv6 adres waar we een pakketje naar kunnen sturen om de nieuwste aflevering van de Ketnet Kroket te kunnen kijken.
+   * Wanneer dit pakketje ons netwerk verlaat, zal het door de **NAT64** omgezet worden naar een IPv4 pakket en zal deze server een mapping bijhouden van ons intern IPv6 adres en dit IPv4 adres
+   * Nu hebben we een verbinding en kunnen we beginnen met kijken.
+
+
+
+## Extra 
+
+1. VXLAN
+2. NAT444
+3. Alle soorten routeringsprotocollen
+4. DHCP renewal
+5. DHCPv6
+6. Dual stack
+7. Wat is een IDS en wat doet hij extra?
 
 
 # Afkortingen overzicht
@@ -1926,7 +2089,7 @@ File Data: 128 bytes
 7. *By inspecting the raw data in the packet content window, do you see any headers within the data that are not displayed in the packet-listing window? If so, name one.*
 
 ```
-? //TODO
+? 
 ```
 
 
