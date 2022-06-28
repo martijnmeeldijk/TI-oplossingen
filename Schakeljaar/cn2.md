@@ -150,7 +150,7 @@ Dit is natuurlijk niet de enige protocolstack (wel de meest gebruikte). In de se
 
 <img src="img/image-20220223171923724.png" alt="image-20220223171923724" style="zoom:50%;" />
 
-Om het even kort te houden. Deze afbeelding legt het concept vrij goed uit. Ons pakketje wordt telkens ingepakt in een pakket van de bovenliggende laag en weer uitgepakt tot waar nodig.
+Om het even kort te houden. Deze afbeelding legt het concept vrij goed uit. Ons pakketje wordt telkens ingepakt in een pakket van de onderliggende laag en weer uitgepakt tot waar nodig.
 
 
 
@@ -1489,7 +1489,9 @@ Nu wordt het gek. In datacenters gaan ze ervoor zorgen dat laag 2 pakketten over
    * De client kiest één van de twee offers (waarschijnlijk de eerste die aankwam, we nemen ter illustratie server 1) en bevestigt met een DHCPREQUEST dat hij het IP-adres wilt gebruiken
    * Server bevestigt het request met een DHCPACK
    
-   Een kleine sidenote hier. Alle pakketjes worden op het broadcast-adres gestuurd, dus zal de DHCPREQUEST een veld moeten bevatten dat aangeeft voor welke server het eigenlijk bestemd is. (DHCP server ID)
+   Een kleine sidenote hier. Alle pakketjes worden op het broadcast-adres gestuurd, dus zal de DHCPREQUEST een veld moeten bevatten dat aangeeft voor welke server het eigenlijk bestemd is. (DHCP server ID).
+   
+   Nog een sidenote: DHCPOFFER en DHCPACK kunnen ook per unicast bij de aanvrager terechtkomen.
    
    
    
@@ -1937,13 +1939,77 @@ de slides aangezien er geen IPv6 hoofdstuk opgenomen is in het boek van Kurose-R
 
 ## Extra 
 
-1. VXLAN
-2. NAT444
-3. Alle soorten routeringsprotocollen
-4. DHCP renewal
-5. DHCPv6
-6. Dual stack
-7. Wat is een IDS en wat doet hij extra?
+> Waarom moet een applicatiegateway samenwerken met een routerfilter om effectief te kunnen zijn?
+
+If there isn’t a packet filter, than users inside the institution’s network will still be able to make direct connections to hosts outside the institution’s network. The filter forces the users to first connect to the application gateway.
+
+
+
+> Wat betekent FCAPS in de context van netwerkbeheer?
+
+* **F**ault management: fouten loggen, detecteren en opsporen
+* **C**onfiguration management: het bijhouden van een inventaris van toestellen en de configuratie ervan
+* **A**ccounting management: gebruikersprofielen bepalen en per profiel instellingen voorzien voor rechten, quota, toegang, ...
+* **P**erformance management: bandbreedte, delay, worden bij ISPs in SLAs vastgelegd
+* **S**ecurity management: bv Firewalls
+
+
+
+> Waarom wordt een ARP-verzoekbericht verzonden in een broadcastframe? Waarom wordt een ARP-antwoordbericht in een frame met een bepaald MAC-bestemmingsadres verzonden?
+
+An ARP query is sent in a broadcast frame because the querying host does not which adapter address corresponds to the IP address in question. For the response, the sending node knows the adapter address to which the response should be sent, so there is no need to send a broadcast frame (which would have to be processed by all the other nodes on the LAN).
+
+
+
+> Als alle links op het internet betrouwbaar transporteerden, zou de betrouwbare bezorging van TCP dan overbodig zijn? Motiveer.
+
+Although each link guarantees that an IP datagram sent over the link will be received at the other end of the link without errors, it is not guaranteed that IP datagrams will arrive at the ultimate destination in the proper order. With IP, datagrams in the same TCP connection can take different routes in the network, and therefore arrive out of order. TCP is still needed to provide the receiving end of the application the byte stream in the correct order. Also, IP can lose packets due to routing loops or equipment failures.
+
+
+
+> Hoe kan er een collision bij CSMA optreden, terwijl toch alle nodes voor het zenden een carrier sense doen?
+
+When a node transmits a frame, the node has to wait for the frame to propagate around the entire ring before the node can release the token. Thus, if $L/R$ is small as compared to $t_\text{prop}$, then the protocol will be inefficient.
+
+
+
+> Wat is een glue record en waarvoor wordt het gebruikt
+
+Hier een paar uitspraken van op de zelftest
+
+* (niet waar) DNS glue records zijn DNS RRs zodat verschillende DNS domeinen tot een zone kunnen worden samengevoegd.
+* DNS glue records vermijden een circulaire afhankelijkheid bij het proces waarin DNS queries gedelegeerd worden.
+* Een DNS glue record is een A type DNS RR dat het IP adres van een name server geeft voor een lagergelegen domein in de DNS hiërarchie.
+* DNS glue records voor gegeven onderliggend domein A zijn niet nodig wanneer een name server van een onderliggend domein A tot een ander domein B behoort.
+
+Wouter zegt:
+
+Om (authoritative) DNS servers van een domein te kunnen achterhalen horen hogergelegen DNS servers een NS type entry te hebben naar deze DNS servers. Voor de ugent.be DNS servers, betekent dit dat de TLD server voor .be NS entries moet hebben voor ugent.be. Deze kun je achterhalen als volgt:
+
+ \> dig +short ugent.be NS                       
+ugdns2.ugent.be.
+...
+
+Nu, introduceert bovenstaande antwoord wel een probleem: ugdns2.ugent.be behoort zelf tot ugent.be domein. Dit is dus een circulaire afhankelijkheid.
+
+In de taal van de zelftest-vraag is ugent.be in dit geval domein A. Mocht de DNS server ugdns2 echter tot domein B (cloudflare.com) behoren, dan zou bijhorende naam bv. ugdns2.cloudflare.com zijn, en heb je geen circulaire dependency (en dus geen glue record nodig). In dat laatste geval zou het IP adres van ugdns2.cloudflare.com kunnen achterhaald worden via de authoritative name servers van cloudflare.com . 
+
+
+
+> Wat is een whois database?
+
+For a given input of domain name (such as ccn.com), IP address or network administrator name, the whois database can be used to locate the corresponding registrar, whois server, DNS server, and so on.
+
+
+
+
+
+> Wat is een zone? (dns)
+
+part of a domain that is administered by an entity
+
+* Zone is every part of the domain which is not delegated
+* RRs for given zone are stored in a zone file
 
 
 # Afkortingen overzicht
