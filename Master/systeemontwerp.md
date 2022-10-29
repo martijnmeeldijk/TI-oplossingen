@@ -222,3 +222,179 @@ De "Maintenance and Fueling" service in dit voorbeeld heeft heel veel systeemope
 
 - Maintenance en fueling apart opdelen gaat weinig impact hebben omdat de orkestratie zorgt voor het hoge aantal systeemoperaties.
 - Een mogelijke oplossing is om een aparte service te maken "flight management" die de orkestratie op zich neemt. Dit gaat dan opnieuw een service zijn die aan heel veel services hangt, maar dan zijn de domeinen beter gescheiden.
+
+
+
+## Labo 2
+
+> De eerste stap om de architectuurdefinitie neer te schrijven is om de systeemoperaties om te zetten naar API definities. Hieronder zie je de API definitie van requestQuote().
+
+| operation and type | requestQuote - inbound command                               |
+| ------------------ | ------------------------------------------------------------ |
+| technology         | REST                                                         |
+| actor              | airline                                                      |
+| parameters         | slot                                                         |
+| returns            | priceRequest                                                 |
+| precondition       | The slot is in the future and in a reasonable timeframe.The slot is available. |
+| postcondition      | A price request is created in a state of pending acceptance. |
+
+> **Maak de API definitie voor de systeemoperatie acceptQuote().**
+
+| operation and type | acceptQuote - command                                        |
+| ------------------ | ------------------------------------------------------------ |
+| technology         | REST                                                         |
+| actor              | airline                                                      |
+| parameters         | priceRequestID, flight number                                |
+| returns            | -                                                            |
+| precondition       | The price request exists in our system                       |
+| postcondition      | The price request is updated to a state of accepted.<br>The flight is created.<br>The slot (of the price request) is reserved for this flight.<br>A parking area is assigned to the flight. |
+
+
+
+
+
+> Echter, sommige systeemoperaties zoals outbound operaties zijn minder eenvoudig om te zetten naar een API call. De systeemoperatie "SendLuggageWorkorder", bijvoorbeeld, kan niet zomaar omgezet worden naar een HTTP call of een event op een message bus.
+>
+> - Om een HTTP call te ontvangen moet een device aan staan en netwerkverbinding hebben. Dit maakt het systeem echter heel broos en is dus geen goede oplossing.
+> - Een message queue kan wel asynchroon gelezen worden. Echter, afhankelijk van de implementatie, kunnen berichten maar eenmalig gelezen worden, of zijn berichten readonly. Het is hiermee dus niet mogelijk om op een later tijdstip actieve workorders opnieuw op te vragen.
+>
+> Beide opties hebben grote limitaties. Een betere manier om dit te implementeren is om een inbound query te gebruiken. De query "getLuggageWorkorders()", bijvoorbeeld, kan door de bagagedienst gebruikt worden om te kijken welke workorders er actief zijn. Optioneel kan een tweede call toegevoegd worden, namelijk een outbound command "notifyNewLuggageWorkorder()". Dit werkt via een message bus om de bagagedienst een notificatie te geven dat een nieuwe werkorder beschikbaar is. Op dat moment kan de bagagedienst de eerste query uitvoeren om de nieuwe werkorder te zien.
+>
+> Geef de API definitie van de calls "getLuggageWorkorders" en "notifyNewLuggageWorkorder".
+
+
+
+| operation and type | getLuggageWorkorders - command        |
+| ------------------ | ------------------------------------- |
+| technology         | REST                                  |
+| actor              | luggage                               |
+| parameters         | -                                     |
+| returns            | List of LuggageWorkOrder              |
+| precondition       | At least one Luggage workorder exists |
+| postcondition      | -                                     |
+
+| operation and type | notifyNewLuggageWorkOrder - command |
+| ------------------ | ----------------------------------- |
+| technology         | message                             |
+| actor              | luggage                             |
+| parameters         | -                                   |
+| returns            | -                                   |
+| precondition       | A new workorder was just created    |
+| postcondition      | -                                   |
+
+
+
+> Gezien het verzenden van luggage, maintenance en fueling workorders heel gelijkaardig zijn, is het zelf mogelijk om deze systeemoperaties samen te nemen.
+>
+> Dit resulteert in twee operaties, getWorkorders en notifyNewWorkorder.
+>
+> Geef de API definitie van de calls "getWorkorders" en "notifyWorkorder".
+
+| operation and type | getWorkorders - command          |
+| ------------------ | -------------------------------- |
+| technology         | REST                             |
+| actor              | luggage, maintenance and fueling |
+| parameters         | -                                |
+| returns            | List of WorkOrder                |
+| precondition       | At least one workorder exists    |
+| postcondition      | -                                |
+
+| operation and type | notifyNewWorkOrder - command     |
+| ------------------ | -------------------------------- |
+| technology         | message                          |
+| actor              | luggage, maintenance and fueling |
+| parameters         | -                                |
+| returns            | -                                |
+| precondition       | A new workorder was just created |
+| postcondition      | -                                |
+
+
+
+> Doe nu hetzelfde voor de overige systeemoperaties van business scenario 2.2
+
+Dit zijn alle systeemoperaties:
+
+| Actor              | Inbound                                                  | Outbound                   |
+| ------------------ | -------------------------------------------------------- | -------------------------- |
+| Externe Luchthaven | sendIncomingPassengerList()<br>sendIncomingLuggageList() |                            |
+| ATC                | sendIncomingFlightDetails()                              |                            |
+| Bagage             |                                                          | SendLuggageWorkorder()     |
+| Onderhoud          |                                                          | SendMaintenanceWorkorder() |
+| Tanken             |                                                          | SendFuelingWorkorder()     |
+
+API definities:
+
+| operation and type | sendIncomingPassengerList - command                    |
+| ------------------ | ------------------------------------------------------ |
+| technology         | REST                                                   |
+| actor              | External Airport                                       |
+| parameters         | flightId, IncomingPassengerList                        |
+| returns            | -                                                      |
+| precondition       | flight is inbound <br>fight and price request accepted |
+| postcondition      | passengers created and added to the flight             |
+
+| operation and type | sendIncomingLuggageList - command                       |
+| ------------------ | ------------------------------------------------------- |
+| technology         | REST                                                    |
+| actor              | External Airport                                        |
+| parameters         | flightId, incomingLuggageList                           |
+| returns            | -                                                       |
+| precondition       | flight is inbound <br/>fight and price request accepted |
+| postcondition      | luggage is added to flight                              |
+
+| operation and type | sendIncomingFlightDetails - command                     |
+| ------------------ | ------------------------------------------------------- |
+| technology         | REST                                                    |
+| actor              | ATC                                                     |
+| parameters         | flightId, IncomingFlightDetails                         |
+| returns            | -                                                       |
+| precondition       | flight is inbound <br/>fight and price request accepted |
+| postcondition      | details are added to the flight                         |
+
+
+
+**Beschrijving en API**
+
+De tweede stap om de architectuurdefinitie neer te schrijven is om voor iedere service een beschrijving en API te geven.
+
+De beschrijving geeft de verantwoordelijkheden van de service aan, welke informatie de service bijhoudt en in grote lijnen wat de functionaliteit van de service is.
+
+De API van een service is een oplijsting van de API calls waar deze service **rechtstreeks** mee in contact komt. Dit gaat zowel over API calls van systeemoperaties als interne API calls. Met "*rechtstreeks"* wordt bijvoorbeeld bedoeld dat een systeemoperatie enkel opgelijst wordt bij de service die deze operatie binnenkrijgt en er op antwoord. Achterliggende services die intern gecontacteerd worden bij het verwerken van een systeemoperatie gaan enkel deze interne calls oplijsten in hun API. Niet de systeemoperatie zelf.
+
+Merk op dat iedere interne call in de API van minstens twee services zal terecht komen: eenmaal inbound en eenmaal outbound.
+
+Als voorbeeld de beschrijving en API van de luggage service.
+
+
+
+**Luggage service**
+
+De Luggage service is verantwoordelijk voor bagage items en bagage workorders. De service houdt een overzicht bij van welke bagage items zich waar bevinden en met welke vlucht deze geassocieerd zijn. Deze service houdt ook bij welke workorders er lopen en wat de verwachte bagagecapaciteit in de toekomst zal zijn.
+
+Bagagestukken worden toegevoegd wanneer ze afgeleverd worden aan de check-in, wanneer ze bij boarding worden ingechecked, of wanneer ze op een inkomende vlucht aankomen. De service geeft werkorders door aan het bagage personeel die aangeven welke bagage in een vliegtuig moet geladen worden. De service houdt ook bij wat de verwachte bagagecapaciteit in de toekomst is en geeft op basis van deze informatie door of er al dan niet genoeg capaciteit is voor een extra vlucht in de toekomst. Wanneer een vlucht vertrekt stuurt deze service de lijst van bagage door naar de bestemming van de vlucht.
+
+| **operation**           | **type**         | **technology** | **function**                                 |
+| ----------------------- | ---------------- | -------------- | -------------------------------------------- |
+| getCapacity             | inbound query    | message        | internal (flight reservation)                |
+| addEstimate             | inbound command  | message        | internal (flight reservation)                |
+| sendOutgoingLuggageList | outbound command | REST           | system operation (external airport)          |
+| sendIncomingLuggageList | inbound command  | REST           | system operation (external airport)          |
+| addLuggage              | inbound command  | REST           | system operation (passenger, gate personnel) |
+| getWorkorders           | inbound query    | REST           | system operation (luggage)                   |
+| notifyNewWorkorder      | outbound event   | message        | system operation (luggage)                   |
+| completeWorkorder       | inbound command  | REST           | system operation (luggage)                   |
+
+
+
+> Doe nu hetzelfde voor de service "Maintenance and Fueling"
+
+| **operation**                   | **type**        | **technology** | **function**                       |
+| ------------------------------- | --------------- | -------------- | ---------------------------------- |
+| notifyPreflightCheckCompleted() | outbound event  | message        | system operation (luggage)         |
+|                                 |                 |                |                                    |
+| notifyFuelingDone()             | inbound event   | message        | system operation (fueling)         |
+| notifyBoardingCanStart          | outbound event  | message        | system operation (balie personeel) |
+|                                 |                 |                |                                    |
+| getWorkorders                   | inbound query   | REST           | system operation (crew, fueling)   |
+| notifyNewWorkorder              | outbound event  | message        | system operation (crew, fueling)   |
+| completeWorkorder               | inbound command | REST           | system operation (luggage)         |
