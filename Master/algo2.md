@@ -103,6 +103,6 @@ Een gewortelde diboom $T$ wordt een **opspannende gewortelde diboom** van een gr
 
 ### Breedte-eerst zoeken
 
-Bij breedte eerst zoeken, loop je alle knopen van een graaf af, beginnend bij een gekozen knoop. Vervolgens 
+Bij breedte eerst zoeken, loop je alle knopen van een graaf af, beginnend bij een gekozen knoop. Vervolgens ...
 
  
