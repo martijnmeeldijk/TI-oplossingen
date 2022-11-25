@@ -517,3 +517,159 @@ Een voorbeeld van een prefixcode met variabele lengte is de **Huffmancode**. Om 
 
 ## Talen, grammatica's en automaten
 
+
+
+### Talen
+
+Talen worden opgebouwd aan de hand van een alfabet. Een **alfabet** $\Sigma$ is een verzameling van letters. Een **string** is een concatenatie van letters uit $\Sigma$. De lege string wordt genoteerd met een $\varepsilon$. 
+
+
+
+Stel je voor dat we beschikken over twee strings $w = abab$ en $x = ba$.
+
+* Het omgekeerde van $w$ is $w^R = baba$
+* De concatenatie van $w$ en $x$ is $wx = ababba$ 
+* $\Sigma^*$ bevat alle strings uit $\Sigma$ met eindige lengte
+  * Het alfabet van onze twee strings is $\Sigma = {a,b}$
+  * Dan is $\Sigma^* = \{\varepsilon,a,b,aa,ab,ba,bb,aaa, \dots\}$
+* $\Sigma^+$ bevat dan alls strings met eindige lengte, behalve de lege string: $\Sigma^+ = \Sigma^* \backslash \{ \varepsilon \}$
+
+
+
+Een **taal** $L$ is een deelverzameling van $\Sigma^*$ 
+
+* Bijvoorbeeld: $ L = \{ a^nb^ n \in \Sigma ^* \vert n\geq0 \}$
+
+We hebben hier ook nog enkele definities met cool wiskundige symbolen:
+
+* Disjunctie: $L_1 \cup L_2 = \{ x \in \Sigma^* \vert x \in L_1 \text{ of } x \in L_2 \}$
+  * Dit is de unie van $L_1$ en $L_2$
+* Sluiting $L^* = \{\varepsilon\} \cup L \cup LL \cup LLL\cup \dots $
+  * Een arbitrair aantal keren $L$
+* Complement $\overline{L} = \Sigma^* \backslash L$
+  * Alle strings volgens het alfabet $\Sigma$ die niet in $L$ zitten
+
+
+
+### Grammatica's
+
+Een **grammatica** is een set regels waarmee je strings binnen een bepaalde taal kan construeren. Een grammatica geeft ons een herschrijfsysteem met:
+
+* Terminale symbolen zoals $a$
+* Niet terminale symbolen zoals $<S>$
+* Herschrijfregels voor niet-terminale symbolen zoals $<S> => a$
+* Een startsymbool $<S>$
+
+We kunnen de herschrijfregels herhaaldelijk toepassen totdat we beschikken over een eindpunt dat enkel terminale symbolen bevat. Hieronder een klein voorbeeldje vanuit de slides:
+
+Neem de volgende taal: $ L = \{ a^nb^n \Sigma^* \vert n\leq0 \}$ 
+
+// TODO ik ga verder ik heb effe geen zin om dit uit te typen 
+
+
+
+
+
+### Automaten
+
+Een **automaat** is een abstract model van een digitale computer. Deze heeft geheugen en bevat een controle-eenheid die zich in één van een eindig aantal toestanden kan bevinden. Een automaat verwerkt strings. Hij zet dus een invoerstring om in een uitvoerstring.
+
+
+
+### Reguliere expressies
+
+Ik ga je de verschillende symbolen die je kan gebruiken in een reguliere expressie besparen. Als je ze nog niet kent ondertussen ben je een loser. In dat geval verwijs ik je door naar de slides. 
+
+
+
+### Reguliere automaten
+
+ **Reguliere automaten** komen overeen met reguliere expressies. We behandelen **deterministische** en **niet-deterministische** automaten.
+
+#### Deterministische automaten
+
+<img src="img/algo2/image-20221125164804982.png" alt="image-20221125164804982" style="zoom: 67%;" />
+
+Een deterministische automaat werkt over een alphabet $\Sigma$. Hij heeft een eindige verzameling van toestanden $S$ en kan zich op elk moment in één van deze toestanden bevinden. De begintoestand wordt genoteerd als $s$. De automaat bevat mogelijks ook een aantal eindtoestanden $f_0, f_1, \dots$ 
+
+Verder bestaat er ook een overgangsfunctie $p$ die een combinatie van een huidig symbool en een toestand zal omzetten in een nieuwe toestand. Zo zal je in de automaat hierboven bij het lezen van het symbool $1$ in de starttoestand, overgaan naar de eindtoestand. Een deterministische automaat werkt als volgt:
+
+* Start bij de starttoestand $s$
+* Lees één voor één de invoersymbolen, volg telkens de pijl die overeenkomt met het gelezen symbool
+* Kijk of je je in een eindtoestand bevindt. De invoerstring wordt enkel aanvaardt als de automaat zich na de inlezing in een eindtoestand bevindt.
+
+
+
+#### Niet-deterministische automaten
+
+<img src="img/algo2/image-20221125165924796.png" alt="image-20221125165924796" style="zoom:67%;" />
+
+Deterministische automaten kunnen vereenvoudigd worden tot **niet-deterministische** automaten. Deze werken op dezelfde manier. Het kenmerkende verschil zijnde de mogelijkheid om zich tezelfdertijd in meerdere toestanden te bevinden. Een niet-deterministische automaat kan dus simultaan meerdere overgangen maken.
+
+Het voordeel van deze automaten is dat het veel gemakkelijker is om ze te construeren vanuit een reguliere expressie, alsook af te leiden welke reguliere expressie ze beschrijven.
+
+
+
+#### Minimale automaten
+
+<img src="img/algo2/image-20221125170548731.png" alt="image-20221125170548731" style="zoom:67%;" />
+
+Deze automaat is een voorstelling van de reguliere expressie: $L((a|b)^*a(a|b))$, maar één of meer knopen zijn overbodig. Als we deze overbodige knopen identificeren en verwijderen, bekomen we een **minimale automaat**. 
+
+Als we twee knopen kunnen vinden die niet van elkaar te onderscheiden zijn, kunnen we ze samennemen tot één knoop:
+
+* Maak een tabel van alle koppels knopen.
+* Alle koppels die een niet-eindtoestand en een eindtoestand bevatten kunnen we al schrappen, deze verschillen sowieso van elkaar. Duid ze in je tabel aan met een ster.
+
+| $(s,q_0)$  |              |              |              |
+| ---------- | ------------ | ------------ | ------------ |
+| $(s,q_1)$  | $(q_0,q_1)$  |              |              |
+| $(s,f_0)*$ | $(q_0,f_0)*$ | $(q_1,f_0)*$ |              |
+| $(s,f_1)*$ | $(q_0,f_1)*$ | $(q_1,f_1)*$ | $(f_0,f_1)*$ |
+
+* Nu hebben we nog drie koppels over. We beschouwen $(q,q_0)$
+  * Lezen we in $s$ een $a$, komen we uit bij $q_0$. Bij een $b$ in $q_1$. 
+  * Lezen we in $q_0$ een $a$, komen we uit bij $f_0$, bij $b$ in $f_1$
+  * Ze zijn dus verschilend en we kunnen $(s,q_0)$ schrappen
+* Hetzelfde principe voor $(q_0,q_1)$, Onze tabel ziet er nu zo uit:
+
+| $(s,q_0)*$ |              |              |              |
+| ---------- | ------------ | ------------ | ------------ |
+| $(s,q_1)$  | $(q_0,q_1)*$ |              |              |
+| $(s,f_0)*$ | $(q_0,f_0)*$ | $(q_1,f_0)*$ |              |
+| $(s,f_1)*$ | $(q_0,f_1)*$ | $(q_1,f_1)*$ | $(f_0,f_1)*$ |
+
+* Nu proberen we $(s,q_1)$
+  * Lezen we in $s$ een $a$, komen we uit bij $q_0$. Bij een $b$ in $q_1$. 
+  * Lezen we in $q_1$ een $a$, komen we uit bij $q_0$. Bij een $b$ in $q_1$
+  * We kunnen geen onderscheid maken tussen deze twee toestanden en kunnen ze bijgevolg samennemen.
+
+* We nemen deze twee toestanden samen en krijgen het volgende resultaat:
+
+<img src="img/algo2/image-20221125182507143.png" alt="image-20221125182507143" style="zoom:67%;" />
+
+
+
+#### Automaat opstellen uit een regexp
+
+
+
+* Concatenatie
+  * <img src="img/algo2/image-20221125184117780.png" alt="image-20221125184117780" style="zoom:50%;" /> 
+* Herhaling
+  * <img src="img/algo2/image-20221125184134544.png" alt="image-20221125184134544" style="zoom:50%;" /> 
+* Of
+  * <img src="img/algo2/image-20221125184156509.png" alt="image-20221125184156509" style="zoom:50%;" /> 
+  * Je kan ook de $\varepsilon$-overgangen skippen en gewoon twee parallelle overgangen schrijven
+
+
+
+### Chomsky hiërarchie
+
+Ik weet niet wat dit is, maar ik zet het erbij for future reference.
+
+1. Regulier 
+2. Context-vrij
+3. Context-gevoelig
+4. Recursief 
+5. Recursief opsombaar
