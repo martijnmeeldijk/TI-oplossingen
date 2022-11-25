@@ -342,3 +342,178 @@ Een **vergrotend K-alternerend pad** is hetzelfde, maar de begin- en eindknoop v
 
 ### Toewijzingen
 
+Een **tweedelige graaf** is een graaf waarvan je de knopenverzameling in twee verzamelingen $V_1$ en $V_2$ kan verdelen op zodanige wijze dat elke tak een knoop van $V_1$ met $V_2$ verbindt. De afbeelding maakt het iets duidelijker. De nummertjes en lettertje zijn niet echt van belang, maar dit is het mooiste plaatje dat ik vond op google. (want onze prof zet om de één of andere vage reden zijn slides niet online)
+
+<img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/Simple_bipartite_graph%3B_two_layers.svg/1200px-Simple_bipartite_graph%3B_two_layers.svg.png" alt="Bipartite graph - Wikipedia" style="zoom:33%;" />
+
+Een koppeling in een tweedelige graaf noemt men een **toewijzing**. Dit wordt iets duidelijker als de de twee delen van de graaf ziet als objecten. Zo kunnen in de graaf hierboven de rode knopen werknemers voorstellen, en de blauwe pisbakken. Nu kunnen we pisbakken toewijzen aan elke werknemer.
+
+In het geval van zo'n graaf is het makkelijker om een vergrotend K-alternerend pad te vinden. Dit doe je zo:
+
+* Neem een niet-gekoppelde knoop $v$
+* Construeer vanuit $v$ een boom met alle K-alternerende paden vanuit deze knoop
+  * Dit kan met BFS of DFS
+  * Je mag stoppen wanneer je een niet-gekoppelde knoop verschillend van je startknoop tegenkomt. Of als je je boom niet meer kan uitbreiden en dus alle uiteinden gekoppelde knopen zijn.
+* Als je resulterende boom een uiteinde bevat dat niet gekoppeld is, hebben we een vergrotend K-alternerend pad gevonden. Is dit niet het geval, dan bestaat er geen vergrotend K-alternerend pad met $v$ als eindknoop.
+* Herhaal deze procedure voor alle niet-gekoppelde knopen. Als we geen vergrotende K-alternerende paden vinden, dan weten we dat we al over een maximumkoppeling beschikken.
+
+
+
+# Grafen deel 2
+
+## Verband tussen 4 boom-constructie algoritmen
+
+Dit deel van het boek is echt waardeloos.
+
+
+
+
+
+# Strings
+
+## Gegevensstructuren voor Strings
+
+
+
+### Digitale zoekbomen
+
+<img src="img/algo2/image-20221121151127248.png" alt="image-20221121151127248" style="zoom:50%;" />
+
+Een **digitale zoekboom** is een gegevensstructuur die je kan gebruiken om sleutels op te slaan. Hier zijn sleutels dan strings van sleutelelementen (bv. een bitstring) en komen altijd uit een eindig alfabet. De **sleutels** bevinden zich in de **knopen**.
+
+| <img src="img/algo2/image-20221121152141740.png" alt="image-20221121152141740" style="zoom: 67%;" /> | <img src="img/algo2/image-20221121152159448.png" alt="image-20221121152159448" style="zoom:50%;" /> |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+
+Het voorbeeld hierboven maakt het wat duidelijker. Als eerste wordt `A` toegevoegd en komt dus in de wortelknoop. Wanneer we `S` toevoegen, wordt de 0-de bit van `S` beschouwd, deze is 1 en we moeten dus naar rechts. Daar was (toen) nog een vrije plaats, dus hebben we `S` daar neergezet. Hetzelfde voor `E`, maar dan naar links. Je moet dus in elke stap de plek in de sleutel beschouwen die overeenkomt met hoe diep je in de boom zit, en dan ook elke keer kijken of die sleutel overeenkomt met de sleutel van de knoop waar je je bevindt. 
+
+
+
+### Binaire tries
+
+<img src="img/algo2/image-20221121154349752.png" alt="image-20221121154349752" style="zoom:50%;" />
+
+Het verschil tussen een **binaire trie** en een digitale zoekboom is dat bij een binaire trie de **sleutels** enkel worden opgeslagen **in de bladeren**. Omdat er in de tussenliggende knopen geen sleutels zitten, moet je in totaal minder sleutelvergelijkingen doen.
+
+Het basisprincipe lijkt op dat van digitale zoekbomen, bij 0 ga je naar links, en bij 1 naar rechts. Je sleutel is **gevonden** als je in een **bladknoop** komt. Als je vast komt te zitten, zit de sleutel niet in de trie.
+
+<img src="img/algo2/image-20221121154654860.png" alt="image-20221121154654860" style="zoom:50%; float:left"  /><img src="img/algo2/image-20221121154847929.png" alt="image-20221121154847929" style="zoom:50%; float:right;" />
+
+Je kan deze gegevensstructuur lichtelijk optimaliseren door overbodige tussenliggende knopen weg te knippen, en enkel een nieuwe splitsing toe te voegen als dit echt nodig is. Dit zie je in de bovenstaande plaatjes. Dit spaart geheugenruimte, maar maakt toevoegen en verwijderen wat complexer. 
+
+
+
+### Patriciatries
+
+<img src="img/algo2/image-20221121155520419.png" alt="image-20221121155520419" style="zoom:50%;" />
+
+**Patriciatries** trachten de hierboven aangekaarte problemen te verhelpen. Blijkbaar staat Patricia voor 'Practical Algorithm to Retrieve Information Coded in Alphanumeric'. Cool.
+
+* Elke knoop heeft een getal dat aangeeft met welke bit er vergeleken wordt. Deze index mag naarmate je dieper in de boom gaat nooit kleiner worden.
+* Pointers kunnen naar boven wijzen. 
+  * Tijdens het zoeken doen we geen sleutelvergelijkingen, pas als een pointer naar boven wordt gevolgd, vergelijken we de te zoeken sleutel met een knoop.
+
+De boom hierboven is het resultaat van het toevoegen van de volgende sleutels:
+
+<img src="img/algo2/image-20221121161342988.png" alt="image-20221121161342988" style="zoom: 67%;" />
+
+Zoals je ziet, is er bijvoorbeeld bij `R` een pointer naar boven. Als de 0de bit 1 is en de 4de ook, is de enige optie `S`. Ik snap wel hoe dit werkt, maar niet hoe je deze boom algoritmisch zou moeten construeren. De slides schieten mij hier tekort. //TODO
+
+
+
+### Meerwegstries
+
+<img src="img/algo2/image-20221121161906001.png" alt="image-20221121161906001" style="zoom:50%;" />
+
+Een **meerwegstrie** is een uitbreiding van een gewone trie. Er zijn gewoon meer keuzes per niveau. Dit kan handig zijn, maar je moet wel op een paar dingen letten:
+
+* Als je knopen veel nullpointers bevatten, kan je een gelinkte lijst gebruiken om de kinderen in bij te houden.
+* Als we te veel interne knopen hebben, kunnen we symbolen van het alfabet samennemen.
+
+
+
+### Ternaire zoekbomen
+
+<img src="img/algo2/image-20221121162227371.png" alt="image-20221121162227371" style="zoom:50%;" />
+
+Bij een **ternaire zoekboom** heeft elke knoop drie deelbomen. Deze splitsen de zoekruimte op in kleiner, gelijk aan of groter dan de voordien bezochte knoop. 
+
+* Belangrijk om te weten is dat als je verder gaat in de **linkse of rechtse** deelboom, je opnieuw **hetzelfde element** van de sleutel gebruikt. 
+* Ga je verder in de **middelste** deelboom, gebruik je het **volgende** **element** van de sleutel. 
+
+
+
+
+
+## Codes
+
+Een **code** is een manier om data op te slaan in een bepaald formaat. Een voorbeeld van een code is ASCII. Er zijn verschillende soorten codes:
+
+* Variabele lengte code
+  * Niet elke letter krijgt evenveel bits
+  * Dit maakt willekeurige toegang moeilijk
+* Prefixcode
+  * Geen enkel codewoord is de prefix van een ander codewoord
+* Universele code
+  * Kan je gebruiken, onafhankelijk van de brontekst die je wilt coderen
+
+We gaan wat verder in op universele codes.
+
+
+
+### Elias' Gammacode 
+
+<img src="img/algo2/image-20221121163607074.png" alt="image-20221121163607074" style="zoom:50%;" />
+
+De Elias' $\Gamma$-code wordt volgens Wikipedia gebruikt om getallen te coderen waarvan de bovengrens onbekend is. Door een bepaald aantal 0-bits toe te voegen aan de binaire codering van een getal, kan je weten hoeveel bits je nog moet lezen om het getal correct te lezen.
+
+Ik vind het niet goed uitgelegd in de slides. Het aantal nullen vooraan stellen eigenlijk gewoon de grootte-orde van het te lezen getal voor met een macht van 2. Als je 3 nullen leest, is de 1 die erop volgt gelijk aan $2^3$. 
+
+Om te coderen zet je dus gewoon bij een getal van $n$ bits, $n-1$ nullen vooraan.
+
+
+
+### Elias' Deltacode
+
+<img src="img/algo2/image-20221121164634223.png" alt="image-20221121164634223" style="zoom:50%;" />
+
+De Elias' $\Delta$-code steunt eigenlijk verder op het vorige. 
+
+* Neem de binaire representatie van je getal
+* Het eerste getal is altijd een 1, deze kan je weglaten
+* In plaats van de $n-1$ nullen vooraan te zetten, zet je nu de voorstelling van het getal $n-1$ in gammacode voor je getal
+  * Dit is gewoon een kortere manier om $n$ aan te geven
+
+Dan neem je uiteindelijk een klein beetje minder plaats in. 
+
+
+
+### Fibonnaci-code
+
+<img src="img/algo2/image-20221121165125574.png" alt="image-20221121165125574" style="zoom:50%;" />
+
+We kunnen elk natuurlijk getal voorstellen als een som van niet-opeenvolgende fibonaccigetallen. De i-de bit in de codering komt dan overeen met het i-de fibonaccigetal. Dit is vrij simpel als je kijkt naar een voorbeeld:
+
+* $0*1+0*2+1*3+0*5+1*8+0*13+0*21+1*34=45$
+
+Op het einde wordt telkens een 1 toegevoegd, want we hebben nooit twee opeenvolgende fibonnacigetallen nodig, dus weten we dat je code hier stopt.
+
+
+
+### Huffmancode
+
+Een voorbeeld van een prefixcode met variabele lengte is de **Huffmancode**. Om een bericht met deze code te encoderen moeten we de volgende stappen ondernemen:
+
+* //TODO
+
+
+
+### Compressie
+
+
+
+### Huffman
+
+
+
+## Talen, grammatica's en automaten
+
