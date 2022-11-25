@@ -673,3 +673,43 @@ Ik weet niet wat dit is, maar ik zet het erbij for future reference.
 3. Context-gevoelig
 4. Recursief 
 5. Recursief opsombaar
+
+
+
+
+
+# Labo
+
+
+
+## Graaf
+
+Wat nuttige dingen bij het gebruik van de graafklassen:
+
+```c++
+for(const auto&[buur_nr,tak_nr]: graaf[knoop_nr]){
+    cout << knoop_nr << " is met " << buur_nr << " verbonden via tak " << tak_nr << endl;
+}
+```
+
+
+
+De functies `geefKnoopData()` en `geefTakData()` geven een pointer terug naar de data in een knoop of tak.
+
+
+
+## Fietsknooppunten
+
+Ik heb het labo uitgebreid met een functie voor DFS, deze wordt ook getoond op de kaart. (ja ik heb met die webserver zitten klooien, en ja ik ben een neurt)
+
+https://github.ugent.be/mmeeldij/Fietsknooppunten/tree/master
+
+
+
+## Regex
+
+Voor de trouwe lezers heb ik ook een oefening gemaakt.
+
+https://github.ugent.be/mmeeldij/Regexps/tree/master
+
+Hier moet je zelf het minimaliseren van een deterministische automaat implementeren. Ik heb zelfs tests geschreven voor jullie. Je kan de oplossing bekijken op de 'oplossing' branch. Geniet ervan. Als dit op het examen komt moeten jullie mij allemaal een pint. 
