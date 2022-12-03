@@ -189,3 +189,13 @@ ssh -p 8888 student@localhost
 * Het bovenste moet je doen op de gateway
 * Het tweede doet remote port-forwarding
   * Al het verkeer dat wordt gestuurd naar een bepaalde poort van de remote server, wordt doorgestuurd over de ssh tunnel naar de lokale server, waarna het doorgestuurd wordt naar het IP adres dat we aangeven.
+
+
+
+
+
+## SSL
+
+Voorziet security bovenop de transportlaag, poort 443
+
+X.509 certificaten
