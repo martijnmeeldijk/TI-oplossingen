@@ -276,6 +276,53 @@ BM-CLA has the best accuracy, and a lower bandwidth requirement. Both methods ar
 
 ## Estimation of microphone clusters in acoustic sensor networks using unsupervised federated learning
 
+**Introduction**
+
+This paper proposes a way to use federated learning to estimate source-dominated microphone clusters, exchanging minimal data between nodes.  The model is optimized for training on scarce data.
+
+The transmission of data-rich signal representations over a potentially unsafe network poses serious privacy risks. This technique  should be a solution for this problem. The previously mentioned methods fall short in this category.
+
+
+
+**Federated learning**
+
+This is a machine learning technique that that trains a model distributed over multiple decentralized devices. Data is not shared between nodes. Instead, a three step process is followed.
+
+
+
+1. The clients synchronize with the server by downloading the latest model parameters
+   * This is a column vector $\theta^\tau$
+2. Each client independently improves its own parameters $\theta^\tau_i$ with stochastic gradient descent on their own data
+3. Each client uploads its model parameter updates $\Delta\theta^\tau_i$ to the server, where they are aggregated.
+
+$$
+\theta^{\tau+1} = \sum_{i=1}^M \frac{\lvert D_i \rvert}{\lvert D \rvert} \Delta\theta^\tau_i
+$$
+
+* $M$: number of clients
+* $\lvert D_i \rvert$ the cardinality of the dataset of the $i$-th client
+* $\lvert D \rvert$: the cardinality of the total dataset
+
+So the new model parameters are a weighted sum of the each of the updated parameters from the clients.
+
+
+
+**Clustered federated learning**
+
+The problem with the previously mentioned approach is that it doesn't work if the different clients' data comes from different (incongruent) distributions.
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
