@@ -1,0 +1,26 @@
+% Define theme options
+\newcommand\beamer@languagevalue{nl}
+\DeclareOptionBeamer{language}{\renewcommand\beamer@languagevalue{#1}}
+
+\newif\ifbeamer@faculty\beamer@facultyfalse
+\newcommand\beamer@facultyvalue{}
+\DeclareOptionBeamer{faculty}{\beamer@facultytrue\renewcommand\beamer@facultyvalue{#1}}
+
+\newif\ifbeamer@usefacultycolors\beamer@usefacultycolorsfalse
+\DeclareOptionBeamer{usecolors}{\beamer@usefacultycolorstrue}
+
+\newif\ifbeamer@noframenumber\beamer@noframenumberfalse
+\DeclareOptionBeamer{noframenumber}{\beamer@noframenumbertrue}
+
+\ProcessOptionsBeamer
+
+% Theme configuration
+\mode<presentation>
+
+% Load different theme settings
+\useinnertheme{ugent}
+\useoutertheme{ugent}
+\usecolortheme{ugent}
+\usefonttheme{ugent}
+
+\mode<all>

@@ -1,0 +1,16 @@
+% Frame number
+\setbeamertemplate{footline}{%
+    \ifinlogoframe\else%
+    \ifintitleframe\else%
+    \ifinsectionframe\else%
+        \hfill
+        \begin{beamercolorbox}[wd=1.5cm,right,ht=1cm]{page number in head/foot}
+            \usebeamerfont{page number in head/foot}%
+            \usebeamercolor[fg]{page number in head/foot}%
+            \ifbeamer@noframenumber\else%
+                \hfill\insertpagenumber\,/\,\insertpresentationendpage\kern1em\vspace*{4mm}%
+            \fi
+        \end{beamercolorbox}
+  \fi\fi\fi%
+}
+

@@ -11,11 +11,10 @@
 * Extra papers
 
 - [x] 2D Acoustic Source Localisation Using Decentralised Deep Neural Networks on Distributed Microphone Arrays
-- [ ] A Coherence-based Clustering Method for Multichannel Speech Enhancement in Wireless Acoustic Sensor Networks
+- [x] A Coherence-based Clustering Method for Multichannel Speech Enhancement in Wireless Acoustic Sensor Networks
 - [ ] ESTIMATION OF MICROPHONE CLUSTERS IN ACOUSTIC SENSOR NETWORKS USING UNSUPERVISED FEDERATED LEARNING
 - [ ] Exploiting Temporal Context in CNN Based Multisource DOA Estimation
 - [ ] Unsupervised Clustered Federated Learning in Complex Multi-source Acoustic Environments
-- [ ] Neural_Networks_Using_Full-Band_and_Subband_Spatial_Features_for_Mask_Based_Source_Separation (cant open this file)
 
 * Under review
 
@@ -109,7 +108,12 @@ This paper proposes to cluster microphones in an ad-hoc microphone array by sour
 
 Instead of hard clustering the microphones. We'll use fuzzy clustering. This means that each microphone won't be perfectly in one cluster, but rather get a Fuzzy Membership Value (FMV) that indicates how much a microphone belongs in a certain cluster. The microphone is then assigned to the cluster for which it has the highest FMV.
 
+$$
+J_m(\Delta, \bold u) = \sum_{d=1}^D \sum_{n=1}^N (\mu_{nd})^{\alpha} \vert \vert \bold v_d - \bold u_n \vert \vert ^2_{\beta}
+$$
+![image-20221206164344088](img/clustering/image-20221206164344088.png)
 
+![image-20221206164353715](img/clustering/image-20221206164353715.png)
 
 **Evaluation**
 
@@ -155,6 +159,19 @@ In each cluster, a reference microphone is selected. Subsequently, a correlation
 
 As I understand it, this mask just indicates in which microphone the source signal is dominant.
 
+//TODO
+
+
+$$
+\mathscr{M}_n(k,b) = \begin{cases} 
+1 \quad \vert X_{R_n}(k-b)\vert > \frac 1 B \sum \vert X_{R_j}(k,b)\vert, \\\ 
+\quad \quad j = 1, \dots ,N \text{ and } j \neq n
+
+\\
+0 \quad \text{otherwise}
+
+\end{cases}
+$$
 Q: Is this correct?
 
 Q: What is $B$ in the mask?
@@ -188,8 +205,18 @@ This mask is then applied to the the signal, which was already processed by the 
 
 This yields a final source signal estimate. 
 
+![image-20221206181002091](img/clustering/image-20221206181002091.png)
+$$
+\mathscr{M}_n(k,b) = \begin{cases} 
+1 \quad \vert \hat S_{n, \text{FMVA-DSB}}(k,b)\vert
+> \frac 1 B \sum \vert \hat S_{j, \text{FMVA-DSB}}(k,b)\vert, \\\ 
+\quad \quad j = 1, \dots ,N \text{ and } j \neq n
 
+\\
+0 \quad \text{otherwise}
 
+\end{cases}
+$$
 The image below shows a schematic of the full algorithm.
 
 <img src="img/clustering/image-20221130173959370.png" alt="image-20221130173959370" style="zoom: 67%;" />
@@ -309,21 +336,164 @@ So the new model parameters are a weighted sum of the each of the updated parame
 
 **Clustered federated learning**
 
-The problem with the previously mentioned approach is that it doesn't work if the different clients' data comes from different (incongruent) distributions.
+The problem with the previously mentioned approach is that it doesn't work if the different clients' data comes from different (incongruent) distributions. So there is no single set of parameter updates that can optimally minimize the loss of all clients at the same time. 
+
+To help with this, the clients with similar distributions are clustered. A separate server model is then trained for each cluster.
+
+
+
+**Unsupervised clustered federated learning**
+
+
+
+$$
+a_{i,j} = \frac{ \langle \Delta  \theta _i, \Delta  \theta _j \rangle}{ \vert\vert \Delta  \theta _i, \Delta  \theta _j \vert\vert}
+$$
+
+* $\langle \cdot \rangle$ denotes the inner product
+* $\lvert \lvert \cdot \rvert \rvert$ denotes the $L_2$ norm
+
+![image-20221206192958190](img/clustering/image-20221206192958190.png)
+$$
+\max_{\forall i \in c_1, k\in c_2}(a_{i,k}) < 
+\min(\min_{\forall i,j \in c_1}(a_{i,j}), \min_{\forall k,l \in c_2}(a_{i,j}))
+$$
 
 
 
 
+![image-20221206193005722](img/clustering/image-20221206193005722.png)
+$$
+\Delta \overline \theta_c = \lVert \frac 1 {\lvert c \rvert} \sum_{i\in c} \pmb \Delta \pmb \theta_i  \rVert
+\text{ and }
+\Delta \hat \theta_c = \max_{i \in c}(\lVert \Delta \pmb \theta_i \rVert)
+$$
+
+
+## A Coherence-based Clustering Method for Multichannel Speech Enhancement in Wireless Acoustic Sensor Networks
+
+This paper proposes a way to cluster nodes in a WASN based on the estimation of the magnitude-squared cohesion between microphones observations. This measures the degree of their linear dependency by analysing similar frequency components, after which a non-negative matrix factorization (NMF) based approach is developed to find the optimal clustering.
+
+This method should allow to perform clustering dynamically with a very low computational burden. 
 
 
 
+**Signal model**
+
+The signal is clean speech plus interference:
+$$
+x_m(t) = s_m(t) + v_m(t) \\
+$$
+Collecting a frame of observation samples in vector form, the signal model can be rewritten as: 
+$$
+\begin{align} 
+\bold x_m(t) &= [x_m(t)x_m(t − 1). . . x_m(t − T + 1)]T \\ 
+&= \bold s_m(t) + \bold v_m(t)
+
+\end{align}
+$$
+
+* $T$ frame size
+
+  
+
+**Clustering**
+
+The proposed clustering algorithm works in two steps:
+
+1. Compute the magnitude squared coherence between the microphone observations to measure their degree of linear dependency
+2. Apply NMF to the output of the previous step to find the optimal clustering
 
 
 
+**Magnitude squared coherence**
+
+We can measure the coherence between two signals $x(t)$ and $y(t)$ by computing the FFT of the signals. Then, we measure the coherence as a function of the center frequency of the filter.
+$$
+\Gamma_{xy}(f) = \frac{\lvert S_{xy}(f)\rvert ^2}{S_{xx}(f)S_{yy}(f)}
+$$
+$S_{xy}(f)$ is the cross-spectral density, which is really a spectral correlation density. This tells how the two signals are correlated in the time domain at a certain frequency and can be computed as:
+$$
+S_{xy}(f) = \sum_{k=1-T}^{T-1} R_{xy}(k)e^{-i2\pi fk}
+$$
+$R_{xy}(k)$ is the cross-correlation function between $x(t)$ and $y(t)$ and can be estimated by:
+$$
+R_{xy}(k) = 
+\begin{cases}
+\frac 1T \sum_0^{T-1-k} x(t)y(t+k)  &k=0,\dots,T-1 \\
+R_{xy}(-k)  &k=-(T-1),\dots,-1 \\
+
+\end{cases}
+$$
+Now we'll make a matrix consisting of all the correlations between the different microphone signals. We'd like to give the same weight to all frequency bins, regardless of their power. So we'll use the following coherence metric:
+$$
+C_{xy} = \frac{\sum_{f=0}^{F} \Gamma_{xy}(f)}{F}
+$$
+
+* $F$: is the amount of frequency bins.
+
+This can be organized in a matrix:
+$$
+C=
+\begin{bmatrix}
+1 & \cdots & \cdots & C_{1M} \\
+C_{12} & 1 & \cdots &\vdots \\
+\vdots& \vdots& \ddots &\vdots \\
+C_{1M} & C_{2M} & \cdots & 1
+\end{bmatrix}
+$$
+Note that all the values in this matrix are non negative, due to the cross-correlation function that was used.
 
 
 
+**NMF-based model for clustering coherence observations**
 
+Every value $C_{ij}$ contains the degree of correlation between the $i$-th and $j$-th observation. This means that microphones close to a certain source will be correlated. The matrix $C$ can be modelled as:
+$$
+C = BB^T \odot (1-I) + 1
+$$
+
+* $B \in \mathbb{R}^{M \times K}$ is the cluster matrix, where $K$ is the amount of speakers (the amount of clusters)
+  * Because $C$ is symmetric, we model it as $BB^T$
+* Where $\odot$ is the element-wise product
+* $I$ is the identity matrix 
+* $1$ is the all-ones matrix
+  * These two are introduced because the main diagonal of $C$ does not provide any relevant information in the learning process of $B$
+
+
+
+Based on Euclidian divergence, $B$ is estimated with multiplicative update rules. It is first initialized with random values in the algorithm:
+$$
+B \leftarrow B \odot \frac{(C \odot (1-I))B}{(BB^T \odot (1-I))B}
+$$
+
+* With element-wise division
+
+Now each column of $B$ contains the contribution of a microphone to each cluster. We can obtain the clustering result with:
+$$
+\gamma_m = \{
+j \in [1,K] : B_{mj} \geq B_{mk}, \forall k \in [1,K]
+\}
+$$
+This is simply the largest value of that column.
+
+
+
+**Results**
+
+Confusion matrices for simulations with 3 clusters and 50 microphones. For reverberation time $T_{60} = 200 \space ms$  and $T_{60} =  400 \space ms$.
+
+<img src="img/clustering/image-20221206121717073.png" alt="image-20221206121717073" style="zoom:67%;" />
+
+<img src="img/clustering/image-20221206121759388.png" alt="image-20221206121759388" style="zoom:67%;" />
+
+The variance ratio criterion (VRC) is used to obtain the optimal number of clusters, which is the same as the amount of speakers. This model seems robust against reverberation. According to the authors, this method outperforms the method based on k-means and AR models. This model works better, the more microphones are introduced, because more spatial information is captured, making it easier to discriminate coherence patterns.
+
+
+
+**Conclusion**
+
+This method allows to perform clustering without any prior knowledge of the speakers or the acoustic scene. And showed improved clustering performance in comparison to other methods.
 
 
 

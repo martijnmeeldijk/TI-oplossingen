@@ -1,0 +1,186 @@
+% Required package 
+\RequirePackage{tikz}
+
+% Introduce new conditional for title page(s)
+\newif\ifintitleframe
+\intitleframefalse
+
+% Introduce new conditional for section pages
+\newif\ifinsectionframe
+\insectionframefalse % Set to false
+
+% Introduce new conditional for section pages
+\newif\ifinlogoframe
+\inlogoframefalse % Set to false
+
+% Create \titleframe macro that sets flag
+% before creating a new title page
+\newcommand{\titleframe}{
+  \intitleframetrue
+  \frame{\titlepage}
+  \intitleframefalse
+}
+
+% Create logoframe macro that sets flag
+% before creating a new logo page
+\newcommand{\logoframe}{
+    \inlogoframetrue
+    \frame{
+        \begin{tikzpicture}
+            \useasboundingbox (0,0) rectangle(\the\paperwidth,\the\paperheight);
+            \node[anchor=north west,inner sep=0mm] at (.185*\the\paperwidth,.765*\the\paperheight) {\includegraphics[height=.55\textheight]{ugent-\beamer@languagevalue.png}};
+        \end{tikzpicture}
+    }
+    \inlogoframefalse
+}
+
+% Create \sectionframe macro that sets flag
+% before creating a new section page
+\newcommand{\sectionframe}{
+  \insectionframetrue
+  \frame{\sectionpage}
+  \insectionframefalse
+}
+
+% Define background
+\setbeamertemplate{background}{
+    \begin{tikzpicture}[node distance=5mm]
+    \useasboundingbox (0,0) rectangle(\the\paperwidth,\the\paperheight);
+    \fill[ugentwhite,opacity=1] (0,0) rectangle(\the\paperwidth,\the\paperheight);
+    \ifintitleframe
+        \ifbeamer@faculty
+            \fill[color=ugentblue] (.05*\the\paperwidth,.2*\the\paperheight) rectangle (\the\paperwidth,.85*\the\paperheight);
+            \node[anchor=north west,inner sep=0mm] at (.05*\the\paperwidth,.95*\the\paperheight) {\includegraphics[height=.075\textheight]{\beamer@facultyvalue-\beamer@languagevalue.png}};
+        \else
+            \fill[color=ugentblue] (.05*\the\paperwidth,.2*\the\paperheight) rectangle (\the\paperwidth,\the\paperheight);
+        \fi
+        \node[anchor=south west,inner sep=0mm] (ugent) at (.05*\the\paperwidth,.025*\the\paperheight) {\includegraphics[height=.15\textheight]{ugent-\beamer@languagevalue.png}};
+    \else\ifinsectionframe
+        \fill[color=ugentblue] (.05*\the\paperwidth,.2*\the\paperheight) rectangle (\the\paperwidth,\the\paperheight);
+        \node[anchor=south west,inner sep=0mm] at (.05*\the\paperwidth,.025*\the\paperheight) {\includegraphics[height=.15\textheight]{ugent-\beamer@languagevalue.png}};
+    \fi\fi
+    \end{tikzpicture}
+}
+
+% Section page 
+\defbeamertemplate*{section page}{ugent}[1][]{% 
+    \vskip-.6cm
+%\fbox{
+    \begin{minipage}[t][.7\textheight][b]{\textwidth}
+        \hspace*{.025\textwidth}{\usebeamerfont{title}\usebeamercolor[fg]{title}\insertsectionhead}
+    \end{minipage}
+%}
+}
+
+% Title page
+\defbeamertemplate*{title page}{ugent}[1][]{% 
+    \ifbeamer@faculty
+        \vskip.6cm
+    \else
+        \vskip-.75cm
+    \fi
+%\fbox{
+    \hspace*{.02\textwidth}
+    \begin{minipage}[t][.1\textheight][t]{.98\textwidth}
+        {\usebeamerfont{date}\usebeamercolor[fg]{date}\insertdate}
+    \end{minipage}
+%}
+%\fbox{
+   \ifbeamer@faculty
+        \hspace*{.02\textwidth}
+        \begin{minipage}[t][.425\textheight][b]{.98\textwidth}
+            \ifx\insertsubtitle\@empty%
+                {\usebeamerfont{title}\usebeamercolor[fg]{title}\inserttitle}
+            \else%
+                {\usebeamerfont{title}\usebeamercolor[fg]{title}\inserttitle}\\[.25cm]
+                {\usebeamerfont{subtitle}\usebeamercolor[fg]{subtitle}\insertsubtitle}
+            \fi
+        \end{minipage}
+   \else
+        \hspace*{.02\textwidth}
+        \begin{minipage}[t][.6\textheight][b]{.98\textwidth}
+            \ifx\insertsubtitle\@empty%
+                {\usebeamerfont{title}\usebeamercolor[fg]{title}\inserttitle}
+            \else%
+                {\usebeamerfont{title}\usebeamercolor[fg]{title}\inserttitle}\\[.25cm]
+                {\usebeamerfont{subtitle}\usebeamercolor[fg]{subtitle}\insertsubtitle}
+            \fi
+        \end{minipage}
+   \fi
+%}
+%\fbox{
+    \hspace*{.02\textwidth}
+    \begin{minipage}[t][.1\textheight][b]{.98\textwidth}
+        {\usebeamerfont{author}\usebeamercolor[fg]{author}\insertauthor}
+    \end{minipage}
+%}
+}
+
+% Margins
+\setbeamersize{text margin left=.05\paperwidth}
+
+% Frame title
+\setbeamertemplate{frametitle}{%
+    \begin{beamercolorbox}[wd=\paperwidth,leftskip=.05\paperwidth]{frametitle}
+    \vskip.1cm
+    \ifx\insertframesubtitle\@empty%
+        {\usebeamerfont{frametitle}\usebeamercolor[fg]{frametitle}\insertframetitle}%
+    \else%
+        {\usebeamerfont{frametitle}\usebeamercolor[fg]{frametitle}\insertframetitle}\\[-.25cm]
+        {\usebeamerfont{framesubtitle}\usebeamercolor[fg]{framesubtitle}\insertframesubtitle}%
+    \fi
+    \end{beamercolorbox}
+}
+
+% TOC template
+\setbeamertemplate{section in toc}[square]
+\setbeamertemplate{subsection in toc}[square]
+
+% Remove naviation symbols
+\setbeamertemplate{navigation symbols}{}
+
+% Define item symbol
+\setbeamertemplate{items}[square]
+
+% Fix bug in older TeX versions (e.g. 2015)
+% Without this the 'Redefine block environment' code below gives errors
+\makeatletter
+\long\def\beamer@newenvnoopt#1#2#3#4{%
+  \expandafter\renewcommand\expandafter<\expandafter>\csname#1\endcsname[#2]{#3}%<- here
+  \expandafter\long\expandafter\def\csname end#1\endcsname{#4}%
+}
+\long\def\beamer@newenvopt#1#2[#3]#4#5{%
+  \expandafter\renewcommand\expandafter<\expandafter>\csname#1\endcsname[#2][#3]{#4}%<- here
+  \expandafter\long\expandafter\def\csname end#1\endcsname{#5}%
+}
+\makeatother
+
+% Redefine block environment
+\renewenvironment<>{block}[2][.975\textwidth]{
+     \begin{center}
+       \begin{minipage}{#1}
+         \setlength{\textwidth}{#1}
+           \begin{actionenv}#3
+             \def\insertblocktitle{#2}
+             \par
+             \usebeamertemplate{block begin}}
+   {\par
+       \usebeamertemplate{block end}
+     \end{actionenv}
+   \end{minipage}
+\end{center}}
+
+% Redefine alertblock environment
+\renewenvironment<>{alertblock}[2][.975\textwidth]{
+     \begin{center}
+       \begin{minipage}{#1}
+         \setlength{\textwidth}{#1}
+           \begin{actionenv}#3
+             \def\insertblocktitle{#2}
+             \par
+             \usebeamertemplate{block alerted begin}}
+   {\par
+       \usebeamertemplate{block alerted end}
+     \end{actionenv}
+   \end{minipage}
+\end{center}}

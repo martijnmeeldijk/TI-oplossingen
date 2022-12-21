@@ -1,0 +1,39 @@
+\mode<presentation>
+
+% Load the colors.tex file containing UGent colors
+\input{colors}
+
+% Define usage of colors
+\setbeamercolor{structure}           {fg = ugentblue}%
+\setbeamercolor{normal text}         {fg = ugentblack}%
+\setbeamercolor{frametitle}          {fg = ugentblue}%
+\setbeamercolor{framesubtitle}       {fg = ugentblue}%
+\setbeamercolor{frame number in foot}{fg = ugentblue}%
+\setbeamercolor{subtitle}            {fg = ugentwhite}%
+\setbeamercolor{title}               {fg = ugentwhite}%
+\setbeamercolor{title page header}   {fg = ugentwhite,bg = ugentwhite}%
+\setbeamercolor{author}              {fg = ugentyellow,bg = ugentblue}%
+\setbeamercolor{date}                {fg = ugentwhite,bg = ugentblue}%
+
+\setbeamercolor{item}                {fg=ugentblue}
+\setbeamercolor{section in toc}      {fg=ugentblue}
+\setbeamercolor{subsection in toc}   {fg=ugentblue}
+\setbeamercolor{block title}         {fg=ugentwhite,bg=ugentblue}
+\setbeamercolor{block body}          {fg=ugentblack,bg=ugentblue!15}
+\setbeamercolor{page number in head/foot}{fg=ugentblue}
+
+% The alert color depends on the faculty
+\ifbeamer@faculty
+    \ifbeamer@usefacultycolors
+        \colorlet{ugent-alert}{ugent-\beamer@facultyvalue}
+    \else
+        \colorlet{ugent-alert}{ugentyellow}
+    \fi
+\else
+    \colorlet{ugent-alert}{ugentyellow}
+\fi
+
+\setbeamercolor{alerted text}        {fg=ugent-alert}
+\setbeamercolor{block title alerted} {fg=ugentwhite,bg=ugent-alert}
+\setbeamercolor{block body alerted}  {fg=ugentblack,bg=ugent-alert!20!white}
+\mode<all>
