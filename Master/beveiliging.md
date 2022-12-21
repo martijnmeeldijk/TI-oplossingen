@@ -313,13 +313,145 @@ Volgens de slides is CBC ook bruikbaar voor authenticatie.
 
 #### CFB: Cipher Feedback
 
-
+//TODO
 
 #### OFB: Output Feedback
 
 
 
 #### CTR: Counter
+
+
+
+## Asymmetric encryption algorithms
+
+Bij symmetrische encryptie maken beide partijen gebruik van een geheime sleutel, maar hoe kunnen zij nu deze sleutel met elkaar delen op een onveilig netwerk? Hier komt public key encryption met de oplossing. Elke gebruiker krijgt twee sleutels:
+
+* Een public key: deze is gekend door iedereen
+* Een private key: alleen voor de gebruiker en mag nooit gedeeld worden
+
+Public key cyptografie kan gebruikt worden voor confidentialiteit en authenticatie:
+
+| Confidentialiteit                                            | Authenticatie                                                |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| ![image-20221221174956170](img/beveiliging/image-20221221174956170.png) | <img src="img/beveiliging/image-20221221175008318.png" alt="image-20221221175008318" style="zoom: 50%;" /> |
+| Alice versleutelt het bericht naar Bob met zijn public key, zodat alleen hij het kan lezen. Hiervoor gebruikt hij zijn eigen private key. | Alleen Alice kent haar private key. Als Alice nu een bericht stuurt naar Bob dat ze encrypteert met haar private key, weet Bob dat het bericht van Alice komt als hij het kan decrypteren met haar public key. |
+
+Nu is het dus niet meer nodig om een geheime sleutel uit te wisselen. De sleutels zijn bij deze techniek een heel stuk langer, de performantie is ook een stuk slechter. Een ideale oplossing gebruikt dus public key cryptografie om een geheime sleutel voor een symmetrisch encryptiealgoritme uit te wisselen.
+
+
+
+### RSA
+
+Dit is het meestgebruikte asymmetrische encryptiealgoritme. RSA steunt op het feit dat het ontbinden van het product van twee grote priemgetallen zeer moeilijk is.
+
+* Neem twee priemgetallen $p$ en $q$
+* Bereken $n = p.q$
+* Bereken $\phi(n) = (p-1).(q-1)$
+* Kies $e$ met $\gcd(\phi(n), e) = 1$ en $1<e<\phi(n)$
+* Bereken $d = e^{-1} \bmod \phi(n)$
+  * Het modulair multiplicatie inverse van $e \bmod \phi(n)$
+
+
+
+Je public key is dan $\{e,n\}$ en je private key $\{d,n\}$.
+
+* Encryptie van message $M$ naar ciphertext $C$:
+  * $C = M^e \bmod n$
+* Decryptie
+  * $M = C^d \bmod n$
+
+### Elliptic curve cryptography
+
+// TODO
+
+
+
+## Hash algorithms
+
+### Hash functions
+
+Hashfuncties kunnen gebruikt worden om sneller te zoeken in een databank, checksums, error correcting codes, maar ook voor beveiliging. Een hashfunctie maakt van een bepaald bericht een **hash code** of **message digest**. Deze kan gebruikt worden als zogenaamde vingerafdruk van een bericht, om te zien of er mee geknoeid is. 
+
+Een hashfunctie is niet hetzelfde als een symmetrisch encryptiealgoritme. Een hash kan maar in één richting berekend worden en gebruikt veer grotere sleutels en blokken. Bovendien zijn goede hashfuncties beter bestand tegen sleutelaanvallen en zijn ze een stuk efficiënter.
+
+Wat je moet onthouden is dat je een hashfunctie dus niet kan gebruiken voor authenticatie. Een goede hashfunctie moet voldoen aan een aantal voorwaarden:
+
+* Moet werken voor berichten van eender welke grootte
+* Werkt maar in één richting
+* Weak collision resistance
+  * Als je een bericht $x$ hebt, zou het onmogelijk moeten zijn om een bericht $y$ te vinden dat resulteert in dezelfde hash
+* Strong collision resistance
+  * Het zou onmogelijk moeten zijn om twee berichten $x$ en $y$ te vinden die resulteren in dezelfde hash.
+  * Dit is in de praktijk zeer moeilijk. Als er heel veel mogelijke berichten zijn, is de kans logischerwijs groot dat er twee resulteren in dezelfde hash.
+* Hashwaarden moeten makkelijk zijn om te berekenen
+
+
+
+### Hash algorithms
+
+#### MD-5
+
+Wordt gebruikt voor **message digest**, met een hashwaarde van 128 bits. Dat is niet meer voldoende voor strong collision resistance, maar toch wordt MD-5 nog veel gebruikt.
+
+#### SHA-1, SHA-2 en SHA-3
+
+Er zijn meerdere versies van SHA (Secure Hash Algorithm)
+
+* SHA-1
+  * Gebruikt een hashwaarde van 160 bits en heeft dus iets betere strong collision resistance dan MD-5.
+  * Werkt op 512 bit datablokken.
+  * Beetje trager dan MD-5
+* SHA-2
+  * Vier versies: SHA-224, SHA-256, SHA-384, SHA-512
+  * Weer een beetje trager dan SHA-1
+  * Meest gebruikte hashalgoritme vandaag de dag
+* SHA-3
+  * Volledig nieuw algoritme (Kaccak)
+  * Gebruikt een 'sponge functie', maar ik denk niet dat dit super nuttige info is
+
+#### Werking SHA-512
+
+//TODO
+
+
+
+## MAC algorithms
+
+MAC staat voor **message authentication code** en gebruikt zowel de plaintext als de gedeelde sleutel als input. Hiermee wordt getracht om de volgende doelen te bereiken:
+
+* Ontdekken of het bericht is aangepast
+* Kijken of het bericht van de juiste afzender komt
+* Kijken of de volgorde van het bericht is behouden (als je een counter gebruikt)
+
+Het verschil tussen een MAC en een hashfunctie is dat een MAC ook afhangt van de geheime sleutel. Een hash hangt enkel af van het bericht. Je kan MAC dus zien als een soort onomkeerbare encryptie. Dankzij de MAC is nu dus ook **authenticatie** mogelijk, omdat de geheime sleutel is gebruikt.
+
+
+
+### CBC-MAC
+
+We encrypteren het hele bericht met CBC en gebruiken enkel het laatste blok als MAC. Dit is gemakkelijk, maar geeft ons weinig flexibiliteit in de keuze van de grootte van ons MAC-blok. Typisch zet je in dit geval de initialisatievector op 0.
+
+### HMAC
+
+We hashen een bericht samen met een key. Je kan dit op verschillende manieren aanpakken:
+
+* $H(K\vert\vert M)$ of $H(M\vert \vert K)$
+
+  * Dit is gewoon de message en key aan elkaar plakken en het resultaat hashen
+
+  * Dit is onveilig door gevoeligheid aan length-extension attacks. Het is makkelijk om data toe te voegen aan het bericht en toch nog een geldige MAC te krijgen
+
+* $H(K \vert\vert H(K \vert\vert M))$, hier hash je de vorige optie opnieuw samen met de key
+
+  * Heeft dit probleem niet
+
+
+
+Uiteindelijk hanteert men: $\text{HMAC}_K(M) = H((K^+\oplus o) \vert\vert H((K^+ \oplus i)\vert\vert M)) $
+
+* Waar $K^+$ het resultaat is van de key te padden tot de block size
+* $i$ en $o$ staan voor inner en outer padding. Deze worden toegevoegd zodat de binnenste en buitenste keys meer van elkaar verschillen.
 
 
 
@@ -356,6 +488,145 @@ Volgens de slides is CBC ook bruikbaar voor authenticatie.
 > What is the main difference between a digital signature and a MAC?
 
 # Chapter 4: Network and communication security
+
+## SSH
+
+Telnet is onveilig want alles wordt ongeëncrypteerd doorgestuurd. Gebruik SSH. Het staat voor secure shell en is een protocol dat ondersteuning biedt voor:
+
+* Veilige remote login
+* Tunneling
+* Bestandsoverdracht
+* X-session forwarding en port forwarding
+
+SSH bestaat uit drie delen:
+
+* SSH Transport layer protocol
+  * authenticatie, confidentialiteit en integriteit
+  * Bovenop betrouwbaar transportlaagprotocol (bv. TCP)
+* SSH user authentication protocol
+  * Authenticatie voor clients
+  * Zit bovenop het vorige
+* SSH connection protocol
+  *  Multiplext de veilige tunnel voorzien door de vorige twee delen in meerdere logische kanalen
+  * Kunnen gebruikt worden voor meerdere doeleinden
+
+
+
+### SSH: Transport layer protocol
+
+SSH maakt gebruikt van **security algorithm negotiation**. Als een client SSH wilt praten met een server, stuurt de client voor elke categorie (key exchange, MAC, encryptie, ...) een lijst van de algoritmes die hij ondersteunt. De server neemt dan telkens de eerste in zijn lijst die de client ook ondersteunt. 
+
+Mooi opgelijst, worden de volgende stappen ondernomen:
+
+1. Identification string exchange
+2. Algorithm negotiation
+3. Key exchange
+4. Service request
+
+Onder andere hierdoor voorziet het transport layer protocol, zoals eerder vermeld **authenticatie, confidentialiteit en integriteit**.
+
+
+
+#### Key exchange
+
+Bij elke ssh-sessie worden er nieuwe symmetrische **sessiesleutels** gegenereerd en uitgewisseld. Dit gebeurt als volgt:
+
+* Er wordt een gedeelde sleutel gegenereerd met Diffie-Helmann.
+* Deze gedeelde sleutel wordt ondertekend met de public key van de client om te authenticeren. 
+* Nu de gedeelde sessiesleutel is gegenereerd kan de rest van de sessie geëncrypteerd worden met een symmetrische cipher.
+
+
+
+#### Key re-exchange
+
+Je kan op elk moment opnieuw sleutels uitwisselen. Die doe je best wanneer er een verandering in de algoritmes of sessiesleutels is gebeurd. Je kan sowieso best om de zo veel tijd of om de zo veel bits wisselen van sleutel.
+
+
+
+### SSH: User authentication protocol
+
+Het user authentication protocol zorgt ervoor dat de client zich kan authenticeren bij de server. Dit kan op basis van public key, wachtwoord, maar kan ook op basis van host.
+
+* Public key
+  * De client ondertekent met zijn private key
+  * De server kijkt dan of deze overeenkomt met de public key van wie de client beweert te zijn
+  * Dit is computationeel vrij duur en clients hebben typisch niet altijd een keypair op zak
+* Wachtwoord
+  * Ja gewoon een wachtwoord wat wil je dat ik hier nog meer zeg
+* Host based
+  * Authenticatie op basis van de host van de client
+  * Zelfde als public key, maar je gebruikt de public host key van de client
+  * Je kan dus authenticatie voorzien voor meerdere clients op één host, dan moeten we maar geloven dat de client geauthenticeerd is op de host
+
+
+
+**Message exchange**
+
+Ik weet nog niet of dit belangrijk is dus ik gooi het hier maar neer.
+
+1. The client sends a SSH_MSG_USERAUTH_REQUEST with a requested method of none.
+
+2. The server checks to determine if the username is valid. If not, the server returns SSH_MSG_USERAUTH_FAILURE with the partial success value of false. If the username is valid, the server proceeds to step 3.
+
+3. The server returns SSH_MSG_USERAUTH_FAILURE with a list of one or more authentication methods to be used.
+
+4. The client selects one of the acceptable authentication methods and sends a SSH_MSG_USERAUTH_REQUEST with that method name and the required method-specific fields. At this point, there may be a sequence of exchanges to perform the method.
+
+5. If the authentication succeeds and more authentication methods are required, the server proceeds to step 3, using a partial success value of true. If the authentication fails, the server proceeds to step 3, using a partial success value of false.
+
+6. When all required authentication methods succeed, the server sends a SSH_MSG_USERAUTH_SUCCESS message, and the Authentication Protocol is over.
+
+
+
+### SSH: Connection protocol
+
+Het **connection protocol** multiplext de secure tunnel voorzien door de SSH transport layer en user authentication layer in meerdere logische kanalen. Elk kanaal krijgt een uniek kanaalnummer aan elke kant van de tunnel. Deze kunnen verschillend zijn bij de client en server. 
+
+Een aantal voorbeelden van kanalen zijn:
+
+* Session (shell, file transfer, e-mail, system command, ...) 
+
+* X11-connections: voorziet een GUI om applicaties die op een netwerkserver draaien te tonen op een computer
+
+* Local port forwarding (direct TCP/IP): hierover zo meteen meer
+
+* Remote port forwarding (forwarded TCP/IP): same
+
+Een het leven van een kanaal verloopt simpel gezegd in drie stappen: openen, data transfer en sluiten. Moeten we alle uitgewisselde berichten kennen? //TODO
+
+
+
+#### Port forwarding
+
+We kunnen op twee manieren port forwarden met SSH. Bij **local port forwarding** sturen wij met onze SSH client het verkeer van een andere client veilig door naar de server. Bij **remote port forwarding** zal onze client in naam van de server handelen. Requests op de gekozen poorten zullen door onze client via een tunnel naar de server gestuurd worden.
+
+
+
+We kunnen ook gebruik maken van **dynamic port forwarding**. Hiermee kunnen we één poort instellen om data te tunnelen naar meerdere locaties. De client moet dan wel gebruik maken van het SOCKS protocol om te vertellen waar zijn verkeer effectief heen moet.
+
+
+
+### Best Practices
+
+Er zijn een aantal dingen die je best altijd doet:
+
+* Zwakke wachtwoorden uitschakelen
+* Gebruik alleen SSH2
+* Zet PermitRootLogin op 'no'
+* Gebruik password protection voor je private key
+
+### Shortcomings
+
+* Niet gemaakt voor trage verbindingen
+* Niet gemaakt voor verbindingen die vaak uitvallen
+* SSH werk bovenop TCP, dus IP-adres roaming is niet ondersteund
+* Niet gemaakt voor hoge netwerk-latency of lange round-trip tijd
+
+
+
+
+
+## Test jezelf
 
 True or false: the SSH transport layer protocol encrypts TCP packets. Explain.
 
@@ -488,7 +759,39 @@ Which are the advantages of using full disk encryption vs manual encryption?
 
 
 
+# Examenvragen
 
+Leg volgende begippen uit
+
+\-    Pki
+
+\-    Kerchoffs principe
+
+\-    Gemengd virus
+
+\-    Boot sector virus
+
+ 
+
+ Juist/fout
+
+\-    Rainbow tables meerdere passwoorden met zelfde hash of niet?
+
+\-    Cryptografische hash is een hash maar omgekeerd niet
+
+\-    TLS is bestemd tegen tcp rst attack
+
+ 
+
+iPsec
+
+\-    Verschil tunnel en transport modus
+
+\-    Teken pakket ah en esp in transport modus
+
+\-    5 security dingen waaraan ipsec voldoet
+
+\-    2 redenen waarom ESP padding nodig heeft
 
 
 
