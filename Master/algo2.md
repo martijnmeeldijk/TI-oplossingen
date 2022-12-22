@@ -18,7 +18,9 @@ Wanneer men minder dan 8/20 heeft voor het schriftelijk examen en/of voor het de
 
 
 
-# Grafen deel 1
+# ------------Grafen-----------
+
+## Grafen deel 1
 
 
 
@@ -359,7 +361,7 @@ In het geval van zo'n graaf is het makkelijker om een vergrotend K-alternerend p
 
 
 
-# Grafen deel 2
+## Grafen deel 2
 
 ## Verband tussen 4 boom-constructie algoritmen
 
@@ -369,7 +371,7 @@ Dit deel van het boek is echt waardeloos.
 
 
 
-# Strings
+# ------------Strings------------
 
 ## Gegevensstructuren voor Strings
 
@@ -676,9 +678,143 @@ Ik weet niet wat dit is, maar ik zet het erbij for future reference.
 
 
 
+## Substring search
+
+We hebben een patroon $P$ met lengte $p$ en een tekst $T$ met lengte $t$, met $t$ veel groter dan $p$. Hoe kunnen we alle voorkomens van $P$ in $T$ vinden? 
 
 
-# Labo
+
+### Naïeve oplossing
+
+Een naïeve oplossing zou $P$ op elke mogelijke positie in $T$ proberen te matchen. Je kan al snel raden dat dit geen goeie oplossing is. Dit wordt mooi aangetoond aan de hand van dit voorbeeld:
+
+<img src="img/algo2/image-20221222171435898.png" alt="image-20221222171435898" style="zoom:50%;" /> 
+
+We overlopen telkens onze hele $P$, om dat telkens op het einde een mismatch te krijgen. Het zou nuttig zijn als we de informatie over de reeds gematchte karakters zouden kunnen hergebruiken. Dat gaan we ook doen.
+
+
+
+### Knuth-Morris-Pratt
+
+In het algoritme van Knuth-Morris-Pratt hergebruiken we de informatie over verleden matches om onze zoektocht efficiënter te maken. Dit doen we door voor ons patroon een deterministische reguliere automaat op te stellen. Dit doen we door het patroon met zichzelf te vergelijken, dit doen we aan de hand van een KMP-tabel. In dit voorbeeld maken we de tabel voor het patroon:
+
+*  `A B A B A C`
+
+De string is 6 karakters langs, dus onze automaat zal 6 toestanden hebben. Zet een marker op de `0`-de kolom, deze marker toont naar welke toestand we terug moeten gaan als we een mismatch tegenkomen voor het volgende karakter, maar we wel al een deel hebben gelezen dat nog kan matchen met ons patroon.  We hebben in dit geval 3 mogelijke karakters en stellen de tabel op als volgt: 
+
+| Tabel                                                        | Stap                                                         |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| <img src="img/algo2/image-20221222172206963.png" alt="image-20221222172206963" style="zoom:67%;" /> | Lezen we `A`, dan mogen we naar toestand `1`.                |
+| <img src="img/algo2/image-20221222172224250.png" alt="image-20221222172224250" style="zoom:67%;" /> | We kopiëren de kolom met de marker naar de eerstvolgende lege kolom. |
+| <img src="img/algo2/image-20221222172239387.png" alt="image-20221222172239387" style="zoom:67%;" /> | Als we in kolom `1` een `B` lezen, moeten we naar `2`. In de kolom van de marker staat `B` op `0`, de marker mag blijven staan. |
+| <img src="img/algo2/image-20221222172249405.png" alt="image-20221222172249405" style="zoom:67%;" /> | Kopiëer de kolom met de marker.                              |
+| <img src="img/algo2/image-20221222172324089.png" alt="image-20221222172324089" style="zoom:67%;" /> | Als we een `A` tegenkomen mogen we naar de volgende toestand (`3`). |
+| <img src="img/algo2/image-20221222172347595.png" alt="image-20221222172347595" style="zoom:67%;" /> | In de kolom van de marker staat `A` op $1$, we verplaatsen de marker naar kolom $1$. |
+| <img src="img/algo2/image-20221222172402320.png" alt="image-20221222172402320" style="zoom:67%;" /> | Kopiëer de kolom van de marker.                              |
+| <img src="img/algo2/image-20221222172413223.png" alt="image-20221222172413223" style="zoom:67%;" /> | Als we een `B` lezen gaan we naar toestand `4`.              |
+| <img src="img/algo2/image-20221222172427919.png" alt="image-20221222172427919" style="zoom:67%;" /> | In de kolom van de marker wijst `B` naar `3`, verplaats dus de marker. |
+| <img src="img/algo2/image-20221222172441853.png" alt="image-20221222172441853" style="zoom:67%;" /> | We kopiëren de kolom met de marker.                          |
+| <img src="img/algo2/image-20221222172451924.png" alt="image-20221222172451924" style="zoom:67%;" /> | Als we een `A` lezen gaan we naar toestand `5`.              |
+| <img src="img/algo2/image-20221222172505648.png" alt="image-20221222172505648" style="zoom:67%;" /> | In de kolom van de marker wijst `A` naar `3`, verplaats de marker. |
+| <img src="img/algo2/image-20221222172516852.png" alt="image-20221222172516852" style="zoom:67%;" /> | Kopiëer de kolom van de marker.                              |
+| <img src="img/algo2/image-20221222172526245.png" alt="image-20221222172526245" style="zoom:67%;" /> | Als we een `C` lezen, mogen we naar de eindtoestand en hebben we de string gevonden. |
+
+ Ik durf voor een aanzienlijk bedrag te wedden dat we deze tabel moeten opstellen op het examen. 
+
+Iets abstracter, kan je dit proces samenvatten met een paar regels:
+
+* Initialiseer de tabel met even veel kolommen als karakters in de string
+
+* Maak een rij voor elk uniek karakter
+
+* Zet de marker op de `0`-de kolom
+
+* Zet allemaal nullen in de eerste kolom, zet de rij van het eerste karakter op `1`.
+
+* Herhaal voor elk karakter
+
+  * Kopieer de kolom met de marker
+
+  * Verander het cijfer van het karakter naar het volgende nummer 
+
+  * Verplaats de marker naar het nummer van het karakter (in de kolom van de marker)
+
+
+
+### Boyer-Moore
+
+Dit algoritme is een verbetering op KMP. We proberen om in plaats van alle karakters van $T$ te lezen, zo veel mogelijk karakters over te slaan bij een mismatch. Dit doen we door te scannen **van rechts naar links**. 
+
+Bij een mismatch kunnen we dan:
+
+* `p` karakters verder gaan in `T` als de mismatch niet voorkomt in het patroon.  
+* Als de mismatch wel voorkomt schuiven we door tot het meest rechtse voorkomen van de gemismatchte letter
+  * Als de reeds gelezen letters van `T` dan niet voorkomen rechts van het meeste rechtse voorkomen van de gemismatchte letter, kan je weer `p` karakters doorschuiven.
+
+Hiervoor moet je een tabel opstellen, maar daarover staat niks in de slides. Godzijdank.
+
+
+
+### Rabin-Karp
+
+Dit is een leuke manier om een substring te vinden. 
+
+* We kiezen een hashfunctie en berekenen de hash van $P$.
+* Dan berekenen we de hash van iedere substring met lengte $p$ van $T$. 
+* Als er een hash overeenkomt met de hash van $P$, hebben we mogelijks een match en vergelijken we de karakters op die positie om zeker te zijn.
+
+Deze bewerking is efficiënt omdat we een deel van de vorige hashwaarde kunnen hergebruiken.
+
+<img src="img/algo2/image-20221222180745501.png" alt="image-20221222180745501" style="zoom:80%;" /> 
+
+//TODO voor mezelf: dit nog is nakijken
+
+
+
+## Suffix arrays & suffix trees
+
+Het doel van dit hoofstuk is om datastructuren te ontwerpen voor lange strings om bepaalde operaties efficienter te maken. We willen de volgende problemen oplossen:
+
+* Zoeken naar de langste herhaalde deelstring
+* Snel vinden op welke plaatsen een string voorkomt (in lineaire tijd)
+
+
+
+### Suffix arrays
+
+<img src="img/algo2/image-20221222191034372.png" alt="image-20221222191034372" style="zoom:67%;" />
+
+De **longest repeating substring** vinden aan de hand van een suffix array is gemakkelijk.
+
+* Maak een array van de string en al zijn suffixen
+* Sorteer de array
+* Vergelijk de elementen twee per twee in volgorde
+* De langste overlap tussen twee elementen is de longest repeating substring
+
+
+
+Om een tekst te **indexeren** gebruiken we dezelfde techniek
+
+<img src="img/algo2/image-20221222191400368.png" alt="image-20221222191400368" style="zoom:67%;" />
+
+* Maak een tabel van alle suffixen
+* Sorteer de tabel, maar hou ook de oude indexen bij
+* Hou voor elk element de lengte van de longest common substring met zijn voorganger bij
+* Als je nu op zoek bent naar een substring kan je gewoon een binary search door de tabel doen, doordat we de oude posities van de array hebben bijgehouden, kan je nu ook de positie van de substring aflezen in de tabel
+
+### Suffix trees 
+
+Een **suffix tree** heeft hetzelfde doel als een suffix array, maar slaat de informatie efficiënter op. 
+
+//TODO
+
+# Examenvragen
+
+* Geef de Knuth-MorrisPratt-tabel voor de tekst BIMSALABIM.
+* Ontwerp een eenvoudigere / snellere hashfunctie voor RK en pas ze toe bij het zoeken naar het patroon 2 6 5 3 5 in de tekst
+  * 3 1 4 1 5 9 2 6 5 3 5 8 9 7 9 3
+
+# ------------Labo--------------
 
 
 
