@@ -20,4 +20,4 @@
 
 ### Master
 
-* [Schakeljaar](/TI-oplossingen/Master/inhoud)
+* [Master](/TI-oplossingen/Master/inhoud)

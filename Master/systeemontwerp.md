@@ -27,15 +27,256 @@
 
 
 
-# Theorie
+# ---------Theorie--------
+
+# Microservices
+
+## Application building: From then to now
+
+Traditioneel stak men in een applicatie **alle features** in **één app**. Dit wordt natuurlijk snel een probleem als je applicatie evolueert to één grote monoliet van spaghetticode. 
+
+Een volgende stap was de introductie van **layering**. Door bijvoorbeeld de presentatie, business logic en persistentie te scheiden, werd het onderhoud en uibreiden van de applicatie enigszins eenvoudiger. Al snel was er een nood aan meer lagen door toenemende complexiteit. Sommige lagen zouden dan gedeeld kunnen worden tussen verschillende applicaties.
+
+Een andere manier om separatie toe te voegen is **crosscutting flows**. Hier bepalen we dan per use-case en flow doorheen de verschillende lagen van onze applicatie. 
+
+| Layering                                                     | Crosscutting flows                                           |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| ![image-20221222124956962](img/systeemontwerp/image-20221222124956962.png) | ![image-20221222125006931](img/systeemontwerp/image-20221222125006931.png) |
+
+ Zelfs met al deze verbeteringen, zitten we nog steeds met hetzelfde probleem. De applicatie is nog steeds moeilijk onderhoudbaar, uitbreidingen verlopen moeizaam en veranderingen in één deel introduceren vaak ongewilde neveneffecten in een ander deel.
+
+Een ander probleem de toenemende belasting op ons systeem. Hoe kunnen we daarmee omgaan? Dit kan op twee manieren:
+
+* **Vertical scaling**: Dit is het upgraden van onze hardware (meer RAM, betere CPU, grotere opslag)
+* **Horizontal scaling**: We dupliceren onze applicatie over meerdere machines 
+
+
+
+### Sharding
+
+<img src="img/systeemontwerp/image-20221222125822224.png" alt="image-20221222125822224" style="zoom:33%;" />
+
+Om verder te gaan op het principe van horizontal scaling, kunnen we gebruik maken van **sharding**. Hier verdelen we bepaalde **features** of crosscutting flows **over verschillende nodes**. Dit brengt natuurlijk weer problemen met zich mee. **Elke server** moet beschikken over de **volledige application stack**, met gevolg dat als één deel een fout bevat, de hele stack kapot zou kunnen gaan. **Dependencies** zijn moeilijk te beheren en bovendien trekt de **security** van dit model op niks. Een lek in de presentatielaag zou een hacker bijvoorbeeld toegang kunnen geven aan de databank. 
+
+
+
+### Growing out of your monolith
+
+Je applicatie groeit en de **codebase is zo groot** dat het **onmogelijk** is voor een persoon om hem **volledig te begrijpen**, als hi jer dan aan wilt werken duurt het veel te lang **voor** zijn **IDE opstart**. Wanneer de code geschreven is, willen we de nieuwe features deployen. Hiervoor moeten we weeral de **hele applicatie opnieuw builden**. We moeten bovendien ook de **volledige test suite** laten draaien. De databank is outdated, maar we kunnen heb niet updaten omdat **alle andere services afhankelijk zijn** van de verouderde versie. 
+
+Verder kan **één bug** het hele systeem onderuit halen. Omhoog **schalen** is practisch onmogelijk omdat we **de hele applicatie** moeten **dupliceren**. Het is hier ook onmogelijk om de juiste infrastructuur te voorzien, want het kan dat **verschillende modules** nood hebben aan **verschillende resources**, maar ze zitten allemaal vast aan elkaar.
+
+
+
+#### Service oriented architecture
+
+Volgens het principe van SOA kunnen we onze monoliet **opsplitsen** in verschillende **services**. Deze services beschikken ieder over hun **eigen functionaliteit** en kunnen **op afstand** (typisch over het netwerk) aangesproken worden via een **API**.
+
+Nu moet je natuurlijk opletten dat je niet gewoon verschillende lagen maakt, zoals in een vorig deel vermeld. Als je services te sterk van elkaar afhangen vertraag je de ontwikkeling en vermoeilijk je schaalbaarheid en herbruikbaarheid.
+
+
+
+#### Loose coupling
+
+Werk volgens **domain driven design**. We maken een functionele onderverdeling, georganiseerd rond de capabiliteiten van het systeem. Nieuwe features vereisen dan meestal geen veranderingen in alle microservices. Elke microservice kan onafhankelijk gedeployed en vervangen worden.
+
+Zorg ervoor dat je niet eindigt met een **gedistribueerde monoliet**. Als je bijvoorbeeld database id's gebruikt voor je API, creëer je een afhankelijkheid aan één database in alle services.
+
+<img src="img/systeemontwerp/image-20221222135045985.png" alt="image-20221222135045985" style="zoom:50%;" />
+
+#### Boundaries
+
+Zorg ervoor dat je een duidelijke lijn trekt tussen je verschillende microservices. Elke service moet de eigenaar zijn van zijn eigen data. Deel dus geen databases tussen je services. 
+
+
+
+### Microservices in a nutshell
+
+* Microservice architectural style
+  * Ontwikkel een applicatie als een verzameling van kleine services
+  * Elke service draait zijn eigen proces
+  * Services communiceren met elkaar via lightweight mechanismen (http, ...)
+* Microservices 
+  * Georganiseerd volgens business capabilities (niet technische)
+  * Kunnen onafhankelijk geautomatiseerd gedeployed worden
+  * Zo weinig mogelijk gecentraliseerd beheer
+  * Kunnen in verschillende talen/stacks ontwikkeld worden, met verschillende databanken
+  * Loose coupling, strong functional cohesion
+
+
+
+### Monolith vs Microservices
+
+Hier een overzicht van de voor- en nadelen van een applicatie ontwikkeld als monoliet tegenover microservices:
+
+* Monolith
+  * Voordelen
+    * Goed voor een beginnende applicatie
+    * Geen complexiteit van verschillende services
+  * Nadelen
+    * Codebase moeilijk te begrijpen
+    * Moeilijk schaalbaar, want elke server moet de volledige applicatiestack draaien
+    * Moeilijk uitbreidbaar en onderhoudbaar, want één verandering kan veel gevolgen hebben
+    * Je systeem kan platliggen door één bug
+* Microservices
+  * Voordelen
+    * Services kunnen onafhankelijk gedeployed worden
+    * Gemakkelijker uit te breiden en te onderhouden, één verandering vereist typisch geen aanpassing in meerdere microservices. Fouten worden ook niet overgedragen tussen services.
+    * Schaalbaarder
+    * Services kunnen in verschillende talen/stacks ontwikkeld worden, met verschillende databanken
+  * Nadelen
+    * Foute toepassing kan leiden tot een gedistribueerde monoliet
+    * Gedistribueerde systemen zijn complex
+    * Communicatie over het netwerk is trager. Data moet geserialiseerd worden en over een mogelijk onstabiele verbinding verstuurd worden.
+    * Moeilijker om tests te schrijven die meerdere services omvatten
+    * Microservices introduceren veel overhead, zowel technisch als organisatorisch. Elke service is verantwoordelijk voor zijn eigen opslag et cetera. Veel services vereisen veel werknemers.
+    * Beter geschikt voor grote bedrijven dan voor startups
+
+
+
+### Verschil tussen SOA en microservices
+
+Bij SOA ligt de nadruk op services maken die gedeeld kunnen worden doorheen je applicatie. Microservices gaan een stapje verder. Onze hele architectuur is in dit geval gebouwd op individuele services die onafhankelijk werken. Nog een verschil is dat we bij microservices onze services zo klein mogelijk maken, dit is geen vereiste voor SOA.
+
+
+
+# Decomposing
+
+
+
+## Requirements analysis
+
+Requirements analysis is een proces waarbij we de vereisten van een systeem identificeren, documenteren en verifiëren. We verzamelen en analyseren informatie van stakeholders omtrent de noden en doelen van het systeem.
+
+We kunnen de requirements van een systeem opsplitsen in twee categorieën:
+
+* Functional
+  * Wat moet het systeem doen?
+  * Scalability, reliability, ... Alle -ilities
+* Non-functional
+  * Wat moet het systeem zijn?
+  * Pizza verkopen of overheden destabiliseren om bananen te kunnen verkopen?
+
+
+
+## Diagrams
+
+Een diagram kan je helpen door drie dingen te verbeteren:
+
+* Understanding
+* Collaboration
+* Communication
+
+Er zijn een hele boel verschillende diagrammen die nuttig zijn voor een hele boel verschillende dingen. 
+
+
+
+### Domain diagram
+
+<img src="img/systeemontwerp/image-20221222151558719.png" alt="image-20221222151558719" style="zoom:67%;" />
+
+Een domeindiagram laat ons toe om een domeinmodel op te stellen en dit te delen met de stakeholders. Een UML klassediagram is ook een voorbeeld van een domeinmodel.
+
+Elementen:
+
+* Domain objects
+
+Relaties:
+
+* Inheritance
+* Association 
+* depends-on
+* ...
+
+### Sequence diagram
+
+<img src="img/systeemontwerp/image-20221222151800881.png" alt="image-20221222151800881" style="zoom:67%;" />
+
+Een sequentiediagram toont **één mogelijke sequentie** van interacties. Ze zijn nuttig om de impact op niet-functionele requirements te tonen. Zo kan je voorkomend ingrijpen als je in je diagram ziet dat er een bepaald proces of thread geblokkeerd wordt. Of voorspellen wat er mis zou kunnen gaan als een bepaalde service geblokkeerd raakt of traag antwoordt. 
+
+Elementen: 
+
+* Objecten (dingen die iets doen)
+
+Relaties:
+
+* Interprocescommunicatie
+
+
+
+### Process diagram
+
+<img src="img/systeemontwerp/image-20221222152208733.png" alt="image-20221222152208733" style="zoom:67%;" />
+
+Een procesdiagram beschrijft de volledige workflow van een systeem en bestaat dus uit meerdere sequenties. Je kan zien hoe de control flow doorheen je applicatie beweegt en welke stappen er waar en door wie ondernomen worden. 
+
+Elementen:
+
+* Processen
+
+Relaties:
+
+* Control flow
+* Data flow
+
+
+
+### Service diagram
+
+<img src="img/systeemontwerp/image-20221222152519745.png" alt="image-20221222152519745" style="zoom: 67%;" />
+
+Een service diagram geeft een overzicht van de verschillende services en hun interacties. Dit is nuttig om een overzicht te krijgen in de high-level interacties tussen services en of de structuur van je systeem stand houdt. Je moet wel oppassen dat je genoeg betekenis geeft aan je interacties en consistent bent in je opmaak.
+
+Elementen:
+
+* Services and actors
+
+Relaties:
+
+* Interacties
+
+
+
+## Decomposition
+
+Decompositie volgt een proces van drie stappen:
+
+1. <u>Identify and understand system operations</u>
+   * **1a. Create a high-level domain model**: praat met experten ubiquitous language om inzicht te krijgen in het probleemdomein
+   * **1b. Define the requests that your application must handle**: we moeten weten welke systeemoperaties ons systeem moet ondersteuenen. Het is belangrijk om hier technische termen te vermijden. Er zijn twee soorten systeemoperaties:
+     * **Commands**: CRUD
+     * **Queries**: enkel lezen (typisch voor UI)
+2. <u>Identify services</u> 
+   * **Decompose monolith into microservices**. Dit kan op één of meerdere van de volgende manieren:
+     * **By business capabilities**: splits de logica op volgens wat de organisatie doet (sales, marketing, customer service, ...)
+     * **By sub-domain**: maak een *model* voor elk subdomein van je business. Dit model heeft een andere context in elk subdomein. 
+     * **By technology**: kan goed zijn voor performance, maar je systeem wordt wel gelaagd en dat is bad
+     * **By data**: Nuttig voor GDPR, bijvoorbeeld green en red zone. Voegt wel complexiteit toe.
+3. <u>Define service APIs and collaborations</u>
+   * Dit kunnen operaties of events zijn
+   * **3a. Decide which service is the entry point for each system operation**
+   * **3b. Determine the methods needed to support collaboration between services**
+
+
+
+Er zijn een aantal zaken die onze decomposition dwarszitten:
+
+* **Trage netwerkverbinding**: vermijd dus overtollige communicatie tussen services
+* **Synchrone operaties**: hierdoor wordt ons hele systeem vertraagd. Werk zo veel mogelijk asynchroon
+* **Verspreide data**: een atomaire update van data is alleen mogelijk binnen één microservice
+* **God classes**: Dit is een klasse die te veel verantwoordelijkheid bezit. Er zijn te veel andere services of klassen van hem afhankelijk. We kunnen het systeem opsplitsen in verschillende models die ieder geldig zijn in hun eigen **bounded context**, de er wordt in elk model enkel nadruk gelegd op de functionaliteit die daar nodig is, waardoor de functionaliteit van de god class verdeeld wordt.
+
+
+
+# Architecture of a single microservice
+
+## Problems with layered architecture
 
 
 
 
 
-
-
-# Labo
+# ----------Labo-----------
 
 
 
