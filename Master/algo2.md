@@ -20,7 +20,7 @@ Wanneer men minder dan 8/20 heeft voor het schriftelijk examen en/of voor het de
 
 # ------------Grafen-----------
 
-## Grafen deel 1
+# Grafen deel 1
 
 
 
@@ -194,6 +194,8 @@ Nog enkele leuke feitjes. Het algoritme van Kruskal is een gulzig algoritme, omd
 
 ### Algoritme van Dijkstra
 
+
+
 Dit algoritme wordt gebruikt om het kortste pad tussen twee knopen $s$ en $q$ in een gewogen graaf te vinden, op voorwaarde dat de takken van de graaf enkel positieve gewichten hebben. Als bijgevolg van de uitvoering van dit algoritme worden ook alle kortste paden vanuit $p$ naar alle andere knopen berekend.
 
 Je kan het algoritme implementeren als volgt. Eerst zullen we een paar variabelen moeten aanmaken
@@ -361,13 +363,324 @@ In het geval van zo'n graaf is het makkelijker om een vergrotend K-alternerend p
 
 
 
-## Grafen deel 2
+# Grafen deel 2
 
 ## Verband tussen 4 boom-constructie algoritmen
 
-Dit deel van het boek is echt waardeloos.
+Dit deel van het boek is echt waardeloos. //TODO
 
 
+
+### Algoritme van Prim
+
+Het algoritme van Prim is simpel, moet het je op de test niet gelukt zijn, het gaat als volgt:
+
+* Neem een willekeurige knoop $k$ en een op dit moment lege lijst kandidaattakken $L$ en ook nog lege lijsten met knopen $K$ en takken $T$. Deze zal de knopen bevatten die we toevoegen aan onze deelboom.
+* Iteratie
+  * Voeg alle takken van $k$ toe aan $L$
+  * Neem de goedkoopste tak uit $L$ die onze deelboom verbindt met een knoop die er nog niet inzit.
+    * Steek die tak in $T$
+    * Vervang $k$ door de knoop aan het andere uiteinde van die tak en voeg hem toe aan $K$
+  * Herhaal tot $L$ leeg is
+
+Dit is hoe ik het heb gedaan op de test toch. In het boek wordt niet super specifiek ingegaan op wat je moet doen met die lijsten. Het kan waarschijnlijk ook anders of beter, maar Ben is niet zuinig geweest met de punten op mijn implementatie voor did deel, dus ik veronderstel dat het ermee door kan.
+
+
+
+## Eulercircuits
+
+![Euler Circuits | Mathematics for the Liberal Arts](img/algo2/Fig2_5_16.png)
+
+Gegeven een ongerichte of gerichte (multigraaf) $G$. Een Eulercircuit is een wandeling door $G$ die
+
+* Elke tak in $G$ exact één keer gebruikt
+* Eindigt op dezelfde knoop als hij begint
+
+Merk op dat je dus wel meerdere keren langs dezelfde knoop mag passeren. We noemen een graaf een **Eulergraaf** als en slechts als hij een Eulercircuit bevat. Uit de definitie volgen twee stellingen:
+
+* $G$ is een ongerichte Eulergraaf $\xLeftrightarrow{\quad}$ $G$ is geconnecteerd en al zijn knoopgraden zijn even
+  * Het circuit zal elke knoop van $G$ even vaak binnengaan als verlaten
+* $G$ is een gerichte Eulergraaf $\xLeftrightarrow{\quad}$ $G$ is sterk geconnecteerd en voor elke knoop is de ingraad gelijk aan de uitgraad
+  * Als de in- en uitgraad verschillend zijn is een Eulercircuit niet mogelijk.
+
+### Eulercircuit construeren
+
+We bespreken nu het algoritme om een Eulercircuit te maken. Dit algoritme bewijst kennelijk ook de twee stellingen hierboven.
+
+* Kies een wikkekeurige startknoop $s_1$
+* Bepaal vanuit $s_1$ een wandeling die terugkomt in $s_1$
+* Verwijder alle gebruikte takken uit $G$
+* Herhaal zolang er nog ongebruikte takken overblijven:
+  * Kies een bezochte knoop $s_i$ als startknoop
+  * Bepaal vanuit $s_i$ een nieuwe wandeling
+    * Omdat de knoopgraad altijd even is, kan je altijd een nieuwe wandeling vinden zolang er nog ongebruikte takken zijn
+  * Voeg de wandeling toe aan de oplossing
+
+
+
+## Gerichte lusloze grafen
+
+<img src="img/algo2/2019-08-09_18-29-54.gif" alt="Directed Acyclic Graph (DAG) Overview & Use Cases | Hazelcast" style="zoom:67%;" />
+
+Een gerichte lusloze graaf is een gerichte graaf, al dan niet geconnecteerd, die geen cycli bevat. In de echte wereld zijn deze nuttig om bijvoorbeeld een sequentie van taken vast te leggen die niet in een bepaalde volgorde moeten uitgevoerd worden, maar waarbij een taak wel kan afhangen van een andere taak.
+
+
+
+### Topologische rangschikking
+
+![image-20221224115511110](img/algo2/image-20221224115511110.png)
+
+Als we alle knopen van deze graaf op een rijtje zetten, op zo een manier dat alle pijlen naar rechts wijzen, bekomen we een **topologische rangschikking**. Hier bestaat dan ook weer een algoritme voor:
+
+* Zoek een knoop $v$ met ingraad $0$
+* Zet $v$ helemaal links
+* Verwijder $v$ en alle pijlen die uit $v$ vertrekken uit de originele graaf
+* Herhaal tot er geen knopen meer zijn
+
+
+Kunnen we altijd een knoop met ingraad $0$ vinden? Dit valt te bewijzen vanuit het ongerijmde. Stel dat er geen knoop met ingraad $0$ is. Dat betekent dat er voor elke knoop een binnenkomende pijl is. Die pijl moet ergens vandaan komen. Omdat $G$ eindig is betekent dit dus dat er zich sowieso een lus zal vormen. Hiermee is de stelling bewezen en bekomen we ook de volgende wederzijdse implicatie:
+
+* $G$ is een gerichte lusloze graaf $\xLeftrightarrow{\quad}$ $G$ heeft een topologische rangschikking
+
+
+
+### Kortste pad
+
+Als we gewichten toekennen aan onze takken (al dan niet negatief), kunnen we het kortste pad tussen twee knopen zoeken. Dit is zeer gemakkelijk in een gerichte lusloze graaf.
+
+* Bepaal de topologische rangschikking
+* Ga telkens naar rechts en bepaal voor de huidige knoop de kortste afstand vanuit de startknoop
+  * Deze vind je door de goedkoopste binnenkomende verbinding te kiezen
+* Wanneer je de bestemming bereikt, heb ge automatisch ook de kortste afstand gevonden. Als je hebt bijgehouden welke takken tot die afstand lijden, heb je nu ook het kortste pad.
+
+
+
+### Langste pad
+
+<img src="img/algo2/image-20221224115450736.png" alt="image-20221224115450736" style="zoom:67%;" />
+
+Het langste pad vinden in een gerichte lusloze graaf is een stuk interessanter. Je kan het in de echte wereld bijvoorbeeld gebruiken om de duur van een project met van elkaar afhankelijke deeltaken te bepalen. 
+
+Hier doe je hetzelfde als bij het korste pad, maar geef je de knopen telkens een zo hoog mogelijk label. Als er meerdere start- en eindknopen zijn (knopen met in- of uitgraad $0$), voeg je een artificiële start- en eindknoop toe. 
+
+
+
+
+
+# Grafen deel 3: network flow problems
+
+## Terminologie
+
+We willen een netwerk modelleren als een graaf. We zullen de volgende terminologie hanteren in de rest van de cursus:
+
+* Een graaf $G = (V,E)$ bestaat uit
+  * Vertices $V$
+  * Edges $E$
+    * Elke edge $e$ is een ongeordend paar van vertices $(u,v)$
+* De **orde** van een graaf $p = \#V$, oftewel het aantal vertices
+* De **grootte** van een graaf $q = \#E$ oftewel het aantal edges
+* De **incidence** $I(v)$ van een vertex $v$ is de verzameling van edges die aan $v$ verbonden zijn
+* De **adjecency** $A(v)$ van een vertex $v$ is de verzameling van vertices die aan $v$ verbonden zijn
+* De **degree** $\delta(v)$ van een vertex $v$ is het aantal edges aan $v$
+* Een **subgraaf** van $G = (V,E)$ is een graaf waarvan 
+  * de vertex set een subset is van $V$
+  * de edge set een subset is van $E$
+
+Een graaf met orde $p$ een grootte $q$ noemen we een $(p,q)$-graaf. We veronderstellen hier bovendien altijd dat elke graaf geen parallelle edges heeft.
+
+
+
+### Voorstelling
+
+We kunnen een graaf op twee manieren voorstellen:
+
+* *Incidence matrix*: een matrix met aantal kolommen voor de edges en rijen voor de vertices
+  * Als we een waarde toekennen stelt deze een verbinding tussen een vertex en een edge voor
+* *Incidence lists*: 
+  * We houden voor elke vertex een lijst van edges bij
+
+
+
+### Paden en cycli
+
+* Een **walk** in een graaf is een sequentie van vertices die volgens de edges worden overlopen. Dezelfde edge of vertex mag meerdere keren in het pad voorkomen.
+* Een **pad** in een graaf is een walk waarbij je nooit twee keer dezelfde vertex tegenkomt. 
+* Een **cycle** is een walk waarbij je nooit twee keer dezelfde vertex tegenkomt, maar de begin- en -eindvertex hetzelfde zijn.
+
+
+
+### Cut and cutset
+
+Neem een graaf $G$ en twee vertices $u$ en $v$ in $G$
+
+* $u$ is geconnecteerd met $v$ als er een $u-v$ pad bestaat in $G$
+* $G$ is geconnecteerd als elke $u$ en $v$ in $G$ geconnecteerd zijn
+
+Een **cut** $C$ in $G$ is een subset van $E$, waarbij het verwijderen van alle edges in $C$ uit $G$, de graaf niet meer geconnecteerd is.
+
+//TODO
+
+### Connectivity
+
+//TODO
+
+
+
+### Digraph
+
+//TODO
+
+
+
+## Minimum spanning tree problem
+
+Een **tree** $T=(V,F)$ is een geconnecteerde graaf die geen lussen bevat. Deze heeft als eigenschap dat voor elke twee vertices $s$ en $t$, de tree exact één $(s,t)$-pad bevat. 
+
+Een subgraaf van een geconnecteerde graaf $G$ (met dezelfde vertex set) die een tree is, noemen we een **spanning tree** van $G$.
+
+
+
+### Kruskal
+
+Het algoritme van Kruskal beschrijft en manier om een **minimum spanning tree** te vinden. Dit is een spanning tree van $G$ met een zo laag mogelijk totaal gewicht. Het algoritme is heel simpel.
+
+* Verwijder alle edges uit $G$
+* Voeg telkens de kleinste edge terug toe die geen lus vormt.
+* We zijn klaar als we alle vertices hebben verbonden
+
+
+
+## Shortest path problem
+
+### Unweighted (di)graph: Moore
+
+In een ongewogen graaf is de afstand tussen twee vertices gelijk aan de kleinste hop-count. Je kan gemakkelijk de kortste afstanden vanuit één vertex bepalen door een breadth-first-search. 
+
+* Zet de afstand van de startknoop op $0$
+* De afstand van al zijn buren op $1$
+* De afstand van alle buren van de buren (die nog geen afstand hebben) op $2$
+* ...
+
+### Weighted (di)graph: Dijkstra
+
+Dit heb ik [hier](#Algoritme-van-Dijkstra) heel mooi uitgelegd. Het is belangrijk om te weten dat dit algoritme alleen werkt als onze graaf alleen positieve grwichten bevat.
+
+
+
+### Weighted (di)graph with negative weights: Ford, Bellman and Moore
+
+Het algoritme van Ford, Bellman en Moore is een *label correcting* algoritme. Dit betekent dat het algoritme alle labels met afstanden als tijdelijk beschouwt tot het einde, waar ze allemaal tegelijk permanent worden. 
+
+* Maak een lege lijst $L$ en een set labels $l$
+  * zet in $l$ de beginknoop op $0$ en de rest op $\infty$
+  * Voeg de beginknoop toe in $L$
+* Zolang $L$ niet leeg is, herhaal:
+  * Neem het eerste element $v$ uit $L$
+  * Doe voor elke buur $w$ van $v$
+    * Update $l(w)$ naar $l(v) + c(vw)$ als die afstand korter is
+    * Als $w$ nog niet in de lijst zat, steek hem erin
+
+
+
+### All-pairs shortest path problem: Floyd
+
+Om het kortste pad te kunnen vinden tussen alle combinaties van vertices, zouden we het algoritme van Dijkstra voor alle vertices kunnen draaien. Dit is misschien een beetje tijdverspilling, er bestaat een beter algoritme: Floyd.
+
+* Maak een $n \times n$ matrix met $n$ het aantal vertices. Elk element stelt dan een combinatie tussen twee vertices voor.
+* Zet de diagonaal op $0$, dit zijn de afstanden van een vertex naar zichzelf
+* Stel alle rechtstreekse paden in
+* Zet de rest op $\infty$
+* //TODO
+
+Omdat we in dit algoritme drie geneste for-loops hebben, krijgen we een complexiteit van $O(p^3)$.
+
+
+
+## Maximum flow problem
+
+### Network flow
+
+We willen een soort abstract model maken van een netwerk. Hierbij gebruiken we de term **flow** om overdracht van gegevens in ons netwerk voor te stellen. We stellen het netwerk voor als een digraaf. 
+
+* Elke pijl $a$ heeft een bepaalde **cost** $c(a)$. Dit kan dan bijvoorbeeld de kostprijs van het gebruik van een bepaalde link zijn.
+* Elke pijl heeft bovendien een **capaciteit** $u(a)$. Dit kan je voorstellen als de bandbreedte van een link. 
+* De **flow** is dus de hoeveelheid gegevens die doorheen de links van ons netwerk kan. 
+
+Als resultaat modelleren we ons netwerk met een **gewogen, gecapactiteerde digraaf**. Hiervoor hanteren we vanaf nu de term **netwerk**. 
+
+
+
+Flow is een functie $f(.): A \rightarrow \mathbb{Z}^+$of $\mathbb R$, onderhevig aan de volgende beperkingen:
+
+* $\sum_{a \in I(v)} f(a) - \sum_{a \in I'(v)} = b(v), \forall v \in V$
+  * **Flow conservation constraints**: de inflow min de outflow van $v$ moet gelijk zijn aan de supply-demand $b(v)$
+  * Het komt erop neer dat in een node in ons netwerk de inflow en outflow gelijk moeten zijn, behalve als:
+    * De node iets produceert (supply): $b(v)>0$
+      * Typisch is dit de **source**, de beginnode
+    * De node iets verbruikt (demand): $b(v)<0$
+      * Typisch is dit de **sink**, de eindnode
+* $0 \leq f(a) \leq u(a) \forall a \in A$
+  * **Capacity constraints**: De flow in een node mag niet hoger zijn dan de capaciteit van die node 
+
+
+
+### Maximum flow problem
+
+We hebben een netwerk met een client op een bepaalde plek en een server op een andere. Als we willen wat de hoogste snelheid is waarmee we een pakketje van client naar server kunnen krijgen, hebben we een **maximum flow probleem**. We kunnen dit probleem als volgt formuleren.
+
+Neem een gecapaciteerde digraaf $D = (V,A)$, waar de capaciteit van elke arc $a$ niet negatief is. Om het probleem te formuleren defineren we twee speciale vertices:
+
+* De **source** $s$ 
+* De **sink** $t$
+
+We willen de maximum flow van $s$ naar $t$ vinden, rekening houdend met de beperkingen van ons netwerk. Noemenswaardig is dat we voor dit probleem geen rekening houden met de cost van de arcs. In de taal van de wiskundemensen formuleren we het zo:
+
+* Maximaliseer $F$, onderhevig aan:
+
+$$
+\sum_{a \in I(v)} f(a) - \sum_{a \in I'(v)}f(a) = \begin{cases}
+F& \text{ als } v = s \\
+0& \forall v \in V \backslash \{s,t\} \\
+-F&  \text{ als } v = t
+
+\end{cases}
+\\
+0 \leq f(a) \leq u(a), \forall a \in A
+$$
+
+* We zoeken dus een zo hoog mogelijke $F$ die niet boven de capaciteit van ons netwerk gaat
+
+
+
+### Residual network
+
+![image-20221224145301434](img/algo2/image-20221224145301434.png)
+
+In de cursus zijn ze abstract, maar ik ga het hier proberen uit te leggen aan de hand van een voorbeeld. We zitten in een scenario (bijvoorbeeld in het midden van een algoritme), waar we aan onze links al een bepaalde flow hebben toegewezen.
+
+* Elke link heeft een flow $f\degree(ij)$ en een capaciteit $u(ij)$
+* Er kan maar $u(ij) - f \degree (ij)$ extra flow door die link
+* We kunnen ook $f \degree (ij)$ door de link $(ji)$ sturen, dit is eigenlijk gewoon de flow weghalen
+
+Neem de bovenste link vanuit de source in het voorbeeld. Deze heeft flow $3$ en capaciteit $4$. Hiervoor voegen we in het residunetwerk twee pijlen toe:
+
+* $1 \rightarrow 3$: Deze zetten we op $4-3 = 1$, en stelt voor hoeveel flow er nog bij zou kunnen
+  * Dit is de **residual capacity** $r(ij)$
+* $3 \rightarrow 1$: Deze zetten we op $3$, deze pijl volgen komt overeen met het weghalen van de huidige flow
+
+Wanneer $r(ij) = 0$, laten we de pijl weg, want er kan toch niks meer bij.
+
+
+
+### Flow augmenting path algorithm
+
+We willen een manier vinden om de grootst mogelijke flow in ons netwerk te bepalen. Dit kan met het flow augmenting path algorithm. Een flow augmenting path is pad van de source naar de sink waarvoor de residual capacity $d$ positief is.
+
+* De residual capacity $d$ van een augmenting path is het minimum alle $r(ij)$ op het pad. 
+
+Het algoritme is simpel. Je begint van een netwerk waar alle flows op nul staan. Je zoekt een flow augmenting path en past het residunetwerk aan volgend dat pad. Nu ga je door tot je geen flow augmenting path meer vindt. 
+
+* $f^*$ is een maximale flow $\xLeftrightarrow{\quad}$ het residunetwerk $N(f^*)$ bevat geen augmenterend pad
 
 
 
