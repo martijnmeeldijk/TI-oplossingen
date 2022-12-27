@@ -682,6 +682,182 @@ Het algoritme is simpel. Je begint van een netwerk waar alle flows op nul staan.
 
 * $f^*$ is een maximale flow $\xLeftrightarrow{\quad}$ het residunetwerk $N(f^*)$ bevat geen augmenterend pad
 
+Relationship between original and residual network? //TODO of toch is bekijken
+
+
+
+### Maximum-flow minimum-cut theorem
+
+<img src="img/algo2/image-20221225110857076.png" alt="image-20221225110857076" style="zoom:50%;" />
+
+We kunnen ons maximum flow probleem herformuleren als een minimum-cut probleem.
+
+* Van alle cuts in het netwerk die de source en sink scheiden, zoek de cut met de minimale capacity.
+
+Neem een netwerk $N$ met source $s$ en sink $t$:
+
+* De **maximum flow** van $s$ naar $t$ in een netwerk is gelijk aan de **minimum capaciteit** van alle $s$-$t$ cuts.
+
+In essentie willen ze ons hier vertellen dat de flow in ons netwerk gelimiteerd is door de smalste bottleneck die je kan vinden in het netwerk. Het vinden van een minimum cut is in andere woorden het vinden van de bottleneck van het netwerk. In het plaatje hierboven is de minimum cut, alsook de maximum flow gelijk aan $8$.
+
+
+
+### Edge connectivity
+
+De edge-connectivity is de **kleinste hoeveelheid edges** die je moet **verwijderen** opdat de graaf **niet meer samenhangend** is. 
+
+Van een graaf $G$ staat de edge-connectivity gedefiniëerd als:
+
+* $\lambda(G) = \min \{ \lambda(v,w) \vert v,w \in V \}$
+  * Met $\lambda(v,w)$ de minimum kardinatiteit van een $v,w$-edge-cutset (een edge-cutset die $v$ en $w$ ontkoppelt)
+
+We kunnen de maximum-flow minimum cut gebruiken om $\lambda (G)$ te berekenen. 
+
+* Als we alle capaciteiten van $G$ op $1$ zetten bekomen we $G'$
+  * De minimum kardinaliteit van een $v$-$w$-edge cutset is gelijk aan de minimum cut van $G'$
+* Nu weten we dankzij de vorige paragraaf dat de minimum cut hetzelfde is als de maximum flow. Als we nu elke edge in $G'$ vervangen door twee tegengestelde arcs, krijgen we $G''$
+  * We berekenen de maximale flow $F(v,w)$ voor elk paar vertices $v,w$ van $G''$
+  * De minimale waarde voor $F(v,w)$ is gelijk aan de edge-connectivity $\lambda(G)$
+
+
+
+### Vertex connectivity
+
+De vertex-connectivity is de **kleinste hoeveelheid** **vertices** die je moet **verwijderen** opdat de graaf **niet meer samenhangend** is. Je kan het algoritme voor het flow augmenting path ook gebruiken om de vertex connectivity $\kappa(G)$ van $G$ te berekenen. De werkwijze is ongeveer hetzelfde als hierboven, maar we gaan een stapje verder.
+
+De minimum kardinaliteit van een $v$-$w$ vertex-cutset $\kappa(v,w)$ (die $v$ en $w$ niet bevat) is:
+
+* $\kappa(G) = \min \{ \kappa(v,w) \vert v,w\in V \text{ en } vw \notin E\}$
+  * Als we $v$ of $w$ in de cutset stoppen heeft het natuurlijk niet echt veel zin
+  * $v$ en $w$ mogen ook niet rechtstreeks met elkaar verbonden zijn, want dan is het onmogelijk om een vertex weg te halen die ervoor zorgt dat ze niet meer verbonden zijn. Ze zijn namelijk al met een edge verbonden.
+
+![image-20221225131412825](img/algo2/image-20221225131412825.png)
+
+We kunnen bewijzen dat $\kappa(v,w)$ gelijk is aan het aantal pairwise vertex-disjoint $v$-$w$ paths. Dus het aantal mogelijke paden van $v$ naar $w$ die geen vertices gemeen hebben. Dit aantal kunnen we vinden door $G$ te trnasformeren en het flow augmenting path algorithm toe te passen.
+
+* Maak van $G$ een gecapaciteerde graaf $G'$, met alle capaciteiten op $1$
+* Maak daar een digraaf $G''$ van, waarbij elke edge van $G'$ vervangen wordt door twee tegenovergestelde arcs met capaciteit $1$
+* Verander deze in een graaf $G'''$, waarbij je van elke vertex $v$ twee vertices $v'$ en $v''$ maakt
+  * Elke arc naar $v$ in $G''$ wordt een arc naar $v'$
+  * Elke arc vanuit $v$ in $G''$ wordt een arc vanuit $v''$
+  * Maak een arc van elke $v'$ naar $v''$
+
+De maximale flow tussen $v''$ en $w'$ is nu gelijk aan het aantal pairwise vertex-disjoint $v$-$w$ paden in de orginele graaf $G$
+
+![image-20221225131431456](img/algo2/image-20221225131431456.png)
+
+Ik vind het een beetje moeilijk om dit in mijn kop te krijgen, dus ik heb wat extra onderzoekwerk gedaan. Ik dacht voor de lol even de limieten van chatGPT op te zoeken en stelde hem de volgende vraag:
+
+> Why is the maximum flow from v'' to w' in a modified graph where we change every link into two antiparallel links with capacity set to one and replace every vertex v by v' and v'' with every arc incident to v, made incident to v' and every arc incident from v, made incident from v'', also adding an arc from v' to v'' equal to the amount of pariwise vertex-disjoint v-w paths in the original graph?
+
+Hij gaf mij een redelijk duidelijk antwoord. Ik parafraseer. 
+
+Omdat de capaciteit van elke edge in het netwerk op $1$ staat, is de maximale flow gelijk aan het maximaal aantal edges dat kan gebruikt worden om flow te sturen van $v''$ naar $w'$. Elk pad in de originele graaf komt overeen met één eenheid flow in het netwerk. Elk van de edges in $G''$ komt overeen met een $v$-$w$ pad in $G$. 
+
+Valt wel met een korrel zout te nemen. Misschien later nog is nakijken //TODO
+
+
+
+## Minimum cost flow problem
+
+We hebben een client en server die met elkaar verbonden zijn via een bepaald netwerk. We hebben een bepaalde hoeveelhaid data (algemeen een demand $d$) die we van de client naar de server willen sturen. We willen zo goedkoop mogelijk onze data van de client naar de server krijgen, rekeninghoudend met de maximale capaciteit van de links. Dit is een voorbeeld van een **minimum cost flow problem**. We zoeken een flow op de arcs van het netwerk die onze totale kost minimaliseert en een demand $d$ tussen $s$ en $t$ vervult. 
+
+Dit valt te veralgemenen als het minimaliseren van de volgende betrekking:
+$$
+\sum_{a \in A}c(a)f(a)
+$$
+Oftewel de som van de flow $f(a)$ in elke link maal de kost $c(a)$ van die link. 
+
+De demand is enkel verschillend van nul in de source en sink nodes::
+$$
+\sum_{a \in I(v)}f(a) - \sum_{a \in I'(v)} f(a) = \begin{cases}
+d  &\text{ als } v=s \\
+0   &\forall v \in V \backslash \{s,t\} \\
+-d   &\text{ als } v=t
+
+\end{cases}
+
+\\ \\
+
+0 \leq f(a) \leq u(a), \quad \forall a \in A
+$$
+En de flow mag niet hoger zijn dan de capaciteit van een link.
+
+
+
+### Residual network
+
+![image-20221225143405511](img/algo2/image-20221225143405511.png)
+
+Hier breiden we het idee van een residunetwerk aan voor ons probleem. In essentie doen we exact hetzelfde als [hier](#residual-network), maar nemen we de cost mee. De toegevoegde arcs (in de tegenovergestelde richting) geven we de tegenovergestelde cost. 
+
+
+
+### Busacker and Gowen
+
+Het algoritme van Busacker en Gowen biedt een manier om de minimal cost flow $f$ in een netwerk $N$ van een source vertex $s$ naar een sink vertex $t$ met demand $d$ te bepalen. 
+
+Het algoritme identificeert kortste augmenterende paden in het residunetwerk en voegt flow toe totdat de demand $d$ is vervuld en verloopt als volgt:
+
+* We hebben een bepaalde demand $d$, de flow $f$ zetten we initieel op $0$
+* Zolang $F<d$, herhaal:
+  * Vind het kortste augmenterende pad $P$ van $s$ naar $t$ in $N(f)$
+    * Met Ford-Bellman-Moore
+    * $N(f)$ is ons residunetwerk met flow $f$
+  * $\delta = \min \{ \min \{ r(ij):ij \in P \}, (d-F) \}$
+    * De toe te voegen flow is het minimale residu in het pad
+    * Als dit groter is dan de demand, dan moeten we alleen de resterende demand toevoegen
+  * Verhoog de flow $f$ op het pad $P$ met $\delta$
+  * Update het residunetwerk $N(f)$
+  * Voeg de toegevoegde flow bij $F = F + \delta$ toe.
+
+
+
+### Meerdere supply-demand vertices
+
+![image-20221225145459852](img/algo2/image-20221225145459852.png)
+
+Wat als we nu meerdere knopen hebben met een bepaalde supply/demand? De functie $b(v)$ stelt de supply/demand van een bepaalde vertex voor. We kunnen dit probleem herleiden naar ons vorige probleem door twee vertices toe te voegen.
+
+![image-20221225145619328](img/algo2/image-20221225145619328.png)
+
+* Een super-supply $s$: we verbinden deze met alle supply-vertices en geven hem een capaciteit gelijk aan $b(s_i)$ (de totale supply) en cost 0
+* Een super-demand $t$: hiermee verbinden we alle demand-vertices en geven hem een capaciteit $-b(v_i)$ (de totale demand) en cost 0
+* Nu kunnen we Busacker-Gowen toepassen tussen $s$ en $t$ met als $d = \sum_{i=1}^m b(s_i) = \sum_{i=1}^n -b(t_i)$, oftewel de totale demand.
+
+
+
+### Multi-commodity flow problems
+
+Tot nu toe was ons minimal cost flow probleem een **single-commodity** probleem. Dit komt bijvoorbeeld overeen met een netwerk oliepijpen. De olie is overal hetzelfde. Als we aan de andere kant een telefoonnetwerk beschouwen, hebben we een **multi-commodity** probleem, want niet elk telefoongesprek is hetzelfde. Je wilt niet dat als je iemand belt, je verbonden wordt met iemand anders. 
+
+We kunnen dit probleem als volgt formuleren:
+
+* Neem een netwerk $N=(V,A)$
+* Een set commodities $K$
+  * elke commodity $k$ wordt aangegeven door $b_k(v), \forall v\in V$
+    * $b_k(v) > 0$ bij een supply vertex voor commodity $k$
+    * $b_k(v) < 0$ bij een demand vertex voor commodity $k$
+* Nu kunnen we in elke arc een flow voor een specifieke commodity $f^k(a)$ hebben.
+
+De te minimaliseren functie is nu:
+$$
+\sum_{a \in A}c(a) \sum_{k\in K} f^k(a)
+$$
+Oftewel de som van de flow $f^k(a)$ in elke link voor elke commodity maal de kost $c(a)$ van die link. 
+
+De ingaande min de uitgaande flow in een vertex voor een commodity is dan gelijk aan de demand voor die commodity in die vertex:
+$$
+\sum_{a \in I(v)}f^k(a) - \sum_{a \in I'(v)} f^k(a) = b_k(v), \quad \forall v \in V, \forall k\in K
+
+\\ \\
+
+0 \leq \sum_{k \in K} f^k(a) \leq u(a), \quad \forall a \in A
+$$
+En de flow voor alle commodities mag niet hoger zijn dan de capaciteit van een arc.
+
+Er bestaan blijkbaar niet echt efficiënte oplossingen om problemen van deze aard op te lossen. Hier eindigt de cursus. Bedankt voor uw tijd. 
+
 
 
 # ------------Strings------------
@@ -1123,9 +1299,28 @@ Een **suffix tree** heeft hetzelfde doel als een suffix array, maar slaat de inf
 
 # Examenvragen
 
-* Geef de Knuth-MorrisPratt-tabel voor de tekst BIMSALABIM.
-* Ontwerp een eenvoudigere / snellere hashfunctie voor RK en pas ze toe bij het zoeken naar het patroon 2 6 5 3 5 in de tekst
-  * 3 1 4 1 5 9 2 6 5 3 5 8 9 7 9 3
+
+
+> Geef de Knuth-MorrisPratt-tabel voor de tekst BIMSALABIM.
+
+
+
+> Ontwerp een eenvoudigere / snellere hashfunctie voor RK en pas ze toe bij het zoeken naar het patroon 2 6 5 3 5 in de tekst
+> * 3 1 4 1 5 9 2 6 5 3 5 8 9 7 9 3
+
+
+
+> The edge-connectivity of a graph can be found by simply searching for the minimum number of edges that must be removed to disconnect the graph. For which type of graphs is this method to be preferred? For which type of graphs will the maximum flow calculations be more efficient?
+
+De edge-connectivity is de kleinste hoeveelheid edges die je moet verwijderen opdat de graaf niet meer samenhangend is. 
+
+De eerste methode is efficiënter op een schaarse graaf. Door de kleine hoeveelheid verbindingen kan je snel het minimum aantal verbindingen vinden door de graaf te doorzoeken.
+
+Bij een dichte graaf met meer verbindingen zal de techniek met de maximum flow efficiënter zijn. Deze techniek maakt gebruik van augmenterende paden en residunetwerken om iteratief een betere oplossing te vinden. In vergelijking met de eerste methode, die meer weg heeft van een brute-force techniek, zal de maximum-flow methode beter presteren bij een dichte graaf.
+
+
+
+
 
 # ------------Labo--------------
 
