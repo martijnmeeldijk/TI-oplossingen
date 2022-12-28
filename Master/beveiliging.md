@@ -624,57 +624,365 @@ Er zijn een aantal dingen die je best altijd doet:
 
 
 
+## Exchanging keys
 
+Hoe cool RSA ook is, het is uitermate traag in vergelijking met **symmetrische encryptie**. Als we veilige communicatie aan de hand van symmetrische encryptie willen opzetten tussen twee partijen, stuiten we echter op een ander probleem. Hoe zorgen we ervoor dat **beide partijen over de geheime sleutel beschikken**? We kunnen hem onmogelijk gewoon zomaar over een onveilige verbinding doorsturen, want dan is die geheime sleutel niet zo geheim meer.
+
+We behandelen in dit hoofdstuk een aantal manieren om te doen aan *key exchange*:
+
+* <u>Out of band</u>
+  * We geven de sleutel fysiek aan beide partijen. Een wachtwoord is een goed voorbeeld hiervan. Je moet iemand effectief een briefje geven of het doorvertellen. 
+* <u>Vorige sleutel hergebruiken</u>
+  * We kunnen een oude sleutel gebruiken om een nieuwe sleutel veilig door te sturen.
+* <u>Asymmetrische encryptie</u>
+  * We kunnen een gegenereerde geheime sleutel asymmetrisch encrypteren zodat alleen de bestemmeling hem kan lezen.
+* <u>Diffie-Hellman</u> 
+  * Zal ik je straks uitleggen.
+* <u>Vertrouwde third-party</u>
+  * We kunnen een vertrouwenspersoon gebruiken die verantwoordelijk is voor de sleutels. Dit kan ook weer op verschillende manieren, waarop we straks dieper zullen ingaan. 
+
+### Diffie-Hellman
+
+Diffie-Hellman zorgt ervoor dat twee partijen (Alice en Bob) een geheime sleutel kunnen kiezen over een onveilig netwerk, zonder deze sleutel effectief over het netwerk te moeten sturen. Dit doen ze als volgt:
+
+* Alice en Bob kiezen samen een priemgetal $p$ en een basis $g$
+  * Deze hoeven niet geheimgehouden te worden
+* Alice kiest een geheim getal $a$
+  * Ze stuurt Bob: $y_a = g^a \bmod p$
+* Bob kiest een geheim getal $b$
+  * Hij stuurt Alice: $y_b = g^b \bmod p$
+* Alice berekent: $y_b^a \bmod p$
+* Bob berekent: $y_a^b \bmod p$
+* Deze twee zijn aan elkaar gelijk, dit wordt de geheime sleutel.
+
+Ze bewijzen in de cursus niet dat $y_b^a \bmod p = y_a^b \bmod p$. Ik vond dit wel belangrijk om de één of andere reden.
+$$
+\begin{align}
+y_a^b \bmod p 
+
+&= (g^a \bmod p)^b \bmod p \\
+&= g^{ab} \bmod p \\
+&= (g^b \bmod p)^a \bmod p \\
+&= y_b^a \bmod p \\
+
+
+\end{align}
+$$
+Zo, dat hebben we dan ook weer gehad. Het coole hieraan is dat de geheime getallen $a$ en $b$ niet achterhaald kunnen worden uit de getallen die Bob en Alice effectief doorsturen, maar de wel beide tot hetzelfde resultaat komen. Het is wel belangrijk dat de getallen die Alice en Bob kiezen groot genoeg zijn, anders zouden ze ge-bruteforced kunnen worden. 
+
+
+
+Een leuke manier om de uitleg van daarnet voor te stellen is aan de hand van een afbeelding uit de slides:
+
+<img src="img/beveiliging/image-20221228152703831.png" alt="image-20221228152703831" style="zoom: 33%;" />
+
+Alice en Bob delen niet hun geheime kleuren, maar een mengeling van hun geheime kleur met een gedeelde kleur. Als de andere partij nu deze mengeling mengt met zijn eigen geheime kleur, komen beide partijen op dezelfde kleur uit.
+
+
+
+#### Tekortkomingen
+
+<img src="img/beveiliging/image-20221228153220447.png" alt="image-20221228153220447" style="zoom:50%;" />
+
+Op zichzelf is Diffie-Hellman eigenlijk niet voldoende om een veilig verbinding op te stellen. De methode is gevoelig aan **man-in-the-middle** aanvallen. Hier onderschept een aanvaller (Carol) de publieke sleutels van beide partijen, waarna hij met zijn eigen private sleutel een gedeeld geheim met zowel Alice als Bob zal hebben. Hij kan berichten tussen Alice en Bob decrypteren en terug encrypteren, terwijl Alice en Bob denken dat ze enkel met elkaar comuniceren.
+
+Dit probleem wordt verhopen bij enkele varianten op Diffie-Hellman.
+
+
+
+#### Varianten
+
+* Diffie-Hellman met ECC (Elliptic curve cryptography)
+  * Betere veiligheid
+* Fixed DH
+  * Elke entiteit heeft een vaste public en private key
+  * De public keys worden getekend door een certificate authority (CA)
+  * Dit betekent wel dat de secret key voor elke twee entiteiten vastligt
+* Anonymous DH
+  * Dit is de methode die we zonet hebben besproken
+  * Is wel nuttig als één entiteit nog geen sleutelpaar heeft
+* Ephemeral DH
+  * Private sleutels gegenereerd voor elke sessie
+  * Dus elke sessie een andere geheime sessiesleutel
+  * Authenticatie gebeurt via een ander algoritme (RSA, DSA, ...)
+  * Perfect forward secrecy: dit betekent dat als een aanvaller één sleutel kraakt, dit niet de veiligheid van het hele systeem in gevaar brengt (bv. door elke keer een nieuwe sessiesleutel aan te maken). 
+
+
+
+### Key distribution center (KDC)
+
+Een andere manier om ervoor te zorgen dat we sessiesleutels kunnen aanmaken is via een **key distribution center**. Elke gebruiker moet dan op voorhand over een geheime sleutel beschikken die hem toestaat om veilig met de KDC te communiceren. Dit noemen we de **master key**. Elke gebruiker heeft een master key gemeen met de KDC. Wanneer een gebruiker dan een **sessiesleutel** nodig heeft, vraagt hij hem aan de KDC. Deze sessiesleutel wordt dan versleuteld met de master key van die gebruiker en zo met de gebruiker gedeeld.
+
+<img src="img/beveiliging/image-20221228155611208.png" alt="image-20221228155611208" style="zoom:50%;" />
+
+1. Alice stuurt de KDC haar ID, die van Bob en een nonce
+2. De server antwoordt met een pakketje dat geëncrypteerd is met de master key van Alice. Alleen Alice kan dit openen. Dit pakketje bevat:
+   * De sessiesleutel
+   * De sessiesleutel, geëncrypteerd met de master key van Bob. 
+   * De nonce van daarnet, om replay aanvallen tegen te gaan
+3. Alice stuurt de sessiesleutel, geëncrypteerd met de master key van Bob door naar Bob. Alleen Bob kan deze lezen.
+4. Bob stuurt een nonce naar Alice, versleuteld met de sessiesleutel
+5. Alice ontsleutelt dit, voegt 1 aan de nonce toe en stuurt hem terug naar Bob. Zo is ze nu ook geauthenticeerd bij Bob.
+
+Dit noemt men het **Needham-Shroeder protocol**. Spijtig genoeg is er een aanval mogelijk. Een aanvaller kan met een gekraakte sessiesleutel stap 3 herhalen. Dan kan de aanvaller Bob laten denken dat hij met Alice praat. We kunnen het algoritme verbeteren om dit te voorkomen:
+
+![image-20221228160759422](img/beveiliging/image-20221228160759422.png)
+
+We voegen een paar extra dingen toe:
+
+1. Alice gaat eerst Bob erop attent maken dat ze wilt praten
+2. Bob antwoordt met een nonce die hij encrypteert met zijn master key
+3. Alice stuurt heel de bazaar door naar de KDC
+4. De KDC doet hetzelfde als bij het vorige voorbeeld, maar nu zit de nonce van Bob ook in het pakketje voor Bob, waardoor de replay aanval niet meer mogelijk is. 
+5. Alice stuurt het pakketje voor Bob door. Dankzij de nonce weet hij dat het pakketje *fresh* is.
+6. Bob encrypteert de nonce met de sessiesleutel
+7. Alice stuurt de geïncrementeerde nonce terug, opnieuw geëncrypteerd met de sessiesleutel.
+
+
+
+#### Kerberos
+
+Een implementatie die gebruik maakt van een KDC is Kerberos. Hier houdt een **Kerberos Authentication Server** een long-term-secret (een wachtwoord) bij voor elke gebruiker. De gebruiker kan dan inloggen bij de KAS en een sessiesleutel aanvragen waarmee hij zijn identiteit bij andere gebruikers kan bewijzen. 
+
+Dit mechanisme moet spijtig apart geïntegreerd worden voor elke functie zoals bestandstoegang, login, telnet, ... De centrale server is daarenboven ook een **single point of failure**.
+
+
+
+### Asymmetrische encryptie
+
+<img src="img/beveiliging/image-20221228162023292.png" alt="image-20221228162023292" style="zoom: 67%;" />
+
+De simpelste manier om een sessiesleutel te delen met asymmetrische encryptie is door de sessiesleutel te encrypteren met de publieke sleutel van Bob. Als we nu eerst deze sleutel encrypteren met de private sleutel van Alice, weet Bob ook dat Alice effectief Alice is. 
+
+Het probleem met deze aanpak is dat Bob eigenlijk niet zeker kan weten of de publieke sleutel van Alice effectief van Alice is. We moeten dus op een bepaalde manier weten welke publieke sleutels te vertrouwen zijn en welke niet. 
+
+Dit kan op meerdere manieren:
+
+* Publieke aankondiging
+  * Gebruikers sturen hun publieke sleutels de wijde wereld in. Dit is dom want je kan dit even goed vervalsen. 
+* Een openbaar beschikbare lijst
+  * Gebruikers moeten hun identiteit bewijzen om hun sleutel toe te mogen voegen aan de lijst
+* Een public-key authority
+  * Een vertrouwde third-party beheert de public keys van gebruikers. 
+
+
+
+#### Public key infrastructure (PKI)
+
+Een betere manier om publieke sleutels te beheren is via een **certificate authority** (CA). Een certificaat verbindt een publieke sleutel met een identiteit. De CA garandeert dan de geldigheid van deze verbintenis. We schuiven als het ware het vertrouwen door naar de CA, die we 'blind' vertrouwen. 
+
+Om een certificaat te krijgen, zal een entiteit dus zijn identiteit moeten bewijzen bij de CA. Om het werk van de CA wat beter verdelen, bestaan er ook **registration authorities** (RA). Een RA kan aanvragen voor certificaten verwerken, keys genereren voor users, certificaten intrekken, enzovoort. Een **third-party validation authority** (VA) kan informatie voorzien in naam van de CA.
+
+<img src="img/beveiliging/image-20221228175015117.png" alt="image-20221228175015117" style="zoom:50%;" />
+
+Wie kunnen we nu eigenlijk vertrouwen? We kunnen deze vraag een stuk simpeler maken dankzij de **chain of trust**. Er bestaat een hiërarchie binnen de verschillende CA's, met helemaal vanboven een (of meerdere) **root CA**'s. Onder de root CA zijn er andere CA's. Door hun certificaat te laten teken door de root CA, moeten we enkel de root CA vertrouwen om te weten dat de CA's op lagere niveaus ook betrouwbaar zijn. Zo ontstaat er een soort ketting van vertrouwen. 
+
+Typisch zal je computer of browser een aantel CA's hebben die hij standaard vertrouwt. Via deze CA's kan hij dan andere betrouwbare CA's binnenhalen.
+
+
+
+<img src="img/beveiliging/image-20221228180057607.png" alt="image-20221228180057607" style="zoom: 33%;" />
+
+In protocollen zoals **PGP** daarentegen, is de gebruiker volledig verantwoordelijk voor welke certificaten hij vertrouwt. Er wordt een **web of trust** model gehanteerd. Kort samengevat: Als Alice Bob vertrouwt, dan zal Alice Charlie vertrouwen als Bob Charlie vertrouwt. 
+
+
+
+##### Cross-certification
+
+Cross-certification is een proces waarbij twee CA's overeenkomen om elkaars certificaten te vertrouwen en te erkennen. Beide partijen kunnen dan certificaten uitdelen die door beide partijen vertrouwd worden. Dit kan ook in één richting. 
+
+
+
+##### Certificate renewal
+
+Een certificaat heeft een bepaalde vervaldatum. Om de zo veel tijd zal een certificaat vernieuwd moeten worden. Dit gebeurt liefst automatisch. De sleutels van het certificaat worden niet gewijzigd, enkel de datums.
+
+
+
+##### Certificate cancellation
+
+Na zijn einddatum is een certificaat niet meer geldig en kan het dus niet meer gebruikt worden. Een certificaat kan ook voor zijn einddatum ongeldig gemaakt worden, wanneer bijvoorbeeld de private sleutel is gelekt. Dan wordt het certificaat hopelijk op een **certificate revocation list (CRL)** geplaatst. Dit is een lijst met certificaten die niet meer geldig zijn. We moeten als we de geldigheid van een certificaat willen nakijken deze lijst raadplegen.
+
+Een andere manier om hetzelfde doel is het **Online Certificate Status Protocol** (OCSP). Deze voorziet een manier om een query te sturen om de geldigheid van een bepaald certificaat te controleren. 
+
+Beide benaderingen hebben voor- en nadelen. Bij een CRL zal je telkens een lange lijst moeten doorlopen, die misschien niet perfect up-to-date is. Bij OCSP zullen de servers van de CA meer werk moeten doen. Bovendien wordt de privacy van de gebruikers enigszins geschonden doordat de CA perfect kan achterhalen welke websites ze hebben bezocht aan de hand van de queries.
+
+
+
+##### X.509
+
+X.509 is een veelgebruikte standaard voor digitale certificaten en wordt ondersteund door een groot aantal software- en hardwareproducten, waaronder TLS/SSL, PGP, IPSec, SSH en vele anderen. Er kunnen specifieke stukjes informatie, genaamd **extensions** aan een certificaat toegevoegd worden om extra functionaliteit te definiëren. Deze voegen dan wel weer extra overhead to bij overmatig gebruik. 
+
+Je kan een X.509-certificaat op drie manieren verkrijgen:
+
+* Kopen van een CA (VeriSign, ...)
+* Een eigen certificate service starten en je certificaat laten tekenen door een CA
+* Je eigen certificaten ondertekenen
+
+Er zijn ook een aantal beperkingen aan X.509. Zo is de specificatie redelijk vaag in in sommige vlakken niet specifiek genoeg. De revocation van certificaten wordt ook niet zo goed gedaan. Soms duurt het te lang voordat browsers weten dat een bepaald certificaat ingetrokken is. Nog een probleem hierbij is dat bij het intrekken van een certificaat, de identiteit van de eigenaar ongeldig verklaard moet worden, ook al wou de eigenaar enkel een nieuw sleutelpaar. 
+
+Eigenlijk is het baseren van een certificaat op de identiteit van de eigenaar op zich al een slecht idee, want personen veranderen van naam, adres, woonplaats, email, ... 
+
+
+
+### Secure networking protocols
+
+#### Transport layer: TLS & SSL
+
+SSL (secure socket layer) is een transportlaagprotocol dat draait op poort 443, origineel ontwikkeld om de persoonlijke gegevens van klanten te beschermen bij e-commerce applicaties. Het is geïmplementeerd bovenop TCP, waardoor de bovenliggende applicatielaagprotocollen zoals HTTP en email onveranderd gebruik kunnen maken een veilige verbinding. 
+
+Toen SSL gestandaardiseerd werd, is de naam veranderd naar TLS (transport layer security). TLS is dus ongeveer hetzelfde als SSLv3. 
+
+
+
+
+
+##### Connections and sessions
+
+Een **connection** is in het kader van TLS een kanaal tussen een client en server. Een connection heeft typisch een korte levensduur. Een **session** daarentegen, is een manier om een *state* (zoals de keuze van versleutelingsalgoritmes) bij te houden aan de kant van de server. Een session wordt aangemaakt door het **TLS handshake protocol**. Wanneer de connection gesloten wordt, kan de session in een volgende connection verdergezet worden. Aan de andere kant kan in eenzelfde connection ook een nieuwe session gestart worden. 
+
+
+
+##### TLS protocols
+
+We hebben zonet het TLS handshake protocol vernoemd, maar TLS bestaat eigenlijk uit een aantal meer protocollen. 
+
+* <u>TLS handshake protocol</u>
+  * Maakt **wederzijdse authenticatie** tussen client en server mogelijk, dit verloopt volgens deze stappen:
+    * Phase 0: TCP-verbinding opzetten
+    * Phase 1: Defining security capabilities: de client en server onderhandelen welke algoritmes gebruikt worden
+    * Phase 2: Server authentication and key exchange: de server stuurt zijn certificaat en een server_key_exchange bericht als dit nodig is
+    * Phase 3: Client authentication and key exchange: de client kijkt het certificaat na
+    * Phase 4: Handshake afmaken: de client stuurt een change_cipher_spec en de server antwoordt met een change_cipher spec, gevolgd door 'finished'
+* <u>TLS change cipher spec protocol</u>
+  * Maar **één bericht mogelijk**: change_cipher_spec
+  * Zorgt ervoor dat de afwachtende staat wordt gekopieerd naar de huidige staat. Dit slaat op de gekozen encryptietechnieken.
+* <u>TLS alert protocol</u>
+  * Berichten voor **errors** en **waarschuwingen**, als er bijvoorbeeld ongeldige berichten ontvangen worden of er problemen zijn met de certificaten.
+* <u>TLS record protocol</u>
+  * **Basislaag** van TLS, **verwerkt** de **data** die verstuurd moet worden
+  * **Fragmenteert** de **data** en kan hem optioneel comprimeren (wordt bijna nooit gedaan)
+  * Voorziet **confidentialiteit en authenticatie voor TLS-verbindingen**
+  * Gebruikt twee sleutels, gemaakt door het handshake protocol
+    * Eén voor confidentialiteit
+    * Eén voor integriteit a.d.h.v. MAC
+* <u>TLS heartbeat protocol</u>
+  * Nieuw protocol bovenop het record protocol
+  * Voorziet een **liveliness check** die op elk moment (behalve tijdens de handshake) kan gestuurd worden
+  * Stuurt een HeartbeatRequest die moet beantwoord worden met een HeatbeatResponse met exact dezelfde payload
+  * Heartbleed bug: aanvaller stuurt een HeartbeatRequest met een te lange length parameter en de server antwoordt met data uit zijn geheugen
+
+
+
+##### TLS/SSL vs SSH
+
+Zowel TLS als SSH worden gebruikt om de transportlaag te beveiligen aan de hand van tunnels.
+
+Wat is nu het verschil tussen TLS en SSH? Hier een mooie tabel.
+
+| TLS/SSL                                                | SSH                                                          |
+| ------------------------------------------------------ | ------------------------------------------------------------ |
+| Gemaakt om algemeen transportlaagverkeer te beveiligen | Voornamelijk gebruikt voor veilige shell toegang tot servers |
+| Niet aanwezig                                          | Multiplexing, terminal management                            |
+| Wordt gedaan in bovenliggende protocollen              | Gebruikersauthenticatie inbegrepen                           |
+| X.509 certificaten                                     | Eigen formaat                                                |
+| poort 443                                              | poort 22                                                     |
+| FTP-TLS                                                | SFTP                                                         |
+| Handshake is efficienter                               |                                                              |
+
+
+
+##### Speedups
+
+Er zijn ook een aantal manieren om de overhead van TLS te verminderen:
+
+* Verkorte handshake: door de session bij te houden moeten we als de client een volgende keer bij de server komt geen volledige handshake meer doen.
+* False start: al data beginnen sturen wanneer de handshake niet af is. We beginnen al met data sturen als de handshake aan onze kant klaar is, maar we nog geen antwoord hebben. 
+* Early termination: servers dichterbij de gebruikers zetten om latency the beperken. Deze servers fungeren als proxy voor de origin servers en kunnen dan de round-trip tijd beperken.
+* Record size: voor nieuwe verbindingen moeten we de record size klein houden om latency te beperken. Voor actieve verbindingen kunnen we beter grotere records gebruiken voor minder overhead. Het is wel typisch niet mogelijk om de record size in te stellen vanaf de applicatielaag.
+* Certificate chain: een te lange certificate chain zorgt voor extra overhead.
 
 ## Test jezelf
 
-True or false: the SSH transport layer protocol encrypts TCP packets. Explain.
-
-Explain the functions of the SSH transport layer protocol, SSH user authentication protocol and SSH connection protocol
-
-In which scenarios does it make sense to do a SSH key re-exchange? Why?
-
-What is the difference between a SSH session and a SSH channel? Which channels are supported?
-
-Which port number does SSH typically listen to?
-
-Explain the difference between local and remote port forwarding.
+>  True or false: the SSH transport layer protocol encrypts TCP packets. Explain.
 
 
 
+> Explain the functions of the SSH transport layer protocol, SSH user authentication protocol and SSH connection protocol
 
 
-Explain the benefits of ephemeral DH over traditional DH.
 
-What is the difference between a Key Distribution Centre (KDC) and Public Key Infrastructure (PKI)?
+> In which scenarios does it make sense to do a SSH key re-exchange? Why?
 
-What are the advantages / disadvantages of both approaches?
 
-List 5 reasons why a certificate might have to be revoked. How can this revocation be implemented?
 
-Give example restrictions that can be part of a certificate. Why are these relevant?
+> What is the difference between a SSH session and a SSH channel? Which channels are supported?
+
+
+
+> Which port number does SSH typically listen to?
+
+
+
+> Explain the difference between local and remote port forwarding.
 
 
 
 
 
-What are the main differences between TLS and SSH?
-
-TLS encrypted packets are authenticated when they are transmitted. Does this authentication mechanism use a shared secret key, or a private key? Why?
-
-Is TLS vulnerable to traffic pattern analysis attacks? Why (not)?
-
-Is the TLS record header included in each transmitted TCP packet?
-
-For which applications / use cases would you prefer SSH over TLS (and vice versa)? Why?
+> Explain the benefits of ephemeral DH over traditional DH.
 
 
 
-Give 5 examples of security problems that can be solved by IPsec but not by TLS or SSH
+> What is the difference between a Key Distribution Centre (KDC) and Public Key Infrastructure (PKI)?
+>
+> What are the advantages / disadvantages of both approaches?
 
-Which of the following security services can be achieved with IPsec: access control, integrity, authentication, confidentiality (which types)?
 
-Which IPsec protocols provide traffic flow confidentiality? Why is this only a limited form of confidentiality?
+
+> List 5 reasons why a certificate might have to be revoked. How can this revocation be implemented?
+
+
+
+> Give example restrictions that can be part of a certificate. Why are these relevant?
+
+* Key usage: this restiction specifies how the keys can be used. (signing, encrypting, ...)
+* Constraints on the name space for subsequent certificates. 
+  * Subject can for instance only issue certificates for units of their own company
+* Maximal certification path length
+  * Specifies the maximum amount of intermediate certificates in the certificate path between the end entity certificate and the root certificate.
+
+
+
+> What are the main differences between TLS and SSH?
+
+
+
+> TLS encrypted packets are authenticated when they are transmitted. Does this authentication mechanism use a shared secret key, or a private key? Why?
+
+
+
+> Is TLS vulnerable to traffic pattern analysis attacks? Why (not)?
+
+
+
+> Is the TLS record header included in each transmitted TCP packet?
+
+
+
+> For which applications / use cases would you prefer SSH over TLS (and vice versa)? Why?
+
+
+
+> Give 5 examples of security problems that can be solved by IPsec but not by TLS or SSH
+
+
+
+> Which of the following security services can be achieved with IPsec: access control, integrity, authentication, confidentiality (which types)?
+
+
+
+> Which IPsec protocols provide traffic flow confidentiality? Why is this only a limited form of confidentiality?
 
 # Chapter 5: Software and systems security
 
