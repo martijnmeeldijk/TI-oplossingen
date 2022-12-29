@@ -9,13 +9,13 @@ Wanneer men minder dan 8/20 heeft voor minstens één van de onderdelen kan men 
 
 # -----------Theorie--------------
 
-# Chapter 1: Introduction
+# <u>Chapter 1: Introduction</u>
 
 Hier worden een aantal voorbeeldjes gegeven van waarom je je systeem goed moet beveiligen en wat er allemaal kan mislopen. Ik ga hier niet verder op ingaan.
 
 
 
-# Chapter 2: Basic concepts 
+# <u>Chapter 2: Basic concepts</u> 
 
 ## Confidentiality
 
@@ -168,7 +168,7 @@ This is to ensure that the message is unique and it hasn't been replayed or tamp
 
 
 
-# Chapter 3: Encryption algorithms
+# <u>Chapter 3: Encryption algorithms</u>
 
 ## Steganography
 
@@ -487,7 +487,7 @@ Uiteindelijk hanteert men: $\text{HMAC}_K(M) = H((K^+\oplus o) \vert\vert H((K^+
 
 > What is the main difference between a digital signature and a MAC?
 
-# Chapter 4: Network and communication security
+# <u>Chapter 4: Network and communication security</u>
 
 ## SSH
 
@@ -825,9 +825,9 @@ Eigenlijk is het baseren van een certificaat op de identiteit van de eigenaar op
 
 
 
-### Secure networking protocols
+## Secure networking protocols
 
-#### Transport layer: TLS & SSL
+### Transport layer: TLS & SSL
 
 SSL (secure socket layer) is een transportlaagprotocol dat draait op poort 443, origineel ontwikkeld om de persoonlijke gegevens van klanten te beschermen bij e-commerce applicaties. Het is geïmplementeerd bovenop TCP, waardoor de bovenliggende applicatielaagprotocollen zoals HTTP en email onveranderd gebruik kunnen maken een veilige verbinding. 
 
@@ -837,13 +837,13 @@ Toen SSL gestandaardiseerd werd, is de naam veranderd naar TLS (transport layer 
 
 
 
-##### Connections and sessions
+#### Connections and sessions
 
 Een **connection** is in het kader van TLS een kanaal tussen een client en server. Een connection heeft typisch een korte levensduur. Een **session** daarentegen, is een manier om een *state* (zoals de keuze van versleutelingsalgoritmes) bij te houden aan de kant van de server. Een session wordt aangemaakt door het **TLS handshake protocol**. Wanneer de connection gesloten wordt, kan de session in een volgende connection verdergezet worden. Aan de andere kant kan in eenzelfde connection ook een nieuwe session gestart worden. 
 
 
 
-##### TLS protocols
+#### TLS protocols
 
 We hebben zonet het TLS handshake protocol vernoemd, maar TLS bestaat eigenlijk uit een aantal meer protocollen. 
 
@@ -874,7 +874,7 @@ We hebben zonet het TLS handshake protocol vernoemd, maar TLS bestaat eigenlijk 
 
 
 
-##### TLS/SSL vs SSH
+#### TLS/SSL vs SSH
 
 Zowel TLS als SSH worden gebruikt om de transportlaag te beveiligen aan de hand van tunnels.
 
@@ -892,7 +892,7 @@ Wat is nu het verschil tussen TLS en SSH? Hier een mooie tabel.
 
 
 
-##### Speedups
+#### Speedups
 
 Er zijn ook een aantal manieren om de overhead van TLS te verminderen:
 
@@ -901,6 +901,278 @@ Er zijn ook een aantal manieren om de overhead van TLS te verminderen:
 * Early termination: servers dichterbij de gebruikers zetten om latency the beperken. Deze servers fungeren als proxy voor de origin servers en kunnen dan de round-trip tijd beperken.
 * Record size: voor nieuwe verbindingen moeten we de record size klein houden om latency te beperken. Voor actieve verbindingen kunnen we beter grotere records gebruiken voor minder overhead. Het is wel typisch niet mogelijk om de record size in te stellen vanaf de applicatielaag.
 * Certificate chain: een te lange certificate chain zorgt voor extra overhead.
+
+
+
+### Network layer: IPSec & VPN
+
+#### IPSec
+
+De netwerklaag is gevoelig aan een aantal aanvallen waaronder DOS attacks, replay attacks, source spoofing, spionage en meer. Bovendien voorziet IP geen data integriteit of confidentialiteit. Routeringsapplicaties (die op de netwerklaag draaien) zijn ook gevoelig aan vervalste berichten. 
+
+<img src="img/beveiliging/image-20221229112312176.png" alt="image-20221229112312176" style="zoom:50%;" />
+
+Om een aantal van deze problemen te verhelpen maken we gebruik van **IPSec**. We kunnen IPSec op twee manieren gebruiken om onze verbinding te beveiligen:
+
+* LAN-to-LAN
+  * Dit is een **VPN**, we verbinden een twee netwerken (typisch bedrijfsnetwerken) met elkaar over het internet via een tunnel.
+  * Apparaten in beide netwerken kunnen veilig met elkaar communiceren alsof ze zich in hetzelfde netwerk bevinden
+* Client-to-LAN
+  * Denk aan het scenario waar een werknemer van thuis uit met het bedrijfsnetwerk wilt verbinden. 
+  * Dit wordt vaak ook een VPN genoemd.
+
+
+
+IPSec heeft een paar voor- en nadelen:
+
+* Voordelen
+  * Onafhankelijk van de gebruikte applicatie (en kan dus beveiliging voorzien voor applicaties die dit niet zelf doen)
+  * Beveiligingsmechanismen beperkt tot enkele toegangspunten
+  * Mogelijk transparant voor eindgebruikers (gebruikers moeten zich niet al te veel zorgen maken over beveiliging)
+  * Individuele beveiliging per gebruiker mogelijk
+* Nadelen
+  * Geen beveiliging voorbij de veilige gateway
+  * Extra overhead door encryptie
+  * Toegevoegde complexiteit
+
+
+
+##### IPSec modes
+
+IPSec kan in twee verschillende modes draaien:
+
+* <u>Layer 2 tunnel mode (default)</u>
+  * Typisch gebruikt voor een tunnel tussen twee gatways
+  * De volledige IP datagram wordt beschermd
+  * Automatische NAT traversal
+* <u>Transport mode</u>
+  * Alleen de payload wordt geëncrypteerd 
+  * Dit wordt meestal gebruikt om beveiliging te voorzien voor bovenliggende protocollen
+  * NAT traversal niet ondersteund, heb je een apart ding (NAT-T) voor nodig
+
+
+
+##### Protocols
+
+IPSec bestaat uit twee protocollen, Authentication Header (AH) en Encapsulating Security Payload (ESP). Beide protocollen kunnen data-integriteit, authenticatie en/of confidentialiteit voorzien. Dit is afhankelijk van de keuze van protocollen. 
+
+* <u>Authentication header (AH)</u>
+  * Gebruikt voor zowel transport als tunnel mode
+    * <img src="img/beveiliging/image-20221229113118625.png" alt="image-20221229113118625" style="zoom: 50%;" /> 
+    *  <img src="img/beveiliging/image-20221229113146131.png" alt="image-20221229113146131" style="zoom:50%;" /> 
+  * **Authenticatie en integriteit** wordt bereikt met een versleutelde hashfunctie om een **MAC** te maken. Deze maakt gebruik van alle velden in het IP datagram die niet in-transit aangepast moeten worden. 
+  * Dit protocol voorziet **geen confidentialiteit**
+* <u>Encapsulating security payload (ESP)</u>
+  * Ook gebruikt voor zowel transport als tunnel mode	
+    * <img src="img/beveiliging/image-20221229113454197.png" alt="image-20221229113454197" style="zoom:50%;" /> 
+    * <img src="img/beveiliging/image-20221229113506174.png" alt="image-20221229113506174" style="zoom:50%;" /> 
+  * Voorziet **confidentialiteit**: de data en optioneel de IP-header worden versleuteld
+  * Optionele **authenticatie**: aan de hand van een MAC
+  * Data origin authenticatie, **integriteit**, optionele anti-replay
+  * Voorziet bescherming tegen **traffic-flow analyse**, dit is wel niet mogelijk in transport mode
+* <u>AH + ESP</u>
+  * De combinatie kan zowel in transport als tunnel mode gebruikt worden
+    * <img src="img/beveiliging/image-20221229114347010.png" alt="image-20221229114347010" style="zoom:50%;" /> 
+    * <img src="img/beveiliging/image-20221229114358572.png" alt="image-20221229114358572" style="zoom:50%;" /> 
+  * Je kan volgens mij ook één van de twee in tunnel mode gebruiken met de ander in transport mode
+
+
+
+##### Security associations
+
+Een security association (SA) is een **éénrichtingsrelatie** tussen de zender en de ontvanger. Een SA beschrijft een **overeenkomst** van netwerkparameters tussen twee entiteiten om een veilige verbinding te kunnen voorzien. Voor bidirectioneel zijn twee SA's nodig. Het is mogelijk om meerdere security associations bovenop elkaar, met verschillende eindpunten vast te leggen. Dit resulteert in een tunnel met meerdere lagen. 
+
+<img src="img/beveiliging/image-20221229115444928.png" alt="image-20221229115444928" style="zoom:50%;" />
+
+
+
+#### VPN
+
+Een VPN is een veilige site-to-site tunnel, en biedt een hoop meer mogelijkheden dan een veilige remote login. We hebben gezien hoe IPSec kan gebruikt worden om een VPN te maken, maar er zijn nog een hele hoop andere opties zoals PPTP (Point-to-point tunneling protocol), L2TP (Layer 2 tunneling protocol), SSL/TLS, SSH, SSTP (Secure socket tunneling protocol van Windows).
+
+Alhoewel IPSec een zeer goed protocol is, is het zeer complex om te gebruiken. Er zijn een aantal problemen met compatibiliteit tussen verschillende implementaties en bovendien doet IPSec graag moeilijk met NAT. We zullen een aantal van de opties die hierboven vermeld staan bespreken en vergelijken. 
+
+
+
+* <u>Point-to-point tunneling protocol (PPTP)</u>
+  - [x] Ingebouwd op bijna alle client-platformen
+  - [x] Gemakkelijk op op te zetten
+  - [x] Snel
+  - [ ] Totaal niet veilig, de gebruikte CHAPv2 authenticatie is vulnerable
+  - [ ] Waarschijnlijk zit er een backdoor in voor de NSA
+* <u>openVPN</u>
+  - [x] Zeer configureerbaar en veilig (meerdere encryptiealgoritmes mogelijk)
+  - [x] Kan firewalls omzeilen
+  - [x] Open source (en dus geen NSA backdoors)
+  - [ ] Third party software nodig en soms vervelend om op te zetten
+  - [ ] Beveiliging bovenop transportlaag i.p.v. netwerklaag
+* <u>Layer 2 tunneling protocol</u>
+  - [x] Heeft zelf geen encryptie en gebruikt dus IPSec
+  - [x] Zeer veilig en gemakkelijk op te zetten
+  - [ ] Misschien ook mee geprutst door de NSA
+  - [ ] Trager dan openVPN en heeft het soms moeilijk met firewalls
+
+
+
+### Data link layer: WEP & WPA
+
+Op de datalinklaag zijn er een aantal aanvallen mogelijk.
+
+* Content address memory (CAM) exhaustion attack
+  * We sturen heel veel pakketjes naar een switch zodat zijn CAM tabel vol raakt
+  * Nu moet hij defaulten naar flooding
+* ARP spoofing
+  * Gespoofte IP-pakketten broadcasten
+* DHCP starvation
+  * Continu DHCP requests uitsturen
+* Packet overhearing
+  * Afluisteren bij draadloze netwerken
+* Deauth attack
+  * Gespoofte deauthenticatieberichten sturen op draadloze netwerken
+* Hidden node attacks
+
+
+
+#### Hidden node problem
+
+![image-20221229122005882](img/beveiliging/image-20221229122005882.png)
+
+Het hidden node problem doet zich voor in een situatie waar node A en C elkaar niet kunnen horen. Zelfs als A eerst naar het kanaal luistert alvorens hij data begint te sturen, kan het dat C ook data stuurt en er zich een botsing voordoet. Dit kan voorkomen worden met een **Request-to-send/Clear-to-send** (RTS/CTS). Als A wilt praten met B, stuurt hij eerst een RTS, waarop B antwoordt met een CTS als hij beschikbaar is. C hoort de CTS ook en weet dus dat B bezig is met het ontvangen van data van A. 
+
+
+
+#### WEP
+
+Om een draadloze verbinding te beveiligen kan je gebruik maken van WEP. Ondertussen is WEP achterhaald. Hier een klein overzicht van de dingen die WEP wel en niet voorziet:
+
+- [x] Authenticatie: met een shared key
+- [x] Confidentialiteit: RC4 stream cipher
+- [x] Integriteit: CRC-32
+- [ ] Sleutelbeheer: elke computer gebruikt dezelfde statische pre-shared key. Deze moet handmatig verdeeld worden.
+- [ ] Bescherming tegen replay aanvallen
+
+
+
+In een draadloos netwerk kan je (met of zonder WEP) op een aantal verschillende manieren authenticeren:
+
+* Open system authentication: eigenlijk gewoon geen authenticatie
+* Shared-key authentication: met een wachtwoord
+* Authenticatie met SSID van Access Point
+  * Als de SSID van de AP niet gebroadcast wordt, kan je alleen authenticeren als je de SSID kent
+  * Is makkelijk af te luisteren
+* MAC adres filtering
+  * Laat alleen bepaalde MAC-adressen verbinden
+  * Valt gemakkelijk te spoofen
+
+
+
+WEP is super onveilig om drie redenen:
+
+* Kleine en statische sleutels: een sleutel is maar 40 bits en moet handmatig ingesteld worden
+* Kleine plaintext initialisatievector (IV): de IV van 24 bits wordt in plaintext meegestuurd, waardoor een dictionary attack erg makkelijk is
+* Slechte encryptiealgoritmes
+
+
+
+#### WPA
+
+WPA is een heuse verbetering op WEP. WPA gebruikt ook de RC4 stream cipher, maar met een IV van 48 bits. Door de toevoeging van TKIP en het 802.1X authenticatieframework zijn de volgende mogelijkheden verbeterd of toegevoegd:
+
+* Sleutelbeheer: met 802.1X
+* Authenticatie: met 802.1X
+* Confidentialiteit: met TKIP
+* Integriteit
+* Bescherming tegen replay-aanvallen
+
+Het 802.1X authenticatieframework gebruikt **EAP (Extensible authentication protocol)**, dat uitbreidbaar en daardoor ook future-proof is, om authenticatierequests af te handelen. Het maakt ook gebruik van **RADIUS (remote authentication dial-in user service** om veilige communicatie tussen de access point en authenticatieserver mogelijk te maken. In het 802.1X werkt met met drie entiteiten:
+
+* **Supplicant**: de draadloze client
+* **Authenticator**: typisch de access point
+* **Authentication server**: bevat gebruikersgerelateerde authenticatieinfo
+
+
+
+## Firewalls
+
+Een firewall is een netwerkbeveiligingssysteem dat wordt gebruikt om toegang tot een computer of een netwerk te beheren en te beveiligen. Een firewall kan worden gebruikt om te bepalen welk verkeer wordt toegestaan om een computer of netwerk te bereiken en welk verkeer wordt geblokkeerd. Dit kan op basis van verschillende criteria, zoals het IP-adres van de verzender, het protocol dat wordt gebruikt of de poort die wordt gebruikt. De bedoeling is om algemene bescherming te bieden tegen aanvallen van buitenaf.
+
+Belangrijk om te weten is dat een firewall als een soort muur rond je bedrijf fungeert. Hij biedt geen bescherming tegen aanvallen van binnenuit, evenals tegen aanvallen die de firewall omzeilen. De bescherming tegen malware is ook beperkt.
+
+We behandelen in de cursus drie soorten firewalls:
+
+* <u>Packet filter</u>
+  * Op basis van filter rules wordt bepaald welke pakketjes door mogen en welke niet. Dit kan op basis van source IP, destination IP, source port, destination port, het gebruikte protocol, router interface, ...
+  * De filter volgt ook een mogelijke **default policy**:
+    * **Block** (discard): alle pakketten die niet aan een bepaalde regel voldoen worden tegengehouden.
+    * **Allow** (forward): alles wat niet expliciet wordt tegengehouden, mag door.
+  * Deze manier is simpel en efficiënt, maar voorziet geen beveiliging tegen aanvallen op de applicatielaag. Er wordt ook geen gebruikersauthenticatie voorzien.
+  * Makkelijk om **fouten in de configuratie** te veroorzaken
+  * Gevoelig aan de volgende aanvallen:
+    * **IP spoofing**
+    * **Fragmentation attack**: IP pakket zo klein fragmenteren dat de TCP header in het volgende pakket zit
+  * Kan verbeterd worden met **stateful inspection**
+    * Dan worden hele verbindingen meegevolgd en kunnen dan opeenvolgende pakketjes van dezelfde flow automatisch doorgelaten worden. Dit **spaart resources** uit.
+    * Dan moet je alleen **outbound rules** defniniëren, want antwoorden op requests naar buiten worden automatisch toegestaan. 
+    * Het nadeel is dat dit **niet goed** werkt voor **ander verkeer dan TCP**
+* <u>Circuit-level gateway</u>
+  * <img src="img/beveiliging/image-20221229145137904.png" alt="image-20221229145137904" style="zoom:50%;" /> 
+  * Werkt als een relay op het niveau van TCP (soms UDP)
+  * De gateway maakt TCP-verbindingen in naam van de client en fungeert dus als een soort proxy
+  * Inspecteert en filtert die door de verbinding komen
+  * Voorziet ook authenticatie, zo kan je geauthenticeerd verkeer door de firewall laten
+  * Voorbeeld: **SOCKS**
+    * Maar enkele wijzigingen nodig bij client of TCP/IP stack voor gebruik
+    * Gebruikt voor dynamic SSH port forwarding
+* <u>Application level gateway</u>
+  * <img src="img/beveiliging/image-20221229150036297.png" alt="image-20221229150036297" style="zoom:50%;" /> 
+  * Deze werkt op de **applicatielaag**
+  * Voorziet een proxy voor een **specifieke applicatie** (http, SMTP, FTP, ...)
+  * Heeft toegang tot het volledige protocol en kan de **pakketten volledig inspecteren**
+  * Net als bij een circuit-level gateway moeten users zich authenticeren
+  * Is veiliger dan de andere opties, mede doordat de gebruikte applicaties beperkt worden
+  * Vereist wel veel aanpassingen aan de kant van de gebruiker
+  * Meer processing nodig
+  * Wordt niet door alle services ondersteund
+
+
+
+### Setups
+
+Een **bastion** is een computer die specifiek is ontworpen om bestand te zijn tegen aanvallen. Deze computer draait typisch één applicatie, zoals een proxy, die blootgesteld wordt aan het internet en fungeert als **single point of access**.
+
+In een simpele **dual homed firewall** wordt gebruikgemaakt van een bastion. Deze dient hier als gateway naar het netwerk en zit vlak voor de firewall. Hij heeft twee interfaces: één naar binnen en één naar buiten.
+
+<img src="img/beveiliging/image-20221229150932594.png" alt="image-20221229150932594" style="zoom:67%;" />
+
+
+
+
+
+In een meer realistische implementatie van een **dual homed** firewall zet je voor beide interfaces van de bastion een **packet filter**. De interne filter, alsook de externe filter, laten dan enkel verkeer van en naar de bastion toe. Dit zorgt er wel voor dat de bastion een single point of failure en een bottleneck in het netwerk wordt. Applicatielaagprotocollen zonder ondersteuning voor proxies zullen bovendien niet werken op deze set-up. 
+
+<img src="img/beveiliging/image-20221229151322641.png" alt="image-20221229151322641" style="zoom: 67%;" />
+
+
+
+
+
+In een andere situatie kan je bijvoorbeeld een extern subnetwerk toevoegen, deze bevat dan niet-kritische services, zoals een publieke webserver.
+
+<img src="img/beveiliging/image-20221229151801200.png" alt="image-20221229151801200" style="zoom:50%;" />
+
+
+
+
+
+Een andere mogelijke setup is een **screened host firewall, single homed bastion**, waar meer flexibiliteit mogelijk is in ruil voor minder veiligheid.
+
+<img src="img/beveiliging/image-20221229152000187.png" alt="image-20221229152000187" style="zoom:67%;" />
+
+
+
+Een **screened subnet firewall** is een mooie balans tussen de vorige twee setups. Er wordt een geïsoleerd subnetwerk gemaakt dat in de gaten wordt gehouden door de bastion. Dit noemt men een **DMZ (demilitarized zone)**.
+
+<img src="img/beveiliging/image-20221229152420871.png" alt="image-20221229152420871" style="zoom:67%;" />
 
 ## Test jezelf
 
@@ -984,33 +1256,378 @@ Er zijn ook een aantal manieren om de overhead van TLS te verminderen:
 
 > Which IPsec protocols provide traffic flow confidentiality? Why is this only a limited form of confidentiality?
 
-# Chapter 5: Software and systems security
-
-True or false: to generate an S/MIME session key, first a key exchange algorithm is invoked
-
-What is the purpose of degenerate signedData messages in S/MIME?
-
-Explain the workings of cross-site scripting. How can one defend against this type of attack?
-
-Explain the differences between XSS and CSRF
 
 
+//TODO vragen over WEP, WPA en Firewalls
 
-What are the advantages and disadvantages of increasing the length of hash chains / rainbow tables?
+# <u>Chapter 5: Software and systems security</u>
 
-Explain the major differences between hash chains and rainbow tables.
+## Secure applications 
 
-What is 2-factor authentication?
+We zullen nu de beveiliging van een aantal applicaties bespreken.
 
-What are the security advantages of using security tokens vs software based approaches?
+### Email: MIME & S/MIME
 
-Which are the advantages of using full disk encryption vs manual encryption?
+SMTP is een beetje gebrekkig. Het ondersteunt alleen 7-bit ASCII en de implementatie verschilt soms, met nog andere bijkomende problemen die me niet zo veel kunnen schelen. 
 
-# Chapter 6: Intrusion detection
+**MIME (multipurpose internet mail extensions)** breidt email uit om ondersteuning te voorzien voor:
+
+* Andere encodings
+* Attachments
+* Message bodies met meerdere delen
+* Header informatie in andere encodings
+
+De specificatie beschrijft vijf nieuwe headervelden, nieuwe inhoudsformaten en andere transfer encodings. De nieuwe headers zijn:
+
+* **MIME-version**
+* **Content-Type**: geeft aan welk soort inhoud de mail bevat (text/plain, image/jpeg, application/octet-stream, ...)
+* **Content-Transfer-Encoding**: beschrijft hoe de inhoud wordt ge-encodeerd voor overdracht (8-bit, base64, quoted-printable)
+* **Content-ID**: een identifier voor een specifiek stuk content
+* **Content-Description**: beschrijving van de inhoud
 
 
 
-# Chapter 7: Future trends
+**S/MIME (secure/MIME)** voegt veiligheidsuitbreidingen toe aan MIME. Het zorgt ervoor dat gebruikers versleutelde berichten en bijlagen kunnen sturen en ontvangen. Het protocol maakt gebruik van certificaten en PKI om deze functies te kunnen voorzien. De ondersteunde functies zijn:
+
+* Enveloped data
+  * `application/pkcs7-mime; smime-type = enveloped-data`
+  * De inhoud wordt versleuteld
+* Signed data
+  * `application/pkcs7-mime; smime-type = signed-data`
+  * Er wordt een handtekening toegevoegd
+  * De inhoud en handtekening worden ge-encodeerd in base64
+* Clear-signed data
+  * `multipart/signed`
+  * Er wordt een handtekening toegevoegd, maar enkel de handtekening wordt ge-encodeerd in base64
+  * Een ontvanger die S/MIME niet ondersteunt kan het bericht lezen, maar de handtekening niet controleren
+* Signed and enveloped data
+  * Combinatie van versleuteling en digitale handtekening
+
+S/MIME ondersteunt verschillende algoritmes voor hashing, key exchange, handtekeningen en symmetrische versleuteling. Het voegt ook nieuwe content-types toe, waaronder diegene in de opsomming hierboven. 
+
+
+
+In het algemeen volgt S/MIME de volgende stappen:
+
+1. MIME bericht wordt gegenereerd volgens de gewone MIME regels
+2. Het bericht wordt verwerkt tot een PCKS object volgens de S/MIME regels
+   * Samen met veiligheidsinfo zoals: algoritmes, certificaten, ...
+3. Het PCKS wordt behandeld als een message body en ingepakt in MIME (met gepaste headers)
+4. Het bericht of deelbericht moet omgezet worden in *canonical form*
+   * Dit is een gestandaardiseerd formaat en voorkomt dubbelzinnigheden
+
+
+
+#### Enveloped data
+
+Om de inhoud van een bericht te versleutelen, gebruik je in S/MIME de functie `envelopedData`. Om een bericht op deze manier te maken volg je deze stappen:
+
+1. Maak een sessiesleutel
+
+2. Encrypteer de sessiesleutel voor elke ontvanger
+
+3. Maak een veld `RecipientInfo` voor elke ontvanger, deze bevat: 
+
+   * Identificatie van het certificaat van de ontvanger
+   * Encryptiealgoritme voor de geëncrypteerde sessiesleutel
+   * Geëncrypteerde sessiesleutel
+
+4. Encrypteer het bericht met de sessiesleutel
+
+5. `RecipientInfo` + geëncrypteerde inhoud = `envelopedData`
+
+6. Encodeer de `envelopedData` in base64
+
+   
+
+#### Signed data
+
+Om een bericht te ondertekenen worden de volgende stappen ondernomen:
+
+1. Kies een hashfunctie
+2. Bereken de hashwaarden van het te ondertekenen bericht
+3. Versleutel de hashwaarden (met bv. RSA)
+4. Maak een veld `SignerInfo` met:
+   * Certificaat van de afzender
+   * Identificatie van de hashfunctie en encryptiealgoritme
+   * Versleutelde hashwaarde = digitale handtekening
+5. SignerInfo + het bericht = `signedData`
+6. Encodeer de `signedData` in base64
+
+Bij **clear signing** bestaat het bericht uit twee delen. Eén deel is onveranderd, zodat het ondersteund wordt door MIME. Het tweede is hetzelfde als het resultaat van signedData, maar het veld voor het ondertekend bericht blijft leeg. 
+
+We kunnen een **certificate registration request** sturen door hetzelfde proces te doorlopen, maar met een lege message body en `SignerInfo`. We voegen dan een veld `certificationRequestInfo` toe. Dit bevat de naam en public key van het te verifiëren certificaat. Het request wordt dan ondertekend met de private key van de gebruiker. Dit wordt gebruikt voor berichten die alleen certificaten of CRL's bevatten.
+
+
+
+#### Extensions
+
+S/MIME voorziet ook een aantal uitbreidingen:
+
+* Signed receipts: bewijs van ontvangst
+* Security labels: vertelt hoe gevoelig de inhoud is. Dit is nuttig voor authorisatie
+* Secure mailing lists: Mail List Agents (MLA) worden gebruikt om veilig mails naar veel ontvangers te sturen
+* Signing certificates: bindt een certificaat aan een bericht om vervalsing door substitutie van het certificaat te vermijden
+
+
+
+### Web applications
+
+#### Vulnerabilities
+
+Is je applicatie wel effectief zo veilig als je denkt? Ookal gebruik je een state-of-the art firewall en het hoogste encryptieniveau van TLS, kan je door fouten in je applicatie nog steeds beveiligingslekken creëren. Hier zien we wat er allemaal kan mislopen.
+
+* <u>Misconfiguratie</u>
+  * Outdated software is altijd een probleem
+  * Te gemakkelijke wachtwoorden
+  * Slecht verstopte source code
+  * Een machine met een trojan horse erin (hoezo is dit misconfiguratie??)
+* <u>Client-side controls</u>
+  * Reken niet op client-side dingen die niet op de server gecontroleerd worden
+* <u>Direct object reference</u>
+  * Referenties naar interne objecten die niet beschermd zijn
+  * Een hacker kan hier ongeautoriseerde toegang tot krijgen (forceful browsing)
+* <u>Authentication errors</u>
+  * zwakke wachtwoorden, brute-force'bare wachtwoorden
+  * Verbose foutberichten
+* <u>Cross-site scripting (XSS)</u>
+  * Verloopt in 4 stappen:
+    1. Aanvaller steekt kwaadaardige code in kwetsbare webserver
+    2. Slachtoffer bezoekt deze webserver
+    3. Kwaadaardige code komt mee met de gevraagde inhoud
+    4. De code wordt uitgevoerd op de machine van de gebruiker, met de privileges van de webserver
+  * Drie soorten:
+    * **Non-persistent attack** (reflected)
+      * Bijvoorbeeld een script in een URL steken die je doorstuurt
+      * Om dit tegen te gaan moet je input sanitizing gebruiken en ervoor zorgen dat er zo weinig mogelijk gevoelige info wordt getoond aan de gebruikers van je site
+    * **Persistent attack**
+      * Als je een script in een invoerveld stopt dat op een pagina wordt getoond
+      * Een kwetsbare opslag (bv. database) slaat de code effectief op, deze wordt uitgevoerd op elke machine die de inhoud laadt
+    * **DOM-based attacks**
+      * Een client-side script dat wijzigingen maakt aan de DOM
+      * De HTTP-response zelf wordt niet aangepast
+  * Mogelijke aanvallen
+    * Cookie stealing
+    * Website redirection
+    * Phishing
+    * Privacy violation
+    * Run exploits: een script injecteren dat gebruik maakt van kwetsbaarheden in de browser en plugins. De computer van het slachtoffer kan deel worden van een botnet.
+    * Javascript malware
+* <u>SQL Injection</u>
+  * SQL code in invoervelden injecteren
+* <u>Cross-site request forgery (CSRF)</u>
+  * Verloopt in 4 stappen
+    1. Slachtoffer gaat naar kwetsbare website
+    2. Slachtoffer bezoekt kwaadaardige pagina op website van de aanvaller
+    3. Kwaadaardige inhoud wordt afgeleverd aan het slachtoffer
+    4. Het slachtoffer stuurt onvrijwillig een request naar de kwetsbare website
+  * Je moet wel aan beide resources tegelijk kunnen. Dit is makkelijk te bereiken
+  * uTorrent
+
+
+
+#### Defences 
+
+* Threat and risk analysis
+* Security training
+* Design review
+* Handmatige en geautomatiseerde code review
+* Handmatige en geautomatiseerde testen
+* Online monitoring
+
+Om XSS te voorkomen doe je best input sanitation. Dit kan met een **whitelist**, dan laat je alleen de waarden door die toegestaan zijn. Je kan ook onvertrouwde waarden tegenhouden met een **blacklist**. Dit is meestal geen goed idee.
+
+SQL-injection kan voorkomen worden met **prepared statements** of met **stored procedures**.
+
+
+
+## Secure systems
+
+### Authentication methods
+
+#### Passwords
+
+Een wachtwoord wordt typisch opgeslagen als een **hash digest** in plaats van het effectieve wachtwoord op te slaan. Dan is de schade beperkt bij een lek. 
+
+Ookal zijn ze **simpel** en **relatief veilig**, is meerdere wachtwoorden onthouden vreselijk en stellen slechte wachtwoorden een groot beveiligingsrisico. 
+
+
+
+#### Password cracking
+
+Er zijn een aantal manieren om een wachtwoord te kraken. 
+
+* Brute-force
+* Dictionary aanval
+* Hash Chains
+* Rainbow table
+
+De uitleg van brute-force en dictionary aanvallen ga ik weg laten want die liggen redelijk voor de hand.
+
+##### Hash Chains
+
+Een hash chain is een coole manier om de cleartext te vinden die resulteert in een bepaalde hash. Normaal gezien zou je een tabel hebben met alle hashwaarden voor alle mogelijke karaktercombinaties van een bepaalde lengte. Als je een hash chain gebruikt heb je dit niet nodig. 
+
+Om een hash chain te maken heb je twee dingen nodig:
+
+* Een hashfunctie $H$
+* Een reductiefunctie $F$, deze zet een gehashte waarde terug om naar een waarde die voldoet aan de password requirements
+
+Neem nu een bepaald wachtwoord, bijvoorbeeld `aaaaaa`. Door afwisselend $H$ en $R$ erop toe te passen lopen we door een aantal waarden krijgen we een ketting.
+
+<img src="img/beveiliging/image-20221229223029556.png" alt="image-20221229223029556" style="zoom:50%;" />
+
+In onze tabel slaan we enkel het begin- en eindpunt van de ketting op. Als we nu een hash willen kraken, passen we weeral afwisselend $H$ en $R$ toe op die hash, totdat we een waarde tegenkomen die in de tabel staat. Nu kunnen we gewoon vanaf het beginpunt de ketting herberekenen tot we onze hash tegenkomen. Het woord dat net voor de hash kwam in de ketting is het wachtwoord dat we zochten. 
+
+Het voordeel van deze aanpak is dat hij **veel minder geheugen** inneemt, met als trade-off wat meer CPU gebruik. Spijtig genoeg is het moeilijk om deze aanpak te optimaliseren voor veelvoorkomende wachtwoorden. Het kan ook dat chains in elkaar uitkomen door een slechte $R$. Het is in het algemeen moeilijk om een goeie $R$ te vinden voor deze methode.
+
+
+
+##### Rainbow tables
+
+<img src="img/beveiliging/image-20221229224131477.png" alt="image-20221229224131477" style="zoom:50%;" />
+
+Rainbow tables proberen de problemen van hash chains wat te verhelpen. We vervangen de reductiefunctie door een sequentie van reductiefuncties die doorlopen worden. Kettingen komen dan alleen samen als ze dezelfde waarde op dezelfde iteratie hebben. 
+
+
+
+##### Mitigation
+
+Table-aanvallen kunnen voorkomen worden door een **salt** toe te voegen aan je wachtwoord alvorens het te hashen. Zo resulteren zelfs identieke wachtwoorden in een andere hashwaarde, waardoor ze een stuk moeilijker te kraken zijn. 
+
+
+
+#### Biometry
+
+Er zijn drie manieren om the authenticeren:
+
+* Iets dat de gebruiker **weet**
+* Iets dat de gebruiker **heeft**
+* Iets dat de gebruiker **is**
+
+
+
+
+
+//TODO de rest vind ik niet super belangrijk
+
+
+
+#### Security tokens
+
+We houden secret/private keys in een usb stick. Dan kunnen ze bijna onmogelijk gevonden worden door malware. Typisch wordt dan two-factor-authentication gebruikt, waar je dan bovenop de token een pin nodig hebt. Dit is bijna onkraakbaar.
+
+Je kan een token **verbonden met een host** gebruiken. De token doet dan cryptografische bewerkingen op een bericht gekregen van de host. Er zijn ook tokens die zich **niet verbinden met een host**. Hier is de input gelimiteerd. Zo een token kan bijvoorbeeld een keypad hebben waarin je dan een code ontvangen van de site ingeeft. De token berekent dan het antwoord op deze *challenge*, waarmee je kan authenticeren. 
+
+
+
+## Trusted OS
+
+Een OS is vertrouwd als het aan de volgende voorwaarden voldoet:
+
+* Memory protection
+* Generation object access control
+* User authentication
+
+### Policies
+
+<img src="img/beveiliging/image-20221229225325296.png" alt="image-20221229225325296" style="zoom:50%;" />
+
+We kunnen verschillende niveaus van gevoeligheid van informatie vastleggen. 
+
+### Access control
+
+Dit kan op verschillende manieren:
+
+* Discretionary Access Control (DAC)
+  * De eigenaar bepaalt de toegang tot de resource die hij heeft gemaakt
+* Mandatory Access Control (MAC)
+  * Toegang wordt bepaald door een administrator
+  * Verplicht gebruik van regels of labels
+* Role-based access control
+  * Een administrator bepaalt de toegang
+  * Elke gebruiker krijgt een bepaalde rol, die hem toegang geeft tot bepaalde dingen
+
+### OS Kernel
+
+//TODO
+
+
+
+### Disk encryption
+
+Je kan op drie manieren je schijf encrypteren:
+
+* Manual
+  * De gebruiker moet zelf aangeven welke folders of files geëncrypteerd moeten worden. 
+* File-system level
+  * Individuele files of folders worden geëncrypteerd door het besturingssysteem
+  * Aparte key per file/folder
+  * Integratie met access control features
+* Full disk encryption
+  * De volledige schijf encrypteren (inclusief boot sector)
+  * Dit gebeurt typisch op een lager niveau dan het OS
+  * Je kan niet per ongeluk een file vergeten te encrypteren
+  * Wel gevoelig aan keyloggers
+  * Je kan per ongeluk al je data kapotmaken
+
+
+
+## Secure software
+
+
+
+> True or false: to generate an S/MIME session key, first a key exchange algorithm is invoked
+
+
+
+> What is the purpose of degenerate signedData messages in S/MIME?
+
+
+
+> Explain the workings of cross-site scripting. How can one defend against this type of attack?
+
+
+
+> Explain the differences between XSS and CSRF
+
+
+
+> What are the advantages and disadvantages of increasing the length of hash chains / rainbow tables?
+
+
+
+> Explain the major differences between hash chains and rainbow tables.
+
+
+
+> What is 2-factor authentication?
+
+
+
+> What are the security advantages of using security tokens vs software based approaches?
+
+
+
+> Which are the advantages of using full disk encryption vs manual encryption?
+
+
+
+> List 5 typical stealth strategies of malware.
+
+
+
+> How does a buffer overflow work? Which mitigation strategies are available?
+
+
+
+> Explain a frequently taken approach in software cracking and describe countermeasures
+
+# <u>Chapter 6: Intrusion detection</u>
+
+
+
+# <u>Chapter 7: Future trends</u>
 
 
 
@@ -1039,7 +1656,7 @@ Which are the advantages of using full disk encryption vs manual encryption?
 
 
 > Waar of vals? Waarom?
-
+>
 > Indien de file met paswoorden verworven wordt door een aanvaller kan deze de gevonden hashes rechtstreeks gebruiken om in te loggen op een systeem.
 
 
