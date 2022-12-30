@@ -1,5 +1,7 @@
 # Beveiliging van netwerken en computers
 
+## Puntenverdeling
+
 * 70% schriftelijk examen 
 * 30% labosessies
 
@@ -1575,6 +1577,143 @@ Je kan op drie manieren je schijf encrypteren:
 
 ## Secure software
 
+### Malware
+
+Malware, kort voor malicious software is een soort software dat gebruikt wordt om de normale operatie van je computer te verstoren, gevoelige informatie te stelen of toegang te krijgen tot private systemen. 
+
+Hier een aantal voorbeelden:
+
+* **Logic bomb**
+  * Kwaadaardige code die met opzet in een stuk software is geïmplementeerd. 
+  * Wordt geactiveerd als een bepaalde conditie voldaan is in de software
+  * Vaak geplaatst door boze mensen die wisten dat ze ontslagen gingen worden
+* **Backdoor**
+  * Een ongedocumenteerd toeganspunt tot een bepaalde software
+  * Kan in een programma zitten door een fout, maar ook met opzet (NSA)
+  * Een andere malware kan ook een backdoor maken in vertrouwde software
+  * Aantal verschillende types:
+    * Software backdoors: in de broncode
+    * Object code backdoors: pas objectcode aan ipv softwarecode (moeilijker te detecteren)
+    * Assymetric backdoors: alleen bruikbaar door de originele maker
+    * Compiler backdoors: de compiler is ondermijnd om backdoors te maken in gecompileerde programma's
+* **Trojan horse**
+  * Schijnbaar nuttige software die kwaadaardige code bevat
+  * Vraagt meestal extra privileges bij installatie
+* **Spyware**
+  * Verzamelt gevoelige informatie
+* **Adware**
+  * Een variant op spyware waar de bedoeling is om gerichte reclame te sturen om geld te verdienen
+* **Ransomware**
+  * Beperkt toegang tot computersysteem met als oogmerk losgeld te verkrijgen in ruil voor toegang.
+  * Typisch wordt het systeem geëncrypteerd en moet de eigenaar betalen voor de sleutel
+* **Scareware**
+  * Toont berichten om de gebruiker schrik aan te jagen
+  * Met als bedoeling om hem iets te doen betalen of te bellen naar een betaalde lijn
+* **Traditioneel virus**
+  * Software met de capaciteit om andere software te infecteren
+  * Maakt gebruik van een 'drager'-programma om zichzelf voort te planten
+  * Vaak OS of hardware specifiek
+  * Lifespan typisch in 4 fasen
+    * Sleeping phase: wacht op activatie
+    * Propagation/replication: verspreid en infecteert andere programma's/systemen
+    * Activation trigger: als een bepaalde conditie voldaan is
+    * Execution: de inhoud wordt uitgevoerd
+* **Worm**
+  * Autonoom programma dat zich automatisch propageert van netwerk tot netwerk
+  * Een cool voorbeeld: de [Morris worm](https://en.wikipedia.org/wiki/Morris_worm) had op een bepaald moment 10% van het internet geïnfecteerd
+  * Kan zich heel snel verspreiden
+* **Blended threats**
+  * Een combinatie van de vorige opties
+  * De meeste botnets gebuiken blended threats
+
+
+
+#### Infection methods
+
+Er zijn een aantal verschillende manieren waarop je systeem kan geïnfecteerd worden met malware:
+
+* Social engineering
+* OS vulnerabilities
+* Software vulnerabilities: bv. buffer overflow
+
+
+
+#### Infection targets
+
+* Memory behavior
+  * Non-memory-resident
+    * Wanneer uitgevoerd: doet zijn ding en sluit weer
+  * Memory-resident
+    * Blijft permanent in het geheugen
+* Marco virus
+  * Typisch een virus in een document dat zich uitvoert als je het opent
+* Boot sector virus
+
+
+
+### Stealth strategies
+
+Om detectie te vermijden, kunnen virussen een aantal dingen doen zodat geïnfecteerde bestanden minder verdacht zijn. Zo is het belangrijk dat je virus de **datum** waarop het bestand laatst is gewijzigd **niet aanpast**. Om detectie moeilijker te maken zal een goed virus de **bestandsgrootte** ook **niet wijzigen**, maar zich eerder nestelen in een ongebruikt deel van de code. Nog een stap verder, kunnen virussen ook **read-requests** van het besturingssysteem **onderscheppen**. 
+
+Je kan ook bekende viruspatronen verbergen door **code obfuscation** dit kan met:
+
+* Encryptie: de body van het virus encrypteren
+* Polymorphic virus: de encryptiemodulen ook wijzigen
+* Metamorphic virus: een virus dat zichzelf wijzigt om detectie moeilijker te maken
+
+
+
+Virussen kunnen zichzelf ook **actief verdedigen** door bijvoorbeeld de antivirussoftware te verwijderen of zichzelf automatisch opnieuw te installeren. 
+
+
+
+### Countermeasures
+
+Wat kan je nu doen om te voorkomen dat je wordt geïnfecteerd met malware? Hier een aantal dingen die je kunnen helpen:
+
+* Virusscanner
+  * Eerste generatie: Zocht alleen naar virus signature en hield bestandsgrootte in de gaten. Daardoor werkte het alleen op bekende virussen
+  * Tweede generatie: verifieert ook data-integriteit van bestanden, verfijnde herkenning die malwarepatronen analyseert
+  * Nieuwere generaties: behavior based identification waardoor herkenning van nieuwe malware ook mogelijk is
+    * Programma initieel op ge-emuleerd systeem draaien
+* Voorzichtig zijn
+  * Als je gewoon oplet wat je doet kan je veel problemen voorkomen
+    * Open geen vreemde bijlagen
+    * Zet macro's uit in documenten
+    * Kijk naar de URL voor je erop klikt
+    * Installeer geen onnodige communicatiesoftware op je server (ftp, telnet, ...)
+    * Installeer tijdig updates
+
+
+
+## Software cracking
+
+Hoe kunnen we beveiligde software kraken zodat we ons geld lekker kunnen houden?
+
+### Software serial crack
+
+Om een **serial crack** te maken moet je eerst je programma de-assembleren en zoeken naar de string die wordt getoond als je een ongeldige serial invoert. Verander de jump naar die lijn in de assemblycode van `jne` naar `nop`, dan wordt de spronginstructie die het programma normaal gezien de tekst: 'invalig serial' laat tonen niet uitgevoerd. Als de ontwikkelaars geen andere maatregelen hebben genomen, kan je nu het programma zonder serial uitvoeren. 
+
+### Key generator
+
+Een key generator of **keygen** is een programma dat geldige serial keys kan genereren voor een bepaalde software. Soms worden deze legaal verdeeld door de ontwikkelaars van de software om veel kopieën te kunnen activeren in grote bedrijven. 
+
+Hackers kunnen ook een keygen maken door de software te reverse-engineeren. 
+
+
+
+### Code injection
+
+Bij code injection gaan we proberen om nieuwe code in een programma te steken. Typisch gaan we code in **code caves** proberen stoppen. Deze aanpak is makkelijk, maar niet zo flexibel. 
+
+
+
+### Defenses 
+
+Hoe kunnen we ons programma beschermen tegen krakers? 
+
+We kunnen de code zichzelf laten aanpassen om reverse engineering tegen te gaan. Code **obfuscation** op het het niveau van CPU instructies is ook een optie. We kunnen ook een **digitale handtekening** toevoegen die de integriteit van de code controleert. Ten slotte kunnen we ook de code **encrypteren**. Ik weet niet precies hoe dat in zijn gang gaat, maar dat is dan weer een ander verhaal.
+
 
 
 > True or false: to generate an S/MIME session key, first a key exchange algorithm is invoked
@@ -1625,11 +1764,203 @@ Je kan op drie manieren je schijf encrypteren:
 
 # <u>Chapter 6: Intrusion detection</u>
 
+Eerst en vooral is het best moeilijk om te definiëren wat een inbraak nu precies is. Is een port scan een inbraak? We differentiëren tussen een **aanval** en een **inbraak**. Om beide tegen te gaan hebben we twee methodes:
 
+* Attack detection (AD)
+  * We zetten een IDS buiten ons bedrijf om te zien hoe vaak er geprobeerd is om binnen te raken.
+* Intrusion detection (ID)
+  * Een IDS binnen het bedrijf zal ongepast gedrag opsporen
+  * Als de IDS afgaat is het code rood
+
+Hoe ik het begrijp spreken we over een aanval als er geprobeerd is om binnen te raken. Als de aanvaller effectief toegang heeft gekregen tot het systeem, zitten we met een inbraak. In het ideale scenario doen we best zowel ID als AD, maar ID moet de prioriteit krijgen. 
+
+
+
+## Intrusion detection
+
+Het doel van intrusion detection is om indringers te detecteren. Dit liefst voordat ze effectief binnen zijn. Een goeie IDS zou zowel interne als externe aanvallen kunnen opsporen, maar hij doet doorgaans niets om ze te verhelpen. Eenmaal een interne aanval is gedetecteerd is het meestal te laat. Een IDS is dus geen vervanging voor een goeie firewall.
+
+Ideaal spoort een IDS een aanval zo snel mogelijk op. Dit schrikt hopelijk potentiële aanvallers ook af. Verder houdt de IDS ook informatie bij over gebruikte aanvalstechnieken. 
+
+
+
+### Audits
+
+<img src="img/beveiliging/image-20221230144649478.png" alt="image-20221230144649478" style="zoom:67%;" />
+
+Een audit is een controle die de IDS gaat uitvoeren. Dit kan **host based** of **network based **. Gebruikersactiviteit wordt gelogd in een **audit database**. De **audit records** in deze databank zijn dan een input voor de IDS die alles kan nakijkt om te zien of er geen verdachte dingen zijn gebeurd. 
+
+Er zijn twee types van audit records:
+
+* Native audit records: deze worden door het besturingssysteem zelf aangemaakt
+* Detection specific audit records: er wordt IDS-specifieke informatie verzameld. Het nadeel is dat je nu twee auditing systemen moet draaien op je machines
+
+
+
+Je kan audits op twee manieren verzamelen:
+
+* Host-based
+  * HIDS (host intrusion detection system)
+  * Data wordt verzameld in het besturingssysteem van de host zelf (system logs, ...)
+  * Hoge kwaliteit en veel informatie
+  * Vaak wel systeem-specifiek
+  * Impact op performance
+  * Hosts zijn vaak het doelwit van aanvallen (kan logs corrupten of aanpassen)
+* Network-based
+  * NIDS (network intrusion detection system)
+  * Data verzamelen van hub of switch
+  * Geen performance impact
+  * Minder goeie data, je kan ook pakketten verliezen op het netwerk
+  * Kan niet om met geëncrypteerde data of vreemde protocollen
+
+
+
+Een andere manier van aanpak is de **inline (real-time)** approach. De bedoeling is hier om data te auditen op het moment dat het gegenereerd wordt. De correlatie is hier wel beperkt, inline is sneller, maar biedt maar een beperkt zicht. Dit kunnen we verbeteren door significante events door te sluizen naar een audit station. Zo maken we eigenlijk gebruik van beide technieken. 
+
+
+
+### Practical approaches
+
+Hoe gaat een IDS nu effectief verdachte gebeurtenissen opsporen? Dit kan hij op drie manieren:
+
+* <u>Statistical approach</u>
+  * Probeert **normaal gedrag** te definiëren
+  * Gebaseerd op informatie van normaal gebruikersgedrag over een lange tijd
+  * Drie manieren van aanpak
+    * **Threshold detection**: probeert een 'threshold' vast te leggen voor de frequentie waarop bepaalde gebeurtenissen voorkomen. Komt er iets boven de threshold, wordt het gemarkeerd als een intrusion. Is op zichzelf niet zo efficiënt.
+    * **Profile based**: probeer (handmatig) een 'activiteitsprofiel' samen te stellen voor elke gebruiker of gebruikersgroep. Afwijkingen op deze profielen worden gemarkeerd als intrusion.
+    * **Anomaly detection**: het systeem wordt automatisch geanalyseerd om vast te leggen wat normaal is. Gebruik statistiek om te detecteren wanneer er afgeweken wordt. Dit kan met (een combinatie van) verschillende technieken:
+      * Statistical analysis: normaal gedrag van gebruikers, met standaardafwijking, ... deviaties van de norm detecteren.
+      * State change analysis: de 'staat' van het systeem modelleren en afwijkingen van de norm opsporen.
+      * Neural networks: patroonherkenning
+      * Operational model: als je op voorhand al een idee hebt wat verdacht is, zonder analyse van audit records.
+  * Kan **eender welke** mogelijke **aanval** opsporen, met als trade-off **veel vals-positieven/negatieven** en **slechte categorisatie**
+* <u>Rule-based approach</u>
+  * Probeert **abnormaal gedrag** te definiëren
+  * Detecteert gekende aanvallen
+  * Ook goed voor legitieme gebruikers die bijvoorbeeld hun rechten misbruiken
+  * Verschillende manieren van aanpak:
+    * **Misuse detection**: (penetration identification) experten proberen te definiëren wat een aanval precies inhoudt.  Gelijkaardig aan virusscanner. Vaak updates nodig
+    * **Burglar alarms**: variant op het vorige, maar specifiek op bepaalde site. Komt overeen met een alarm in je huis zetten. Het is gemakkelijk, maar je moet wel oppassen dat je het zelf niet doet afgaan.
+* <u>Hybrid approaches</u>
+  * Combinatie van beide
+  * Compromis tussen vals positieven en de capaciteit om echte indringers te detecteren
+  * Misuse detection blijkt meestal het nuttigst, om dan achteraf als er iets fout gaat met anomaly detection meer info proberen te verkrijgen. 
+
+
+
+### Intrusion prevention systems
+
+Een **IPS** breidt de functionaliteit van een IDS uit door ook effectief een interventie te doen bij de detectie van een aanval. Meer infor wordt hier niet over gegeven.
+
+
+
+### Honeypots
+
+Een **honeypot** is een fake systeem, gemaakt om aanvallers af te leiden of in de val te lokken. Typisch wordt een honeypot gevuld met nepdata en kwetsbare software, op zo een manier dat hij een gemakkelijk doelwit wordt voor aanvallers. Bij een inbraak kunnen we met een goede IDS dan al informatie verkrijgen over de aanvaller om toekomstige aanvallen te voorkomen. 
+
+
+
+### Limitations
+
+Er zijn natuurlijk een aantal beperkingen bij het gebruik van een IDS:
+
+* Valse alarmen
+* Vaak updates nodig
+* Kan geen bugs voor ons oplossen
+* Grote hoeveelheden data
+* ...
+
+Verder kan een aanvaller ook detectie vermijden door **fragmentatie** van pakketten. IDS'en herkennen typisch bepaalde protocollen door het gebruik van bepaalde poorten. Een aanvaller kan die omzeilen door **geen defaults** te gebruiken. Heeft de aanvaller toegang tot een gedistribueerd botnet, dan kan hij een gecoördineerde aanval doen vanuit **meerdere locaties**, mogelijk met laag bandbreedtegebruik per host om langs de IDS te glippen of een DDOS-aanval te doen. 
+
+
+
+## Test jezelf
+
+> Give 5 example audit entries (metrics) for host based and network based audit systems useful for IDS. 
+
+1. <u>Host-based audit system</u>:
+
+- **Failed login attempts**: This metric tracks the number of times a user has failed to correctly enter their login credentials. This can be an indication of an attempted intrusion or a user who is struggling to remember their password.
+- **Access to sensitive files**: This metric tracks which users are accessing sensitive files on the system, such as financial records or confidential documents. This can be used to detect unauthorized access or data leakage.
+- **Changes to system configurations**: This metric tracks any changes made to the system's configurations, such as installing new software or changing security settings. This can be used to detect and prevent unauthorized changes to the system.
+- **Application usage**: This metric tracks the usage of different applications on the system, including the frequency and duration of use. This can be used to detect unusual or suspicious activity, such as an attacker using a specific application for nefarious purposes.
+- **Network traffic**: This metric tracks the incoming and outgoing traffic on the system, including the volume and destination of the traffic. This can be used to detect network-based attacks or unusual patterns of network activity.
+
+2. <u>Network-based audit system</u>:
+
+- **Suspicious network traffic**: This metric tracks network traffic that is unusual or suspicious in nature, such as traffic from known malicious sources or traffic that is attempting to evade detection.
+- **Malware detection**: This metric tracks the detection of malware on the network, including the type and origin of the malware. This can be used to detect and prevent the spread of malware on the network.
+- **Unauthorized access attempts**: This metric tracks attempts to gain unauthorized access to the network, such as attempts to bypass security controls or exploit vulnerabilities. This can be used to detect and prevent intrusions.
+- **Network usage patterns**: This metric tracks the usage patterns of the network, including the volume and type of traffic, as well as the source and destination of the traffic. This can be used to detect unusual or suspicious activity, such as an attacker attempting to exfiltrate data from the network.
+
+
+
+Users don’t read files in other users’ directories
+
+Users normally only access disk using higher level OS functions
+
+Users don’t copy system files
+
+> Discuss the advantages of a rules based vs a statistical IDS 
+
+
+
+> What is a honeypot?
 
 # <u>Chapter 7: Future trends</u>
 
+## Cryptocurrency & blockchains
 
+Virtuele munten bestaan al een tijdje, zo had je vroeger al credits op facebook of gold in World of Warcraft. De volgende stap in de ontwikkeling van virtuele munten is **cryptocurrency**. Cryptografische methodes worden gebruikt om transacties te beveiligen en om nieuwe munten te genereren. Cyptomunten zijn typisch **gedecentraliseerd**.
+
+
+
+### BitCoin
+
+Een munt moet voldoen aan de volgende veiligheidsvoorwaarden:
+
+* Authenticatie: is de munt echt? betaal ik de juiste persoon?
+* Integriteit: voorkomen dat een munt twee keer uitgegeven wordt of een transactie ongedaan gemaakt wordt
+* Availability: een transactie moet op elk moment mogelijk zijn
+* Confidentiality: privacy
+
+
+
+#### Blockchain
+
+Bitcointransacties worden bijgehouden in blokken. Deze maken deel uit van de blockchain. De blockchain is een databank gedistribueerd over het internet. 
+
+Het minen van bitcoin komt eigenlijk overeen met het verwerken van transacties. Nodes die bitcoins willen krijgen, moeten records toevoegen aan de blockchain door een nonce te zoeken die, als hij samen met de hash van het vorige blok wordt gehashed, kleiner is dan een bepaald getal. Dit noemt men een **proof-of-work**.
+
+Deze uitkomst wordt dan samen met de vorige hash opgeslagen in het huidige blok, waardoor deze wordt gelinkt met het vorige blok. 
+
+![image-20221230165443717](img/beveiliging/image-20221230165443717.png)
+
+Een vervelende eigenschap van bitcoin is dat om **double-spending** te voorkomen er bij elke transactie een 10 minuten lang verificatieproces doorlopen moet worden. Nog een interessant feitje is dat het aantal bitcoins op de planeet nooit boven de 21 miljoen kan gaan omdat de hoeveelheid bitcoins die worden uitgedeeld per blok exponentieel omlaag gaat.
+
+
+
+Omdat deze **proof-of-work** aanpak zo veel energie verspilt, is er ook een alternatief. Door een **proof-of-stake** hoeft er niet zo veel energie verspild te worden. De node die het volgende block mag verwerken en dus een coin krijgt kan random gekozen worden, op basis van coin age of op basis van votes. 
+
+
+
+### Advantages/disadvanteges
+
+- [x] Laag risico op inflatie
+- [x] Vrijheid in betaling (geen onverwachte fees, ...)
+- [x] Geen persoonlijke informatie vrijgegeven
+- [x] Transparant
+- [x] Kan niet failliet gaan
+- [ ] Volatiliteit
+- [ ] Niet algemeen geaccepteerd
+- [ ] Slechte reputatie
+- [ ] Gemakkelijk kwijt te raken
+- [ ] Energiekosten voor proof of work
+
+
+
+Tot zover de theorie. Veel succes.
 
 
 
