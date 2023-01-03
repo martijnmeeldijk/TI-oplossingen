@@ -1,11 +1,5 @@
 # Gevorderde Algoritmen
 
-
-
-## Inhoud
-
-[TOC]
-
 ## Puntenverdeling
 
 * Niet-periodegebonden evaluatie
@@ -340,7 +334,7 @@ Eerst moeten we weten wat een **K-alternerend pad** nu precies is. Dit is een pa
 
 Een **vergrotend K-alternerend pad** is hetzelfde, maar de begin- en eindknoop vormen geen koppel. 
 
-//TODO bewijs
+//TODO bewijs (niet te kennen)
 
 
 
@@ -994,7 +988,13 @@ Op het einde wordt telkens een 1 toegevoegd, want we hebben nooit twee opeenvolg
 
 Een voorbeeld van een prefixcode met variabele lengte is de **Huffmancode**. Om een bericht met deze code te encoderen moeten we de volgende stappen ondernemen:
 
-* //TODO
+We stellen een Huffmanboom op vanuit de tekst `BACADAEAFABBAAAGAH`
+
+* Maak een frequentietabel van je tekst
+* Merge in die tabel telkens de twee dingen met de laagste frequentie
+* Dit wordt dan je boom
+
+<img src="img/algo2/image-20230102153112649.png" alt="image-20230102153112649" style="zoom:50%;" />
 
 
 
@@ -1320,7 +1320,64 @@ Bij een dichte graaf met meer verbindingen zal de techniek met de maximum flow e
 
 
 
+## Extra oefeningen automaten/strings
 
+Dit zijn mijn eigen oplossingen want ze staan niet online. Ik zal iets laten weten als Pieter op mijn mail heeft geantwoord. 
+
+> Vind een reguliere expressie voor:
+
+> $L = \{ w \in \{0,1\}* | w \text{ heeft exact 1 paar opeenvolgende nullen} \}$
+
+$$
+(1\vert01)^*00(1\vert 01)
+$$
+
+
+
+> $L = \{ w \in \{0,1\}* | w \text{ bevat een even aantal nullen} \}$
+
+$$
+(1^*01^*01^*)^*
+$$
+
+Dit matcht volgens mij alle strings met een even aantal nullen behalve een string zonder nullen. Zou het volgende dan een betere oplossing zijn?
+$$
+(1^*01^*01^*)^*1^*
+$$
+
+> $L = \{ w \in \{0,1\}* | w \text{ bevat de deelstring 101 niet} \}$
+
+Ik heb een automaat gemaakt die volgens mij dit doel bereikt.
+
+<img src="img/algo2/image-20230102204546069.png" alt="image-20230102204546069" style="zoom:50%;" />
+
+Ik heb net in een diep gat van zoekopdrachten gezeten. Met de state elimination method heb ik geprobeerd om deze automaat om te zetten in een regex, maar ik krijg het niet opgelost door de toestand $u$. Volgens een persoon op StackOverflow is dit een mogelijke oplossing:
+$$
+0^*(1|00^ +)^*0^*
+$$
+Hoe kan ik hier aan geraken?
+
+
+
+> $L = \{ a^nb^m | n\geq4, 3\geq m \}$
+
+Hier zijn ze volgens mij vergeten te zeggen dat $m$ niet kleiner dan $0$ mag zijn.
+$$
+aaaa^+b^?b^?b^?
+$$
+Ik weet niet of dit legaal is, maar zo ziet het er mooier uit:
+$$
+a\{4,\}b\{0,3\}
+$$
+
+
+> $L = \{ w \in \{a,b,c\}* \vert \space a, b \text{ en } c \text{ komen alle minstens 1 keer voor in } w \}$
+
+$$
+(a\vert b\vert c)^*a(a\vert b\vert c)^*b(a\vert b\vert c)^*c(a\vert b\vert c)^*
+$$
+
+Dit matcht alle strings die ten minste $a$, $b$ en $c$ in volgorde bevatten. Zou ik dan al alle mogelijke permutaties van dit ding met een "$\vert$" aan elkaar moeten plakken? Of is er een betere oplossing?
 
 # ------------Labo--------------
 

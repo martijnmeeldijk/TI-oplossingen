@@ -121,7 +121,7 @@ Eén groot nadeel hieraan is dat we dus voor elke validation set het model moete
 
 # 2 - End-to-end machine learning project
 
-(boek p37)
+<sup>p37</sup>
 
 Stel je nu voor dat we data scientists zijn in een groot bedrijf. Dit zijn de stappen die we zullen moeten doorlopen:
 
@@ -187,6 +187,8 @@ Een andere belangrijke zaak is **exploratory data analysis** (EDA). Hiermee will
 
 ## Select a model and train it
 
+<sup>p75</sup>
+
 Nu evalueren we meerdere modellen op onze training set. Probeer verschillende hyperparameters uit voor elk type model en evalueer de prestaties met cross-validation. Vervolgens train je het model opnieuw op de volledige training set met de optimale hyperparameters. 
 
 
@@ -198,4 +200,105 @@ Nu evalueren we meerdere modellen op onze training set. Probeer verschillende hy
   * Dit is moeilijk als je erg veel combinaties hebt
 * Random search
   * We proberen *at random* combinaties van parameters uit en gebruiken de beste combinatie die we vinden. 
-  * 
+  * Dit werkt een stuk beter als de zoekruimte van de hyperparameters erg groot is
+  * Het is ook gemakkelijk om te beslissen hoeveel resources random search mag gebruiken. Je laat het gewoon zo lang draaien als je zin hebt.
+
+
+
+# 3 - Classification
+
+<sup>p87</sup>
+
+Een classificatieprobleem is het voorspellen van een klasse op basis van een set features. Classificatie valt onder **supervised learning** in de ML landscape. 
+
+
+
+## Performance measures
+
+Om te meten of een classificatiemodel goed presteert, kunnen we gebruik maken van verschillende technieken. 
+
+### Confusion matrix
+
+<sup>p92</sup>
+
+Dit plaatje toont de confusion matrix voor een classificatiemodel dat ons vertelt of een getal 5 is of niet.
+
+<img src="img/machinaal/image-20221230181600488.png" alt="image-20221230181600488" style="zoom:50%;" />
+
+Een confusion matrix geeft ons een overzicht op de volgende waarden voor een binair classificatieprobleem:
+
+* True Negatives (TN): behoren niet tot de klasse en zijn ook zo geïdentificeerd
+* True Positives (TP): behoren tot de klasse en zijn ook zo geïdentificeerd
+* False Negatives (FN): behoren tot de klasse, maar zijn niet zo geïdentificeerd
+* False Positives (FP): behoren niet tot de klasse, maar zijn wel zo geïdentificeerd
+
+
+
+### Precision & Recall
+
+<sup>p94</sup>
+
+**Precision** vertelt ons hoe accuraat de positieve voorspellingen zijn.
+
+| $$ \text{precision} = \frac{TP}{TP+FP} $$ | <img src="img/machinaal/image-20221230182605679.png" alt="image-20221230182605679" style="zoom: 50%;" /> |
+| ----------------------------------------- | ------------------------------------------------------------ |
+
+
+
+
+
+**Recall** vertelt ons hoeveel van de echte positieve waarden effectief gevonden zijn
+
+| $\text{recall} = \frac{TP}{TP+FN}$ | <img src="img/machinaal/image-20221230182653779.png" alt="image-20221230182653779" style="zoom:50%;" /> |
+| ---------------------------------- | ------------------------------------------------------------ |
+
+
+
+Als we deze twee willen combineren in een metriek die een hoge waarde geeft als zowel de precision als de recall hoog zijn, kunnen we gebruik maken van $F_1$:
+$$
+F_1 = \frac{2}{\frac {1} {\text{precision}} + \frac{1}{\text{recall}} } = 2 \times \frac{\text{precision} \times \text{recall}}{\text{precision} + \text{recall}} = \frac{TP}{TP + \frac{FN + FP}{2}}
+$$
+
+
+
+Spijtig genoeg moeten we altijd een evenwicht tussen precision en recall vinden, want als de precision omhoog gaat, gaat de recall omlaag en vice versa. Dit noemt met de **precision/recall trade-off**.
+
+<img src="img/machinaal/image-20221231104907246.png" alt="image-20221231104907246" style="zoom:67%;" />
+
+
+
+### The ROC Curve
+
+<sup>p99</sup>
+
+<img src="img/machinaal/image-20221231105717815.png" alt="image-20221231105717815" style="zoom:50%;" />
+
+De **receiver operating charactertistic** curve is een ander veelgebruikt hulpmiddel bij binaire classificatieproblemen. De ROC curve zet de **true positive rate** (een ander woord voor *recall*) uit tegenover tegenover de **false positive rate** (*fall-out*), zijnde de verhouding van negatieve instanties die incorrect geclassificeerd zijn als positief. De false positive rate is gelijk aan 1 - de true negative rate (*specificiteit*). 
+
+In de curve zie je weeral de trade-off. Hoe **meer recall**, hoe **meer vals positieven** het model produceert. De stippelijn representeert de de ROC curve van willekeurige classificatie. Voor een goed model willen we typisch zo ver mogelijk van die zlijn zitten.
+
+Een manier om onze classificatiemodellen te vergelijken is door de **area under the curve** (AUC) te meten. Een perfect classificatiemodel heeft dan als oppervlakte de waarde 1. 
+
+Als je ooit moet kiezen tussen een preciesion/recall curve of een ROC curve, is het aangeraden om voor de PR curve te kiezen als de positieve klasse weinig voorkomt of als de vals positieven belangrijker zijn dan de vals negatieven. In andere gevallen kies je voor de ROC.
+
+
+
+### Multiclass classification
+
+<sup>p102</sup>
+
+We hebben het tot nu toe gehad over binaire classificatie, waar we proberen het onderscheid te maken tussen twee klassen. Doen we aan **multiclass classification**, dan proberen we het onderscheid te maken tussen meer dan twee klassen. 
+
+Er zijn een aantal algoritmes die zijn gemaakt om classificatie op meerdere klassen te doen, maar wwe kunnen ook onze binaire classificatiemodellen omzetten om met meer klassen om te kunnen gaan. Dit kunnen we op twee manieren:
+
+* One-versus-all: 
+  * Train een binair klassificatiemodel voor elke klasse
+  * Elk model zegt voor een klasse of een bepaalde instantie bij die klasse hoort of niet.
+* One-versus-one:
+
+//TODO mitigating unbalanced data
+
+
+# Examenvragen
+
+![image-20221230184101596](img/machinaal/image-20221230184101596.png)
