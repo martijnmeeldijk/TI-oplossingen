@@ -60,10 +60,32 @@ Twee grafen worden **isomorf** als er een bijectie bestaat tussen hun knopenverz
 
 Een **boom** is een geconnecteerde graaf die geen cycli bevat. Ik ga even niet uitleggen wat een boom is. 
 
-* Eigenschap: Een boom met $p$ knopen heeft $p-1$ takken
-  * //TODO bewijs (moeten we dit kunnen/kennen?)
+:bulb: Eigenschap: Een boom met $p$ knopen heeft $p-1$ takken: $q = p-1$
 
-Een **complete graaf** is een graaf waarbij elke twee verschillende knopen met elkaar verbonden zijn.
+<u>Bewijs met inductie</u>:
+
+* Voor $p=1$ geldt de eigenschap ($1$ knoop en $0$ takken)
+* We veronderstellen dat de eigenschap geldt voor alle bomen met orde $\leq k$. Dan moeten we nu bewijzen dat de eigenschap geldt voor een boom met orde $k+1$
+* Neem één tak weg uit de boom met orde $k+1$
+  * De boom valt altijd uit elkaar in twee bomen, want een boom bevat geen cycli.
+  * We noemen deze resulterende bomen $p_1$ en $p_2$, ze hebben beide orde $\leq k$, dus geldt de eigenschap.  
+  * Het aantal knopen van deze bomen samen is: $p_1+p_2 = p$
+* Het totale aantal takken in de originele boom met orde $k+1$ is: $q = (p_1 - 1) + (p_2-1)+1$
+  * De $+1$ is de tak die we daarnet hadden weggehaald
+  * Voor de deelbomen mogen we de eigenschap gebruiken: $q_1 = p_1 -1$
+  * Zelfde voor $q_2 = p_2 -1$
+* Omdat $p_1+p_2 = p$
+  * $q = (p_1 - 1) + (p_2-1)+1 = p-1$ en de eigenschap is bewezen.
+
+
+
+#### Complete grafen
+
+<img src="img/algo2/image-20230104154556156.png" alt="image-20230104154556156" style="zoom: 67%;" />
+
+Een **complete graaf** is een graaf waarbij elke twee verschillende knopen met elkaar verbonden zijn. Voor elk aantal knopen $p$ is er één mogelijke complete graaf $K_p$.
+
+Een complete graaf met $p$ knopen bevat $C_p^2 = \frac{p(p-1)} 2$ takken.
 
 
 
@@ -99,7 +121,7 @@ Een graaf $G'$ is een **opspannende subgraaf** van $G$ als:
 
 Als $G'$ ook een boom is, is $G'$ een **opspannende boom** van $G$. 
 
-Een gewortelde diboom $T$ wordt een **opspannende gewortelde diboom** van een graaf $G$ genoemd als de onderliggende graaf van $T$ een opspannende boom van $G$ is. //TODO dit snap ik niet goed
+Een gewortelde diboom $T$ wordt een **opspannende gewortelde diboom** van een graaf $G$ genoemd als de onderliggende graaf van $T$ een opspannende boom van $G$ is. 
 
 
 
@@ -141,7 +163,14 @@ Je kan dit algoritme gebruiken om snel na te gaan of een graaf al dan niet gecon
 * Nuttig voor beslissingsproblemen, omdat je snel bij een bladknoop (en dus een oplossing) komt
 * Heeft meestal minder geheugenruimte nodig dan BFS, het volstaat meestal om de boomstructuur en de tot nu toe best gevonden oplossing bij te houden
 
-  
+
+
+### Toepassingen BFS en DFS
+
+* BFS kan gebruikt worden om de hop-count tot alle knopen vanuit een bepaalde knoop te bepalen.
+* Om in een netwerk een multicast te sturen kan men BFS of DFS gebruiken.
+* Beide kunnen gebruikt worden om na te gaan of een graaf al dan niet geconnecteerd is.
+* Beide kunnen ook worden gebruikt om een beslissingsboom te doorlopen.
 
 ## Minimale opspannende boom
 
@@ -152,13 +181,25 @@ We beginnen met enkele definities:
 
 Een **minimale opspannende boom** van een graaf $G$ is een is een opspannende subgraaf $G'$ met minimaal gewicht. Dit is een optimalisatieprobleem en heeft altijd een opspannende boom als oplossing, zijnde $G'$. Zoals ik het begrijp is deze boom dus een subset van de graaf, die ervoor zorgt dat alles **lusloos** verbonden is, met een **zo laag mogelijk totaal gewicht**. 
 
-//TODO bewijs
+<u>Bewijs</u>
+
+* We hebben een gewogen, geconnecteerde graaf $G$ met positieve takgewichten. 
+* We tonen aan dat het probleem zeker een oplossing heeft:
+  * $G$ heeft zeker één opspannende subgraaf: $G$ zelf.
+  * $G$ heeft $2^q$ subgrafen met dezelfde knopenverzameling, sommige hiervan zijn opspannend.
+  * Er zijn dus meer dan één en minder dan oneindig opspannende subgrafen. Er bestaat zeker een element uit deze verzameling met minimaal gewicht.
+* We tonen aan dat minstens één opspannende subgraaf van $G$ met minimaal gewicht een opspannende boom is. Veronderstel dat dit element $G'$ bestaat.
+  * Als $G'$ een boom is, dan is hij ook een opspannende boom, want hij is sowieso een opspannende subgraaf.
+  * Als $G'$ geen boom is
+    * Dan bevat $G'$ minstens één cyclus
+    * We kunnen dus een tak wegnemen
+      * Deze tak heeft altijd gewicht $0$ (want het gewicht van de graaf was minimaal)
+    * Dit kunnen we herhalen totdat $G'$ geen cycli heeft en dus een boom is
+* We hebben dus zeker minstens één minimale oplossing die ook een opspannende boom is, maar niet alle minimale oplossingen zijn opspannende bomen. 
 
 
 
 Hoe kunnen we nu op een efficiënte manier zo'n minimale opspannende boom vinden op een graaf met positieve gewichten?
-
-
 
 ### Algoritme van Kruskal
 
@@ -340,7 +381,7 @@ Een **vergrotend K-alternerend pad** is hetzelfde, maar de begin- en eindknoop v
 
 ### Toewijzingen
 
-Een **tweedelige graaf** is een graaf waarvan je de knopenverzameling in twee verzamelingen $V_1$ en $V_2$ kan verdelen op zodanige wijze dat elke tak een knoop van $V_1$ met $V_2$ verbindt. De afbeelding maakt het iets duidelijker. De nummertjes en lettertje zijn niet echt van belang, maar dit is het mooiste plaatje dat ik vond op google. (want onze prof zet om de één of andere vage reden zijn slides niet online)
+Een **tweedelige graaf** is een graaf waarvan je de knopenverzameling in twee verzamelingen $V_1$ en $V_2$ kan verdelen op zodanige wijze dat elke tak een knoop van $V_1$ met $V_2$ verbindt. De afbeelding maakt het iets duidelijker. De nummertjes en lettertjes zijn niet echt van belang, maar dit is het mooiste plaatje dat ik vond op google. (want onze prof zet om de één of andere vage reden zijn slides niet online)
 
 <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/Simple_bipartite_graph%3B_two_layers.svg/1200px-Simple_bipartite_graph%3B_two_layers.svg.png" alt="Bipartite graph - Wikipedia" style="zoom:33%;" />
 
@@ -355,7 +396,123 @@ In het geval van zo'n graaf is het makkelijker om een vergrotend K-alternerend p
 * Als je resulterende boom een uiteinde bevat dat niet gekoppeld is, hebben we een vergrotend K-alternerend pad gevonden. Is dit niet het geval, dan bestaat er geen vergrotend K-alternerend pad met $v$ als eindknoop.
 * Herhaal deze procedure voor alle niet-gekoppelde knopen. Als we geen vergrotende K-alternerende paden vinden, dan weten we dat we al over een maximumkoppeling beschikken.
 
+## Test Jezelf
 
+> 1. Gegeven is een graaf $G = (V,E)$. Als je op willekeurige wijze een aantal ($> 1$) knopen kiest uit deze knopenverzameling ($V' < V$), en eveneens op willekeurige wijze een aantal takken kiest uit deze takkenverzameling ($E' < E$), is $ G' = (V',E") $dan zeker een subgraaf van $G$?
+
+Nee, want een willekeurige subset van knopen en takken vormt niet altijd een geldige graaf. Als de graaf niet geldig is kan hij ook geen subgraaf zijn.
+
+
+
+> 2. Een alternatieve definitie voor geconnecteerde knopen zou kunnen zijn : twee verschillende knopen $u$ en $v$ zijn geconnecteerd als en slechts als er een $u-v$ tocht bestaat. Is deze definitie equivalent met de in paragraaf 1.1 gegeven definitie (steunend op het begrip ‘pad” i.p.v. ‘tocht’ 7)
+
+Ja, want een pad is een speciaal geval van een tocht. Als er een tocht bestaat tussen $u$ en $v$, bestaat er ook een pad en andersom.
+
+
+
+> 3. In figuur 4 wordt slechts 1 boom getekend met $p = 3$. <img src="img/algo2/image-20230104172909650.png" alt="image-20230104172909650" style="zoom: 80%;" />
+>
+> Is onderstaande boom niet vergeten?
+>
+> <img src="img/algo2/image-20230104173012998.png" alt="image-20230104173012998" style="zoom:67%;" />
+
+Nee, deze is isomorf aan $n=3$
+
+
+
+> 4. In paragraaf 2.3 wordt opgemerkt dat men bij eenzelfde wortelknoop toch verschillende BFS-bomen kan bekomen indien de volgorde van de kinderen van een gegeven knoop gevarieerd wordt. Zijn de aldus bekomen verschillende BFS-bomen onderling isomorf of niet ? Zelfde vraag voor DFS-bomen.
+
+Neem de volgende graaf als voorbeeld:
+
+<img src="img/algo2/image-20230104173444313.png" alt="image-20230104173444313" style="zoom: 50%;" />
+
+Mogelijke BFS bomen vanuit `f` zijn:
+
+| <img src="img/algo2/image-20230104173949719.png" alt="image-20230104173949719" style="zoom: 33%;" /> | <img src="img/algo2/image-20230104174046477.png" alt="image-20230104174046477" style="zoom: 33%;" /> |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+
+Deze zijn duidelijk niet isomorf.
+
+Mogelijke DFS bomen vanuit `f` zijn;
+
+| <img src="img/algo2/image-20230104174312620.png" alt="image-20230104174312620" style="zoom:33%;" /> | <img src="img/algo2/image-20230104174419851.png" alt="image-20230104174419851" style="zoom:33%;" /> |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+
+Deze zijn ook niet isomorf.
+
+
+
+> 5. In geval van BFS werd opgemerkt dat dit algoritme het FIFO-principe hanteert : als knoop $a$ eerder wordt ontmoet dan knoop $b$, dan zullen ook de kinderen van $a$ eerder ontmoet worden dan de kinderen van $b$. Is dit ook het geval DFS? Hoe zou het principe dat daar gehanteerd wordt, kunnen genoemd worden ?
+
+In DFS gebeurt er het omgekeerde. De kinderen van $b$ zullen eerder ontmoet worden dan de kinderen van $a$. We zouden dit het FILO-principe (first in last out) kunnen noemen.
+
+
+
+> 6. In paragraaf 4.1 wordt vermeld dat een opspannende subgraaf $G’$ met minimaal gewicht (van een gegeven, gewogen, geconnecteerde graaf $G$ met positieve takgewichten) niet noodzakelijk een boom hoeft te zijn. Bedenk een voorbeeld ($G$ en $G'$).
+
+| <img src="img/algo2/image-20230104175200368.png" alt="image-20230104175200368" style="zoom:33%;" /> | <img src="img/algo2/image-20230104175230051.png" alt="image-20230104175230051" style="zoom:33%;" /> |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| $G = G'$                                                     | Minimale opspannende boom heeft even groot gewicht als $G'$  |
+
+
+
+> 7. Werkt het algoritme van Dijkstra nog gegarandeerd correct als in de graaf takken met gewicht $0$ voorkomen?
+
+Ja, per definitie moeten de gewichten groter dan of gelijk aan $0$ zijn. 
+
+
+
+> 8. *Bedenk een voorbeeld van een graaf waarbij strikt negatieve takgewichten voorkomen en waar het algoritme van Dijkstra een fout resultaat oplevert.
+
+<img src="img/algo2/image-20230104175851587.png" alt="image-20230104175851587" style="zoom: 33%;" />
+
+In deze graaf zal je met Dijkstra voor het kortste pad van $a$ naar $c$ als resultaat $-2$ bekomen, terwijl het $-4$ zou moeten zijn. 
+
+
+
+> 9. In het Van Dale woordenboek wordt ‘excentriciteit’ omschreven als ‘ligging buiten het middelpunt’. Strookt deze betekenis met de definitie voor de ‘excentriciteit van een knoop uit de graaftheorie ?
+
+De excentriciteit van een knoop $a$ is de afstand tot de verst gelegen knoop vanuit $a$. Knopen met een hoge excentriciteit zullen typisch wel verder uit het midden van de graaf liggen. 
+
+
+
+> 10. Via stereografische projectie wordt een sferische voorstelling van een graaf omgezet in een vlakke voorstelling. Welk gebied in de sferische voorstelling wordt omgezet in het externe gebied van de vlakke graaf ? Neemt dit gebied
+>     een speciale plaats in onder de verschillende gebieden van een sferische voorstelling? 
+
+Het externe gebied is het gebied op het boloppervlak dat $a$ bevat. Volgens de projectie kan er deel van de graaf op $a$ liggen. Een knoop die oneindig dicht bij $a$ ligt, ligt oneindig ver van de andere knopen na stereografische projectie.
+
+
+
+> 11. Is het aantal interne mazen van een graaf steeds groter dan of gelijk aan het aantal externe mazen ?
+
+<img src="img/algo2/image-20230104180820650.png" alt="image-20230104180820650" style="zoom:33%;" />
+In dit voorbeeld beschouwen we een niet-samenhangende graaf. Er zijn twee externe mazen, maar geen interne, dus de stelling klopt niet.
+
+
+
+> 12. De heuristiek voor een sequentiële knoopkleuring vertrekt van een willekeurige knoopkleuring. Hoe zou je deze willekeurige initiële situatie kunnen uitbuiten om (eventueel) betere knoopkleuringen te bekomen?
+
+We zouden misschien kunnen vertrekken vanaf de knoop met de laagste kleur? Of misschien eerst de knopen sorteren en dan de knopen in volgorde verwerken. Ik weet het niet zeker.
+
+
+
+> 13. Indien bij het Vierkleurenprobleem ook landen die slechts één punt gemeen hebben als buurlanden zouden worden beschouwd (en dus een verschillende kleur moeten hebben), zou de resulterende graaf dan nog steeds vlakke graaf zijn? Bepaal in dit geval het aantal kleuren nodig voor het inkleuren van de landkaart in figuur 19.
+
+Hier is een tegenvoorbeeld waarbij het resultaat geen vlakke graaf meer is:
+
+<img src="img/algo2/image-20230104181555027.png" alt="image-20230104181555027" style="zoom: 33%;" />
+
+Je kan bij de graafvoorstelling van dit probleem geen vlakke voorstelling vinden:
+
+<img src="img/algo2/image-20230104181846760.png" alt="image-20230104181846760" style="zoom:50%;" />
+
+Bij figuur 19 in het boek zijn er even veel kleuren nodig.
+
+
+
+> 14. Het begrip ‘tweedelige graaf' kan ook gedefinieerd worden a.d.h.v. knoopkleuringen. Bedenk zelf zo’n definitie.
+
+Een tweedelige graaf is een graaf die je met twee kleuren kan inkleuren. 
 
 # Grafen deel 2
 
@@ -505,6 +662,8 @@ We kunnen een graaf op twee manieren voorstellen:
 
 ### Cut and cutset
 
+Met het begrip cut bedoel ik in dit deel een **edge cut**
+
 Neem een graaf $G$ en twee vertices $u$ en $v$ in $G$
 
 * $u$ is geconnecteerd met $v$ als er een $u-v$ pad bestaat in $G$
@@ -512,19 +671,98 @@ Neem een graaf $G$ en twee vertices $u$ en $v$ in $G$
 
 Een **cut** $C$ in $G$ is een subset van $E$, waarbij het verwijderen van alle edges in $C$ uit $G$, de graaf niet meer geconnecteerd is.
 
-//TODO
+Een **cutset** is de kleinst mogelijke cut. Dit impliceert dat elke strikte subset van de cutset geen cut meer is. Een cut is alleen een cutset als de resulterende subgrafen geconnecteerd zijn. Dit valt makkelijk aan te tonen (maar laten ze weg in de cursus om ons te trollen). 
+
+<img src="img/algo2/image-20230104112500324.png" alt="image-20230104112500324" style="zoom:33%;" />
+
+Eerst een voorbeeld. Als je in deze graaf een cut maakt die resulteert in `[a,b,c]` en `[d,e]`, is één van de twee resulterende subgrafen niet geconnecteerd. Het is namelijk ook geen cutset, want de grootte van een cutset van de graaf is duidelijk $1$ hier. 
+
+Algemeen (bewijs uit contrapositie). We veronderstellen cutset van een graaf, waarvan één van de resulterende subgrafen niet geconnecteerd is. Het feit dat eentje niet geconnecteerd is impliceert dat we een kleinere cut zouden kunnen nemen van de originele graaf. Hier heb je de contradictie. 
+
+Nu hebben we bewezen dat de twee resulterende subgrafen van een cutset beide geconnecteerd moeten zijn. 
+
+
+
+De definities voor vertex cut en vertex cutset zijn analoog. Een **vertex cut** is een verzameling vertices die er voor zorgen dat de graaf niet meer geconnecteerd (of de *triviale graaf wordt*\*) is als je ze weghaalt. Een **vertex cutset** is de minimale vertex cut. 
+
+* <img src="img/algo2/image-20230104113852265.png" alt="image-20230104113852265" style="zoom: 10%;" /> \*: als je in deze graaf de vertex cutset neemt, is het resultaat de triviale graaf. Deze is wel geconnecteerd, dus daarom de uitbreiding op de definitie.
+
+
+
+
 
 ### Connectivity
 
-//TODO
+De **edge connectivity** van $\lambda (G)$ van een graaf $G$ is de minimum kardinaliteit van een edge cutset van $G$. 
+
+De **vertex connectivity** $\kappa(G)$ van een graaf $G$ is de minimum kardinaliteit van een vertex cutset van $G$. 
+
+Ik denk dat het woord minimum hier zelfs overbodig is, aangezien een cutset altijd minimaal is.
+
+
+
+Het valt te bewijzen dat $\kappa(G) \leq \lambda(G)$ (contrapositie):
+
+* Stel dat een vertex cutset $V_c$ en een edge cutset $E_c$  van $G$ hebben
+* $\kappa(G) = \lvert V_c\rvert = v_c$   en  $\lambda(G) = \lvert E_c \rvert = e_c$
+* We veronderstellen nu dat $e_c < v_c$
+* Koppel elke edge in de edge cutset $E_c$ aan één van zijn vertices (dit is altijd mogelijk)
+  * Het verwijderen van $e_c$ edges resulteert per definitie in een graaf die niet geconnecteerd is
+  * Aan onze edges hebben we $e_c$ vertices gekoppeld. Als we een vertex verwijderen, verwijderen we per definitie ook al zijn edges.
+  * Dit betekent dus dat als we $e_c$ vertices verwijderen, de graaf ook niet meer geconnecteerd is. En dus dat $e_c$ groter dan of gelijk aan $v_c$ kan zijn. Hier heb je je contradictie en is er bewezen wat er te bewijzen viel.
+
+
+
+
 
 
 
 ### Digraph
 
-//TODO
+Een **digraph** bestaat uit een **vertex set** en een **arc set**. Elke arc is een geordend paar vertices. 
+
+De **orde** (order) van een digraph is het aantal vertices.
+
+De **grootte** (size) van een digraph is het aantal arcs.
 
 
+
+De **from-incidence** $I(v)$ van een vertex $v$ is de verzameling arcs die erin toekomen.
+
+De **to-incidence** $I'(v)$ van een vertex $v$ is de verzameling arcs die eruit vertrekken.
+
+De **out-degree** $\delta(v)$ van een vertex $v$ is het aantal arcs die eruit vertrekken.
+
+De **in-degree** $\delta'(v)$ van een vertex $v$ is het aantal arcs die erin toekomen.
+
+De **from-adjacency** $A(v)$ van een vertex $v$ is de verzameling vertices die een arc hebben naar $v$
+
+De **to-adjacency** $A'(v)$ van een vertex $v$ is de verzameling vertices waarin een arc toekomt vanuit $v$
+
+
+
+Je kan een digraph op twee manieren voorstellen, analoog aan gewone grafen: 
+
+* **Incidence matrix**
+* **Incidence lists**
+
+
+
+Paths en cycles zijn ook hetzelfde als bij ongerichte grafen. Buiten dat je ook een **semipath**, een **semiwalk** en een **semicycle** kan hebben. Hier wordt de richting van de arcs niet speciaal gevolgd. Bij een gewone path, walk of cycle wel.
+
+
+
+Een digraaf is **strongly connected** als er voor elk paar vertices een pad in beide richtingen bestaat.
+
+Een digraaf is **weakly connected** als er voor elk paar vertices een pad in minstens één richting bestaat.
+
+
+
+Als voor elk paar vertices $u$ en $v$ er een $(u,v)$-semipad bestaat, impliceert dit dan dat de graaf zwak geconnecteerd is? 
+
+Nee, je kan makkelijk een tegenvoorbeeld vinden:
+
+<img src="img/algo2/image-20230104123437819.png" alt="image-20230104123437819" style="zoom: 25%;" />
 
 ## Minimum spanning tree problem
 
