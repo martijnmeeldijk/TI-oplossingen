@@ -2065,7 +2065,7 @@ ESP in tunnel mode, hier wordt ook de originele IP header mee versleuteld en ge-
 
 > Explain how trust relations are set-up in PGP.
 
-
+//TODO
 
 > True or false: to generate an S/MIME session key, first a key exchange algorithm is invoked
 
@@ -2075,43 +2075,117 @@ ESP in tunnel mode, hier wordt ook de originele IP header mee versleuteld en ge-
 
 
 
+> What are the functions added by S/MIME and what is their purpose?
+
+
+
 > Explain the workings of cross-site scripting. How can one defend against this type of attack?
+
+* We stoppen kwaadaardige code in een kwetsbare webserver (of URL)
+* Slachtoffer bezoekt de webserver
+* De code komt mee met de gevraagde inhoud
+* De code wordt uitgevoerd op de machine van de gebruiker, waardoor we bijvoorbeeld gevoelige informatie kunnen stelen.
+
+De beste manier om XSS tegen te gaan is input sanitation. Hier zorgen we ervoor dat gebruikersinput server-side wordt nagekeken en slechte dingen worden gefilterd.  
+
+
+
+> Explain the workings of SQL injection. How can one defend against this type of attack?
+
+SQL code wordt in een invoerveld ingeven, op zodanige wijze dat deze uitgevoerd wordt op de server. Dit kan voorkomen worden met prepared statements en stored procedures.
 
 
 
 > Explain the differences between XSS and CSRF
 
+Bij **XSS** injecteren we code in een website die vervolgens uitgevoerd wordt op een client, hiermee kunnen we bijvoorbeeld gevoelige informatie stelen.
+
+Bij **CSRF** (cross-site request forgery) ligt de nadruk iets anders. We zorgen ervoor dat de client onvrijwillig een request doet naar een website waarop hij geauthenticeerd is. We kunnen iemand zo bijvoorbeeld geld naar ons doen overschrijven.
+
 
 
 > What are the advantages and disadvantages of increasing the length of hash chains / rainbow tables?
+
+Als je de hash chains langer maakt, heb je minder opslagruimte nodig, maar moet je wel meer computaties doen om een hash te kraken.
 
 
 
 > Explain the major differences between hash chains and rainbow tables.
 
+In een hash chain wordt één reductiefunctie gebruikt, in een rainbow table wordt een sequentie van reductiefuncties doorlopen. Hierdoor kunnen verschillende chains alleen in elkaar samenkomen als ze dezelfde hashwaarde hebben op dezelfde iteratie van de reductiefunctie.
+
 
 
 > What is 2-factor authentication?
 
+Authenticatie aan de hand van twee van de volgende manieren:
 
+* Iets dat de gebruiker **heeft**
+* Iets dat de gebruiker **weet**
+* Iets dat de gebruiker **is**
+
+Typisch wordt two-factor authentication gedaan via een SMS, want die de gebruiker alleen lezen op zijn eigen telefoon. Dit wordt dan gecombineerd met een wachtwoord.
+
+ 
 
 > What are the security advantages of using security tokens vs software based approaches?
+
+Een token staat niet op je schijf en is dus bijna onvindbaar voor malware. 
 
 
 
 > Which are the advantages of using full disk encryption vs manual encryption?
 
+Bij handmatige encryptie moet de gebruiker zelf aangeven welke bestanden hij wilt encrypteren. De encryptie gebeurt dus op het niveau van bestanden.
+
+Bij full disk encryption wordt de hele schijf (inclusief de boot sector) geëncrypteerd. Je kan niet per ongeluk iets vergeten encrypteren. Het is wel makkelijker om je schijf onbruikbaar te maken met deze methode als je iets verkeerd doet of de pin vergeet.
+
 
 
 > List 5 typical stealth strategies of malware.
 
+* De bestandsgrootte van het geïnfecteerde bestand niet wijzigen
 
+* De datum laatst aangepast vervalsen
+
+* Read-requests van het bestoringssysteem onderscheppen
+
+* Zichzelf wijzigen zodat het moeilijker herkend wordt
+
+* De body van het virus encrypteren
+
+  
 
 > How does a buffer overflow work? Which mitigation strategies are available?
 
+Bij normale uitvoer van een programma wordt invoer in een buffer opgeslagen. Een aanvaller geeft een te grote input, waardoor ook code voorbij de buffer wordt overschreven. De aanvaller kan als doel hebben om het returnadres te overschrijven zodat het wijst naar kwaadaardige code, die dan met de privileges van het huidig draaiende programma wordt uitgevoerd. 
+
+Er zijn twee manieren om dit tegen te gaan:
+
+* Data execution prevention (DEP)
+  * We markeren delen van het geheugen als 'executable' en 'non-executable'. Alleen de 'executable' delen kunnen uitgevoerd worden. 
+* Address space layout randomisation (ASLR)
+  * De verdeling van de adresruimte van belangrijke delen van het programma wordt gerandomiseerd
+  * Zo kan je niet met zekerheid springen naar een bepaalde functie in het geheugen
 
 
-> Explain a frequently taken approach in software cracking and describe countermeasures
+
+>  Explain a frequently taken approach in software cracking and describe countermeasures
+
+* Serial crack
+  * Programma de-assembleren en `jne` veranderen naar `nop` op de plek waar wordt gesprongen naar een foutboodschap als de serial niet juist is. 
+* Key generator
+  * Een programma dat key genereert. Wordt verdeeld door bedrijven of kan geschreven worden met reverse engineering. 
+* Code injection
+  * Nieuwe code in een programma steken. 
+
+
+
+Manieren om dit tegen te gaan:
+
+* Code obfuscation (de code moeilijker maken om te begrijpen)
+* Digitale handtekening
+* Code encrypteren
 
 
 
@@ -2125,6 +2199,10 @@ ESP in tunnel mode, hier wordt ook de originele IP header mee versleuteld en ge-
 - **Access to sensitive files**: This metric tracks which users are accessing sensitive files on the system, such as financial records or confidential documents. This can be used to detect unauthorized access or data leakage.
 - **Changes to system configurations**: This metric tracks any changes made to the system's configurations, such as installing new software or changing security settings. This can be used to detect and prevent unauthorized changes to the system.
 - **Application usage**: This metric tracks the usage of different applications on the system, including the frequency and duration of use. This can be used to detect unusual or suspicious activity, such as an attacker using a specific application for nefarious purposes.
+  - Users don’t read files in other users’ directories
+  - Users normally only access disk using higher level OS functions
+  - Users don’t copy system files
+
 - **Network traffic**: This metric tracks the incoming and outgoing traffic on the system, including the volume and destination of the traffic. This can be used to detect network-based attacks or unusual patterns of network activity.
 
 2. <u>Network-based audit system</u>:
@@ -2136,29 +2214,37 @@ ESP in tunnel mode, hier wordt ook de originele IP header mee versleuteld en ge-
 
 
 
-Users don’t read files in other users’ directories
 
-Users normally only access disk using higher level OS functions
-
-Users don’t copy system files
 
 > Discuss the advantages of a rules based vs a statistical IDS 
+
+| Rule-based IDS                                               | Statistical IDS                                             |
+| ------------------------------------------------------------ | ----------------------------------------------------------- |
+| Weinig vals positieven                                       | Veel vals positieven of negatieven                          |
+| Kan geen onbekende dingen detecteren                         | Kan ook aanvallen detecteren die nog nooit zijn voorgekomen |
+|                                                              | Categorisatie niet specifiek                                |
+| Gebaseerd op regels vastgelegd door experten, moet geupdate worden | Update zichzelf                                             |
 
 
 
 > What is a honeypot?
 
+Een **honeypot** is een fake systeem, gemaakt om aanvallers af te leiden of in de val te lokken. Typisch wordt een honeypot gevuld met nepdata en kwetsbare software, op zo een manier dat hij een gemakkelijk doelwit wordt voor aanvallers. Bij een inbraak kunnen we met een goede IDS dan al informatie verkrijgen over de aanvaller om toekomstige aanvallen te voorkomen. 
+
 
 
 ## Voorbeeldvragen
 
+Deze zijn van een examen van één van de vorige jaren. Ik weet niet meer waar ik ze heb gevonden.
+
 ### Gesloten boek
 
-> Wat is “perfect forward security”.
+> Wat is “perfect forward security”?
 
-* Leg uit.
-* Waarom is dit belangrijk voor cryptografische systemen?
-* Hoe wordt dit in IPsec geimplementeerd?
+> * Leg uit.
+> * Waarom is dit belangrijk voor cryptografische systemen?
+> * Hoe wordt dit in IPsec geimplementeerd?
+>
 
 
 
@@ -2178,37 +2264,51 @@ Users don’t copy system files
 
 
 
-Leg volgende begippen uit
 
-\-    Pki
 
-\-    Kerchoffs principe
+> Leg volgende begippen uit
+>
+> \-    Pki
+>
+> \-    Kerchoffs principe
+>
+> \-    Gemengd virus
+>
+> \-    Boot sector virus
+>
 
-\-    Gemengd virus
+//TODO pki 
 
-\-    Boot sector virus
+
+
+Een cryptografisch systeem moet veilig zijn, zelfs als alle informatie over het systeem, behalve de sleutel openbaar is. Dit staat bekend als het **principe van Kerckhoffs**.
+
+Een **blended threat** is een aanval waarbij verschillende dingen zoals virussen, malware, worms, ... worden gecombineerd. Een voorbeeld hiervan is een geïnfecteerde email die een backdoor en spyware installeert op het geïnfecteerde systeem en zich vervolgens over het netwerk propageert via een worm.
+
+Een **boot sector virus** is gericht op de boot sector/master boot record van een harde schijf of verwijderbare opslagmedia. 
+
+
+
+>  Juist/fout
+>
+> \-    Rainbow tables meerdere passwoorden met zelfde hash of niet?
+>
+> \-    Cryptografische hash is een hash maar omgekeerd niet
+>
+> \-    TLS is bestemd tegen tcp rst attack
+>
 
  
 
- Juist/fout
-
-\-    Rainbow tables meerdere passwoorden met zelfde hash of niet?
-
-\-    Cryptografische hash is een hash maar omgekeerd niet
-
-\-    TLS is bestemd tegen tcp rst attack
-
- 
-
-iPsec
-
-\-    Verschil tunnel en transport modus
-
-\-    Teken pakket ah en esp in transport modus
-
-\-    5 security dingen waaraan ipsec voldoet
-
-\-    2 redenen waarom ESP padding nodig heeft
+> iPsec
+>
+> \-    Verschil tunnel en transport modus
+>
+> \-    Teken pakket ah en esp in transport modus
+>
+> \-    5 security dingen waaraan ipsec voldoet
+>
+> \-    2 redenen waarom ESP padding nodig heeft
 
 
 
