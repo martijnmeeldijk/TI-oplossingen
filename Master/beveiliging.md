@@ -135,39 +135,6 @@ Categorieën van aanvallen:
 * Chosen text
   * Hetzelfde, maar nu hebben wij het onversleutelde bericht gekozen
 
-## Test jezelf
-
->  Explain the difference between confidentiality, authentication, access control / authorization, data integrity, non-repudiation and availability
-
-
-
-> Which of the above security goals are realized in the network protocols from Chapter 4?
-
-
-
-> Why are sequence numbers (or nonces) added to messages? Is it a good idea to use a time stamp for
-> this purpose?
-
-This is to ensure that the message is unique and it hasn't been replayed or tampered with. Using a timestamp is not an excellent idea, because an attacker could guess the timestamp if the sender and receiver are not perfectly synchronized. A low precision in the timestamp could make this even easier.
-
-
-
-> Which counter measurements can be taken against DoS and DDoS attacks?
-
-1. Firewalls and intrusion prevention systems (IPS): Firewalls and IPSs can help to detect and prevent malicious traffic from reaching the target server. These systems can be configured to block traffic from known attack sources, or to filter out traffic that exhibits certain characteristics that are common to DoS attacks. 
-2. Bandwidth limiting: Another way to mitigate DoS attacks is to implement bandwidth limiting on the server or network. This can help to prevent the server from being overwhelmed by too much traffic, and can help to ensure that legitimate traffic is able to reach the server.
-3. Load balancing: Load balancing can help to distribute the load across multiple servers, making it more difficult for a single DoS attack to bring down the entire system.
-
-
-
-> Give 5 examples of active attacks that can be used to compromise the security of a network protocol.
-
-* Message insertion/modification
-* Impersonation
-* Replay-attacks
-* Denial-of-Service attacks
-* Hijacking
-
 
 
 # <u>Chapter 3: Encryption algorithms</u>
@@ -301,7 +268,7 @@ Er zijn verschillende manieren om een block cipher toe te passen:
 
 ##### ECB: Electronic code book
 
-Dit is de simpelste *mode*. We encrypteren elke block van de ciphertext onafhankelijk. Dit is natuurlijk niet optimaal, want je kan nog best info achterhalen, omdat elk blok op dezelfde manier is geëncrypteerd. Het is wel een stuk efficiënter om toe te passen op geparallelliseerde hardware. Je kan het opzich wel gebruiken voor korte berichten.
+Dit is de simpelste *mode*. We encrypteren elke block van de ciphertext onafhankelijk. Dit is natuurlijk niet optimaal, want je kan nog best info achterhalen, omdat elk blok op dezelfde manier is geëncrypteerd. Het is wel een stuk efficiënter om toe te passen op geparallelliseerde hardware. Je kan het op zich wel gebruiken voor korte berichten.
 
 ##### CBC: Cipher block chaining
 
@@ -313,17 +280,29 @@ Eén probleem met CBC is dat als je een bit-error hebt in één plaintext blok, 
 
 Volgens de slides is CBC ook bruikbaar voor authenticatie.
 
-#### CFB: Cipher Feedback
+##### CFB: Cipher Feedback
 
-//TODO
+$s$-bit Cipher Feedback werkt gelijkaardig aan CBC. Het laat toe om een stream cipher te maken van een block cipher, omdat het op segmenten van $s$ bits ($1 \leq s \leq$ blokgrootte) werkt. 
 
-#### OFB: Output Feedback
+Elke stap neemt een inputblok (het vorige geëncrypteerde blok) en versleutelt het met de sleutel tot een outputblok. De $s$ meest significante bits van het outputblok worden dan ge-XOR'ed met het plaintext segment. Het eerste inputblok is de IV. 
 
+De entropie gegenereerd door het encryptiealgoritme wordt dus gebruikt als stream cipher, met als kost meer CPU-tijd. Om de ciphertext te decrypteren gebruikt je ook het encryptiealgoritme.
 
+Een ander nadeel is hier dat een bit-error in één blok de $n/s$ volgende blokken verpest.  
 
-#### CTR: Counter
+##### OFB: Output Feedback
 
+Zelfde als CFB, maar de output wordt gebruikt als input voor het volgende blok (niet de vorige cipher). Hier gebeurt ook zowel encryptie als decryptie met het encryptiealgoritme.
 
+Cryptanalysis is moeilijker, maar het aanpassen van één bit in de cipher komt overeen met het aanpassen van één bit in de plaintext. Er moet wel een dataintegriteitsmexchanisme toegevoegd worden. 
+
+##### CTR: Counter
+
+Er wordt een initiële counter-waarde gegenereerd. In elke iteratie wordt een incrementatie op de counter geëncrypteerd en ge-XOR'ed met een plaintext blok.
+
+ Je kan de keystream op voorhand berekenen. Door de counter zijn replay-aanvallen moeilijker.
+
+Eén bit error in de input veroorzaakt maar één bit error in de output, dit is handig, maar zorgt er ook voor dat deze manier gevoelig is aan manipulatie, waardoor een extra dataintegriteitsmexchanisme nodig is. De counter moet gesynchroniseerd zijn bij zowel zender als ontvanger.
 
 ## Asymmetric encryption algorithms
 
@@ -457,43 +436,11 @@ Uiteindelijk hanteert men: $\text{HMAC}_K(M) = H((K^+\oplus o) \vert\vert H((K^+
 
 
 
-### Test jezelf
-
-> Try to encrypt and decrypt a self-defined message using the provided encryption approaches
-
-
-
-> What are block cipher modes? What are the advantages and disadvantages of the modes described in the course?
-
-
-
-> How secure is 3-DES? Explain why.
-
-
-
-> What does ECDHE_RSA stand for? For which purpose are these different algorithms used?
-
-
-
-> Why is AES or DES not typically used as a hash function?
-
-
-
-> What are the strong and weak collision requirements?
-
-
-
-> Give an example scenario describing why these are relevant.
-
-
-
-> What is the main difference between a digital signature and a MAC?
-
 # <u>Chapter 4: Network and communication security</u>
 
 ## SSH
 
-Telnet is onveilig want alles wordt ongeëncrypteerd doorgestuurd. Gebruik SSH. Het staat voor secure shell en is een protocol dat ondersteuning biedt voor:
+Telnet is onveilig want alles wordt ongeëncrypteerd doorgestuurd. Gebruik SSH. Het staat voor secure shell en is een protocol datondersteuning biedt voor:
 
 * Veilige remote login
 * Tunneling
@@ -805,7 +752,7 @@ Een certificaat heeft een bepaalde vervaldatum. Om de zo veel tijd zal een certi
 
 Na zijn einddatum is een certificaat niet meer geldig en kan het dus niet meer gebruikt worden. Een certificaat kan ook voor zijn einddatum ongeldig gemaakt worden, wanneer bijvoorbeeld de private sleutel is gelekt. Dan wordt het certificaat hopelijk op een **certificate revocation list (CRL)** geplaatst. Dit is een lijst met certificaten die niet meer geldig zijn. We moeten als we de geldigheid van een certificaat willen nakijken deze lijst raadplegen.
 
-Een andere manier om hetzelfde doel is het **Online Certificate Status Protocol** (OCSP). Deze voorziet een manier om een query te sturen om de geldigheid van een bepaald certificaat te controleren. 
+Een andere manier om hetzelfde doel te bereiken is het **Online Certificate Status Protocol** (OCSP). Deze voorziet een manier om een query te sturen om de geldigheid van een bepaald certificaat te controleren. 
 
 Beide benaderingen hebben voor- en nadelen. Bij een CRL zal je telkens een lange lijst moeten doorlopen, die misschien niet perfect up-to-date is. Bij OCSP zullen de servers van de CA meer werk moeten doen. Bovendien wordt de privacy van de gebruikers enigszins geschonden doordat de CA perfect kan achterhalen welke websites ze hebben bezocht aan de hand van de queries.
 
@@ -1176,91 +1123,7 @@ Een **screened subnet firewall** is een mooie balans tussen de vorige twee setup
 
 <img src="img/beveiliging/image-20221229152420871.png" alt="image-20221229152420871" style="zoom:67%;" />
 
-## Test jezelf
 
->  True or false: the SSH transport layer protocol encrypts TCP packets. Explain.
-
-
-
-> Explain the functions of the SSH transport layer protocol, SSH user authentication protocol and SSH connection protocol
-
-
-
-> In which scenarios does it make sense to do a SSH key re-exchange? Why?
-
-
-
-> What is the difference between a SSH session and a SSH channel? Which channels are supported?
-
-
-
-> Which port number does SSH typically listen to?
-
-
-
-> Explain the difference between local and remote port forwarding.
-
-
-
-
-
-> Explain the benefits of ephemeral DH over traditional DH.
-
-
-
-> What is the difference between a Key Distribution Centre (KDC) and Public Key Infrastructure (PKI)?
->
-> What are the advantages / disadvantages of both approaches?
-
-
-
-> List 5 reasons why a certificate might have to be revoked. How can this revocation be implemented?
-
-
-
-> Give example restrictions that can be part of a certificate. Why are these relevant?
-
-* Key usage: this restiction specifies how the keys can be used. (signing, encrypting, ...)
-* Constraints on the name space for subsequent certificates. 
-  * Subject can for instance only issue certificates for units of their own company
-* Maximal certification path length
-  * Specifies the maximum amount of intermediate certificates in the certificate path between the end entity certificate and the root certificate.
-
-
-
-> What are the main differences between TLS and SSH?
-
-
-
-> TLS encrypted packets are authenticated when they are transmitted. Does this authentication mechanism use a shared secret key, or a private key? Why?
-
-
-
-> Is TLS vulnerable to traffic pattern analysis attacks? Why (not)?
-
-
-
-> Is the TLS record header included in each transmitted TCP packet?
-
-
-
-> For which applications / use cases would you prefer SSH over TLS (and vice versa)? Why?
-
-
-
-> Give 5 examples of security problems that can be solved by IPsec but not by TLS or SSH
-
-
-
-> Which of the following security services can be achieved with IPsec: access control, integrity, authentication, confidentiality (which types)?
-
-
-
-> Which IPsec protocols provide traffic flow confidentiality? Why is this only a limited form of confidentiality?
-
-
-
-//TODO vragen over WEP, WPA en Firewalls
 
 # <u>Chapter 5: Software and systems security</u>
 
@@ -1714,54 +1577,6 @@ Hoe kunnen we ons programma beschermen tegen krakers?
 
 We kunnen de code zichzelf laten aanpassen om reverse engineering tegen te gaan. Code **obfuscation** op het het niveau van CPU instructies is ook een optie. We kunnen ook een **digitale handtekening** toevoegen die de integriteit van de code controleert. Ten slotte kunnen we ook de code **encrypteren**. Ik weet niet precies hoe dat in zijn gang gaat, maar dat is dan weer een ander verhaal.
 
-
-
-> True or false: to generate an S/MIME session key, first a key exchange algorithm is invoked
-
-
-
-> What is the purpose of degenerate signedData messages in S/MIME?
-
-
-
-> Explain the workings of cross-site scripting. How can one defend against this type of attack?
-
-
-
-> Explain the differences between XSS and CSRF
-
-
-
-> What are the advantages and disadvantages of increasing the length of hash chains / rainbow tables?
-
-
-
-> Explain the major differences between hash chains and rainbow tables.
-
-
-
-> What is 2-factor authentication?
-
-
-
-> What are the security advantages of using security tokens vs software based approaches?
-
-
-
-> Which are the advantages of using full disk encryption vs manual encryption?
-
-
-
-> List 5 typical stealth strategies of malware.
-
-
-
-> How does a buffer overflow work? Which mitigation strategies are available?
-
-
-
-> Explain a frequently taken approach in software cracking and describe countermeasures
-
 # <u>Chapter 6: Intrusion detection</u>
 
 Eerst en vooral is het best moeilijk om te definiëren wat een inbraak nu precies is. Is een port scan een inbraak? We differentiëren tussen een **aanval** en een **inbraak**. Om beide tegen te gaan hebben we twee methodes:
@@ -1875,39 +1690,6 @@ Verder kan een aanvaller ook detectie vermijden door **fragmentatie** van pakket
 
 
 
-## Test jezelf
-
-> Give 5 example audit entries (metrics) for host based and network based audit systems useful for IDS. 
-
-1. <u>Host-based audit system</u>:
-
-- **Failed login attempts**: This metric tracks the number of times a user has failed to correctly enter their login credentials. This can be an indication of an attempted intrusion or a user who is struggling to remember their password.
-- **Access to sensitive files**: This metric tracks which users are accessing sensitive files on the system, such as financial records or confidential documents. This can be used to detect unauthorized access or data leakage.
-- **Changes to system configurations**: This metric tracks any changes made to the system's configurations, such as installing new software or changing security settings. This can be used to detect and prevent unauthorized changes to the system.
-- **Application usage**: This metric tracks the usage of different applications on the system, including the frequency and duration of use. This can be used to detect unusual or suspicious activity, such as an attacker using a specific application for nefarious purposes.
-- **Network traffic**: This metric tracks the incoming and outgoing traffic on the system, including the volume and destination of the traffic. This can be used to detect network-based attacks or unusual patterns of network activity.
-
-2. <u>Network-based audit system</u>:
-
-- **Suspicious network traffic**: This metric tracks network traffic that is unusual or suspicious in nature, such as traffic from known malicious sources or traffic that is attempting to evade detection.
-- **Malware detection**: This metric tracks the detection of malware on the network, including the type and origin of the malware. This can be used to detect and prevent the spread of malware on the network.
-- **Unauthorized access attempts**: This metric tracks attempts to gain unauthorized access to the network, such as attempts to bypass security controls or exploit vulnerabilities. This can be used to detect and prevent intrusions.
-- **Network usage patterns**: This metric tracks the usage patterns of the network, including the volume and type of traffic, as well as the source and destination of the traffic. This can be used to detect unusual or suspicious activity, such as an attacker attempting to exfiltrate data from the network.
-
-
-
-Users don’t read files in other users’ directories
-
-Users normally only access disk using higher level OS functions
-
-Users don’t copy system files
-
-> Discuss the advantages of a rules based vs a statistical IDS 
-
-
-
-> What is a honeypot?
-
 # <u>Chapter 7: Future trends</u>
 
 ## Cryptocurrency & blockchains
@@ -1964,9 +1746,413 @@ Tot zover de theorie. Veel succes.
 
 
 
-# Voorbeeldvragen
 
-## Gesloten boek
+
+# Examenvragen
+
+## Test Jezelf 
+
+### Chapter 2
+
+>  Explain the difference between confidentiality, authentication, access control / authorization, data integrity, non-repudiation and availability
+
+* Confidentialiteit: data kan alleen gelezen worden door voor wie hij bestemd is .
+* Authenticatie: het verifiëren van de identiteit van een gebruiker, apparaat of systeem.
+* Autorisatie: het verlenen of weigeren van toegang tot een bron op basis van identiteit.
+* Integriteit: Garantie van de juistheid en consistentie van data. De data is gegarandeerd niet aangepast in overdracht.
+* Non-repudiation (onweerlegbaarheid): een persoon kan niet ontkennen dat hij een bepaalde actie heeft ondernomen.
+* Availability: garantie dat het systeem toegankelijk is en correct functioneert voor geautoriseerde gebruikers.
+
+
+
+> Which of the above security goals are realized in the network protocols from Chapter 4?
+
+| Protocol             | Goals                                                        |
+| -------------------- | ------------------------------------------------------------ |
+| SSH                  | confidentiality, authentication, data integrity              |
+| Diffie-Hellman       | confidentiality, authentication                              |
+| X.509                | confidentiality, authentication, data integrity, non-repudiation |
+| SSL/TLS              | confidentiality, authentication, data integrity              |
+| IPSec Tunnel mode    | confidentiality, authentication, data integrity, access control/authorization |
+| IPSec Transport mode | confidentiality, data integrity, access control/authorization |
+| openVPN              | authentication, data integrity, access control/authorization |
+| WEP                  | confidentiality                                              |
+| WPA                  | confidentiality, authentication                              |
+
+Ik heb dit laten genereren door chatGPT lol.
+
+
+
+> Why are sequence numbers (or nonces) added to messages? Is it a good idea to use a time stamp for
+> this purpose?
+
+This is to ensure that the message is unique and it hasn't been replayed or tampered with. Using a timestamp is not an excellent idea, because an attacker could guess the timestamp if the sender and receiver are not perfectly synchronized. A low precision in the timestamp could make this even easier.
+
+
+
+> Which counter measurements can be taken against DoS and DDoS attacks?
+
+1. Firewalls and intrusion prevention systems (IPS): Firewalls and IPSs can help to detect and prevent malicious traffic from reaching the target server. These systems can be configured to block traffic from known attack sources, or to filter out traffic that exhibits certain characteristics that are common to DoS attacks. 
+2. Bandwidth limiting: Another way to mitigate DoS attacks is to implement bandwidth limiting on the server or network. This can help to prevent the server from being overwhelmed by too much traffic, and can help to ensure that legitimate traffic is able to reach the server.
+3. Load balancing: Load balancing can help to distribute the load across multiple servers, making it more difficult for a single DoS attack to bring down the entire system.
+
+
+
+> Give 5 examples of active attacks that can be used to compromise the security of a network protocol.
+
+* Message insertion/modification
+* Impersonation
+* Replay-attacks
+* Denial-of-Service attacks
+* Hijacking
+
+
+
+### Chapter 3
+
+> Try to encrypt and decrypt a self-defined message using the provided encryption approaches
+
+//TODO
+
+> What are block cipher modes? What are the advantages and disadvantages of the modes described in the course?
+
+Een block cipher is een encryptiealgoritme met een vaste inputgrootte. Het algoritme neemt bijvoorbeeld een blok van $b$ bits, en encrypteert het tot een blok van $b$ bits. Als de data meer dan $b$ bits bevat, wordt deze opgesplitst in meerdere blokken. Er zijn verschillende manieren om op deze wijze aan encryptie te doen, beter bekend als de *block cipher modes*.
+
+
+
+| Mode                            | Advantages                                                   | Disadvantages                                                |
+| ------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| **ECB** (Electronic Code Book)  | + Gemakkelijke parallellisatie<br>+ Oké voor korte berichten | - Lekt veel info<br>- Zelfde plaintext block genereert zelfde ciphertext blok (met zelfde key)<br>-Bit error verpest één heel blok |
+| **CBC** (Cipher Block Chaining) | + Langere berichten (nieuw blok in cipher hangt af van vorige blok)<br>+ Bruikbaar voor authenticatie<br>+ Parallellisatie mogelijk<br>+ Gebruikt IV (moet uitgewisseld worden) | - Bit error verpest één blok en veroorzaakt bit error in het volgende blok, waardoor alle volgende blokken verpest worden. |
+| **CFB** (Cipher Feedback)       | + Stream cipher van block cipher algoritme<br>+ Lijkt op CBC | - Meer CPU<br>- Bit error verpest $n/s$ volgende blokken en veroorzaakt bit error in het eerste blok |
+| **OFB** (Output Feedback)       | + Keystream kan op voorhand berekend worden<br>+ Goed voor kanalen met storing<br>+ 1 bit error in input is 1 bit error in output | - 1 bit aanpassen in cipher is één bit aanpassen in plaintext<br>- Extra dataintegriteitsmechanisme nodig |
+| **CTR** (Counter)               | + Keystream kan op voorhand berekend worden<br>+ Replay aanvallen zijn moeilijker<br>+ Gemakkelijk te parallelliseren <br>+ 1 bit error in input is 1 bit error in output | - 1 bit aanpassen in cipher is één bit aanpassen in plaintext<br/>- Extra dataintegriteitsmechanisme nodig |
+
+
+
+> How secure is 3-DES? Explain why.
+
+DES gebruikt een 56-bit key, en 3-DES gebruikt 3 zo'n keys, waardoor je zou denken dat de *strength* equivalent aan een key van 168 bits zou zijn, maar 3-DES is zeker en vast niet drie keer zo sterk als DES. Meet-in-the middle aanvallen verzwakken het algoritme. 
+
+Verder is de kleine blocksize (64 bits) ook een limiterende factor. Als een aanvaller twee identieke ciphertext blokken tegenkomt, kan hij de XOR van de corresponderende plaintext blokken vinden. Met een known paintext kan hij dus, mits genoeg data ook andere blokken ontsleutelen. 
+
+Het is ook belangrijk dat er bij 3DES drie verschillende keys worden gebruikt, anders is het algoritme een stuk minder veilig. 
+
+
+
+> What does ECDHE_RSA stand for? For which purpose are these different algorithms used?
+
+Elliptic Curve Diffie Hellman Ephemeral with RSA authentication.
+
+* Elliptic Curve Diffie Hellman: key exchange algoritme
+  * Ephemeral: er wordt een tijdelijke uitwisselingssleutel gebruikt voor elke sessie (beschermt tegen aanvallen die langetermijnsleutels kunnen compromitteren)
+* RSA: Om beide partijen te authenticeren
+
+
+
+> Why is AES or DES not typically used as a hash function?
+
+AES en DES zijn encryptiealgoritmes. De geëncrypteerde waarden moeten ook gedecrypteerd kunnen worden. Dit is een complexere operatie en gebruikt meer CPU. Je zou ze in principe wel als hashfunctie kunnen gebruiken, maar dan komen er snel een aantal problemen bij kijken.
+
+AES en DES zijn **niet collision-resistant**, het is makkelijk om twee inputs te vinden die resulteren in dezelfde hash. De zijn ook niet bestand tegen **pre-image aanvallen**, dit wil zeggen dat het mogelijk is om een input te vinden die tot een gevraagde outputhash leidt. Ze zijn bovendien **niet** bedoeld als **one-way** functies, wat een vereiste is voor een goeie hashfunctie.
+
+Gebruik beter SHA-2 of SHA-3 als hashfunctie.
+
+
+
+> What are the strong and weak collision requirements?
+
+Een hashfunctie heeft **strong collision resistance** als het praktisch onmogelijk is om twee dezelfde waarden te vinden die resulteren in dezelfde hashwaarde. 
+
+Als een hashfunctie **weak collision resistance** heeft, is het moeilijk om voor een gegeven waarde een andere waarde te vinden die in dezelfde hashwaarde resulteert.
+
+
+
+> Give an example scenario describing why these are relevant.
+
+Als we geen strong collision resistance hebben, kan een aanvaller bijvoorbeeld twee contracten of berichten genereren met verschillende inhoud, maar dezelfde hashwaarde. Dit maakt non-repudiation kapot. Het is typisch veel moeilijker om een algoritme strong collision resistance te geven, ten opzichte van weak collision resistance. 
+
+Birthday attacks vormen ook een groot probleem. De analogie gaat als volgt. Het is in een kamer veel moeilijker om een persoon te vinden die dezelfde verjaardag heeft als jij. Het is een stuk makkelijker om twee mensen te vinden die dezelfde verjaardag hebben. Zeker in een grote kamer. 
+
+
+
+> What is the main difference between a digital signature and a MAC?
+
+Het grootste verschil zit in de manier dat ze aangemaakt en geverifieerd worden.
+
+Een **digitale handtekening** gebruikt een **private key** om het bericht te ondertekenen en een **public key** om de handtekening te verifiëren. Een **MAC** (message authentication code) gebruikt een **gedeelde geheime sleutel** om de MAC aan te maken en te verifiëren. Verder levert een digitale handtekening ook onweerlegbaarheid (non-repudiation). Deze eigenchap ontbreekt bij MAC.
+
+Ze leveren wel beide authenticatie en data-integriteit.
+
+### Chapter 4
+
+>  True or false: the SSH transport layer protocol encrypts TCP packets. Explain.
+
+True. De SSH transportlaag werkt bovenop een transportlaagprotocol, waar TCP een mogelijk optie is. De SSH transportlaag voorziet authenticatie, confidentialiteit en integriteit. 
+
+Het protocol wisselt eerst identification strings uit, waarna het te gebruiken algoritme wordt onderhandeld. In de volgende stap worden sleutels uitgewisseld. De procedure wordt beëindigd met een *service request*, waarna alle data uitgewisseld wordt als payload van het SSH transportlaagprotocol, beschermd door encryptie en MAC.
+
+
+
+> Explain the functions of the SSH transport layer protocol, SSH user authentication protocol and SSH connection protocol
+
+- SSH Transport layer protocol
+  - authenticatie, confidentialiteit en integriteit
+  - Identification strings, algoritme negotiatie, key exchange, service request
+  - Bovenop betrouwbaar transportlaagprotocol (bv. TCP)
+- SSH user authentication protocol
+  - Authenticatie voor clients (public key, password of host-based)
+  - Zit bovenop het vorige
+- SSH connection protocol
+  - Multiplext de veilige tunnel (voorzien door SSH transportlaag)  in meerdere logische kanalen
+  - Kunnen gebruikt worden voor meerdere doeleinden
+    - Verschillende sessies of applicaties, X11-verbindingen, port forwarding
+
+
+
+> In which scenarios does it make sense to do a SSH key re-exchange? Why?
+
+Die doe je best wanneer er een verandering in de algoritmes of sessiesleutels is gebeurd. Je kan sowieso best om de zo veel tijd of om de zo veel bits wisselen van sleutel. Dit verlaagt de kans dat er iemand meeluistert.
+
+Als één van de sleutels is gecompromitteerd moet je een re-exchange doen, want anders is je verbinding niet meer veilig.  Als een systeemadministrator de sleutels van de server heeft veranderd, zal je ook een re-exchange moeten doen.
+
+
+
+> What is the difference between a SSH session and a SSH channel? Which channels are supported?
+
+Een SSH session slaat op de verbinding die gemaakt wordt tussen client en server gebruik makende van het SSH protocol. Binnen een sessie kunnen er meerder channels opgezet worden. Een aantal mogelijke channels zijn:
+
+* Session: een commando of shell uitvoeren, bestandsoverdracht (SFTP)
+* X11: om graphics te ondersteunen over SSH
+* Local Port forwarding
+* Remote port forwarding
+
+> Which port number does SSH typically listen to?
+
+22
+
+
+
+> Explain the difference between local and remote port forwarding.
+
+Bij **local port forwarding** sturen wij met onze SSH client het verkeer van een andere client veilig door naar de server. 
+
+Bij **remote port forwarding** zal onze client in naam van de server handelen. Requests op de gekozen poorten zullen door onze client via een tunnel naar de server gestuurd worden.
+
+
+
+> Explain the benefits of ephemeral DH over traditional DH.
+
+- Private sleutels gegenereerd voor elke sessie
+- Dus elke sessie een andere geheime sessiesleutel
+- Authenticatie gebeurt via een ander algoritme (RSA, DSA, ...)
+- Perfect forward secrecy: dit betekent dat als een aanvaller één sleutel kraakt, dit niet de veiligheid van het hele systeem in gevaar brengt (bv. door elke keer een nieuwe sessiesleutel aan te maken). 
+
+
+
+> What is the difference between a Key Distribution Centre (KDC) and Public Key Infrastructure (PKI)?
+>
+> What are the advantages / disadvantages of both approaches?
+
+Een **KDC** genereert geheime sleutels voor beide partijen een voorziet een mechanisme om deze sleutels aan hun te geven. De KDC beheert gecentraliseerd alle sleutels. Hier is het makkelijker om sleutels te beheren en te updaten. Spijtig genoeg moet je de KDC wel vertrouwen en is hij ook een single point of failure. 
+
+Bij **PKI** genereert de client zelf een geheime sleutel, die wordt versleuteld met de publieke sleutel van de server, waardoor alleen de server hem kan ontsleutelen. We weten dat de server vertrouwd is omdat zijn publieke sleutel is ondertekend door een CA. Het beheer van certificaten is iets complexer en er is ook het risico dat de CA gehackt wordt.
+
+
+
+> List 5 reasons why a certificate might have to be revoked. How can this revocation be implemented?
+
+* De private key is gelekt
+* De eigenaar van het certificaat is niet meer te vertrouwen
+* De eigenaar van het certificaat is veranderd
+* Het certificaat is vervallen
+* De identiteit van de eigenaar is veranderd (andere naam, adres, ...)
+
+We kunnen het certificaat op een **Certificate Revocation List (CRL)** plaatsen. Dit is een lijst met certificaten die niet meer geldig zijn. We moeten als we de geldigheid van een certificaat willen nakijken deze lijst raadplegen.
+
+Een andere manier om hetzelfde doel te bereiken is het **Online Certificate Status Protocol** **(OCSP)**. Deze voorziet een manier om een query te sturen om de geldigheid van een bepaald certificaat te controleren. 
+
+
+
+> Give example restrictions that can be part of a certificate. Why are these relevant?
+
+* Key usage: this restiction specifies how the keys can be used. (signing, encrypting, ...)
+* Constraints on the name space for subsequent certificates. 
+  * Subject can for instance only issue certificates for units of their own company
+* Maximal certification path length
+  * Specifies the maximum amount of intermediate certificates in the certificate path between the end entity certificate and the root certificate.
+
+
+
+> What are the main differences between TLS and SSH?
+
+| TLS/SSL                                                | SSH                                                          |
+| ------------------------------------------------------ | ------------------------------------------------------------ |
+| Gemaakt om algemeen transportlaagverkeer te beveiligen | Voornamelijk gebruikt voor veilige shell toegang tot servers |
+| Niet aanwezig                                          | Multiplexing, terminal management                            |
+| Wordt gedaan in bovenliggende protocollen              | Gebruikersauthenticatie inbegrepen                           |
+| X.509 certificaten                                     | Eigen formaat                                                |
+| poort 443                                              | poort 22                                                     |
+| FTP-TLS                                                | SFTP                                                         |
+| Handshake is efficienter                               |                                                              |
+
+
+
+> TLS encrypted packets are authenticated when they are transmitted. Does this authentication mechanism use a shared secret key, or a private key? Why?
+
+In TLS wordt client en server authenticatie gedaan met PKI, hier wordt gebruik gemaakt van private en public keys. 
+
+Aan de andere kant wordt elk bericht geauthenticeerd met een HMAC, deze gebruikt een gedeelde sessiesleutel die met PKI is uitgewisseld. 
+
+> Is TLS vulnerable to traffic pattern analysis attacks? Why (not)?
+
+Alle traffic wordt versleuteld, dus aanvallers kunnen de inhoud niet lezen. De aanvallers kunnen wel zien naar waar je requests stuurt en hoe groot de verstuurde pakketten zijn. Om dit deels tegen te gaan zorgt TLS wel voor padding en record splitting. 
+
+
+
+> Is the TLS record header included in each transmitted TCP packet?
+
+Nee, bij het verzenden van applicatiedata wordt de data eerst gefragmenteerd. Elk fragment krijgt en MAC en wordt eventueel gecomprimeerd, waarna het versleuteld wordt. Aan het eerste pakket wordt een TLS record header toegevoegd. 
+
+
+
+> For which applications / use cases would you prefer SSH over TLS (and vice versa)? Why?
+
+Voor een veilige shellverbinding naar een server is SSH de logische keuze, aangezien SSH hier specifiek ondersteuning voor voorziet, alsook voor file transfers of port-forwarding.
+
+In de meeste gevallen is TLS preferabel, aangezien het specifiek is ontworpen voor veilige algemene communicatie over netwerken. Een voorbeeld hier is de communicatie tussen een client en een webserver, waar de keuze voor TLS voor-de-hand-liggend is.  
+
+
+
+> Give 5 examples of security problems that can be solved by IPsec but not by TLS or SSH
+
+1. SSH en TLS voorzien geen beveiliging op de netwerklaag
+2. Bescherming tegen spoofing
+3. Replay aanvallen
+4. Bescherming van toepassingen die geen gebruik maken van TLS of SSH, zonder ze te moeten aanpassen
+5. DOS aanvallen
+6. Spionage
+7. Vervalsing van routeringsinformatie
+
+
+
+> Which of the following security services can be achieved with IPsec: access control, integrity, authentication, confidentiality (which types)?
+
+* Access control
+  * AH: Toegang tot netwerken of systemen beperken door authenticatie 
+  * ESP: Toegang tot netwerken of systemen beperken door authenticatie 
+* Integrity
+  * AH: met een MAC
+  * ESP: optionele header met een MAC
+* Authentication
+  * AH: met een MAC
+  * ESP: optionele header met een MAC
+* Confidentiality
+  * AH: niet aanwezig
+  * ESP: encrypteert de data (en ook de header in tunnel mode)
+
+
+
+> Which IPsec protocols provide traffic flow confidentiality? Why is this only a limited form of confidentiality?
+
+ESP in tunnel mode, hier wordt ook de originele IP header mee versleuteld en ge-encapsuleerd. Alleen het verkeer tussen de IPSec gateways is versleuteld. Een aanvaller kan wel nog weten tussen welke netwerken er verkeer loopt.
+
+//TODO vragen over WEP, WPA en Firewalls
+
+
+
+### Chapter 5
+
+> Explain how trust relations are set-up in PGP.
+
+
+
+> True or false: to generate an S/MIME session key, first a key exchange algorithm is invoked
+
+
+
+> What is the purpose of degenerate signedData messages in S/MIME?
+
+
+
+> Explain the workings of cross-site scripting. How can one defend against this type of attack?
+
+
+
+> Explain the differences between XSS and CSRF
+
+
+
+> What are the advantages and disadvantages of increasing the length of hash chains / rainbow tables?
+
+
+
+> Explain the major differences between hash chains and rainbow tables.
+
+
+
+> What is 2-factor authentication?
+
+
+
+> What are the security advantages of using security tokens vs software based approaches?
+
+
+
+> Which are the advantages of using full disk encryption vs manual encryption?
+
+
+
+> List 5 typical stealth strategies of malware.
+
+
+
+> How does a buffer overflow work? Which mitigation strategies are available?
+
+
+
+> Explain a frequently taken approach in software cracking and describe countermeasures
+
+
+
+### Chapter 6
+
+> Give 5 example audit entries (metrics) for host based and network based audit systems useful for IDS. 
+
+1. <u>Host-based audit system</u>:
+
+- **Failed login attempts**: This metric tracks the number of times a user has failed to correctly enter their login credentials. This can be an indication of an attempted intrusion or a user who is struggling to remember their password.
+- **Access to sensitive files**: This metric tracks which users are accessing sensitive files on the system, such as financial records or confidential documents. This can be used to detect unauthorized access or data leakage.
+- **Changes to system configurations**: This metric tracks any changes made to the system's configurations, such as installing new software or changing security settings. This can be used to detect and prevent unauthorized changes to the system.
+- **Application usage**: This metric tracks the usage of different applications on the system, including the frequency and duration of use. This can be used to detect unusual or suspicious activity, such as an attacker using a specific application for nefarious purposes.
+- **Network traffic**: This metric tracks the incoming and outgoing traffic on the system, including the volume and destination of the traffic. This can be used to detect network-based attacks or unusual patterns of network activity.
+
+2. <u>Network-based audit system</u>:
+
+- **Suspicious network traffic**: This metric tracks network traffic that is unusual or suspicious in nature, such as traffic from known malicious sources or traffic that is attempting to evade detection.
+- **Malware detection**: This metric tracks the detection of malware on the network, including the type and origin of the malware. This can be used to detect and prevent the spread of malware on the network.
+- **Unauthorized access attempts**: This metric tracks attempts to gain unauthorized access to the network, such as attempts to bypass security controls or exploit vulnerabilities. This can be used to detect and prevent intrusions.
+- **Network usage patterns**: This metric tracks the usage patterns of the network, including the volume and type of traffic, as well as the source and destination of the traffic. This can be used to detect unusual or suspicious activity, such as an attacker attempting to exfiltrate data from the network.
+
+
+
+Users don’t read files in other users’ directories
+
+Users normally only access disk using higher level OS functions
+
+Users don’t copy system files
+
+> Discuss the advantages of a rules based vs a statistical IDS 
+
+
+
+> What is a honeypot?
+
+
+
+## Voorbeeldvragen
+
+### Gesloten boek
 
 > Wat is “perfect forward security”.
 
@@ -1991,31 +2177,6 @@ Tot zover de theorie. Veel succes.
 > Indien de file met paswoorden verworven wordt door een aanvaller kan deze de gevonden hashes rechtstreeks gebruiken om in te loggen op een systeem.
 
 
-
-## Open boek
-
-> Waarom vermeldt het SSH protocol de gebruikte softwareversie in de uitgewisselde pakketten tijdens het negotiatiealgoritme?
-
-
-
-
-
-> Wanneer men een file eerst DES encrypteert en daarna decrypteert met dezelfde sleutel bekomt men terug het oorspronkelijk bestand. Is dit ook het geval wanneer men de omgekeerde volgorde uitvoert, dus eerst decryptie en dan encryptie? Waarom?
-
-
-
-
-
-> De wireshark trace van een security protocol wordt weergegeven.
-
-> * Welk protocol werd gecaptured?
-> * Leg uit wat er gebeurt in packet 65.
-
-![image-20221221130918239](img/beveiliging/image-20221221130918239.png)
-
-
-
-# Examenvragen
 
 Leg volgende begippen uit
 
@@ -2048,6 +2209,31 @@ iPsec
 \-    5 security dingen waaraan ipsec voldoet
 
 \-    2 redenen waarom ESP padding nodig heeft
+
+
+
+### Open boek
+
+> Waarom vermeldt het SSH protocol de gebruikte softwareversie in de uitgewisselde pakketten tijdens het negotiatiealgoritme?
+
+
+
+
+
+> Wanneer men een file eerst DES encrypteert en daarna decrypteert met dezelfde sleutel bekomt men terug het oorspronkelijk bestand. Is dit ook het geval wanneer men de omgekeerde volgorde uitvoert, dus eerst decryptie en dan encryptie? Waarom?
+
+
+
+
+
+> De wireshark trace van een security protocol wordt weergegeven.
+
+> * Welk protocol werd gecaptured?
+> * Leg uit wat er gebeurt in packet 65.
+
+![image-20221221130918239](img/beveiliging/image-20221221130918239.png)
+
+
 
 
 
