@@ -37,7 +37,7 @@ Het doel van confidentialiteit is ervoor zorgen dat data enkel kan gelezen worde
 
 ### Traffic flow confidentiality
 
-Bij **traffic-flow confidentialty** willen we ervoor zorgen dat het niet mogelijk is om te achterhalen **wie met wie** communiceert. Hiervoor gebruiken we zogezegde **Privacy Enhancing Techniques** (PETs). In het vorige voorbeeld kan zelf bij het introduceren van encryptie, Trudy achterhalen dat Alice en Bob met elkaar praten.
+Bij **traffic-flow confidentialty** willen we ervoor zorgen dat het niet mogelijk is om te achterhalen **wie met wie** communiceert. Hiervoor gebruiken we zogezegde **Privacy Enhancing Techniques** (PETs). In het vorige voorbeeld kan, zelfs na het introduceren van encryptie, Trudy achterhalen dat Alice en Bob met elkaar praten.
 
 
 
@@ -891,7 +891,7 @@ IPSec heeft een paar voor- en nadelen:
 IPSec kan in twee verschillende modes draaien:
 
 * <u>Layer 2 tunnel mode (default)</u>
-  * Typisch gebruikt voor een tunnel tussen twee gatways
+  * Typisch gebruikt voor een tunnel tussen twee gateways
   * De volledige IP datagram wordt beschermd
   * Automatische NAT traversal
 * <u>Transport mode</u>
@@ -1508,7 +1508,7 @@ Er zijn een aantal verschillende manieren waarop je systeem kan geïnfecteerd wo
     * Wanneer uitgevoerd: doet zijn ding en sluit weer
   * Memory-resident
     * Blijft permanent in het geheugen
-* Marco virus
+* Macro virus
   * Typisch een virus in een document dat zich uitvoert als je het opent
 * Boot sector virus
 
@@ -1756,7 +1756,7 @@ Tot zover de theorie. Veel succes.
 
 >  Explain the difference between confidentiality, authentication, access control / authorization, data integrity, non-repudiation and availability
 
-* Confidentialiteit: data kan alleen gelezen worden door voor wie hij bestemd is .
+* Confidentialiteit: data kan alleen gelezen worden door voor wie hij bestemd is.
 * Authenticatie: het verifiëren van de identiteit van een gebruiker, apparaat of systeem.
 * Autorisatie: het verlenen of weigeren van toegang tot een bron op basis van identiteit.
 * Integriteit: Garantie van de juistheid en consistentie van data. De data is gegarandeerd niet aangepast in overdracht.
@@ -2065,17 +2065,23 @@ ESP in tunnel mode, hier wordt ook de originele IP header mee versleuteld en ge-
 
 > Explain how trust relations are set-up in PGP.
 
-//TODO
+PGP werkt met een zogenaamde **web of trust**. Iedereen is hier een root CA. Een gebruiker zal een certificaat alleen vertrouwen als hij via meerdere paden kan verifiëren dat het vertrouwd is. 
+
+Stel je voor dat Alice en Bob elkaar vertrouwen. Charlie wilt nu met Alice praten, maar Alice vertrouwt hem niet. Bob ondertekent nu de publieke sleutel van Charlie. Als hij nu bij Alice komt, kan ze met de publieke sleutel van Bob verifiëren dat Charlie vertrouwd wordt door Bob. 
+
+Als er nu nog mensen zijn die zeggen dat Charlie te vertrouwen is, kan Alice vrij tot zeer zeker zijn dat Charlie geen viespeuk is.
+
+
 
 > True or false: to generate an S/MIME session key, first a key exchange algorithm is invoked
+
+False, de sessiesleutel wordt gegenereerd, waarna hij versleuteld wordt met de public key van de ontvanger. 
 
 
 
 > What is the purpose of degenerate signedData messages in S/MIME?
 
-
-
-> What are the functions added by S/MIME and what is their purpose?
+Deze worden gebruikt voor berichten die alleen certificaten of CRL's bevatten. 
 
 
 
@@ -2087,12 +2093,6 @@ ESP in tunnel mode, hier wordt ook de originele IP header mee versleuteld en ge-
 * De code wordt uitgevoerd op de machine van de gebruiker, waardoor we bijvoorbeeld gevoelige informatie kunnen stelen.
 
 De beste manier om XSS tegen te gaan is input sanitation. Hier zorgen we ervoor dat gebruikersinput server-side wordt nagekeken en slechte dingen worden gefilterd.  
-
-
-
-> Explain the workings of SQL injection. How can one defend against this type of attack?
-
-SQL code wordt in een invoerveld ingeven, op zodanige wijze dat deze uitgevoerd wordt op de server. Dit kan voorkomen worden met prepared statements en stored procedures.
 
 
 
@@ -2130,7 +2130,7 @@ Typisch wordt two-factor authentication gedaan via een SMS, want die de gebruike
 
 > What are the security advantages of using security tokens vs software based approaches?
 
-Een token staat niet op je schijf en is dus bijna onvindbaar voor malware. 
+Een token staat niet op je schijf en is dus bijna onvindbaar voor malware. Dit betekent ook dat beveiliging met een token minder afhankelijk is van de veiligheid van de host. Bij methodes op basis van software zal de geheime sleutel toch altijd op een bepaald moment in het geheugen zitten, waardoor het mogelijk is om hem te stelen. 
 
 
 
@@ -2233,9 +2233,264 @@ Een **honeypot** is een fake systeem, gemaakt om aanvallers af te leiden of in d
 
 
 
+## Test jezelf (martijn edition)
+
+Deze vragen heb ik verzonnen.
+
+### Chapter 2
+
+> What is traffic flow confidentiality?
+
+Bij **traffic-flow confidentialty** willen we ervoor zorgen dat het niet mogelijk is om te achterhalen **wie met wie** communiceert. Hiervoor gebruiken we zogezegde **Privacy Enhancing Techniques** (PETs). In het vorige voorbeeld kan, zelfs na het introduceren van encryptie, Trudy achterhalen dat Alice en Bob met elkaar praten.
+
+
+
+> What is the difference between privacy and confidentiality?
+
+Privacy wordt vaak verward met confidentialiteit, maar niet elke kwestie van confidentialiteit betreft privacy. Privacy heeft meer betrekking tot het privé-leven van een persoon. Zo heeft privacy bijvoorbeeld geen toepassing op intellectueel eigendom van een bedrijf, maar confidentialiteit wel.
+
+
+
+> Explain the difference between entity, attribute and data origin authentication.
+
+- **Entity** **authentication**
+  - Elke entiteit heeft een unieke identiteit en wordt beschreven door een verzameling data (ID-nummer, email). De authenticatie van de identiteit van een entiteit wordt vaak gebruikt voor entity authentication (dit staat zo in de slides oke ik ga er niet verder op ingaan tis toch niet echt super essentiële info). 
+- **Attribute** **authentication**
+  - Attributen zijn de karakteristieken van een entiteit, we moeten weten of partijen over de attributen beschikken die ze beweren te hebben, en we kunnen ze dus ook daarmee authenticeren.
+- **Data-origin** **authentication**
+  - We moeten weten of de data effectief komt van de verwachte bron. Dit is belangrijk om aan te tonen dat de data betrouwbaar is.
+
+
+
+### Chapter 3
+
+> What do confusion and diffusion mean in the context of encryption algorithms. How does the Feistel scheme implement these?
+
+- **Diffusion**: Het veranderen van één karakter in de input heeft een invloed op meerdere karakters van de output. Dit kan je bereiken door middel van een combinatie van permutaties en transformaties.
+  - Dit wordt bij Feistel bereikt met het wisselen van L en R
+- **Confusion**: De relatie tussen statistische eigenschappen van plain- en ciphertext zo complex mogelijk maken. Dit kan je bereiken met complexe substitutieschema's.
+  - Met de F, K en XOR in Feistel.
+
+Het principe van het Feistel Schema is gebaseerd op het combineren van *confusion* en *diffusion* functies, met als doel om de statistische eigenschappen van de plaintext niet door te laten komen in de ciphertext.
+
+
+
+> Name 5 requirements of a good hash function.
+
+1. Moet werken voor berichten van eender welke grootte
+
+2. Werkt maar in één richting
+
+3. Weak collision resistance
+
+   - Als je een bericht x hebt, zou het onmogelijk moeten zijn om een bericht y te vinden dat resulteert in dezelfde hash
+
+4. Strong collision resistance
+
+   - Het zou onmogelijk moeten zijn om twee berichten x en y te vinden die resulteren in dezelfde hash.
+
+   - Dit is in de praktijk zeer moeilijk. Als er heel veel mogelijke berichten zijn, is de kans logischerwijs groot dat er twee resulteren in dezelfde hash.
+
+5. Hashwaarden moeten makkelijk zijn om te berekenen
+
+
+
+> What is a MAC? Name 3 reasons to use a MAC.
+
+MAC staat voor **message authentication code** en gebruikt zowel de plaintext als de gedeelde sleutel als input. Hiermee wordt getracht om de volgende doelen te bereiken:
+
+1. Ontdekken of het bericht is aangepast
+2. Kijken of het bericht van de juiste afzender komt
+3. Kijken of de volgorde van het bericht is behouden (als je een counter gebruikt)
+
+Het verschil tussen een MAC en een hashfunctie is dat een MAC ook afhangt van de geheime sleutel. Een hash hangt enkel af van het bericht. Je kan MAC dus zien als een soort onomkeerbare encryptie. Dankzij de MAC is nu dus ook **authenticatie** mogelijk, omdat de geheime sleutel is gebruikt.
+
+
+
+> What are the 3 ways a client can authenticate on a server using the SSH user authentication protocol?
+
+- Public key
+  - De client ondertekent met zijn private key
+  - De server kijkt dan of deze overeenkomt met de public key van wie de client beweert te zijn
+  - Dit is computationeel vrij duur en clients hebben typisch niet altijd een keypair op zak
+- Wachtwoord
+  - Ja gewoon een wachtwoord wat wil je dat ik hier nog meer zeg
+- Host based
+  - Authenticatie op basis van de host van de client
+  - Zelfde als public key, maar je gebruikt de public host key van de client
+  - Je kan dus authenticatie voorzien voor meerdere clients op één host, dan moeten we maar geloven dat de client geauthenticeerd is op de host
+
+
+
+### Chapter 4
+
+> Name 4 best practices that should be implemented when using SSH.
+
+1. Zwakke wachtwoorden uitschakelen
+2. Gebruik alleen SSH2
+3. Zet PermitRootLogin op 'no'
+4. Gebruik password protection voor je private key
+
+
+
+> In the context of TLS, what is the difference between a connection and a session?
+
+Een **connection** is in het kader van TLS een kanaal tussen een client en server. Een connection heeft typisch een korte levensduur. Een **session** daarentegen, is een manier om een *state* (zoals de keuze van versleutelingsalgoritmes) bij te houden aan de kant van de server. Een session wordt aangemaakt door het **TLS handshake protocol**. Wanneer de connection gesloten wordt, kan de session in een volgende connection verdergezet worden. Aan de andere kant kan in eenzelfde connection ook een nieuwe session gestart worden. 
+
+
+
+> What are the different underlying protocols used in TLS? What is their function?
+
+- TLS handshake protocol
+  - Maakt **wederzijdse authenticatie** tussen client en server mogelijk, dit verloopt volgens deze stappen:
+- TLS change cipher spec protocol
+  - Maar **één bericht mogelijk**: change_cipher_spec
+  - Zorgt ervoor dat de afwachtende staat wordt gekopieerd naar de huidige staat. Dit slaat op de gekozen encryptietechnieken.
+- TLS alert protocol
+  - Berichten voor **errors** en **waarschuwingen**, als er bijvoorbeeld ongeldige berichten ontvangen worden of er problemen zijn met de certificaten.
+- TLS record protocol
+  - **Basislaag** van TLS, **verwerkt** de **data** die verstuurd moet worden
+  - **Fragmenteert** de **data** en kan hem optioneel comprimeren (wordt bijna nooit gedaan)
+  - Voorziet **confidentialiteit en authenticatie voor TLS-verbindingen**
+  - Gebruikt twee sleutels, gemaakt door het handshake protocol
+    - Eén voor confidentialiteit
+    - Eén voor integriteit a.d.h.v. MAC
+- TLS heartbeat protocol
+  - Nieuw protocol bovenop het record protocol
+  - Voorziet een **liveliness check** die op elk moment (behalve tijdens de handshake) kan gestuurd worden
+  - Stuurt een HeartbeatRequest die moet beantwoord worden met een HeatbeatResponse met exact dezelfde payload
+
+
+
+> What is the heartbleed bug?
+
+Dit is een bug in het TLS heartbeat protocol. Een aanvaller stuurt een HeartbeatRequest met een te lange length parameter en de server antwoordt met data uit zijn geheugen
+
+
+
+> Name 5 speedups that could be used in the TLS protocol.
+
+1. Verkorte handshake: door de session bij te houden moeten we als de client een volgende keer bij de server komt geen volledige handshake meer doen.
+2. False start: al data beginnen sturen wanneer de handshake niet af is. We beginnen al met data sturen als de handshake aan onze kant klaar is, maar we nog geen antwoord hebben. 
+3. Early termination: servers dichterbij de gebruikers zetten om latency the beperken. Deze servers fungeren als proxy voor de origin servers en kunnen dan de round-trip tijd beperken.
+4. Record size: voor nieuwe verbindingen moeten we de record size klein houden om latency te beperken. Voor actieve verbindingen kunnen we beter grotere records gebruiken voor minder overhead. Het is wel typisch niet mogelijk om de record size in te stellen vanaf de applicatielaag.
+5. Certificate chain: een te lange certificate chain zorgt voor extra overhead.
+
+
+
+> What are the different IPSec modes and what do they do?
+
+- Layer 2 tunnel mode (default)
+  - Typisch gebruikt voor een tunnel tussen twee gateways
+  - De volledige IP datagram wordt beschermd
+  - Automatische NAT traversal
+- Transport mode
+  - Alleen de payload wordt geëncrypteerd 
+  - Dit wordt meestal gebruikt om beveiliging te voorzien voor bovenliggende protocollen
+  - NAT traversal niet ondersteund, heb je een apart ding (NAT-T) voor nodig
+
+
+
+> What are the two protocols included in IPSec, what is their purpose. Draw an example of a packet from each protocol.
+
+//TODO
+
+
+
+> What does SA stand for and what does it mean?
+
+Een security association (SA) is een **éénrichtingsrelatie** tussen de zender en de ontvanger. Een SA beschrijft een **overeenkomst** van netwerkparameters tussen twee entiteiten om een veilige verbinding te kunnen voorzien. Voor bidirectioneel zijn twee SA's nodig. Het is mogelijk om meerdere security associations bovenop elkaar, met verschillende eindpunten vast te leggen. Dit resulteert in een tunnel met meerdere lagen. 
+
+
+
+> What is the hidden node problem and how can it be solved?
+
+<img src="img/beveiliging/image-20221229122005882.png" alt="image-20221229122005882" style="zoom: 67%;" />
+
+Het hidden node problem doet zich voor in een situatie waar node A en C elkaar niet kunnen horen. Zelfs als A eerst naar het kanaal luistert alvorens hij data begint te sturen, kan het dat C ook data stuurt en er zich een botsing voordoet. Dit kan voorkomen worden met een **Request-to-send/Clear-to-send** (RTS/CTS). Als A wilt praten met B, stuurt hij eerst een RTS, waarop B antwoordt met een CTS als hij beschikbaar is. C hoort de CTS ook en weet dus dat B bezig is met het ontvangen van data van A. 
+
+
+
+> Name 3 reasons why WEP is not a safe protocol.
+
+- Kleine en statische sleutels: een sleutel is maar 40 bits en moet handmatig ingesteld worden
+- Kleine plaintext initialisatievector (IV): de IV van 24 bits wordt in plaintext meegestuurd, waardoor een dictionary attack erg makkelijk is
+- Slechte encryptiealgoritmes
+
+
+
+> What is the difference between a packet filter, a circuit level gateway and an application level gateway?
+
+//TODO
+
+
+
+> What is a bastion?
+
+Een **bastion** is een computer die specifiek is ontworpen om bestand te zijn tegen aanvallen. Deze computer draait typisch één applicatie, zoals een proxy, die blootgesteld wordt aan het internet en fungeert als **single point of access**.
+
+
+
+### Chapter 5
+
+> Explain the workings of SQL injection. How can one defend against this type of attack?
+
+SQL code wordt in een invoerveld ingeven, op zodanige wijze dat deze uitgevoerd wordt op de server. Dit kan voorkomen worden met prepared statements en stored procedures.
+
+
+
+> What are the functions of S/MIME and what is their purpose?
+
+- Enveloped data
+  - `application/pkcs7-mime; smime-type = enveloped-data`
+  - De inhoud wordt versleuteld
+- Signed data
+  - `application/pkcs7-mime; smime-type = signed-data`
+  - Er wordt een handtekening toegevoegd
+  - De inhoud en handtekening worden ge-encodeerd in base64
+- Clear-signed data
+  - `multipart/signed`
+  - Er wordt een handtekening toegevoegd, maar enkel de handtekening wordt ge-encodeerd in base64
+  - Een ontvanger die S/MIME niet ondersteunt kan het bericht lezen, maar de handtekening niet controleren
+- Signed and enveloped data
+  - Combinatie van versleuteling en digitale handtekening
+
+
+
+> List 7 possible vulnerabilities in web applications
+
+1. Misconfiguratie
+2. Client-side controls
+3. Direct object references
+4. Authentication errors
+5. Cross-site scripting (XSS)
+6. SQL Injection
+7. Cross-site request forgery (CSRF)
+
+
+
+> How can we prevent table attacks from compromising our hashed passwords?
+
+Table-aanvallen kunnen voorkomen worden door een **salt** toe te voegen aan je wachtwoord alvorens het te hashen. Dit is meestal een random string die achter het wachtwoord wordt toegevoegd een mee wordt opgeslagen in de databank. Zo resulteren zelfs identieke wachtwoorden in een andere hashwaarde, waardoor ze een stuk moeilijker te kraken zijn. 
+
+
+
+> What are 3 different ways access control can be implemented in an operating system?
+
+- Discretionary Access Control (DAC)
+  - De eigenaar bepaalt de toegang tot de resource die hij heeft gemaakt
+- Mandatory Access Control (MAC)
+  - Toegang wordt bepaald door een administrator
+  - Verplicht gebruik van regels of labels
+- Role-based access control
+  - Een administrator bepaalt de toegang
+  - Elke gebruiker krijgt een bepaalde rol, die hem toegang geeft tot bepaalde dingen
+
+
+
 ## Voorbeeldvragen
 
-Deze zijn van een examen van één van de vorige jaren. Ik weet niet meer waar ik ze heb gevonden.
+Deze zijn aangelengd met vragen van een examen van één van de vorige jaren. Ik weet niet meer waar ik ze heb gevonden.
 
 ### Gesloten boek
 
@@ -2246,7 +2501,21 @@ Deze zijn van een examen van één van de vorige jaren. Ik weet niet meer waar i
 > * Hoe wordt dit in IPsec geimplementeerd?
 >
 
+Perfect forward secrecy is een garantie die wordt geleverd bij cryptografische systemen. Er wordt gegarandeerd dat zelfs wanneer een voormalig gebruikte sleutel gecompromitteerd wordt, deze geen oudere of toekomstige communicatie in gedrang brengt. 
 
+Dit is belangrijk om in cryptografische systemen de confidentialiteit van de communicatie te behouden.
+
+Perfect forward secrecy is niet rechtstreeks geïmplementeerd in IPSec, alhoewel het protocol wel gebruik kan maken van algoritmes zoals Diffie-Hellman (ephemeral), waar key exchange met perfect forward secrecy wordt ondersteund door elke keer een nieuwe sessiesleutel te gebruiken.
+
+
+
+ 
+
+> Begrippen uitleggen:
+>
+> - Result of pred (bitcoin)
+> - DMZ
+> - Table injection DAN (?)
 
 
 
@@ -2254,7 +2523,11 @@ Deze zijn van een examen van één van de vorige jaren. Ik weet niet meer waar i
 
 > Beschrijf 5 strategieen die door virussen gebruikt worden om zich te verbergen voor anti-virus software (“e.g. stealth strategies”)
 
-
+* De bestandsgrootte van het geïnfecteerde bestand niet wijzigen
+* De datum laatst aangepast vervalsen
+* Read-requests van het bestoringssysteem onderscheppen
+* Zichzelf wijzigen zodat het moeilijker herkend wordt
+* De body van het virus encrypteren
 
 
 
@@ -2262,7 +2535,7 @@ Deze zijn van een examen van één van de vorige jaren. Ik weet niet meer waar i
 >
 > Indien de file met paswoorden verworven wordt door een aanvaller kan deze de gevonden hashes rechtstreeks gebruiken om in te loggen op een systeem.
 
-
+Vals, want als een wachtwoord wordt gehashed, wordt het omgezet in een moeilijk om te keren string van vaste lengte. De aanvaller zal eerst de hashes moeten kraken. Als er een Salt toegevoegd is aan de hashes wordt het nog moeilijker.
 
 
 
@@ -2298,7 +2571,9 @@ Een **boot sector virus** is gericht op de boot sector/master boot record van ee
 > \-    TLS is bestemd tegen tcp rst attack
 >
 
- 
+
+
+
 
 > iPsec
 >
@@ -2316,15 +2591,17 @@ Een **boot sector virus** is gericht op de boot sector/master boot record van ee
 
 > Waarom vermeldt het SSH protocol de gebruikte softwareversie in de uitgewisselde pakketten tijdens het negotiatiealgoritme?
 
-
+Voor compatibiliteit en veiligheid. De client en server moeten compatibel zijn als ze verder willen gaan met de negotiatie. Door de versie na te kijken kunnen client en server zeker zijn dat ze een versie van het protocol gebruiken dat veilig is.
 
 
 
 > Wanneer men een file eerst DES encrypteert en daarna decrypteert met dezelfde sleutel bekomt men terug het oorspronkelijk bestand. Is dit ook het geval wanneer men de omgekeerde volgorde uitvoert, dus eerst decryptie en dan encryptie? Waarom?
 
+//TODO 
 
+https://security.stackexchange.com/questions/123508/des-decryption-followed-by-encryption-will-it-produce-the-original-text
 
-
+Ik geloof dit niet helemaal
 
 > De wireshark trace van een security protocol wordt weergegeven.
 

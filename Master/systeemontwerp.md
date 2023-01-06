@@ -29,7 +29,14 @@
 
 # ---------Theorie--------
 
-# Microservices
+Ik heb pdfs van de boeken gevonden: 
+
+* [Building microservices 2nd edition](https://www.rulit.me/data/programs/resources/pdf/Newman_Building-Microservices_RuLit_Me_685117.pdf)
+* [Patterns, principles and practices of domain driven design](https://sd.blackball.lv/library/patterns_principles_and_practices_of_domain-driven_design_(2015).pdf)
+
+
+
+# 1 - Microservices
 
 ## Application building: From then to now
 
@@ -140,7 +147,7 @@ Bij SOA ligt de nadruk op services maken die gedeeld kunnen worden doorheen je a
 
 
 
-# Decomposing
+# 2 - Decomposing
 
 
 
@@ -268,13 +275,162 @@ Er zijn een aantal zaken die onze decomposition dwarszitten:
 
 
 
-# Architecture of a single microservice
+# 3 - Architecture of a single microservice
 
 ## Problems with layered architecture
 
+Bij een gelaagde architectuur wordt het systeem verdeeld in een aantal horizontale lagen, met voor elke laag een bepaalde verantwoordelijkheid. Elke laag communiceert met zijn onder of bovenliggende lagen via vaste interfaces.
+
+Er zijn een aantal problemen met een gelaagde architectuur. We beschikken over **één presentatielaag** en **één persistentielaag**. Omdat de businesslogica afhangt van de persistentielaag is bovendien onmogelijk om deze te testen zonder databank. 
+
+Verder veroorzaakt een gelaagde architectuur ook vaak een overvloed aan complexiteit en sterke afhankelijkheid tussen de verschillende lagen. 
 
 
 
+## Hexagonal style
+
+<img src="img/systeemontwerp/image-20230106140927278.png" alt="image-20230106140927278" style="zoom:50%;" />
+
+Een **hexagonale architectuur** is een designpatroon met als hoofdprincipe de scheiding tussen de **core **(business logica) van een systeem en verscheidene **interfaces en adapters** die het gebruikt om te communiceren met de buitenwereld.
+
+We maken een onderscheid tussen inbound en outbound adapters. Een **inbound adapter** voorziet een API om de businesslogica op te roepen. Dit kan een REST API of een GUI zijn, maar ook een Kafka queue met events die verwerkt dienen te worden. Een **outbound adapter** roept andere systemen aan. Dit kan een database zijn of een call naar een externe service (bv. betaling), maar ook een push naar een Kafka queue. Ondertussen is deze manier van werken natuurlijk al een beetje verouderd.
+
+Je kan een systeem maken van meerdere services die ieder apart in hexagonal style zijn geïmplementeerd.
+
+
+
+## Onion Style / Clean architecture
+
+<img src="img/systeemontwerp/image-20230106155630692.png" alt="image-20230106155630692" style="zoom:50%;" />
+
+Onion style is een designpatroon waarbij een applicatie wordt opgedeeld in lagen in de vorm van een ajuin. Elke laag is alleen afhankelijk van dieper gelegen lagen. De buitenste laag bevat dan adapters die door middel van interfaces aan de applicatielaag  verbinding met externe infrastructuur maken. 
+
+
+
+## Transaction script vs Rich domain model
+
+### Transaction script
+
+:red_circle: Applicatielaag
+
+:large_blue_circle: Domein model
+
+<img src="img/systeemontwerp/image-20230106160731511.png" alt="image-20230106160731511" style="zoom:50%;" />
+
+Een **transaction script** is een procedure die je maakt voor één query of command. Deze procedures groepeer je typisch samen in een "manager" of "service" klasse. Zo zit het gedrag van je applicatie eigenlijk alleen in de applicatielaag.  Een transaction script bevat in dit geval alle businesslogica van dit deel van het domein. De domeinklassen bevatten in dit geval enkel een *state*, ze worden alleen gebruikt om data voor te stellen. 
+
+
+
+### (Rich) Domain model
+
+:red_circle: Applicatielaag
+
+:large_blue_circle: Domein model
+
+<img src="img/systeemontwerp/image-20230106161056816.png" alt="image-20230106161056816" style="zoom: 50%;" />
+
+Bij een rich domain model zorgen we ervoor dat klassen een zo klein mogelijke verantwoordelijkheid hebben. We zorgen ervoor dat de logica die bij een bepaalde klasse hoort zich ook in die klasse bevindt. De applicatielaag is dan verantwoordelijk voor de uitvoering van die logica. 
+
+Verder is het belangrijk dat je domeinklassen concepten van in de echte wereld voorstellen, opgesteld volgens OO designpatronen, waardoor ze gemakkelijk uitbreidbaar zijn zonder code aan te moeten passen.
+
+
+
+### Patterns to create a rich domain model
+
+Om het business domein voor te stellen, maken we gebruik van de volgende dingen:
+
+* Entities
+  * Wordt gedefineerd door zijn identiteit, niet zijn attributen
+  * Twee entiteiten met gelijke attributen zijn niet speciaal aan elkaar gelijk (of ongelijk bij ongelijke attributen)
+  * Wordt geïdentificeerd door een ID
+    * Losgekoppeld van alle andere zaken (gebruik dus een UUID en geen database index of rijksregisternummer)
+  * Bijvoorbeeld een product of een persoon
+* Values
+  * Worden alleen onderscheiden door hun eigenschappen
+  * Beschrijven domein-relevante attributen van entiteiten
+    * Hebben dus alleen betekenis binnen de context van een ander object
+  * Twee values zijn gelijk als hun attributen gelijk zijn
+  * Bijvoorbeeld een prijs of een kleur
+* Domain service
+  * Stelt het gedrag voor en is dus stateless
+  * Bevat business logica die moeilijk in één entity of value past
+  * Orchestreert business logica
+* Domain events
+  * Geven aan dat er iets is gebeurd in het probleemdomein
+  * Worden gegenereerd wanneer een aggregaat van staat verandert
+  * Ze triggeren dan een side-effect (zoals iets anders updaten)
+  * Om dataconsistentie te behouden
+  * Kan ook een andere actie triggeren (email, melding naar andere app, ...)
+
+
+
+
+Om het aanmaken en de persistentie van modelobjecten te voor te stellen gebruiken we:
+
+* Aggregates
+  * <img src="img/systeemontwerp/image-20230106163306967.png" alt="image-20230106163306967" style="zoom:33%;" /> 
+  * Indien we een groot model hebben met veel objecten, kunnen we het best opspliten in aggregaten
+  * Een aggregaat heeft één **root entity** en een aantal value objecten
+  * In de database zal één transactie dan ook één aggregaat updaten of aanmaken. Wanneer meerdere transacties nodig zijn gebruik je best een saga.
+  * Het is de bedoeling dat we in de applicatie alleen verwijzen naar de root van een aggregaat. Niet-root entiteiten kunnen wel verwijzingen bevatten naar de root van andere aggregaten. 
+  * Referenties tussen aggregaten moeten primary keys gebruiken
+* Repository
+  * Is verantwoordelijk voor het ophalen en persisteren van aggregate roots
+  * Verbergt onderliggende technologie
+
+* Factory (niet besproken) 
+
+
+
+## Queries in a microservice architecture
+
+Een **query** leest het domeinmodel om een specifieke view te genereren. Een **command** of een **domain event** zal het domein updaten om de business task te vervullen. 
+
+Als je queries laat afhandelen door het domeinmodel, stuiten we snel op een aantal nadelen. We moeten meerdere aggregaten laden voor één view. We stellen de interne staat van domeinobjecten bloot. Als we de performantie van queries willen verbeteren, zullen we aanpassingen moeten doen in het domeinmodel. 
+
+Een manier om hiermee om te gaan is CQRS.
+
+
+
+### Command-Query Responsibility Segregation (CQRS)
+
+<img src="img/systeemontwerp/image-20230106175753828.png" alt="image-20230106175753828" style="zoom: 67%;" />
+
+CQRS is een patroon dat het domeinmodel in twee delen splitst. Het **read model** bevat de nodige voorzieningen voor queries en het **write model** bevat dan de functies voor business tasks. We voorzien dus twee verschillende modellen. 
+
+//TODO misschien voorbeeld van FTGO
+
+
+
+### The API composition pattern
+
+<img src="img/systeemontwerp/image-20230106180201503.png" alt="image-20230106180201503" style="zoom:50%;" />
+
+Een **API composer** implementeert een query hem samen te stellen uit queries naar één of meerdere **provider services**. Elk van deze provider services is eigenaar van zijn data. De API composer voorziet dan een API die zich voordoet als één service, maar eigenlijk meerdere queries uitvoert om een samengesteld resultaat af te leveren.
+
+Wie moet er nu de rol innemmen van API composer? 
+
+* Client
+* API gateway: als de query deel is van de externe API
+* Service: als de query wordt gebruikt door meerdere interne services
+
+Het gebruikt van een API composer is simpel en intuïtief, maar zorgt wel voor meer overhead. Het kan dat je availability minder goed is omdat de composer gedeeltelijke of gecachte data teruggeeft. Om dat hij meerdere queries naar meerdere databanken doet, verlies je ook transactionele dataconsistentie. 
+
+
+
+# 4 - Interaction between microservices
+
+
+
+# 5 - Scaling and caching
+
+
+
+# 6 - Resiliency and chaos engineering
+
+
+
+# 7 - Organizational structures
 
 # ----------Labo-----------
 

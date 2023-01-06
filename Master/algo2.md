@@ -1558,6 +1558,17 @@ Bij een dichte graaf met meer verbindingen zal de techniek met de maximum flow e
 
 
 
+> Examen 2020-2021: Stel een automaat op over $\Sigma = \{a, b\}$ die alle strings met een even aantal `a`’s en een oneven aantal `b`’s aanvaardt. Geef uitleg bij het ontwerp en teken de automaat.
+
+<img src="img/algo2/image-20230106154607189.png" alt="image-20230106154607189" style="zoom:50%;" />
+
+* Toestand `s`: Even aantal `b`'s en `a`'s
+* Toestand `2`: Even aantal `a`'s en oneven aantal `b`'s, dit is de gewenste eindtoestand.
+* Toestand `3`: Oneven aantal `a`'s en `b`'s
+* Toestand `4`: Oneven aantal `a`'s en oneven aantal `b`'s
+
+ 
+
 ## Extra oefeningen automaten/strings
 
 Dit zijn mijn eigen oplossingen want ze staan niet online. Ik zal iets laten weten als Pieter op mijn mail heeft geantwoord. 
@@ -1566,8 +1577,9 @@ Dit zijn mijn eigen oplossingen want ze staan niet online. Ik zal iets laten wet
 
 > $L = \{ w \in \{0,1\}* | w \text{ heeft exact 1 paar opeenvolgende nullen} \}$
 
+<img src="img/algo2/image-20230106173616983.png" alt="image-20230106173616983" style="zoom:50%;" />
 $$
-(1\vert01)^*00(1\vert 01)
+(1\vert01)^*00(1\vert 10)^*
 $$
 
 
@@ -1595,6 +1607,8 @@ $$
 $$
 Hoe kan ik hier aan geraken?
 
+Niet-deterministische automaat maken volgens Pieter.
+
 
 
 > $L = \{ a^nb^m | n\geq4, 3\geq m \}$
@@ -1608,6 +1622,12 @@ $$
 a\{4,\}b\{0,3\}
 $$
 
+Deze is een goeie oplossing volgens Pieter:
+$$
+aaaaa^*(\varepsilon \vert b \vert bb \vert bbb)
+$$
+
+
 
 > $L = \{ w \in \{a,b,c\}* \vert \space a, b \text{ en } c \text{ komen alle minstens 1 keer voor in } w \}$
 
@@ -1616,6 +1636,47 @@ $$
 $$
 
 Dit matcht alle strings die ten minste $a$, $b$ en $c$ in volgorde bevatten. Zou ik dan al alle mogelijke permutaties van dit ding met een "$\vert$" aan elkaar moeten plakken? Of is er een betere oplossing?
+
+Pieter zei dat dat oké zou zijn, ookal is het niet zo mooi. Zoiets zou hij ons niet aandoen op een examen.
+
+## Verzonnen vragen
+
+### Strings
+
+> In de les hebben we geleerd dat we een non-deterministische automaat kunnen omzetten in een deterministische. Bewijs dat deze twee nog steeds logisch equivalent zijn.
+
+Ik vond dit echt een super leuke vraag om aan chatGPT te stellen. Dit is wat hij zei:
+
+Sure! Here is a proof that a deterministic finite automaton (DFA) is logically equivalent to the non-deterministic finite automaton (NFA) it was constructed from:
+
+First, we need to define what it means for two automata to be logically equivalent. Two automata are logically equivalent if they accept the same language.
+
+Now, let's say that we have an NFA $N$ and a DFA $D$ that was constructed from $N$. We want to prove that $N$ and $D$ are logically equivalent.
+
+To do this, we will show that $N$ and $D$ have the same set of strings in their languages. We will do this by showing that (1) every string in the language of $N$ is also in the language of $D$, and (2) every string in the language of $D$ is also in the language of $N$.
+
+1. Every string in the language of $N$ is also in the language of $D$:
+   * Let's say that a string $s$ is in the language of $N$. This means that there exists at least one path in $N$ that leads from the start state to an accept state, such that the labels on the edges along the path spell out the string $s$.
+   * Because the DFA $D$ was constructed from the NFA $N$, it contains all of the paths that are present in $N$. Therefore, there exists at least one path in $D$ that leads from the start state to an accept state, such that the labels on the edges along the path spell out the string $s$.
+   * This means that the string $s$ is also in the language of $D$.
+2. Every string in the language of $D$ is also in the language of N:
+   * Let's say that a string $s$ is in the language of $D$. This means that there exists a path in $D$ that leads from the start state to an accept state, such that the labels on the edges along the path spell out the string $s$.
+   * Because the DFA $D$ was constructed from the NFA $N$, it contains all of the paths that are present in $N$. Therefore, there exists at least one path in $N$ that leads from the start state to an accept state, such that the labels on the edges along the path spell out the string $s$.
+   * This means that the string $s$ is also in the language of $N$.
+
+Since we have shown that every string in the language of $N$ is also in the language of $D$, and every string in the language of $D$ is also in the language of $N$, we have proved that $N$ and $D$ are logically equivalent.
+
+I hope this helps to prove that a DFA is logically equivalent to the NFA it was constructed from. Let me know if you have any other questions.
+
+
+
+### Grafen
+
+
+
+
+
+
 
 # ------------Labo--------------
 
