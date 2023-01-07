@@ -727,17 +727,17 @@ De **grootte** (size) van een digraph is het aantal arcs.
 
 
 
-De **from-incidence** $I(v)$ van een vertex $v$ is de verzameling arcs die erin toekomen.
+De **from-incidence** $I(v)$ van een vertex $v$ is de verzameling arcs die eruit vertrekken.
 
-De **to-incidence** $I'(v)$ van een vertex $v$ is de verzameling arcs die eruit vertrekken.
+De **to-incidence** $I'(v)$ van een vertex $v$ is de verzameling arcs die erin toekomen.
 
 De **out-degree** $\delta(v)$ van een vertex $v$ is het aantal arcs die eruit vertrekken.
 
 De **in-degree** $\delta'(v)$ van een vertex $v$ is het aantal arcs die erin toekomen.
 
-De **from-adjacency** $A(v)$ van een vertex $v$ is de verzameling vertices die een arc hebben naar $v$
+De **from-adjacency** $A(v)$ van een vertex $v$ is de verzameling vertices waarin een arc toekomt vanuit $v$
 
-De **to-adjacency** $A'(v)$ van een vertex $v$ is de verzameling vertices waarin een arc toekomt vanuit $v$
+De **to-adjacency** $A'(v)$ van een vertex $v$ is de verzameling vertices die een arc hebben naar $v$ 
 
 
 
