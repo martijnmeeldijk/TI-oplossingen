@@ -246,7 +246,7 @@ De effectieve implementatie van een Feistel-netwerk hang af van een aantal param
 
 
 
-#### DES & 3DES
+#### DES
 
 DES volgt het Feistel schema. Belangrijk om te weten is dat dit algoritme de dag van vandaag niet meer veilig is. 
 
@@ -304,6 +304,30 @@ Er wordt een initiële counter-waarde gegenereerd. In elke iteratie wordt een in
 
 Eén bit error in de input veroorzaakt maar één bit error in de output, dit is handig, maar zorgt er ook voor dat deze manier gevoelig is aan manipulatie, waardoor een extra dataintegriteitsmexchanisme nodig is. De counter moet gesynchroniseerd zijn bij zowel zender als ontvanger.
 
+
+
+#### 3-DES
+
+Omdat de 56-bit key van DES aan de korte kant is, maar toch veel systemen DES in hun hardware implementeren, is 3-DES ontstaan. Deze geniale oplossing gebruikt DES drie keer na elkaar. Als we drie verschillende sleutels gebruiken, is de sleutellengte nu 168 bits. Het is veiliger, maar wel trager dan DES. 
+
+
+
+De sleutel van 168 bits wordt opgesplitst, waarna het DES algoritme voor elke subkey wordt uitgevoerd.
+
+| Encrypteren                                                  | Decrypteren                                                  |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| ![image-20230108145109599](img/beveiliging/image-20230108145109599.png) | ![image-20230108145120518](img/beveiliging/image-20230108145120518.png) |
+
+**Meet-in-the-middle** aanvallen verzwakken het encryptieschema aanzienlijk, waardoor de effectieve key strength maar 112 bits bedraagt. Met maar twee verschillende subkeys bedraagt deze maar 80 bits.
+
+
+
+#### AES
+
+AES (advanced encryption standard) gebruikt keys van 128, 192 of 256 bits en werkt in blokken van 128 bits. Belangrijk om te weten is dat deze standaard **geen** gebruik maakt van het Feistel schema. AES is een stuk veiliger en **drie keer zo snel** als DES. Modes zoals CBC en CTR zijn ondersteund en het algoritme is gemakkelijk te parallelliseren. 
+
+
+
 ## Asymmetric encryption algorithms
 
 Bij symmetrische encryptie maken beide partijen gebruik van een geheime sleutel, maar hoe kunnen zij nu deze sleutel met elkaar delen op een onveilig netwerk? Hier komt public key encryption met de oplossing. Elke gebruiker krijgt twee sleutels:
@@ -344,7 +368,60 @@ Je public key is dan $\{e,n\}$ en je private key $\{d,n\}$.
 
 ### Elliptic curve cryptography
 
-// TODO
+<img src="img/beveiliging/image-20230108150353815.png" alt="image-20230108150353815" style="zoom:67%;" />
+
+Om een **sleutel** te **genereren** met elliptic curve cryptography zal je het volgende moeten doen:
+
+* Kies een elliptische curve $EC$
+  * Je kan typisch kiezen uit een lijst van ondersteunde curves
+  * We beschouwen alleen de gehele waarde van de curve
+* Kies een generator $G$
+  * Dit is een punt op de curve 
+* Kies een multiplier $n$ (deze hou je geheim)
+  * $1 \leq n < p$
+  * $p$ is het aantal gehele punten op de curve
+* Bereken $P_n = n \cdot G$
+  * De public key is $K_u = \{EC, G,P_n\}$
+  * De private key is $K_r = \{n\}$
+
+
+
+Om een waarde te **encrypteren**:
+
+* Kies een factor $k$ (deze hou je geheim)
+  * $1 \leq k < p-1$
+* Bereken $C_m = (k\cdot G, P_m+k \cdot P_n)$
+  * Dit is je ciphertext
+  * $P_m$ is de plaintext
+
+
+
+Om een waarde te **decrypteren**:
+
+* Bereken $P_m = (C_m+k \cdot P_n) - n(k \cdot G)$
+* Alleen de eigenaar van de private key $n$ kan deze berekening doen
+
+
+
+We zullen het eens narekenen:
+$$
+\begin{align}
+P_m &= (C_m+k \cdot P_n) - n(k \cdot G) \\
+&= P_m+k \cdot P_n +  k \cdot P_n - n(k \cdot G) \\
+&= P_m+k \cdot n \cdot G +  k \cdot n \cdot G - n(k \cdot G) \\
+&= P_m + k \cdot n \cdot G
+
+\end{align}
+$$
+Het lijkt erop dat het fout is.
+
+Ik denk dat $P_m = C_m - n (k \cdot G)$
+
+
+
+#### Voordelen
+
+Er zijn nog geen efficiënte algoritmen ontdekt om deze methode te kraken (zelfs met quantumcomputers). De key size is een stuk kleiner dan bij RSA, waardoor encryptie 20 keer zo snel is.
 
 
 
@@ -1067,7 +1144,7 @@ We behandelen in de cursus drie soorten firewalls:
   * <img src="img/beveiliging/image-20221229145137904.png" alt="image-20221229145137904" style="zoom:50%;" /> 
   * Werkt als een relay op het niveau van TCP (soms UDP)
   * De gateway maakt TCP-verbindingen in naam van de client en fungeert dus als een soort proxy
-  * Inspecteert en filtert die door de verbinding komen
+  * Inspecteert en filtert pakketten die door de verbinding komen
   * Voorziet ook authenticatie, zo kan je geauthenticeerd verkeer door de firewall laten
   * Voorbeeld: **SOCKS**
     * Maar enkele wijzigingen nodig bij client of TCP/IP stack voor gebruik
@@ -1748,7 +1825,7 @@ Tot zover de theorie. Veel succes.
 
 
 
-# Examenvragen
+# <u>Examenvragen</u>
 
 ## Test Jezelf 
 
@@ -1792,6 +1869,8 @@ This is to ensure that the message is unique and it hasn't been replayed or tamp
 
 > Which counter measurements can be taken against DoS and DDoS attacks?
 
+(dit staat nergens in de cursus voor zover ik weet)
+
 1. Firewalls and intrusion prevention systems (IPS): Firewalls and IPSs can help to detect and prevent malicious traffic from reaching the target server. These systems can be configured to block traffic from known attack sources, or to filter out traffic that exhibits certain characteristics that are common to DoS attacks. 
 2. Bandwidth limiting: Another way to mitigate DoS attacks is to implement bandwidth limiting on the server or network. This can help to prevent the server from being overwhelmed by too much traffic, and can help to ensure that legitimate traffic is able to reach the server.
 3. Load balancing: Load balancing can help to distribute the load across multiple servers, making it more difficult for a single DoS attack to bring down the entire system.
@@ -1813,6 +1892,8 @@ This is to ensure that the message is unique and it hasn't been replayed or tamp
 > Try to encrypt and decrypt a self-defined message using the provided encryption approaches
 
 //TODO
+
+
 
 > What are block cipher modes? What are the advantages and disadvantages of the modes described in the course?
 
@@ -1927,6 +2008,8 @@ Een SSH session slaat op de verbinding die gemaakt wordt tussen client en server
 * Local Port forwarding
 * Remote port forwarding
 
+
+
 > Which port number does SSH typically listen to?
 
 22
@@ -1941,7 +2024,7 @@ Bij **remote port forwarding** zal onze client in naam van de server handelen. R
 
 
 
-> Explain the benefits of ephemeral DH over traditional DH.
+> Explain the benefits of ephemeral DH over traditional DH. 
 
 - Private sleutels gegenereerd voor elke sessie
 - Dus elke sessie een andere geheime sessiesleutel
@@ -2004,6 +2087,8 @@ In TLS wordt client en server authenticatie gedaan met PKI, hier wordt gebruik g
 
 Aan de andere kant wordt elk bericht geauthenticeerd met een HMAC, deze gebruikt een gedeelde sessiesleutel die met PKI is uitgewisseld. 
 
+
+
 > Is TLS vulnerable to traffic pattern analysis attacks? Why (not)?
 
 Alle traffic wordt versleuteld, dus aanvallers kunnen de inhoud niet lezen. De aanvallers kunnen wel zien naar waar je requests stuurt en hoe groot de verstuurde pakketten zijn. Om dit deels tegen te gaan zorgt TLS wel voor padding en record splitting. 
@@ -2057,7 +2142,9 @@ In de meeste gevallen is TLS preferabel, aangezien het specifiek is ontworpen vo
 
 ESP in tunnel mode, hier wordt ook de originele IP header mee versleuteld en ge-encapsuleerd. Alleen het verkeer tussen de IPSec gateways is versleuteld. Een aanvaller kan wel nog weten tussen welke netwerken er verkeer loopt.
 
-//TODO vragen over WEP, WPA en Firewalls
+
+
+//TODO vragen over WEP, WPA en Firewalls (er staan er wel enkele in het volgende gedeelte)
 
 
 
@@ -2081,7 +2168,7 @@ False, de sessiesleutel wordt gegenereerd, waarna hij versleuteld wordt met de p
 
 > What is the purpose of degenerate signedData messages in S/MIME?
 
-Deze worden gebruikt voor berichten die alleen certificaten of CRL's bevatten. 
+Ze  worden gebruikt voor berichten die alleen certificaten of CRL's bevatten. De structuur is hetzelfde als een gewoon signedData bericht, maar het message gedeelte en de signerInfo zijn leeg.
 
 
 
@@ -2165,8 +2252,11 @@ Er zijn twee manieren om dit tegen te gaan:
 * Data execution prevention (DEP)
   * We markeren delen van het geheugen als 'executable' en 'non-executable'. Alleen de 'executable' delen kunnen uitgevoerd worden. 
 * Address space layout randomisation (ASLR)
-  * De verdeling van de adresruimte van belangrijke delen van het programma wordt gerandomiseerd
-  * Zo kan je niet met zekerheid springen naar een bepaalde functie in het geheugen
+  * De verdeling van de adresruimte van belangrijke delen van het programma wordt gerandomiseerd.
+  * Zo kan je niet met zekerheid springen naar een bepaalde functie in het geheugen.
+* Boundary checks
+  * Een check toevoegen aan het begin en het einde van de buffer om te verzekeren dat de data binnen de voorziene ruimte blijft.
+
 
 
 
@@ -2211,6 +2301,7 @@ Manieren om dit tegen te gaan:
 - **Malware detection**: This metric tracks the detection of malware on the network, including the type and origin of the malware. This can be used to detect and prevent the spread of malware on the network.
 - **Unauthorized access attempts**: This metric tracks attempts to gain unauthorized access to the network, such as attempts to bypass security controls or exploit vulnerabilities. This can be used to detect and prevent intrusions.
 - **Network usage patterns**: This metric tracks the usage patterns of the network, including the volume and type of traffic, as well as the source and destination of the traffic. This can be used to detect unusual or suspicious activity, such as an attacker attempting to exfiltrate data from the network.
+- **Unfinished handshakes**: Many single TCP SYN messages could indicate an attack
 
 
 
@@ -2263,6 +2354,50 @@ Privacy wordt vaak verward met confidentialiteit, maar niet elke kwestie van con
 
 
 ### Chapter 3
+
+> Name the 3 types of substitution ciphers (classic cryptography) and explain.
+
+* **Monoalphabetic**
+  * Caesar cipher is een simpel voorbeeld
+  * Je vervangt elke letter door één andere letter op basis van een gekozen permutatie van het alfabet
+  * Gemakkelijk te kraken door de frequentie van letters in talen
+* **Polyalphabetic**
+  * Sequentiëel meerdere alfabetten gebruiken
+  * Enigma
+  * Vigenère: key, waarvan elke letter een transpositie voorstelt
+    * Itereer over de key terwijl je de tekst overloopt en pas de transpositie van de huidige letter in de key  (A =1, B=2, ...)  toe op de overeenkomstige letter in de tekst
+  * Hier is frequentieanalyse moeilijker
+* **Digraph**
+  * Encrypteer meer dan één letter per keer, verbergt patronen in taal nog beter
+  * Playfair cipher: 
+    * 5x5 grid met sleutelwoord, gevolgd door resterende letters van het alfabet
+    * Vervang duo's in dezelfde kolom door hun opvolgers in de kolom
+    * Vervang duo's in dezelfde rij door hun opvolgers in de rij
+    * Voor andere gevallen, vervang eerste letter door de letter in dezelfde kolom van de rij van de tweede letter. Andersom voor de tweede letter
+
+
+
+
+
+> What is a transposition cipher?
+
+Een **transpositiecipher** herschikt een bericht, je kan ze makkelijk herkennen omdat de letterfrequenties behouden blijven. Hierdoor is frequentieanalyse nutteloos. 
+
+Een aantal voorbeelden zijn:
+
+* De tekst achterstevoren zetten
+* Elk woord achterstevoren zetten
+* Rail fence cipher
+  * De tekst diagonaal over een aantal rijen schrijven en dan rij per rij aflezen
+* Columnar transposition cipher
+  * Schijf bericht uit in rijen en een bepaald aantal kolommen
+  * Herschik de kolommen aan de hand van en key en lees rij per rij af
+
+> What is a combination cipher?
+
+Een combinatie van meerdere ciphers achter elkaar. Dit vormt de basis van de meest moderne cryptografische ciphers. 
+
+
 
 > What do confusion and diffusion mean in the context of encryption algorithms. How does the Feistel scheme implement these?
 
@@ -2339,7 +2474,18 @@ Een **connection** is in het kader van TLS een kanaal tussen een client en serve
 
 
 
-> What are the different underlying protocols used in TLS? What is their function?
+> Which security goals (authentication, authorization, ...) are achieved in TLS and how?
+
+* Confidentiality: Alle verkeer wordt geëncrypteerd
+* Authentication: Aan de hand van een X509 certificaat kan je weten of de persoon waarmee je praat echt die persoon is
+* Integrity: TLS gebruikt een MAC om te kijken of er niets veranderd is aan een ontvangen bericht
+* Non-repudiation: partijen kunnen niet ontkennen dat ze bepaalde berichten hebben gestuurd (digitale handtekening)
+
+Eigenlijk worden authorization en availability ook wel bereikt, maar dat vind ik minder belangrijk in dit geval.
+
+
+
+> What are the different underlying protocols used in TLS? What is their function? (5)
 
 - TLS handshake protocol
   - Maakt **wederzijdse authenticatie** tussen client en server mogelijk, dit verloopt volgens deze stappen:
@@ -2393,7 +2539,20 @@ Dit is een bug in het TLS heartbeat protocol. Een aanvaller stuurt een Heartbeat
 
 > What are the two protocols included in IPSec, what is their purpose. Draw an example of a packet from each protocol.
 
-//TODO
+- <u>Authentication header (AH)</u>
+  - Gebruikt voor zowel transport als tunnel mode
+    - <img src="img/beveiliging/image-20221229113118625.png?lastModify=1673184411" alt="image-20221229113118625" style="zoom: 50%;" /> 
+    - <img src="img/beveiliging/image-20221229113146131.png?lastModify=1673184411" alt="image-20221229113146131" style="zoom:50%;" /> 
+  - **Authenticatie en integriteit** wordt bereikt met een versleutelde hashfunctie om een **MAC** te maken. Deze maakt gebruik van alle velden in het IP datagram die niet in-transit aangepast moeten worden. 
+  - Dit protocol voorziet **geen confidentialiteit**
+- <u>Encapsulating security payload (ESP)</u>
+  - Ook gebruikt voor zowel transport als tunnel mode	
+    - <img src="img/beveiliging/image-20221229113454197.png?lastModify=1673184411" alt="image-20221229113454197" style="zoom:50%;" /> 
+    - <img src="img/beveiliging/image-20221229113506174.png?lastModify=1673184411" alt="image-20221229113506174" style="zoom:50%;" /> 
+  - Voorziet **confidentialiteit**: de data en optioneel de IP-header worden versleuteld
+  - Optionele **authenticatie**: aan de hand van een MAC 
+  - Data origin authenticatie, **integriteit**, optionele anti-replay
+  - Voorziet bescherming tegen **traffic-flow analyse**, dit is wel niet mogelijk in transport mode
 
 
 
@@ -2421,7 +2580,18 @@ Het hidden node problem doet zich voor in een situatie waar node A en C elkaar n
 
 > What is the difference between a packet filter, a circuit level gateway and an application level gateway?
 
-//TODO
+* Packet filter
+  * Op basis van filter rules wordt bepaald welke pakketjes door mogen en welke niet. Dit kan op basis van source IP, destination IP, source port, destination port, het gebruikte protocol, router interface, ...
+  * Werkt typisch op de netwerklaag
+* Circuit-level gateway
+  - Werkt als een relay **op het niveau van TCP** (soms UDP)
+  - De gateway maakt TCP-verbindingen in naam van de client en fungeert dus als een soort **proxy**
+  - Inspecteert en filtert pakketten die door de verbinding komen
+* Application level gateway
+  - Deze werkt op de **applicatielaag**
+  - Voorziet een proxy voor een **specifieke applicatie** (http, SMTP, FTP, ...)
+  - Heeft toegang tot het volledige protocol en kan de **pakketten volledig inspecteren**
+  - Net als bij een circuit-level gateway moeten users zich authenticeren
 
 
 
@@ -2488,13 +2658,49 @@ Table-aanvallen kunnen voorkomen worden door een **salt** toe te voegen aan je w
 
 
 
+> What are 6 ways for an attacker to avoid an IDS?
+
+* Fragmentation
+* Avoiding defaults 
+* Multi-origin attacks 
+* Spoofing 
+* Pattern changing 
+* Denial of service attacks
+
+
+
 ## Voorbeeldvragen
 
 Deze zijn aangelengd met vragen van een examen van één van de vorige jaren. Ik weet niet meer waar ik ze heb gevonden.
 
+Ik heb nog een examen van 2016 gevonden op inwefiles, deze vragen zitten er ook bij.
+
 ### Gesloten boek
 
-> Wat is “perfect forward security”?
+> (2016) Wat is een digraph cipher?
+
+Bij een digraph monoalphabetic substitution cipher wordt een plaintext in groepen van twee letters (digraphs) geëncrypteerd, dit zorgt ervoor dat frequentieanalyse een stuk moeilijker wordt en biedt dus meer veiligheid dan simpelere substitution ciphers. Elk paar letters wordt vervangen door een ander paar letters aan de hand van een vaste mapping of sleutel.  
+
+Een voorbeeld van een digraph substitution cipher is:
+
+Playfair cipher: 
+
+* 5x5 grid met sleutelwoord, gevolgd door resterende letters van het alfabet
+* Vervang duo's in dezelfde kolom door hun opvolgers in de kolom
+* Vervang duo's in dezelfde rij door hun opvolgers in de rij
+* Voor andere gevallen, vervang eerste letter door de letter in dezelfde kolom van de rij van de tweede letter. Andersom voor de tweede letter
+
+
+
+> (2016) Is een metamorphic virus detecteerbaar met emulator?
+
+Emulatie kan gebruikt worden voor het detecteren van polymorphic code obfuscation door de malware zichzelf te laten ontwarren in een virtuele omgeving, een soort sandbox als het ware. Polymorfisme beschermt een virus niet tegen dit soort situatie als de gedecrypteerde payload van het virus hetzelfde blijft ondanks variaties in het decryptiealgoritme.
+
+Metamorfische technieken kunnen gebruikt worden om de detectie nog moeilijker te maken, want het virus kan dan uitgevoerd worden zonder ooit identificeerbare geheugenblokken in het geheugen te hebben van infectie tot infectie. In dit geval zal een emulator misschien zelfs onvoldoende zijn om het virus te detecteren.
+
+
+
+> (2023) Wat is “perfect forward security”?
 
 > * Leg uit.
 > * Waarom is dit belangrijk voor cryptografische systemen?
@@ -2509,29 +2715,73 @@ Perfect forward secrecy is niet rechtstreeks geïmplementeerd in IPSec, alhoewel
 
 
 
- 
+> (2016) Geef van de volgende of ze al dan niet worden gerealiseerd in SSH en hoe :  Traffic flow confidentiality, authentication, availability, integrity
 
-> Begrippen uitleggen:
+* Traffic flow confidentiality
+  * Dit is niet aanwezig
+  * Confidentiality is er wel omdat alle traffic wordt geëncrypteerd
+* Authentication
+  * Het SSH user authentication zorgt ervoor dat een client zich op meerdere manieren kan authenticeren (password, host-based, keypair)
+* Availability
+  * SSH werkt niet goed over trage verbindingen
+  * Er zijn wel keep-alives en key re-exchange
+* Integrity
+  * Berichten bevatten een MAC
+
+
+
+> (2016) Waarom gebruikt SSH beide RSA en Diffie Hellman
+
+Diffie-hellman wordt gebruikt om de gedeelde geheime sleutel te genereren. Deze sleutel wordt ondertekend met de private key om te authenticeren. 
+
+Elke sessie wordt er een nieuwe geheime sleutel gegenereerd.
+
+
+
+> (2016) Geef 3 verschillen tussen SSH en VPN
+
+Ik denk dat de persoon die deze vraag heeft overgenomen hem misschien niet helemaal goed heeft onthouden. Misschien vroegen ze het verschil tussen SSH en IPsec of tussen SSH en TLS?
+
+
+
+Je kan een SSH tunnel gebruiken om een VPN op te zetten. Dit gezegd zijnde:
+
+1. SSH en VPN hebben een ander doel. SSH wordt vooral gebruikt om een veilige remote CLI te voorzien
+2. Connectiemodel: SSH werkt met een client-server model en een VPN is typisch point-to-point
+3. SSH is een protocol op zichzelf, voor VPN kunnen meerdere protocols gebruikt worden (PPTP, L2TP, IPSec, ...)
+
+
+
+> (2016) Als je een ssh connectie wil openen in China maar China blokkeert de ssh poort en filtert al het ssh pakket verkeer. Hoe kan je toch een ssh connectie openen.
+
+//TODO
+
+Je zou een VPN tunnel kunnen opzetten. Dit kan bijvoorbeeld met openVPN. 
+
+
+
+> (2022) Begrippen uitleggen:
 >
 > - Result of pred (bitcoin)
 > - DMZ
 > - Table injection DAN (?)
 
+//TODO
 
 
 
-
-> Beschrijf 5 strategieen die door virussen gebruikt worden om zich te verbergen voor anti-virus software (“e.g. stealth strategies”)
+> (2023) Beschrijf 5 strategieen die door virussen gebruikt worden om zich te verbergen voor anti-virus software (“e.g. stealth strategies”)
 
 * De bestandsgrootte van het geïnfecteerde bestand niet wijzigen
 * De datum laatst aangepast vervalsen
 * Read-requests van het bestoringssysteem onderscheppen
 * Zichzelf wijzigen zodat het moeilijker herkend wordt
 * De body van het virus encrypteren
+* Timing based evasion (bijvoorbeeld allen draaien tijdens boot)
 
 
 
-> Waar of vals? Waarom?
+> (2023) Waar of vals? Waarom?
 >
 > Indien de file met paswoorden verworven wordt door een aanvaller kan deze de gevonden hashes rechtstreeks gebruiken om in te loggen op een systeem.
 
@@ -2539,7 +2789,7 @@ Vals, want als een wachtwoord wordt gehashed, wordt het omgezet in een moeilijk 
 
 
 
-> Leg volgende begippen uit
+> (2022) Leg volgende begippen uit
 >
 > \-    Pki
 >
@@ -2562,7 +2812,7 @@ Een **boot sector virus** is gericht op de boot sector/master boot record van ee
 
 
 
->  Juist/fout
+>  (2022) Juist/fout
 >
 > \-    Rainbow tables meerdere passwoorden met zelfde hash of niet?
 >
@@ -2571,11 +2821,11 @@ Een **boot sector virus** is gericht op de boot sector/master boot record van ee
 > \-    TLS is bestemd tegen tcp rst attack
 >
 
+//TODO
 
 
 
-
-> iPsec
+> (2022) iPsec
 >
 > \-    Verschil tunnel en transport modus
 >
@@ -2585,17 +2835,46 @@ Een **boot sector virus** is gericht op de boot sector/master boot record van ee
 >
 > \-    2 redenen waarom ESP padding nodig heeft
 
+//TODO
+
+
+
+> (2016) Hoe worden transacties bijgehouden in BitCoin?  Hoe worden nieuwe munten in het systeem gebracht?
+
+//TODO
+
+
+
+> (2016) Geef van de volgende of ze al dan niet worden gerealiseerd in BitCoin en hoe : 
+>
+> Authentication, Confidentiality, Availability
+
+//TODO
+
+
+
+> (2016) Naast proof of work bestaat ook nog proof of stake, geef 3 verschillende implementaties
+>  en leg ze uit.
+
+//TODO
+
+
+
+> (2016) Als je een gedistribueerde voting toepassing zou willen ontwikkelen met behulp van blockchains, hoe zou je dit aanpakken
+
+//TODO
+
 
 
 ### Open boek
 
-> Waarom vermeldt het SSH protocol de gebruikte softwareversie in de uitgewisselde pakketten tijdens het negotiatiealgoritme?
+> (2023) Waarom vermeldt het SSH protocol de gebruikte softwareversie in de uitgewisselde pakketten tijdens het negotiatiealgoritme?
 
 Voor compatibiliteit en veiligheid. De client en server moeten compatibel zijn als ze verder willen gaan met de negotiatie. Door de versie na te kijken kunnen client en server zeker zijn dat ze een versie van het protocol gebruiken dat veilig is.
 
 
 
-> Wanneer men een file eerst DES encrypteert en daarna decrypteert met dezelfde sleutel bekomt men terug het oorspronkelijk bestand. Is dit ook het geval wanneer men de omgekeerde volgorde uitvoert, dus eerst decryptie en dan encryptie? Waarom?
+> (2023) Wanneer men een file eerst DES encrypteert en daarna decrypteert met dezelfde sleutel bekomt men terug het oorspronkelijk bestand. Is dit ook het geval wanneer men de omgekeerde volgorde uitvoert, dus eerst decryptie en dan encryptie? Waarom?
 
 //TODO 
 
@@ -2603,12 +2882,72 @@ https://security.stackexchange.com/questions/123508/des-decryption-followed-by-e
 
 Ik geloof dit niet helemaal
 
-> De wireshark trace van een security protocol wordt weergegeven.
+
+
+> (2023) De wireshark trace van een security protocol wordt weergegeven.
 
 > * Welk protocol werd gecaptured?
 > * Leg uit wat er gebeurt in packet 65.
 
 ![image-20221221130918239](img/beveiliging/image-20221221130918239.png)
+
+//TODO
+
+
+
+> Geschetste situatie van een webapplicatie die goederen verkoopt waarbij een klant een winkelkarretje heeft en deze kan opvullen. Als de klant een item toevoegt aan zn winkelkarretje wordt dit toegevoegd aan een bestand op de server. Elke klant heeft hierbij een bestand met dus een lijst van zn bestellingen in zn winkelkarretje.
+>
+> 1. Is dit scenario kwetsbaar voor een Denial of Service aanval?
+>
+> Implementatie van scenario wordt aangepast en de klant houdt een lijst client-side bij en bij klikken op knop “voeg-toe” wordt een verborgen HTML form gestuurd naar de server die de info over het object ophaalt en deze teruggeeft aan de client. Eens de client zn bestelling wil afronden wordt de lijst van zn winkelkarretje doorgestuurd naar de server en deze stuurt het totaal terug met een lijst van producten waarna de client nog een bevestiging van deze bestelling moet geven.
+>
+> 2. Is deze implementatie nog steeds kwetsbaar voor de DOS vanuit de 1e implementatie
+>
+> 3. Zijn er nog andere aanvallen mogelijk? Veronderstel dat er https gebruikt wordt en XSS, CSRF, SQL injection, … dus niet mogelijk zijn.
+
+
+
+//TODO
+
+
+
+> IPsec (gegeven afbeelding berichtverkeer 1e fase : main mode en aggressive mode)  
+>
+> <img src="img/beveiliging/image-20230108181142830.png" alt="image-20230108181142830" style="zoom:67%;" />
+>
+> 1. Waarom main mode veiliger dan aggressive mode
+> 2. Waarom wordt toch nog soms voorkeur aan aggressive mode gegeven
+> 3. Vanaf welk bericht is het berichtverkeer geëncrypteerd in beide modes
+> 4. Authenticatie gebeurt maar in het 5de en 6de bericht, welke impact heeft dit op de beveiliging?
+> 5. Nadat er een tunnel is gecreëerd na de 1e fase is er nog een 2e fase die dient voor overleg.
+>     Voor wat dient deze 2e fase?
+>
+> Wireshark trace van het eerste bericht in main mode
+>
+> <img src="img/beveiliging/image-20230108181308989.png" alt="image-20230108181308989" style="zoom:67%;" />
+>
+> 6. Leid af uit afbeelding of het transport of tunnel mode is
+> 7. Waarom geen random waarde bij het eerste bericht?
+> 8. Voor wat dient de AH SPI (Security Parameter Index)
+> 9. Voor wat dienen de velden Next header en AH ICV (integrity checksum)
+
+
+
+//TODO
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

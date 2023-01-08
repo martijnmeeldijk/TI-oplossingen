@@ -2,6 +2,8 @@
 
 Deze samenvatting omvat de onderwerpen gezien in de slides. Waar de uitleg tekortschiet heb ik aangevuld met informatie uit het boek [(hier is de pdf)](https://www.knowledgeisle.com/wp-content/uploads/2019/12/2-Aur%C3%A9lien-G%C3%A9ron-Hands-On-Machine-Learning-with-Scikit-Learn-Keras-and-Tensorflow_-Concepts-Tools-and-Techniques-to-Build-Intelligent-Systems-O%E2%80%99Reilly-Media-2019.pdf).
 
+De [oplossingen](https://waxworksmath.com/Authors/G_M/Geron/WriteUp/Weatherwax_Geron_Solutions.pdf) voor de oefeningen in het boek
+
 ## Puntenverdeling
 
 Evaluation:
@@ -283,6 +285,23 @@ Als je ooit moet kiezen tussen een preciesion/recall curve of een ROC curve, is 
 
 
 
+### Unbalanced dataset
+
+<img src="img/machinaal/image-20230107104912362.png" alt="image-20230107104912362" style="zoom:50%;" />
+
+Als sommige klassen veel vaker of veel minder vaak voorkomen, spreken we van een **unbalanced dataset**. Dit kan een sterke invloed hebben op de werking van ons model. Stel je voor dat we een dataset hebben met 95 katten en 5 honden. Als we dan een model maken dat elke nieuwe instantie classificeert als kat, zal het model een accuracy van 95% hebben, terwijl alle honden fout werden geclassificeerd. 
+
+Er zijn een aantal manieren om hiermee om te gaan:
+
+* Dataset Augmentation
+* Undersampling: we nemen minder samples van de *majority class* (in dit geval de katten)
+* Oversampling: random duplicatie van samples van de *minority class* (de honden)
+  * Hierdoor kan het model wel overfitten op de *minority class*
+* Ensemble models: meerdere modellen combineren
+* Do not use accuracy as metric, kijk best ook naar precision, recall en $F_1$
+
+
+
 ### Multiclass classification
 
 <sup>p102</sup>
@@ -292,13 +311,392 @@ We hebben het tot nu toe gehad over binaire classificatie, waar we proberen het 
 Er zijn een aantal algoritmes die zijn gemaakt om classificatie op meerdere klassen te doen, maar wwe kunnen ook onze binaire classificatiemodellen omzetten om met meer klassen om te kunnen gaan. Dit kunnen we op twee manieren:
 
 * One-versus-all: 
-  * Train een binair klassificatiemodel voor elke klasse
+  * Train een binair classificatiemodel voor elke klasse
   * Elk model zegt voor een klasse of een bepaalde instantie bij die klasse hoort of niet.
 * One-versus-one:
+  * Voor elke twee klassen trainen we een classifier die het onderscheid tussen de twee maakt.
 
-//TODO mitigating unbalanced data
+
+
+
+| One-vs-rest                                                  | One-vs-one                                                   |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| ![image-20230107105729845](img/machinaal/image-20230107105729845.png) | ![image-20230107105756973](img/machinaal/image-20230107105756973.png) |
+
+
+
+#### Confusion matrix
+
+Om de prestaties van multiclass classification te visualiseren, kunnen we gebruik maken van een confusion matrix:
+
+<img src="img/machinaal/image-20230107110023842.png" alt="image-20230107110023842" style="zoom:67%;" />
+
+
+
+# 4 - Training models
+
+Tot nu toe hebben we alle modellen en hun trainingsalgoritmes als een soort black box behandeld. In dit hoofdstuk gaan we dieper in op een aantal modellen. 
+
+
+
+### Lineaire regressie
+
+We bespreken twee zeer verschillende manieren om een lineair regressiemodel te trainen. Aan de ene kant kunnen we een **closed-form** vergelijking gebruiken die rechtstreeks de modelparameters berekent en zo ons een optimale oplossing geeft die het model zo goed mogelijk *fit* op de training data. 
+
+Een andere mogelijkheid is **gradient descent**, een iteratieve oplossing die onze parameters geleidelijk aan optimaliseert door een bepaalde **cost function** te minimaliseren over de training set. 
+
+
+
+<img src="img/machinaal/image-20230107111156591.png" alt="image-20230107111156591" style="zoom:67%;" />
+
+Bij lineaire regressie vertrekken we van een inductive bias: *Er zit een lineaire relatie in onze data*. In de grafiek van de huisprijzen in Gent zal onze lineaire regressiefunctie deze vorm aannemen:
+$$
+\text{price} = \Theta_0 + \text{bedrooms}* \Theta_1
+$$
+Elke waarde voor $\Theta = (\Theta_0, \Theta_1)$ stelt een lijn voor met:
+
+* $\Theta_0$: snijpunt met de y-as (*bias*)
+* $\Theta_1$: De richtingscoëfficiënt (*weight*)
+
+We proberen nu de optimale parameters $\hat \theta$ the vinden, deze stellen de lijn voor die het best overeenkomt met de training data.
+
+
+
+#### Meerdere input features
+
+Als we te maken hebben met meer dan één input feature, kunnen we meerdere *weights* toevoegen. Om dit weer te geven gebruiken we de vectornotatie:
+$$
+\hat y = h_\Theta(x) = \Theta.x
+$$
+
+* $\hat y$: de voorspelling
+* $x$: de inputfeatures (met vanvoor een $1$)
+* $\Theta$: de modelparameters
+
+<img src="img/machinaal/image-20230107111951921.png" alt="image-20230107111951921" style="zoom:50%;" />
+
+
+
+#### Training
+
+We willen nu de optimale set parameters $\hat \Theta$ vinden. Een perfecte fit is nooit mogelijk door de ruis in onze data. Door middel van het minimaliseren van een **loss function**, kunnen we meten hoe goed $\Theta$ is:
+
+
+$$
+\text{MSE} = \frac{1}{n} \sum_{i=1}^{n} (y_i - \hat{y}_i)^2 \\
+\text{RMSE} = \sqrt{\frac{1}{n} \sum_{i=1}^{n} (y_i - \hat{y}_i)^2}
+$$
+Nu kunnen we de bovenvermelde opties gebruiken om  $\hat \Theta$ te vinden. (closed form, gradient descent)
+
+
+
+##### Closed Form
+
+We berekenen rechtstreeks de optimale parameters. Dit is typisch niet de manier van werken bij machine learning modellen. Met de **ordinary least squares** methode berekenen we de partiële afgeleide van de loss function voor elke parameter $(\Theta_0, \Theta_1)$. Dit resulteert in de **normal equation**:
+$$
+\hat \Theta = (X^TX)^{-1}X^T \text{y}
+$$
+
+* Met $X$ de feature vector
+* Deze methode gebruikt matrix inversie en is daardoor $0(n^3)$, en alleen bruikbaar op kleine datasets
+
+
+
+##### Gradient descent
+
+Gradient descent is een algemeen optimalisatiealgoritme dat de volgende stappen hanteert:
+
+* Bereken de partiële afgeleiden van de loss function voor de parameters $(\Theta_0, \Theta_1)$
+* Neem random waarden voor $(\Theta_0, \Theta_1)$ en evalueer de partiële afgeleide (dit geeft de gradiënt), deze geeft de 'richting' aan van de loss function
+* Pas $(\Theta_0, \Theta_1)$ aan in de tegengestelde richting van de gradiënt
+  * Hoe veel je ze aanpast hangt af van de **learning rate**
+  * Kiezen we deze te klein, zal het lang duren voor het resultaat convergeert
+  * Te groot, dan kan het dat we nooit convergeren
+  * De learning rate is dus een **hyperparameter** die we zelf moeten afstellen
+* Herhaal tot $(\Theta_0, \Theta_1)$ convergeert
+
+
+
+| Kleine learning rate                                         | Grote learning rate                                          |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| ![image-20230107113316186](img/machinaal/image-20230107113316186.png) | ![image-20230107113331025](img/machinaal/image-20230107113331025.png) |
+
+
+
+## Gradient descent implementaties
+
+Er zijn een aantal verschillende manieren om aan gradiënt descent te doen:
+
+* **Batch gradient descent**: de gradiënt elke stap berekenen voor alle trainingsdata (traag voor grote datasets)
+* **Stochastic gradient descent**: loop over de training data, bereken de gradiënt en neem een stap voor elke sample
+  * Veel sneller
+  * Veel ruis in de schatting van de gradiënt
+  * De cost zal rondswingen, lage kans om optimale oplossing te vinden (maar we goed genoeg)
+  * Willekeur kan helpen om lokale minima te ontsnappen
+* **Mini-batch gradient descent**:
+  * Combinatie van beide
+
+
+
+## Polynomial regression
+
+Als de relatie in de data niet lineair is, kunnen we gebruik maken van polynomiale regressie om een **niet-lineair model** te proberen fitten. 
+
+* $y = f(x) = \Theta_0 + \Theta_1x + \Theta_2x^2$
+* Dan zoeken we $(\Theta_0, \Theta_1, \Theta_2)$ met de closed form of gradiënt descent
+
+
+
+We kunnen ook een **niet-lineaire transformatie** uitvoeren op de data, waardoor de data wordt getransformeerd naar een ruimte waar we wel een lineair model op kunnen fitten. 
+
+* Voeg bijvoorbeeld een feature $x^2$ toe, berekend uit bestaande features
+
+
+
+## Regularization
+
+### Bias-variance trade-off
+
+Door het gebruik van veeltermen van hogere orde kunnen we complexere relaties modelleren. We kunnen de trainingsdata beter fitten, maar we zullen wel meer parameters moeten afstellen. Het doel is hier niet om een model te maken dat het best past op de training data. We willen een model dat zo goed mogelijk kan **generaliseren**, en dus nieuwe samples zo correct mogelijk kan voorspellen. 
+
+De fout op generalisatie bestaat uit drie termen:
+
+* **Bias error**: Fouten door verkeerde veronderstellingen over het model
+  * underfitting
+* **Variance error**: Fouten doordat het model te gevoelig is aan kleine veranderingen in de input
+  * overfitting
+* **Irreducible error**: ruis in de data
+
+
+
+### Model regularization
+
+We willen de expressieve kracht van het model beperken om hopelijk overfitting te beperken. Dit kunnen we bereken door een **regularisatie**-term toe te voegen. Deze beperkt het model door de gewichten klein te houden. 
+
+
+
+#### Ridge regression
+
+$$
+J(\pmb\theta) = \text{MSE}(\pmb\theta) + \alpha \frac 1 2 \sum_{i=1}^{n}\theta_i^2
+$$
+
+
+
+| Regularisatieterm                      | <img src="img/machinaal/image-20230107124928013.png" alt="image-20230107124928013" style="zoom:67%;" /> |
+| -------------------------------------- | ------------------------------------------------------------ |
+| **Afgeleide van de regularisatieterm** | <img src="img/machinaal/image-20230107124938138.png" alt="image-20230107124938138" style="zoom:67%;" /> |
+
+
+
+
+
+#### Lasso regression
+
+De minst belangrijke gewichten worden op **nul** gezet. Het resultaat is dus een **schaars model**.
+$$
+J(\pmb\theta) = \text{MSE}(\pmb\theta) + \alpha  \sum_{i=1}^{n} \lvert{\theta_i}\rvert
+$$
+De absolute waarde operatie van Lasso regression is niet afleidbaar. Dit probleem kunnen we omzeilen door gebruik te maken van de **subgradiënt**. Als we de functie niet kunnen afleiden in een punt nemen we een waarde die zich tussen de afgeleiden van omliggende punten bevindt. 
+
+| Regularisatieterm                      | <img src="img/machinaal/image-20230107125039343.png" alt="image-20230107125039343" style="zoom:67%;" /> |
+| -------------------------------------- | ------------------------------------------------------------ |
+| **Afgeleide van de regularisatieterm** | <img src="img/machinaal/image-20230107125048586.png" alt="image-20230107125048586" style="zoom:67%;" /> |
+
+
+
+#### Elastic net
+
+Is een gewogen som van Ridge en lasso-regressie. 
+$$
+J(\pmb\theta) = \text{MSE}(\pmb\theta)
++ r \alpha  \sum_{i=1}^{n} \lvert{\theta_i}\rvert
++ \alpha \frac {1-r} 2 \sum_{i=1}^{n}\theta_i^2
+$$
+
+## Visualizing performance
+
+### Learning curves
+
+| <img src="img/machinaal/image-20230107125856732.png" alt="image-20230107125856732" style="zoom:67%;" /> | <img src="img/machinaal/image-20230107125904765.png" alt="image-20230107125904765" style="zoom:67%;" /> |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+
+Aan de hand van een **learning curve** kan je de prestaties van het model meten voor verschillende datasetgroottes. De grafiek biedt een antwoord op de volgende vragen:
+
+* Lijdt het model aan hoge bias/variantie?
+* Zou het toevoegen van trainingsdata het model verbeteren?
+
+
+
+### Training curves
+
+| <img src="img/machinaal/image-20230107130138034.png" alt="image-20230107130138034" style="zoom:67%;" /> | <img src="img/machinaal/image-20230107130145633.png" alt="image-20230107130145633" style="zoom:67%;" /> |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+
+Met een **training curve** kan je de prestaties van het model **tijdens het trainen** visualiseren. Dit is nuttig voor technieken zoals gradiënt descent, waar het model iteratief wordt verbeterd. Een training curve verschaft ons een antwoord op:
+
+* Leert het model bij?
+* Wanneer begint het model te overfitten?
+* Gebruik ik de juiste learning rate?
+
+Door te kijken naar de training curve kunnen we zien wanneer het model begint te overfitten. Best nemen we een snapshot van het model, vlak voor dit moment. Dit staat bekend als **early stopping**. 
+
+
+
+## Classification
+
+Ondertussen weten we al ongeveer wat classificatie is. Bij binaire classificatie modelleren we in essentie een **desicion boundary** die onze twee klassen scheidt. Dit kan lineair of niet-lineair.
+
+<img src="img/machinaal/image-20230107130914355.png" alt="image-20230107130914355" style="zoom:50%;" />
+
+Wat gebeurt er nu als we proberen om lineaire regressie te gebruiken voor classificatie? We labelen één klasse als $0$ en de andere als $1$ en proberen dan een lineair regressiemodel te fitten. Omdat regressie altijd een exacte waarde probeert te voorspellen moeten we de uitkomst van het model telkens naar één van deze twee waarden $(0,1)$ afronden. 
+
+
+
+### Logistic regression
+
+$$
+\hat p = h_{\pmb\theta} (\mathbf x) = \sigma( \mathbf x ^T \pmb \theta)
+$$
+
+<img src="img/machinaal/image-20230107131343625.png" alt="image-20230107131343625" style="zoom:67%;" />
+
+Als we zonder vermelde inzichten toepassen, bekomen we **logistic regression**. Om ervoor te zorgen dat we altijd een waarde tussen $0$ en $1$ uitkomen, maken we gebruik van een **sigmoid function**. 
+$$
+\sigma(t) = \frac{1}{1 + \exp(-t)} 
+$$
+$\sigma(t)$ kan dan geïnterpreteerd worden als de probabiliteit dat de sample bij een bepaalde klasse hoort. Dit komt overeen met de afstand tot de decision boundary. Net als bij lineaire regressie, zullen we een cost functie moeten optimaliseren. In dit geval zal de MSE-loss niet-convex zijn. We gebruiken de **log loss**. 
+
+//TODO misschien de wiskundige vergelijkingen toevoegen als die belangrijk zijn
+
+
+
+
+
+### Softmax regression
+
+Als we meer dan twee klassen hebben, zou **one-vs-all** een mogelijk optie zijn. Dan hebben we een model voor elke klasse. Deze modellen zijn onafhankelijk, wat het vergelijken van de probabiliteiten moeilijk maakt.
+
+Een goede oplossing is **softmax regression**. We voorspellen een probabiliteit voor elke klasse en normaliseren ze zodat hun som gelijk is aan $1$. 
+
+Dit doen we met de softmax functie:
+$$
+\hat p_k = \sigma(\mathbf s(\mathbf k))_k = \frac{\exp(s_k(\mathbf x))}{\sum_{j=1}^K \exp(s_j(\mathbf x))}
+$$
+
+
+Het model wordt getraind met gradient descent, gebruik makende van **cross entropy loss**:
+$$
+J(\mathbf \Theta) = - \frac 1 m \sum_{i=1}^m \sum_{k=1}^K y_k^{(i)}\log (\hat p _k ^{(i)})
+$$
+<img src="img/machinaal/image-20230107150604838.png" alt="image-20230107150604838" style="zoom:50%;" />
+
+// TODO misschien uitleggen wat cross entropy is
+
+# 5 - Support vector machines
+
+Een support vector machine is een krachtig machine learning model waarmee je lineaire en non-lineaire classificatieproblemen mee kunt oplossen. 
+
+<img src="img/machinaal/image-20230107151427817.png" alt="image-20230107151427817" style="zoom:50%;" />
+
+We proberen een scheiding te vinden die niet alleen de twee klassen opsplitst, maar ook **zo ver mogelijk** weg blijft van de dichtstbijzijnde trainingsinstanties. Zo is de kans groter dat het model goed presteert op nieuwe gevallen. Je kan een SVM classifier voorstellen als een zo groot mogelijke "straat" tussen je klassen te proberen passen. Dit staat ook bekend als **large margin classification**. 
+
+Als we aan weerskanten van de "straat" nieuwe training samples toevoegen, zal in tegenstelling tot bij lineaire regressie onze classifier niet veranderen. Hij is volledig afhankelijk van de waarden aan de rand van de "straat". Deze waarden aan de rand noemen we **support vectors**, aangezien ze bij wijze van spreken de straat ondersteunen.
+
+
+
+## Soft margin classification
+
+### Hard margin classification
+
+Als we de zonet beschreven voorwaarden strikt opvolgen, doen we aan **hard margin classification**. Alle instanties van één klasse moeten zich aan één kant van de straat bevinden, alle instanties van de andere klasse aan de andere kant. Er mogen zich geen instanties op de straat bevinden. 
+
+<img src="img/machinaal/image-20230107154749303.png" alt="image-20230107154749303" style="zoom: 50%;" />
+
+Onze decision function $g(x)$ moet aan de volgende voorwaarde voldoen:
+$$
+g(\mathbf x ^{\mathbf i}) = t^{(i)}(\mathbf w^T \mathbf x ^{(i)} + b) \geq 1, \quad \forall i
+$$
+
+* $\mathbf x ^{(i)}$: de feature vector van het i-de item in de dataset
+* $t^{(i)}$ is $-1$ voor de negatieve klasse en $1$ voor de positieve klasse
+* $\mathbf w$ bevat de *weights* (richtingscoëfficiënten)
+* $b$ is de bias (verschuiving)
+* $g(x)$ vertelt ons simpelweg of een waarde 
+  * Op de straat ligt: dan ligt zijn waarde tussen $-1$ en $1$
+  * Van de straat ligt aan de positieve kant: dan is zijn waarde groter dan $1$
+  * Van de straat ligt aan de negatieve kant: dan is zijn waarde kleiner dan $-1$
+
+De breedte van onze straat wordt gegeven door $\frac 2 {\lVert \mathbf w \rVert}$. Om deze breedte te maximaliseren moeten we dus $\lVert \mathbf w \rVert$ minimaliseren. Om dat de wiskunde dan makkelijker is, minimaliseren we: $\frac 1 2 \lVert \mathbf w \rVert ^2$
+
+Dit kunnen we door $\mathbf w$ en $b$ af te stellen.
+
+
+
+Dit leidt snel tot een aantal problemen, mooi geschetst in deze plaatjes. 
+
+![image-20230107152522253](img/machinaal/image-20230107152522253.png)
+
+Als we te maken hebben met een uitschieter, kan het onmogelijk zijn om een lijn te vinden die de twee klassen perfect scheidt. Zelfs al kunnen we zo een lijn vinden, kunnen uitschieters de breedte van onze "straat" onnodig verkleinen. Om deze problemen te voorkomen, zullen we een zachtere aanpak moeten hanteren. 
+
+
+
+### Soft margin classification
+
+We willen een kleine hoeveelheid misclassificaties (waarden aan de verkeerde kant van de straat) toelaten. Waarden mogen soms ook op de straat liggen. 
+
+Dit kunnen we doen door een bepaalde hoeveelheid **error** te tolereren: $\upzeta^{(i)} \geq 0$
+$$
+g(\mathbf x ^{\mathbf i}) = t^{(i)}(\mathbf w^T \mathbf x ^{(i)} + b) \geq 1 - \upzeta^{(i)}
+$$
 
 
 # Examenvragen
 
 ![image-20221230184101596](img/machinaal/image-20221230184101596.png)
+
+
+
+## Vragen uit de slides
+
+> What is (linear) regression ? 
+
+
+
+> How is a linear regression model parameterized ? How does it make a prediction ? 
+
+
+
+> How do we obtain the optimal parameters for a linear regression model. 
+
+
+
+> What is gradient descent ? 
+
+
+
+> What is a convex function ? 
+
+
+
+> What is polynomial regression ? How does it relate to linear regression ? When is polynomial regression useful? 
+
+
+
+> What is bias and variance, what is the relationship between them ? 
+
+
+
+> What is regularization ? What is Ridge regression, LASSO and elastic net ? What are the benefits ? 
+
+
+
+> What is logistic regression ? How is it parameterized ? How does it make a prediction ? How is it trained ? 
+
+
+
+> What is softmax regression ? How is it parameterized ? How does it make a prediction ? How is it trained ? 
+
+
+
+> What is cross entropy ?
