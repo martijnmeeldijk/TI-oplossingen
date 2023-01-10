@@ -1804,7 +1804,7 @@ Omdat deze **proof-of-work** aanpak zo veel energie verspilt, is er ook een alte
 
 
 
-### Advantages/disadvanteges
+### Advantages/disadvantages
 
 - [x] Laag risico op inflatie
 - [x] Vrijheid in betaling (geen onverwachte fees, ...)
@@ -1891,7 +1891,11 @@ This is to ensure that the message is unique and it hasn't been replayed or tamp
 
 > Try to encrypt and decrypt a self-defined message using the provided encryption approaches
 
-//TODO
+Oke hier een leuke oefening. Ik geef je de key: 'teringkop'
+
+Dit is het te ontsleutelen bericht: 'QNQKLKIW'
+
+Gebruik de playfair cipher (staat in de slides).
 
 
 
@@ -1913,9 +1917,9 @@ Een block cipher is een encryptiealgoritme met een vaste inputgrootte. Het algor
 
 > How secure is 3-DES? Explain why.
 
-DES gebruikt een 56-bit key, en 3-DES gebruikt 3 zo'n keys, waardoor je zou denken dat de *strength* equivalent aan een key van 168 bits zou zijn, maar 3-DES is zeker en vast niet drie keer zo sterk als DES. Meet-in-the middle aanvallen verzwakken het algoritme. 
+DES gebruikt een **56-bit** key, en 3-DES gebruikt 3 zo'n keys, waardoor je zou denken dat de *strength* equivalent aan een key van 168 bits zou zijn, maar 3-DES is zeker en vast niet drie keer zo sterk als DES. Meet-in-the middle aanvallen verzwakken het algoritme. 
 
-Verder is de kleine blocksize (64 bits) ook een limiterende factor. Als een aanvaller twee identieke ciphertext blokken tegenkomt, kan hij de XOR van de corresponderende plaintext blokken vinden. Met een known paintext kan hij dus, mits genoeg data ook andere blokken ontsleutelen. 
+Verder is de **kleine blocksize** (64 bits) ook een limiterende factor. Als een aanvaller twee identieke ciphertext blokken tegenkomt, kan hij de XOR van de corresponderende plaintext blokken vinden. Met een known plaintext kan hij dus, mits genoeg data ook andere blokken ontsleutelen. 
 
 Het is ook belangrijk dat er bij 3DES drie verschillende keys worden gebruikt, anders is het algoritme een stuk minder veilig. 
 
@@ -1965,6 +1969,8 @@ Een **digitale handtekening** gebruikt een **private key** om het bericht te ond
 
 Ze leveren wel beide authenticatie en data-integriteit.
 
+
+
 ### Chapter 4
 
 >  True or false: the SSH transport layer protocol encrypts TCP packets. Explain.
@@ -1973,14 +1979,18 @@ True. De SSH transportlaag werkt bovenop een transportlaagprotocol, waar TCP een
 
 Het protocol wisselt eerst identification strings uit, waarna het te gebruiken algoritme wordt onderhandeld. In de volgende stap worden sleutels uitgewisseld. De procedure wordt beëindigd met een *service request*, waarna alle data uitgewisseld wordt als payload van het SSH transportlaagprotocol, beschermd door encryptie en MAC.
 
+//TODO fact checken
+
 
 
 > Explain the functions of the SSH transport layer protocol, SSH user authentication protocol and SSH connection protocol
 
 - SSH Transport layer protocol
+  - //TODO voorziet veilige tunnel
   - authenticatie, confidentialiteit en integriteit
   - Identification strings, algoritme negotiatie, key exchange, service request
-  - Bovenop betrouwbaar transportlaagprotocol (bv. TCP)
+  - **Bovenop betrouwbaar transportlaagprotocol** (bv. TCP)
+  
 - SSH user authentication protocol
   - Authenticatie voor clients (public key, password of host-based)
   - Zit bovenop het vorige
@@ -2018,15 +2028,15 @@ Een SSH session slaat op de verbinding die gemaakt wordt tussen client en server
 
 > Explain the difference between local and remote port forwarding.
 
-Bij **local port forwarding** sturen wij met onze SSH client het verkeer van een andere client veilig door naar de server. 
+Bij **local port forwarding** sturen wij met onze SSH client het verkeer van een andere client applicatie veilig door. Dit wordt ook wel een **outgoing tunnel** genoemd. In een typisch scenario zou je een tunnel vanaf je werk pc naar een pc in je thuisnetwerk maken. Zo omzeil je de firewall en heb je met eender welk protocol toegang tot je thuisnetwerk. 
 
-Bij **remote port forwarding** zal onze client in naam van de server handelen. Requests op de gekozen poorten zullen door onze client via een tunnel naar de server gestuurd worden.
+Bij **remote port forwarding** zal onze client in naam van de server handelen. Requests op de gekozen poorten zullen door onze client via een tunnel naar de server gestuurd worden. Dit heet ook een **incoming tunnel**. We zouden bijvoorbeeld remote port forwarding op ons werk kunnen gebruiken om een tunnel te maken van onze thuiscomputer naar onze werkcomputer. Nu heeft de thuiscomputer toegang tot het werknetwerk. 
 
 
 
 > Explain the benefits of ephemeral DH over traditional DH. 
 
-- Private sleutels gegenereerd voor elke sessie
+- Geheime sleutels gegenereerd voor elke sessie
 - Dus elke sessie een andere geheime sessiesleutel
 - Authenticatie gebeurt via een ander algoritme (RSA, DSA, ...)
 - Perfect forward secrecy: dit betekent dat als een aanvaller één sleutel kraakt, dit niet de veiligheid van het hele systeem in gevaar brengt (bv. door elke keer een nieuwe sessiesleutel aan te maken). 
@@ -2037,7 +2047,7 @@ Bij **remote port forwarding** zal onze client in naam van de server handelen. R
 >
 > What are the advantages / disadvantages of both approaches?
 
-Een **KDC** genereert geheime sleutels voor beide partijen een voorziet een mechanisme om deze sleutels aan hun te geven. De KDC beheert gecentraliseerd alle sleutels. Hier is het makkelijker om sleutels te beheren en te updaten. Spijtig genoeg moet je de KDC wel vertrouwen en is hij ook een single point of failure. 
+Een **KDC** genereert **geheime sleutels** voor beide partijen een voorziet een mechanisme om deze sleutels aan hun te geven. De KDC beheert gecentraliseerd alle sleutels. Hier is het makkelijker om sleutels te beheren en te updaten. Spijtig genoeg moet je de KDC wel vertrouwen en is hij ook een **single point of failure**. 
 
 Bij **PKI** genereert de client zelf een geheime sleutel, die wordt versleuteld met de publieke sleutel van de server, waardoor alleen de server hem kan ontsleutelen. We weten dat de server vertrouwd is omdat zijn publieke sleutel is ondertekend door een CA. Het beheer van certificaten is iets complexer en er is ook het risico dat de CA gehackt wordt.
 
@@ -2211,7 +2221,7 @@ Authenticatie aan de hand van twee van de volgende manieren:
 * Iets dat de gebruiker **weet**
 * Iets dat de gebruiker **is**
 
-Typisch wordt two-factor authentication gedaan via een SMS, want die de gebruiker alleen lezen op zijn eigen telefoon. Dit wordt dan gecombineerd met een wachtwoord.
+Typisch wordt two-factor authentication gedaan via een SMS, die de gebruiker alleen kan lezen op zijn eigen telefoon. Dit wordt dan gecombineerd met een wachtwoord.
 
  
 
@@ -2292,8 +2302,10 @@ Manieren om dit tegen te gaan:
   - Users don’t read files in other users’ directories
   - Users normally only access disk using higher level OS functions
   - Users don’t copy system files
-
 - **Network traffic**: This metric tracks the incoming and outgoing traffic on the system, including the volume and destination of the traffic. This can be used to detect network-based attacks or unusual patterns of network activity.
+- **Unexplained time changes**
+- **Unusual error messages**
+- **User logging in from unfamiliar sites** 
 
 2. <u>Network-based audit system</u>:
 
@@ -2302,8 +2314,10 @@ Manieren om dit tegen te gaan:
 - **Unauthorized access attempts**: This metric tracks attempts to gain unauthorized access to the network, such as attempts to bypass security controls or exploit vulnerabilities. This can be used to detect and prevent intrusions.
 - **Network usage patterns**: This metric tracks the usage patterns of the network, including the volume and type of traffic, as well as the source and destination of the traffic. This can be used to detect unusual or suspicious activity, such as an attacker attempting to exfiltrate data from the network.
 - **Unfinished handshakes**: Many single TCP SYN messages could indicate an attack
+- **Timespan between login attempts**
+- **Resource usage of networking equipment**
 
-
+//TODO nakijken
 
 
 
@@ -2347,7 +2361,7 @@ Privacy wordt vaak verward met confidentialiteit, maar niet elke kwestie van con
 - **Entity** **authentication**
   - Elke entiteit heeft een unieke identiteit en wordt beschreven door een verzameling data (ID-nummer, email). De authenticatie van de identiteit van een entiteit wordt vaak gebruikt voor entity authentication (dit staat zo in de slides oke ik ga er niet verder op ingaan tis toch niet echt super essentiële info). 
 - **Attribute** **authentication**
-  - Attributen zijn de karakteristieken van een entiteit, we moeten weten of partijen over de attributen beschikken die ze beweren te hebben, en we kunnen ze dus ook daarmee authenticeren.
+  - Attributen zijn de karakteristieken van een entiteit, we moeten weten of partijen over de attributen beschikken die ze beweren te hebben.  We kunnen ze ook daarmee authenticeren.
 - **Data-origin** **authentication**
   - We moeten weten of de data effectief komt van de verwachte bron. Dit is belangrijk om aan te tonen dat de data betrouwbaar is.
 
@@ -2434,9 +2448,9 @@ Het principe van het Feistel Schema is gebaseerd op het combineren van *confusio
 
 MAC staat voor **message authentication code** en gebruikt zowel de plaintext als de gedeelde sleutel als input. Hiermee wordt getracht om de volgende doelen te bereiken:
 
-1. Ontdekken of het bericht is aangepast
-2. Kijken of het bericht van de juiste afzender komt
-3. Kijken of de volgorde van het bericht is behouden (als je een counter gebruikt)
+1. Ontdekken of het bericht is **aangepast**
+2. Kijken of het bericht van de **juiste afzender** komt
+3. Kijken of de **volgorde** van het bericht is **behouden** (als je een counter gebruikt)
 
 Het verschil tussen een MAC en een hashfunctie is dat een MAC ook afhangt van de geheime sleutel. Een hash hangt enkel af van het bericht. Je kan MAC dus zien als een soort onomkeerbare encryptie. Dankzij de MAC is nu dus ook **authenticatie** mogelijk, omdat de geheime sleutel is gebruikt.
 
@@ -2487,21 +2501,21 @@ Eigenlijk worden authorization en availability ook wel bereikt, maar dat vind ik
 
 > What are the different underlying protocols used in TLS? What is their function? (5)
 
-- TLS handshake protocol
-  - Maakt **wederzijdse authenticatie** tussen client en server mogelijk, dit verloopt volgens deze stappen:
-- TLS change cipher spec protocol
+- <u>TLS handshake protocol</u>
+  - Maakt **wederzijdse authenticatie** tussen client en server mogelijk
+- <u>TLS change cipher spec protocol</u>
   - Maar **één bericht mogelijk**: change_cipher_spec
   - Zorgt ervoor dat de afwachtende staat wordt gekopieerd naar de huidige staat. Dit slaat op de gekozen encryptietechnieken.
-- TLS alert protocol
+- <u>TLS alert protocol</u>
   - Berichten voor **errors** en **waarschuwingen**, als er bijvoorbeeld ongeldige berichten ontvangen worden of er problemen zijn met de certificaten.
-- TLS record protocol
+- <u>TLS record protocol</u>
   - **Basislaag** van TLS, **verwerkt** de **data** die verstuurd moet worden
   - **Fragmenteert** de **data** en kan hem optioneel comprimeren (wordt bijna nooit gedaan)
   - Voorziet **confidentialiteit en authenticatie voor TLS-verbindingen**
   - Gebruikt twee sleutels, gemaakt door het handshake protocol
     - Eén voor confidentialiteit
     - Eén voor integriteit a.d.h.v. MAC
-- TLS heartbeat protocol
+- <u>TLS heartbeat protocol</u>
   - Nieuw protocol bovenop het record protocol
   - Voorziet een **liveliness check** die op elk moment (behalve tijdens de handshake) kan gestuurd worden
   - Stuurt een HeartbeatRequest die moet beantwoord worden met een HeatbeatResponse met exact dezelfde payload
@@ -2516,11 +2530,11 @@ Dit is een bug in het TLS heartbeat protocol. Een aanvaller stuurt een Heartbeat
 
 > Name 5 speedups that could be used in the TLS protocol.
 
-1. Verkorte handshake: door de session bij te houden moeten we als de client een volgende keer bij de server komt geen volledige handshake meer doen.
-2. False start: al data beginnen sturen wanneer de handshake niet af is. We beginnen al met data sturen als de handshake aan onze kant klaar is, maar we nog geen antwoord hebben. 
-3. Early termination: servers dichterbij de gebruikers zetten om latency the beperken. Deze servers fungeren als proxy voor de origin servers en kunnen dan de round-trip tijd beperken.
-4. Record size: voor nieuwe verbindingen moeten we de record size klein houden om latency te beperken. Voor actieve verbindingen kunnen we beter grotere records gebruiken voor minder overhead. Het is wel typisch niet mogelijk om de record size in te stellen vanaf de applicatielaag.
-5. Certificate chain: een te lange certificate chain zorgt voor extra overhead.
+1. **Verkorte handshake**: door de session bij te houden moeten we als de client een volgende keer bij de server komt geen volledige handshake meer doen.
+2. **False start**: al data beginnen sturen wanneer de handshake niet af is. We beginnen al met data sturen als de handshake aan onze kant klaar is, maar we nog geen antwoord hebben. 
+3. **Early termination**: servers dichterbij de gebruikers zetten om latency the beperken. Deze servers fungeren als proxy voor de origin servers en kunnen dan de round-trip tijd beperken.
+4. **Record size**: voor nieuwe verbindingen moeten we de record size klein houden om latency te beperken. Voor actieve verbindingen kunnen we beter grotere records gebruiken voor minder overhead. Het is wel typisch niet mogelijk om de record size in te stellen vanaf de applicatielaag.
+5. **Certificate chain**: een te lange certificate chain zorgt voor extra overhead.
 
 
 
@@ -2566,7 +2580,9 @@ Een security association (SA) is een **éénrichtingsrelatie** tussen de zender 
 
 <img src="img/beveiliging/image-20221229122005882.png" alt="image-20221229122005882" style="zoom: 67%;" />
 
-Het hidden node problem doet zich voor in een situatie waar node A en C elkaar niet kunnen horen. Zelfs als A eerst naar het kanaal luistert alvorens hij data begint te sturen, kan het dat C ook data stuurt en er zich een botsing voordoet. Dit kan voorkomen worden met een **Request-to-send/Clear-to-send** (RTS/CTS). Als A wilt praten met B, stuurt hij eerst een RTS, waarop B antwoordt met een CTS als hij beschikbaar is. C hoort de CTS ook en weet dus dat B bezig is met het ontvangen van data van A. 
+Het **hidden node problem** doet zich voor in een situatie waar node A en C elkaar niet kunnen horen. Zelfs als A eerst naar het kanaal luistert alvorens hij data begint te sturen, kan het dat C ook data stuurt en er zich een botsing voordoet. Dit kan voorkomen worden met een **Request-to-send/Clear-to-send** (RTS/CTS). Als A wilt praten met B, stuurt hij eerst een RTS, waarop B antwoordt met een CTS als hij beschikbaar is. C hoort de CTS ook en weet dus dat B bezig is met het ontvangen van data van A. 
+
+
 
 
 
@@ -2577,6 +2593,20 @@ Het hidden node problem doet zich voor in een situatie waar node A en C elkaar n
 - Slechte encryptiealgoritmes
 
 
+
+> Which security problems are solved in WPA? What are the three entities defined in the protocol?
+
+Sleutelbeheer en bescherming tegen replay-aanvallen. Je kan ook gebruik maken van een authenticatieserver met RADIUS.
+
+Het protocol maakt gebruikt van EAP(extensible authentication protocol, waardoor het uitbreidbaar en future proof is)
+
+- **Supplicant**: de draadloze client
+- **Authenticator**: typisch de access point
+- **Authentication server**: bevat gebruikersgerelateerde authenticatieinfo
+
+
+
+### Chapter 5
 
 > What is the difference between a packet filter, a circuit level gateway and an application level gateway?
 
@@ -2601,7 +2631,35 @@ Een **bastion** is een computer die specifiek is ontworpen om bestand te zijn te
 
 
 
-### Chapter 5
+> What are default policies in a firewall and what do they do?
+
+Deze vertellen wat er met pakketjes moet gebeuren die aan geen van de ingestelde regels voldoen
+
+* DROP: alles wordt tegengehouden
+* ALLOW: alles wordt doorgelaten
+
+Typisch is DROP een stuk veiliger, wan je moet expliciet bepaald verkeer doorlaten
+
+
+
+> What is the difference between DENY and DROP?
+
+DENY zal pakketjes op een verbose manier weigeren. Dan wordt er typisch een pakketje teruggestuurd met een mededeling betreffende de weigering. 
+
+DROP laat de pakketjes gewoon vallen, zonder antwoord.
+
+
+
+> What are 6 ways for an attacker to avoid an IDS?
+
+* Fragmentation
+* Avoiding defaults 
+* Multi-origin attacks 
+* Spoofing 
+* Pattern changing 
+* Denial of service attacks
+
+### Chapter 6
 
 > Explain the workings of SQL injection. How can one defend against this type of attack?
 
@@ -2658,14 +2716,21 @@ Table-aanvallen kunnen voorkomen worden door een **salt** toe te voegen aan je w
 
 
 
-> What are 6 ways for an attacker to avoid an IDS?
+### Chapter 7
 
-* Fragmentation
-* Avoiding defaults 
-* Multi-origin attacks 
-* Spoofing 
-* Pattern changing 
-* Denial of service attacks
+> What are 4 uses for blockchain technology (apart from digital currency)?
+
+* Asset management
+  * Blockchain om de locatie en eigenaarschap van assets bij te houden
+  * Blockchain kan een wachtrij voorzien voor aangekomen goederen
+* Cloud storage
+  * Data opslaan in een blockchain als een soort gedistribueerde databank
+  * Elke gebruiker doneert dan overblijvende schijfruimte om bij te dragen aan een betrouwbare gedistribueerde cloud service
+* Insurance
+  * Contracten en claims kunnen worden opgeslagen in de blockchain
+  * Deze kunnen dan veilig en transparant beheerd worden
+* Voting
+  * Transparant en bijna onmogelijk te vervalsen
 
 
 
@@ -2707,7 +2772,7 @@ Metamorfische technieken kunnen gebruikt worden om de detectie nog moeilijker te
 > * Hoe wordt dit in IPsec geimplementeerd?
 >
 
-Perfect forward secrecy is een garantie die wordt geleverd bij cryptografische systemen. Er wordt gegarandeerd dat zelfs wanneer een voormalig gebruikte sleutel gecompromitteerd wordt, deze geen oudere of toekomstige communicatie in gedrang brengt. 
+Perfect forward *secrecy* (security is niet correct) is een garantie die wordt geleverd bij cryptografische systemen. Er wordt gegarandeerd dat zelfs wanneer een voormalig gebruikte sleutel gecompromitteerd wordt, deze geen oudere of toekomstige communicatie in gedrang brengt. 
 
 Dit is belangrijk om in cryptografische systemen de confidentialiteit van de communicatie te behouden.
 
@@ -2720,10 +2785,11 @@ Perfect forward secrecy is niet rechtstreeks geïmplementeerd in IPSec, alhoewel
 * Traffic flow confidentiality
   * Dit is niet aanwezig
   * Confidentiality is er wel omdat alle traffic wordt geëncrypteerd
+  * Kan misschien deels bereikt worden met port-forwarding
 * Authentication
-  * Het SSH user authentication zorgt ervoor dat een client zich op meerdere manieren kan authenticeren (password, host-based, keypair)
+  * Het SSH user authentication protocol zorgt ervoor dat een client zich op meerdere manieren kan authenticeren (password, host-based, keypair)
 * Availability
-  * SSH werkt niet goed over trage verbindingen
+  * SSH werkt niet goed over trage of onstabiele verbindingen
   * Er zijn wel keep-alives en key re-exchange
 * Integrity
   * Berichten bevatten een MAC
@@ -2732,9 +2798,9 @@ Perfect forward secrecy is niet rechtstreeks geïmplementeerd in IPSec, alhoewel
 
 > (2016) Waarom gebruikt SSH beide RSA en Diffie Hellman
 
-Diffie-hellman wordt gebruikt om de gedeelde geheime sleutel te genereren. Deze sleutel wordt ondertekend met de private key om te authenticeren. 
+Diffie-hellman wordt gebruikt om de gedeelde geheime sleutel te genereren. Deze sleutel wordt ondertekend met de private key (RSA) om te authenticeren. 
 
-Elke sessie wordt er een nieuwe geheime sleutel gegenereerd.
+Elke sessie wordt er een nieuwe geheime sleutel gegenereerd. (bij ephemeral DH)
 
 
 
@@ -2744,7 +2810,7 @@ Ik denk dat de persoon die deze vraag heeft overgenomen hem misschien niet helem
 
 
 
-Je kan een SSH tunnel gebruiken om een VPN op te zetten. Dit gezegd zijnde:
+Je kan een SSH tunnel gebruiken om een VPN op te zetten. Dit gezegd zijnde zal ik de vraag alsnog beantwoorden:
 
 1. SSH en VPN hebben een ander doel. SSH wordt vooral gebruikt om een veilige remote CLI te voorzien
 2. Connectiemodel: SSH werkt met een client-server model en een VPN is typisch point-to-point
@@ -2791,57 +2857,81 @@ Vals, want als een wachtwoord wordt gehashed, wordt het omgezet in een moeilijk 
 
 > (2022) Leg volgende begippen uit
 >
-> \-    Pki
+> 1. Pki
 >
-> \-    Kerchoffs principe
+> 2. Kerchoffs principe
 >
-> \-    Gemengd virus
->
-> \-    Boot sector virus
->
+> 3. Gemengd virus
+> 4. Boot sector virus
 
-//TODO pki 
+1. PKI staat voor **public key infrastructure**. Dit is een manier om publieke en private sleutels te beheren. PKI steunt volledig op een **certificate authority**. Deze deelt certificaten uit aan geverifieerde partijen door ze te ondertekenen met zijn private sleutel. Door het certificaat van een server na te kijken kan een client zeker weten dat deze server wordt vertrouwd door de CA. 
 
+   CA's vormen een hiërarchische structuur, met bovenaan enkele **root CA's**. De onderliggende CA's worden vertrouwd door de root CA's, waardoor een **chain of trust** ontstaat. De lager gelegen CA's kunnen ook certificaten uitdelen. Een client kan de zogezegde 'ketting' van handtekeningen volgen tot aan de root CA om de betrouwbaarheid van een server na te gaan.
 
+2. Een cryptografisch systeem moet veilig zijn, zelfs als alle informatie over het systeem, behalve de sleutel openbaar is. Dit staat bekend als het **principe van Kerckhoffs**.
 
-Een cryptografisch systeem moet veilig zijn, zelfs als alle informatie over het systeem, behalve de sleutel openbaar is. Dit staat bekend als het **principe van Kerckhoffs**.
+3. Een **blended threat** is een aanval waarbij verschillende dingen zoals virussen, malware, worms, ... worden gecombineerd. Een voorbeeld hiervan is een geïnfecteerde email die een backdoor en spyware installeert op het geïnfecteerde systeem en zich vervolgens over het netwerk propageert via een worm.
 
-Een **blended threat** is een aanval waarbij verschillende dingen zoals virussen, malware, worms, ... worden gecombineerd. Een voorbeeld hiervan is een geïnfecteerde email die een backdoor en spyware installeert op het geïnfecteerde systeem en zich vervolgens over het netwerk propageert via een worm.
-
-Een **boot sector virus** is gericht op de boot sector/master boot record van een harde schijf of verwijderbare opslagmedia. 
+4. Een **boot sector virus** is gericht op de boot sector/master boot record van een harde schijf of verwijderbare opslagmedia. 
 
 
 
 >  (2022) Juist/fout
 >
-> \-    Rainbow tables meerdere passwoorden met zelfde hash of niet?
+> 1. Rainbow tables meerdere passwoorden met zelfde hash of niet?
 >
-> \-    Cryptografische hash is een hash maar omgekeerd niet
+> 2. Cryptografische hash is een hash maar omgekeerd niet
 >
-> \-    TLS is bestemd tegen tcp rst attack
->
+> 3. TLS is bestemd tegen tcp rst attack
 
-//TODO
+1. De eerste vraag is een beetje wack. 
+
+2. Juist, een cryptografische hashfunctie is een hashfunctie die voldoet aan bepaalde voorwaarden die hem geschikt maken voor gebruik in cryptografische algoritmes. Deze voorwaarden zijn onder andere: weak collision resistance, strong collision resistance, vaste outputgrootte, hoge diffusion. 
+
+3. TLS is niet bestand tegen TCP reset aanvallen, want het protocol werkt bovenop TCP. Als een aanvaller een vervalst TCP reset pakketje stuurt, zal de verbinding stopgezet worden, ongeacht het bovenliggende protocol. 
+
+   TLS encrypteert en authenticeert enkel de **inhoud** van TCP pakketjes en niet het TCP headergedeelte.
+
+
 
 
 
 > (2022) iPsec
 >
-> \-    Verschil tunnel en transport modus
+> 1. Verschil tunnel en transport modus
 >
-> \-    Teken pakket ah en esp in transport modus
+> 2. Teken pakket ah en esp in transport modus
 >
-> \-    5 security dingen waaraan ipsec voldoet
->
-> \-    2 redenen waarom ESP padding nodig heeft
+> 3. 5 security dingen waaraan ipsec voldoet
+>4.  2 redenen waarom ESP padding nodig heeft
 
-//TODO
+1. Bij **tunnel mode** wordt het volledige IP datagram in een nieuw pakket gestoken, met een nieuwe IP header. Bij **transport mode** wordt het originele pakket behouden en worden er alleen headers of trailers toegevoegd. Afhankelijk van het gebruikte protocol wordt dan de inhoud versleuteld.
+
+2. //TODO er is een andere vraag hierboven waar de tekeningen staan
+
+3. IPSec voldoet aan de volgende security goals: 
+
+   * Confidentiality: pakketjes kunnen worden geëncrypteerd met ESP
+
+   * Authentication: met een MAC
+
+   * Integrity: ook met de MAC
+
+   * Authorization: toegang kan beperkt worden met authenticatie
+
+   * Traffic-flow confidentiality: als we ESP gebruiken in tunnel mode kunnen we gedeeltelijke traffic flow confidentiality bereiken
+
+4. ESP voegt padding toe als dit nodig is om te kunnen voldoen aan de vereiste block size voor encryptiealgoritmes of om de grootte van de payload te veranderen om traffic-flow analyse moeilijker te maken.
 
 
 
 > (2016) Hoe worden transacties bijgehouden in BitCoin?  Hoe worden nieuwe munten in het systeem gebracht?
 
-//TODO
+Om een transactie te doen met BitCoin, **onderteken** je de **hash van de vorige transactie** van deze coin en de **public key** van de **volgende eigenaar** met je private key (ECDSA). Een coin kan maximum gesplitst worden in 100 miljoen delen. Een transactie kan meerdere inputs hebben, dit komt overeen met een transactie van meerdere coins. Als een transactie meerdere outputs heeft, komt dit overeen met meerdere betalingen. 
+
+Elke 10 minuten worden alle transacties verzameld in een **block**. Elke block wordt aan de vorige block gelinkt met een **proof-of-work**. Dit is de verantwoordelijkheid van **bitcoin miners**. Zij moeten een nonce vinden die, als hij samen met de hash van het vorige blok wordt gehashed, kleiner is dan een bepaald getal $E$. Als deze nonce is gevonden, wordt de resulterende hash in het huidige blok geplaatst samen met alle transacties en krijgt de node die hem gevonden heeft een reward. Door deze hash is het huidige blok nu gelinkt aan het vorige blok. Dit vormt een ketting, genaamd de **blockchain**. Om te zoeken naar een nonce voor het volgende blok, verifiëren ze ook de vorige transacties.
+
+De implementatie van bitcoin zorgt ervoor dat om de zoveel blokken, het getal $E$ kleiner wordt, waardoor het exponentieel moeilijker wordt om bitcoins te minen. Er kunnen in totaal maar 21 miljoen bitcoins gemined worden. 
 
 
 
@@ -2849,20 +2939,35 @@ Een **boot sector virus** is gericht op de boot sector/master boot record van ee
 >
 > Authentication, Confidentiality, Availability
 
-//TODO
+* Authentication: 
+  * Betaal ik de juiste persoon? Dit wordt nagekeken aan de hand van digitale handtekeningen. De 
+  * Is de Coin echt? Dit wordt nagekeken met een hash
+* Confidentiality
+  * Niet aanwezig. Alle transacties staan openbaar genoteerd in de blockchain. Privacy is wel een groot item, aangezien een transactie niet gelinkt is aan de identiteit van een persoon. 
+* Availability
+  * Bitcoin gebruikt een gedecentraliseerd netwerk van nodes om transacties bij te houden en te verifiëren. Het enige probleem is hier dat voor elke transactie je minstens 10 minuten moet wachten (de tijd om 1 blok te maken) alvorens je transactie is afgerond. Voor grote transacties wacht je best meerdere blokken. 
 
 
 
 > (2016) Naast proof of work bestaat ook nog proof of stake, geef 3 verschillende implementaties
 >  en leg ze uit.
 
-//TODO
+Een **proof-of-work** beloont eigenlijk alleen de grootste miners met het meeste computerkracht. Bovendien verspilt het veel energie en promoot het het eigenaarschap van bitcoins niet. 
+
+
+
+Met een **proof-of-stake** wordt er getracht om dit proces eerlijker en minder verkwistend te maken. Er zijn vier mogelijke implementaties:
+
+* **Randomized**: de nieuwe generator wordt random uitgekozen
+* **Coin age based selection**: Coins ouder dan 30 dagen vechten voor het nieuwe blok, hou ouder de coin, hoe meer kans. De reward is gebaseerd op hoeveel coins en hoe oud. 
+* **Velocity based selection**: het uitgeven van coins wordt beloond
+* **Voting based selection**: de block generators worden geselecteerd op basis van stemmen
 
 
 
 > (2016) Als je een gedistribueerde voting toepassing zou willen ontwikkelen met behulp van blockchains, hoe zou je dit aanpakken
 
-//TODO
+Elke block in de blockchain komt overeen met een aantal votes. Een vote is dan analoog aan een transactie bij bitcoin. Doordat votes opgeslagen worden in de blockchain is het bijna onmogelijk om ze te vervalsen of te verwijderen. Best wordt de blockchain dan geverifieerd en geupdated door meerdere onafhankelijke instanties die op deze wijze elkaar controleren. 
 
 
 
@@ -2889,13 +2994,21 @@ Ik geloof dit niet helemaal
 > * Welk protocol werd gecaptured?
 > * Leg uit wat er gebeurt in packet 65.
 
-![image-20221221130918239](img/beveiliging/image-20221221130918239.png)
+<img src="img/beveiliging/image-20221221130918239.png" alt="image-20221221130918239" style="zoom:67%;" />
 
-//TODO
+Het opgevangen protocol is TLS. Het pakket bevat een 'client hello'. 
+
+Dit bevat:
+
+* De gebruikte TLS versie
+* Welke ciphers hij ondersteunt
+* Een random getal
+
+In dit geval bevat het ook een sessionticket. Dit betekent dat de client de sessie van een vorige verbinding wilt verderzetten of de parameters van de huidige verbinding wilt updaten.
 
 
 
-> Geschetste situatie van een webapplicatie die goederen verkoopt waarbij een klant een winkelkarretje heeft en deze kan opvullen. Als de klant een item toevoegt aan zn winkelkarretje wordt dit toegevoegd aan een bestand op de server. Elke klant heeft hierbij een bestand met dus een lijst van zn bestellingen in zn winkelkarretje.
+> (2016) Geschetste situatie van een webapplicatie die goederen verkoopt waarbij een klant een winkelkarretje heeft en deze kan opvullen. Als de klant een item toevoegt aan zn winkelkarretje wordt dit toegevoegd aan een bestand op de server. Elke klant heeft hierbij een bestand met dus een lijst van zn bestellingen in zn winkelkarretje.
 >
 > 1. Is dit scenario kwetsbaar voor een Denial of Service aanval?
 >
@@ -2907,7 +3020,9 @@ Ik geloof dit niet helemaal
 
 
 
-//TODO
+1. Als een malafide klant heel erg veel dingen toevoegt aan zijn winkelmandje zal de server de hele tijd geblokkeerd zijn door writes. 
+2. Ik denk het wel, op de manier dat het hier geschreven staat. Kan een aanvaller de server nog steeds overspoelen met requests.
+3. Als de server de inhoud van het formulier niet nakijkt, kan een aanvaller een **direct object reference** aanval doen. Dan kan hij mogelijks objecten oproepen die niet voor hem bestemd zijn door de inhoud van het formulier aan te passen.
 
 
 
@@ -2933,7 +3048,15 @@ Ik geloof dit niet helemaal
 
 
 
-//TODO
+1. Er wordt eerst van voorgestelde SA's gestuurd, waarna de server er eentje kiest. Bij aggressive mode wordt dit overgeslagen en kiest de client er direct eentje. In aggressive mode wordt ook direct de identiteit van de client ongeëncrypteerd doorgestuurd. Dit is minder veilig.
+2. Er worden minder pakketten verstuurd in aggressive mode, dus het is waarschijnlijk sneller. 
+3. Vanaf dat de server het bericht met 'key' heeft gestuurd naar de client.
+4. De eerste 4 berichten kunnen vervalst zijn
+5. 
+6. Het is transport mode, want anders zou er na de authentication header nog een IP header zitten
+7. Geen idee wat hiermee bedoeld wordt
+8. Dit is een identifier voor één unieke security association
+9. Next header vertelt het protocol van de volgende header, de ICV bevat een hash om de integriteit van het pakket na te kijken. Bij AH is dit typisch een MAC 
 
 
 
