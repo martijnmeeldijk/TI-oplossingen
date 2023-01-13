@@ -2740,6 +2740,8 @@ Deze zijn aangelengd met vragen van een examen van één van de vorige jaren. Ik
 
 Ik heb nog een examen van 2016 gevonden op inwefiles, deze vragen zitten er ook bij.
 
+Ik heb de vragen van dit jaar (2023) er ook bijgezet. Alles wat ze vroegen was ofwel een vorige examenvraag of een vraag die ik had verzonnen. Als je de vragen van deze samenvatting allemaal leert ben je op het gesloten boek gedeelte sowieso geslaagd. Voor het open boek gedeelte zal je er gewoon voor moeten zorgen dat je alles in de cursus redelijk goed snapt. 
+
 ### Gesloten boek
 
 > (2016) Wat is een digraph cipher?
@@ -2757,7 +2759,7 @@ Playfair cipher:
 
 
 
-> (2016) Is een metamorphic virus detecteerbaar met emulator?
+> (2016 en 2023) Is een metamorphic virus detecteerbaar met emulator?
 
 Emulatie kan gebruikt worden voor het detecteren van polymorphic code obfuscation door de malware zichzelf te laten ontwarren in een virtuele omgeving, een soort sandbox als het ware. Polymorfisme beschermt een virus niet tegen dit soort situatie als de gedecrypteerde payload van het virus hetzelfde blijft ondanks variaties in het decryptiealgoritme.
 
@@ -2836,7 +2838,7 @@ Je zou een VPN tunnel kunnen opzetten. Dit kan bijvoorbeeld met openVPN.
 
 
 
-> (2023) Beschrijf 5 strategieen die door virussen gebruikt worden om zich te verbergen voor anti-virus software (“e.g. stealth strategies”)
+> (voorbeelden 2023) Beschrijf 5 strategieen die door virussen gebruikt worden om zich te verbergen voor anti-virus software (“e.g. stealth strategies”)
 
 * De bestandsgrootte van het geïnfecteerde bestand niet wijzigen
 * De datum laatst aangepast vervalsen
@@ -2971,15 +2973,53 @@ Elke block in de blockchain komt overeen met een aantal votes. Een vote is dan a
 
 
 
+> (2023) Heeft een site met een XSS vulnerability altijd een invoerveld?
+
+
+
+> (2023) Geef 5 security goals waaraan IPSec voldoet
+
+​	
+
+> (2023) Wat is het verschil tussen transport en tunnel mode?
+
+
+
+> (2023) Wat is een CAM table exhaustion attack?
+
+
+
+> (2023) Een vraag over TLS waarbij je voor een aantal security goals moet geven welk onderdeel van TLS deze goal bereikt (integriteit, information leakage, authenticatie, replay attacks, de rest weet ik niet meer)
+
+
+
+> (2023) Wat is een circuit level gateway?
+
+
+
+> (2023) Is TLS bestand tegen een TCP reset aanval? 
+
+
+
+> (2023) Geef 3 manieren om een buffer overflow aanval te voorkomen.
+
+
+
+> (2023) Geeft twee redenen waarvoor ESP een padding veld toevoegt.
+
+
+
+
+
 ### Open boek
 
-> (2023) Waarom vermeldt het SSH protocol de gebruikte softwareversie in de uitgewisselde pakketten tijdens het negotiatiealgoritme?
+> ( voorbeelden 2023) Waarom vermeldt het SSH protocol de gebruikte softwareversie in de uitgewisselde pakketten tijdens het negotiatiealgoritme?
 
 Voor compatibiliteit en veiligheid. De client en server moeten compatibel zijn als ze verder willen gaan met de negotiatie. Door de versie na te kijken kunnen client en server zeker zijn dat ze een versie van het protocol gebruiken dat veilig is.
 
 
 
-> (2023) Wanneer men een file eerst DES encrypteert en daarna decrypteert met dezelfde sleutel bekomt men terug het oorspronkelijk bestand. Is dit ook het geval wanneer men de omgekeerde volgorde uitvoert, dus eerst decryptie en dan encryptie? Waarom?
+> (voorbeelden 2023) Wanneer men een file eerst DES encrypteert en daarna decrypteert met dezelfde sleutel bekomt men terug het oorspronkelijk bestand. Is dit ook het geval wanneer men de omgekeerde volgorde uitvoert, dus eerst decryptie en dan encryptie? Waarom?
 
 //TODO 
 
@@ -2989,7 +3029,7 @@ Ik geloof dit niet helemaal
 
 
 
-> (2023) De wireshark trace van een security protocol wordt weergegeven.
+> (voorbeelden 2023) De wireshark trace van een security protocol wordt weergegeven.
 
 > * Welk protocol werd gecaptured?
 > * Leg uit wat er gebeurt in packet 65.
@@ -3061,6 +3101,26 @@ In dit geval bevat het ook een sessionticket. Dit betekent dat de client de sess
 
 
 
+
+
+
+> (2023) Een oefening waarbij je een klein stuk tekst moet encrypteren met ECB, CBC en OFB. Het encrypteren werd voorgesteld door een tabel waarbij elke letter in het alfabet werd gemapt op en andere (zoals een monoalphabetische substitution). De XOR werd voorgesteld als een optelling (modulo 26). Bekijk dus zeker de plaatjes van de verschillende block modes goed. Als je deze begrijpt, kan je de oefening zeker en vast wel opgelost krijgen.
+
+
+
+> (2023) We encrypteren met DES. De sleutel bestaat uit 64 nullen. Wat is de rondesleutel voor de tweede encryptieronde?
+
+
+
+> (2023) Een oefening waar je een bedrijfsnetwerk krijgt en de rules voor een bepaalde firewall moet instellen. Neem misschien een cheat sheet mee hiervoor. De oefening was niet super moeilijk, maar je moet niet vergeten dat je soms subnetten kan samennemen. 
+
+
+
+> (2023) Een oefening waar de TLS overhead van elke pakketje in de handshake werd weergegeven. Je moest dan de totale packet, handshake en record overhead berekenen. 
+
+
+
+> (2023) Wireshark trace van een bepaald protocol. In dit geval AH. Je moest zeggen welk protocol het was en waarvoor het 'next_header' veld stond. 
 
 
 

@@ -181,7 +181,7 @@ We beginnen met enkele definities:
 
 Een **minimale opspannende boom** van een graaf $G$ is een is een opspannende subgraaf $G'$ met minimaal gewicht. Dit is een optimalisatieprobleem en heeft altijd een opspannende boom als oplossing, zijnde $G'$. Zoals ik het begrijp is deze boom dus een subset van de graaf, die ervoor zorgt dat alles **lusloos** verbonden is, met een **zo laag mogelijk totaal gewicht**. 
 
-<u>Bewijs</u>
+:bulb:<u>Bewijs</u>
 
 * We hebben een gewogen, geconnecteerde graaf $G$ met positieve takgewichten. 
 * We tonen aan dat het probleem zeker een oplossing heeft:
@@ -251,7 +251,54 @@ Als kleine optimalisatie kunnen we het algoritme vroegtijdig afbreken wanneer $q
 
 
 
-Bewijs: //TODO
+:bulb:<u>Bewijs</u>: 
+
+We willen bewijzen dat na uitvoering van het algoritme de labels de correcte afstand vanuit $s$ voorstellen.
+
+We tonen eerst aan dat tijdens het uitvoeren, alle labels in de permanente verzameling de juiste afstand vanuit $s$ voorstellen
+$$
+\forall v \in P :l(v) = d(s,v)
+$$
+We moeten alleen aantonen dat de eigenschap geldt, vlak voordat $v$ aan de permanente verzameling werd toegevoegd, want hij verandert daarna toch niet meer. Dit gaat met inductie:
+
+* Basisstap
+
+  * We voegen de startknoop toe aan de permanente verzameling. $l(s)=0$. 
+  * Dit is sowieso de correcte afstand
+
+* Inductie 
+
+  * We hebben nu zogezegd $x$ iteratiestappen doorlopen, we veronderstellen dat deze allemaal tot een geldige afstand hebben geleid.
+
+  * Op stap $x+1$ voegen we knoop $w$ toe. We willen aantonen dat $l(w) = d(s,w)$
+
+  * We splitsen deze stelling in twee, als we beide kunnen bewijzen hebben we de stelling ook bewezen:  
+
+  * $l(w) \geq d(s,w)$ 
+
+    * Als $l(w) = +\infty$ , zitten we sowieso goed.
+    * Als $l(w) \leq +\infty$, dan is $l(w)$ de lengte van een pad. $d(s,w)$ is het kortste pad dus deze is zeker niet langer. 
+    * Deze stelling is bewezen.
+
+  * $l(w) \leq d(s,w)$
+
+    * $$
+      \begin{align}
+      l(w) &= \min \{l(y) \space \vert \space y \in T \} &(1) \\
+      &= \min \{ l(x) + c(\{x,y\}) \space \vert \space x \in P , y \in T  \} &(2)\\
+      &= \min \{ d(s,x) + c(\{x,y\}) \space \vert \space x \in P , y \in T  \} &(3) \\
+      &= \min \{ d(s,y) \space \vert \space y \in T \} &(4) \\
+      &\leq d(s,w) &(5)
+      \end{align}
+      $$
+
+    1. $l(w)$ is gelijk aan het kleinste label in de tijdelijke verzameling
+    2. Is gelijk aan de kleinse som van een label in de permanente en een tak die aan die knoop hangt. 
+    3. Door onze veronderstelling dat de regel al geldt voor de eerste $x$ stappen, is dit label sowieso de kortste afstand $d(s,x)$. 
+    4. De kortste afstand van $s$ naar $x$ en de kleinste tak van $x$ naar $y$ zijn samen de kortste afstand van $s$ naar $y$.
+    5. De afstand van de vorige stap kan sowieso niet groter zijn dan de afstand van $s$ naar $w$, want $\min \{ d(s,y) \space \vert \space y \in T \}$ is de van alle kortste afstanden in de tijdelijke verzameling de kortste. We hebben de stelling bewezen.
+
+
 
 Het algoritme van Dijkstra heeft een tijdscomplexiteit van $O(p^2)$, met $p= \#V_G$ (het aantal knopen)
 
@@ -297,7 +344,29 @@ Een graaf $G$ is een **vlakke graaf** als je hem kan tekenen in een vlak, zonder
 De tweede graaf hierboven bevat 3 interne gebieden en één extern gebied. Het aantal gebieden $g$ van de vlakke voorstelling van een geconnecteerde graaf kan berekend worden met:
 
 * $g = q-p+2$, met $p$ het aantal knopen en $q$ het aantal takken
-* //TODO bewijs
+
+
+
+:bulb: <u>Bewijs met inductie</u>
+
+* Basisgeval
+  * Er is maar één mogelijke graaf met $q=0$. Deze bestaat uit één knoop.
+  * $g = 0 - 1 +2 = 1 \xRightarrow{\quad}$  Er is één gebied, het externe gebied. De formule klopt.
+* Inductie
+  * We veronderstellen dat de formule geld voor $q=k$. Nu willen we bewijzen dat hij geldt voor $q = k+1$. We kunnen opsplitsen in twee gevallen (voor de graaf $G$ met $k+1$ takken):
+  * $G$ is een boom
+    * $q = p-1$ (geldt voor alle bomen)
+    * Een boom heeft maar één gebied, het extern gebied: $g=1$
+    * $g = (p-1) - p + 2 = 1$
+    * Dit klopt, voor dit deel was inductie niet eens nodig.
+  * $G$ is geen boom
+    * Er bestaat een tak $e$ die op een cyclus ligt
+    * We nemen de graaf $G'$ (dit is $G$ zonder $e$), een vlakke geconnecteerde graaf met $k$ takken
+    * Volgens onze inductiehypothese heeft deze $g = q - p + 2$ gebieden
+    * Als we $e$ toevoegen aan $G'$ krijgen we één gebied meer
+    * $g = q - p + 2 + 1$
+    * $g = (k+1) - p + 2$
+    * De stelling is bewezen
 
 
 
@@ -513,6 +582,264 @@ Bij figuur 19 in het boek zijn er even veel kleuren nodig.
 > 14. Het begrip ‘tweedelige graaf' kan ook gedefinieerd worden a.d.h.v. knoopkleuringen. Bedenk zelf zo’n definitie.
 
 Een tweedelige graaf is een graaf die je met twee kleuren kan inkleuren. 
+
+
+
+## Oefeningen
+
+> 1. Welk van de volgende grafen zijn isomorf?
+
+| ![image-20230113220212611](img/algo2/image-20230113220212611.png) | ![image-20230113220233540](img/algo2/image-20230113220233540.png) | Isomorf          |
+| ------------------------------------------------------------ | ------------------------------------------------------------ | ---------------- |
+| ![image-20230113220255554](img/algo2/image-20230113220255554.png) | ![image-20230113220307259](img/algo2/image-20230113220307259.png) | **Niet isomorf** |
+| ![image-20230113220431638](img/algo2/image-20230113220431638.png) | ![image-20230113220443627](img/algo2/image-20230113220443627.png) | **Isomorf**      |
+
+
+
+> 2. Hoeveel niet-isomorfe subgrafen heeft $K_3$
+
+| <img src="img/algo2/image-20230113220656349.png" alt="image-20230113220656349" style="zoom:33%;" /> | <img src="img/algo2/image-20230113220719138.png" alt="image-20230113220719138" style="zoom:33%;" /> | <img src="img/algo2/image-20230113220748819.png" alt="image-20230113220748819" style="zoom:33%;" /> |
+| ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
+
+
+
+> 3. Alle straten in een stad zijn tweerichtingsverkeer. Gezien de toenemende verkeersdrukte,
+>    wordt beslist om in een nieuw mobiliteitsplan in alle straten éénrichtingsverkeer in te voeren.
+>    Aan welke minimale voorwaarden moet zo’n éénrichlingsmobiliteitsplan redelijkerwijze
+>    voldoen ? Druk deze voorwaarden uit op graaftheoretische wijze.
+
+Voor elk knopenpaar $u$ en $v$ moet zowel een $u \mbox - v$ pad als een $v \mbox - u$ pad bestaan.
+
+
+
+> 4. Construeer voor onderstaande grafen een BFS-boom vanuit $v_1$
+
+| <img src="img/algo2/image-20230113221330943.png" alt="image-20230113221330943" style="zoom:50%;" /> | <img src="img/algo2/image-20230113221341090.png" alt="image-20230113221341090" style="zoom:50%;" /> |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| <img src="img/algo2/image-20230113221352856.png" alt="image-20230113221352856" style="zoom:50%;" /> | <img src="img/algo2/image-20230113221432279.png" alt="image-20230113221432279" style="zoom:50%;" /> |
+
+
+
+> 5. Zelfde opgave, maar voor DFS
+
+
+
+> 6. Men gaat op zoek naar een DFS-boom in onderstaande graaf en vindt daarbij de
+>    knoopvolgorde ($v_1$, $v_5$, $v_3$, $v_2$, $v_4$). Is dit een correcte volgorde of niet ?
+
+<img src="img/algo2/image-20230113221650400.png" alt="image-20230113221650400" style="zoom:50%;" />
+
+Ja dit klopt, de boom ziet er zo uit:
+
+<img src="img/algo2/image-20230113221830945.png" alt="image-20230113221830945" style="zoom:50%;" />
+
+> 7. Indien je in opgave 4 steeds vertrekt vanuit $v_1$‚ hoeveel verschillende BFS-knoopvolgorden
+>    kan je dan bekomen ? En DFS-knoopvolgorden ? Kan je daaruit iets besluiten omtrent het
+>    aantal mogelijkheden bij BFS versus DFS ? 
+
+a) 3 BFS-knoopvolgorden, 7 DFS-knoopvolgorden
+b) 11 BFS-knoopvolgorden, 5 DFS-knoopvolgorden
+
+Ik kan hier niks uit besluiten.
+
+
+
+> 8. Een netwerk van autowegen verbindt een aantal grote steden (zie onderstaande figuur). Men
+>    wenst deze autowegen te voorzien van een betalingssysteem, waarbij de weggebruiker voor
+>    elke verbinding tussen twee steden eenzelfde prijs (10 Euro) aangerekend wordt. Wat is de
+>    minimale kost om van knoop $v_1$ naar knoop $v_{10}$ te rijden ?
+
+<img src="img/algo2/image-20230113222206969.png" alt="image-20230113222206969" style="zoom:50%;" />
+
+70 euro.
+
+
+
+> 9. Een petroleumbedrijf wil 5 booreilanden ($b_1$, $b_2$, $b_3$, $b_4$, $b_5$) voor de Noorse kust verbinden met
+>    een havenstad $h$ d.m.v. een netwerk van pijpleidingen op de oceaanbodem. De kost voor het
+>    aanleggen van een dergelijke pijpleiding mag evenredig met de overbrugde lengte ondersteld
+>    worden (300.000 Euro per km). Het vertakken van een pijpleiding kan enkel op de
+>    booreilanden, niet op de oceaanbodem.
+>    De coördinaten (in km) van deze booreilanden zijn : $b_1$ (-8,6) / $b_2$ (1,7) / $b_3$ (-8,3) / $b_4$ (-3,3) /
+>    $b_5$ (4,3). De coördinaten van de haven zijn : $h$ (0,0)
+
+
+
+> Bespreek een strategie om het algemene probleem op te lossen. Tot welk graafprobleem kan men dit probleem herleiden? 
+
+Minimum spanning tree
+
+> Bepaal voor bovenstaande probleeminstantie het optimale ontwerp van het pijpleidingennet. Hoeveel bedraagt de totale kost ?
+
+<img src="img/algo2/image-20230113222638319.png" alt="image-20230113222638319" style="zoom:67%;" />
+
+€1.272.810,21
+
+> Indien ook vertakkingen op de oceaanbodem (zonder meerkost) zouden mogelijk
+> zijn, kan men dan nog gebruik maken van hetzelfde algoritme (voor het algemene
+> probleem) ?
+
+Nee
+
+
+
+> 10. Gegeven is een stratenplan. Coca-Cola wil op sommige (maar niet alle) straathoeken een
+>     automaat plaatsen. Na een grondige marketingstudie werden deze straathoeken optimaal
+>     gekozen. Men wil al deze automaten via een netwerk van kabels met elkaar te verbinden.
+>     Deze kabels dienen uiteraard steeds de straten te volgen. Dit kabelnetwerk dient zo
+>     ontworpen te worden dat het aantal lopende meter straat of voetpad dat moet opengebroken
+>     worden (voor het plaatsen van één of meer kabels tegelijk in de grond) minimaal is.
+>     (Veronderstel ter benadering dat alle straten oneindig dunne lijnen zijn.)
+>
+>     Ingenieur 1 berekent de optimale layout van het kabelnetwerk als volgt : “Het probleem valt te
+>
+>     herleiden tot het zoeken van een minimale opspannende boom probleem, waarbij de graaf
+>     gegeven wordt door : (i) elke Coca-Cola automaat wordt voorgesteld als een knoop van de
+>     graaf (ii) de afstand tussen elke 2 Coca-Cola automaten wordt berekend (via het kortste-
+>     padalgoritme van Dijkstra langs het Stratenplan) (iii) met elke combinatie van 2 verschillende
+>     Coca-Cola automaten komt een tak overeen, met als gewicht de afstand tussen die 2 Coca-
+>     Cola automaten via het stratenplan (hierboven berekend). In de resulterende graaf wordt de
+>     minimale opspannende boom berekend ; dit correspondeert met de optimale layout van het
+>     kabelnetwerk.”
+>
+>     Ingenieur 2 berekent de optimale layout van het kabelnetwerk als volgt : “Het probleem valt te
+>     herleiden tot het zoeken van een minimale opspannende boom probleem, waarbij de graaf
+>     gegeven wordt door het stratenplan (straathoek = knoop, straatsegment tussen 2 straathoeken =
+>     tak) en waarbij via het algoritme van Kruskal het optimale kabelnetwerk wordt berekend die
+>     de Coca-Cola automaten onderling verbindt.” Is de redenering van deze ingenieur correct of
+>     niet? 
+>
+>     Welke van bovenstaande redeneringen is correct. Waarom (wel/niet) ? Indien correct:
+>     motiveer waarom. Indien niet correct: geef een tegenvoorbeeld
+
+Ik denk dat omdat er niet op elke straathoek een automaat staat, het niet echt te herleiden valt naar een minimaal opspannende boomprobleem. 
+
+
+
+> 11. Gevraagd wordt om voor een gegeven graaf met positieve takgewichten de maximale
+>     opspannende boom te bepalen. Bedenk een algemene methode om dit te doen.
+
+Zoek het hoogste takgewicht $g_{max}$. Zet elk takgewicht $g$ om naar $g_{max} - g$ en bereken de minimaal opspannende boom.
+
+
+
+> 12. Hieronder ziet u een onderdeel van het stratenplan van Gent (schaal 1:3000), waarop met 2
+>     rode sterren de aula van de Universitcit Gent en de (ingang van de) stadshal werden
+>     aangeduid. Bepaal de kortste route van de ingang van de stadshal naar de aula (te voet).
+>     Hoeveel bedraagt de afstand ?
+
+<img src="img/algo2/image-20230113225240888.png" alt="image-20230113225240888" style="zoom:67%;" />
+
+Veel plezier hiermee. Ik ga het niet doen.
+
+
+
+> 13. Stel dat men opnieuw op zoek gaat naar de optimale route van de stadshal naar de aula. Onder
+>     ‘optimaal’ verstaat men nu niet de kortste route qua afstand, maar de route waarlangs zoveel
+>     mogelijk cafeetjes te vinden zijn (zonder 2 maal door dezelfde straat te passeren). Kan men
+>     dit probleem modelleren als een kortste-pad probleem?
+
+Nee, dit is eerder een langste pad probleem.
+
+
+
+> 14. In een computernetwerk (zie onderstaande figuur) wenst men een videoverbinding op te zetten
+>     tussen een server (s) en een gebruiker (g). Om de kwaliteit van het videobeeld te
+>     optimaliseren, gaat men op zoek naar de route van s naar g waarop zoveel mogelijk
+>     bandbreedte (in Mb/s) beschikbaar is. De beschikbare bandbreedte op elke link is
+>     weergegeven in onderstaande figuur.
+
+<img src="img/algo2/image-20230113225423941.png" alt="image-20230113225423941" style="zoom:67%;" />
+
+> Tot welk gekend grafenprobleem kan men dit probleem herleiden ?
+> Bepaal de optimale route in het hierboven afgebeelde netwerk.
+
+Dit lijkt me een max flow probleem. Ik vind dat een beetje vaag voor hoofdstuk 1 dus misschien ben ik mis.
+
+//TODO
+
+> 15. Zeven steden in Peru zijn enkel via aardewegen met elkaar verbonden (zie figuur hieronder :
+>     knopen = steden, takken = aardewegen). Men wenst een asfaltwegennetwerk uit te bouwen
+>     tussen deze steden, zodat elke stad bereikbaar is vanuit elke andere stad via asfaltwegen. Om
+>     de kosten van graafwerken te beperken, komen enkel de routes van de aardewegen in
+>     aanmerking voor asfaltering. Doel is om een zo goedkoop mogelijk asfaltwegennetwerk uit te 
+>     bouwen (de kosten voor het asfalteren van een aardeweg zijn evenredig met de lengte van de
+>     wegen, afgebeeld in de figuur hieronder, uitgedrukt in honderden km).
+
+<img src="img/algo2/image-20230113225756322.png" alt="image-20230113225756322" style="zoom:67%;" />
+
+> Tot welk type grafenprobleem kan dit probleem herleid worden?
+
+Minimaal opspannende boom
+
+> Ontwerp het asfaltwegennetwerk.
+
+De dikkere lijnen op de foto.
+
+> In bovenstaand probleem werd de kost van wegenwerken geminimaliseerd, zonder rekening te
+> houden met hoog oplopende transportkosten bij vervoer langs deze wegen (vanwege grote
+> omwegen die men voor sommige verbindingen dient te maken). Stel dat men daarentegen de
+> transportkosten wil minimaliseren (de kosten van wegennetwerk zijn slechts van
+> verwaarloosbaar belang), Hierbij is er enkel verkeer vanuit de havenstad $v_1$‚ naar de andere
+> steden (naar elke stad evenveel), niet tussen de andere steden onderling. Enkel de asfaltwegen
+> laten transport toe, de aardewegen niet.
+
+> Tot welk type grafenproblcem kan dit probleem herleid worden ? Motiveer.
+
+Dit lijkt me een kortste pad probleem.
+
+> Ontwerp het asfaltwegennetwerk.
+
+<img src="img/algo2/image-20230113225819516.png" alt="image-20230113225819516" style="zoom:67%;" />
+
+> Vergelijk de ontwerpen uit b) en d) qua kosten voor wegennetwerken en
+> transportkosten. Verklaring?
+
+De transportkosten van d zijn lager omdat we altijd het kortste pad nemen vanuit $v_1$
+
+> Stel nu dat men bij het ontwerpen van het asfaltwegennetwerk wenst rekening te houden met 
+> beide types kosten (kosten voor wegennetwerken en transportkosten). 
+> Welk type grafenprobleem ontmoeten we hier ? Motiveer. 
+
+Ik zou het echt niet weten //TODO
+
+
+
+> 16. Bepaal straal en diameter van onderstaande graaf. Gebruik hierbij stap voor stap het geziene
+>     algoritme, dus geen oplossing ‘op zicht’.
+
+<img src="img/algo2/image-20230113230416615.png" alt="image-20230113230416615" style="zoom:67%;" />
+
+
+
+> 17. Welke van de volgende grafen zijn vlakke grafen ? (Indien het een vlakke graaf betreft, geef
+>     dan een vlakke voorstelling.)
+
+| <img src="img/algo2/image-20230113230518386.png" alt="image-20230113230518386" style="zoom:50%;" /> |                                                              | Vlak          |
+| ------------------------------------------------------------ | ------------------------------------------------------------ | ------------- |
+| <img src="img/algo2/image-20230113230537963.png" alt="image-20230113230537963" style="zoom:50%;" /> |                                                              | **Vlak**      |
+| <img src="img/algo2/image-20230113230552805.png" alt="image-20230113230552805" style="zoom:50%;" /> |                                                              | **Vlak**      |
+| <img src="img/algo2/image-20230113230604456.png" alt="image-20230113230604456" style="zoom:50%;" /> | <img src="img/algo2/image-20230113230616826.png" alt="image-20230113230616826" style="zoom:50%;" /> | **Vlak**      |
+| <img src="img/algo2/image-20230113230645374.png" alt="image-20230113230645374" style="zoom:50%;" /> | <img src="img/algo2/image-20230113230706656.png" alt="image-20230113230706656" style="zoom:50%;" /> | **Vlak**      |
+| <img src="img/algo2/image-20230113230730486.png" alt="image-20230113230730486" style="zoom:50%;" /> | <img src="img/algo2/image-20230113230742472.png" alt="image-20230113230742472" style="zoom:50%;" /> | **Vlak**      |
+| $K_3,K_4,K_5,K_6, \dots$                                     | <img src="img/algo2/image-20230113230931074.png" alt="image-20230113230931074" style="zoom:50%;" /> | Max tot $K_4$ |
+
+
+
+> 18. Zeven poorten (1-7) van een elektronisch cireuit zouden als volgt verbonden moeten worden:
+>     1 met 2 en 7; 2 met 5 en 6; 3 met 4, 6 en 7; 4 met 6 en 7; 5 met 6 (zie figuur hieronder ter
+>     verduidelijking). Is dit mogelijk zodat alle verbindingen in hetzelfde vlak liggen en elkaar niet
+>     snijden?
+
+| <img src="img/algo2/image-20230113231054864.png" alt="image-20230113231054864" style="zoom:50%;" /> | <img src="img/algo2/image-20230113231107578.png" alt="image-20230113231107578" style="zoom:50%;" /> |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+
+
+
+> 19. Bereken voor onderstaande grafen telkens de boven- en ondergrenzen voor het chromatisch
+>     getal $\chi(G) : 1+ \delta_{max}$ en $\omega(G)$.
+
+
 
 # Grafen deel 2
 
@@ -1531,9 +1858,19 @@ Om een tekst te **indexeren** gebruiken we dezelfde techniek
 
 ### Suffix trees 
 
-Een **suffix tree** heeft hetzelfde doel als een suffix array, maar slaat de informatie efficiënter op. 
+<img src="img/algo2/image-20230113122721132.png" alt="image-20230113122721132" style="zoom:80%;" />
 
-//TODO
+Een **suffix tree** heeft hetzelfde doel als een suffix array, maar slaat de informatie efficiënter op. Elke afdaling vanuit de wortel tot aan een bladknoop stelt een geldige suffix van onze string voor. 
+
+Een naïeve manier om deze boom te construeren zou zijn om alle suffixen van lang naar kort te overlopen. Dan voeg je ze één voor één toe aan de boom, door ze eraan te hangen waar ze de meeste knopen hergebruiken. Deze manier is sowieso $O(n^2)$
+
+
+
+Er is ook een manier om de boom lineair op te bouwen.
+
+<img src="img/algo2/image-20230113123007980.png" alt="image-20230113123007980" style="zoom:67%;" />
+
+We itereren over steeds langere prefixen. Voor elke prefix itereren we over steeds langere suffixen van deze prefix. We voegen ze in deze volgorde toe aan de lege suffixboom.
 
 # Examenvragen
 
@@ -1572,6 +1909,8 @@ Bij een dichte graaf met meer verbindingen zal de techniek met de maximum flow e
 ## Extra oefeningen automaten/strings
 
 Dit zijn mijn eigen oplossingen want ze staan niet online. Ik zal iets laten weten als Pieter op mijn mail heeft geantwoord. 
+
+Oké Pieter heeft ze verbeterd dus ze zouden goed moeten zijn.
 
 > Vind een reguliere expressie voor:
 
