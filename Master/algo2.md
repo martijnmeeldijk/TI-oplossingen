@@ -14,7 +14,7 @@ Wanneer men minder dan 8/20 heeft voor het schriftelijk examen en/of voor het de
 
 # ------------Grafen-----------
 
-# Grafen deel 1
+# <u>Grafen deel 1</u>
 
 
 
@@ -60,9 +60,9 @@ Twee grafen worden **isomorf** als er een bijectie bestaat tussen hun knopenverz
 
 Een **boom** is een geconnecteerde graaf die geen cycli bevat. Ik ga even niet uitleggen wat een boom is. 
 
-:bulb: Eigenschap: Een boom met $p$ knopen heeft $p-1$ takken: $q = p-1$
+Eigenschap: Een boom met $p$ knopen heeft $p-1$ takken: $q = p-1$
 
-<u>Bewijs met inductie</u>:
+:bulb:<u>Bewijs met inductie</u>:
 
 * Voor $p=1$ geldt de eigenschap ($1$ knoop en $0$ takken)
 * We veronderstellen dat de eigenschap geldt voor alle bomen met orde $\leq k$. Dan moeten we nu bewijzen dat de eigenschap geldt voor een boom met orde $k+1$
@@ -180,6 +180,8 @@ We beginnen met enkele definities:
 * Een **gewicht** $w(e)$ van een tak is een reëel getal dat aangeeft welke 'kost' wordt aangerekend voor het gebruik van deze tak
 
 Een **minimale opspannende boom** van een graaf $G$ is een is een opspannende subgraaf $G'$ met minimaal gewicht. Dit is een optimalisatieprobleem en heeft altijd een opspannende boom als oplossing, zijnde $G'$. Zoals ik het begrijp is deze boom dus een subset van de graaf, die ervoor zorgt dat alles **lusloos** verbonden is, met een **zo laag mogelijk totaal gewicht**. 
+
+We willen nu aantonen dat er zeker een opspannende boom $G'$ met minimaal gewicht bestaat voor $G$.
 
 :bulb:<u>Bewijs</u>
 
@@ -317,7 +319,7 @@ Hier een kleine opsomming:
 
 ### Begrippen
 
-* De **excentriciteit** van een $v$ is de afstand van $v$ naar de knoop die het verst van $v$ gelegen is
+* De **excentriciteit** van een knoop $v$ is de afstand van $v$ naar de knoop die het verst van $v$ gelegen is
 * De **straal** van een gewogen graaf is de minimale excentriciteit van deze graaf
 * De **diameter** is de maximale excentriciteit van een graaf
 
@@ -327,7 +329,7 @@ Hier een kleine opsomming:
 
 <img src="https://miro.medium.com/max/1400/1*xlFGI9wu3SmpHRZxG0ndsQ.png" alt="Graph Theory 101: Why all Non-Planar Graphs Contain K₅ or K₃,₃ | by Russell  Lim | Math Simplified | Medium" style="zoom:50%;" />
 
-Een graaf $G$ is een **vlakke graaf** als je hem kan tekenen in een vlak, zonder dat de takken elkaar kruisen. Kennis over vlakke grafen is uitermate nuttig wij de constructie van wegen of spoorwegen, want je wil natuurlijk vaak kruisingen vermijden indien mogelijk.
+Een graaf $G$ is een **vlakke graaf** als je hem kan tekenen in een vlak, zonder dat de takken elkaar kruisen. Kennis over vlakke grafen is uitermate nuttig bij de constructie van wegen of spoorwegen, want je wil natuurlijk vaak kruisingen vermijden indien mogelijk.
 
 
 
@@ -548,7 +550,11 @@ De excentriciteit van een knoop $a$ is de afstand tot de verst gelegen knoop van
 > 10. Via stereografische projectie wordt een sferische voorstelling van een graaf omgezet in een vlakke voorstelling. Welk gebied in de sferische voorstelling wordt omgezet in het externe gebied van de vlakke graaf ? Neemt dit gebied
 >     een speciale plaats in onder de verschillende gebieden van een sferische voorstelling? 
 
-Het externe gebied is het gebied op het boloppervlak dat $a$ bevat. Volgens de projectie kan er deel van de graaf op $a$ liggen. Een knoop die oneindig dicht bij $a$ ligt, ligt oneindig ver van de andere knopen na stereografische projectie.
+<img src="img/algo2/image-20230114204024908.png" alt="image-20230114204024908" style="zoom: 33%;" />
+
+Het externe gebied is het gebied op het boloppervlak dat $a$ bevat. 
+
+Het punt $a$ is gekozen zodat het niet samenvalt met een knoop of tak van de graaf. Een knoop die oneindig dicht bij $a$ ligt, ligt oneindig ver van de andere knopen na stereografische projectie.
 
 
 
@@ -556,6 +562,8 @@ Het externe gebied is het gebied op het boloppervlak dat $a$ bevat. Volgens de p
 
 <img src="img/algo2/image-20230104180820650.png" alt="image-20230104180820650" style="zoom:33%;" />
 In dit voorbeeld beschouwen we een niet-samenhangende graaf. Er zijn twee externe mazen, maar geen interne, dus de stelling klopt niet.
+
+
 
 
 
@@ -622,7 +630,7 @@ Voor elk knopenpaar $u$ en $v$ moet zowel een $u \mbox - v$ pad als een $v \mbox
 
 > 5. Zelfde opgave, maar voor DFS
 
-
+//TODO ik ga hier waarschijnlijk geen zin meer in hebben.
 
 > 6. Men gaat op zoek naar een DFS-boom in onderstaande graaf en vindt daarbij de
 >    knoopvolgorde ($v_1$, $v_5$, $v_3$, $v_2$, $v_4$). Is dit een correcte volgorde of niet ?
@@ -640,7 +648,7 @@ Ja dit klopt, de boom ziet er zo uit:
 a) 3 BFS-knoopvolgorden, 7 DFS-knoopvolgorden
 b) 11 BFS-knoopvolgorden, 5 DFS-knoopvolgorden
 
-Ik kan hier niks uit besluiten.
+Ik besluit dat ik hier niks uit kan besluiten.
 
 
 
@@ -724,7 +732,7 @@ Tegenvoorbeeld voor ingenieur 1:
 
 Voor ingenieur 2:
 
-Het algoritme van Kruskal zal ervoor zorgen dat elke straathoek verbonden is. Ook diegene waar geen automaten op staan het algoritme maakt geen onderscheid tussen straathoeken met of zonder automaat.
+Het algoritme van Kruskal zal ervoor zorgen dat elke straathoek verbonden is. Ook diegene waar geen automaten op staan. Hset algoritme maakt geen onderscheid tussen straathoeken met of zonder automaat.
 
 
 
@@ -796,7 +804,7 @@ De dikkere lijnen op de foto.
 > steden (naar elke stad evenveel), niet tussen de andere steden onderling. Enkel de asfaltwegen
 > laten transport toe, de aardewegen niet.
 
-> Tot welk type grafenproblcem kan dit probleem herleid worden ? Motiveer.
+> Tot welk type grafenprobleem kan dit probleem herleid worden ? Motiveer.
 
 Dit lijkt me een kortste pad probleem.
 
@@ -815,6 +823,8 @@ De transportkosten van d zijn lager omdat we altijd het kortste pad nemen vanuit
 
 Ik zou het echt niet weten //TODO
 
+Misschien de som van de totale padlengte en het totale takgewicht minimaliseren?
+
 
 
 > 16. Bepaal straal en diameter van onderstaande graaf. Gebruik hierbij stap voor stap het geziene
@@ -827,14 +837,14 @@ Ik zou het echt niet weten //TODO
 > 17. Welke van de volgende grafen zijn vlakke grafen ? (Indien het een vlakke graaf betreft, geef
 >     dan een vlakke voorstelling.)
 
-| <img src="img/algo2/image-20230113230518386.png" alt="image-20230113230518386" style="zoom:50%;" /> |                                                              | Vlak          |
-| ------------------------------------------------------------ | ------------------------------------------------------------ | ------------- |
-| <img src="img/algo2/image-20230113230537963.png" alt="image-20230113230537963" style="zoom:50%;" /> |                                                              | **Vlak**      |
-| <img src="img/algo2/image-20230113230552805.png" alt="image-20230113230552805" style="zoom:50%;" /> |                                                              | **Vlak**      |
-| <img src="img/algo2/image-20230113230604456.png" alt="image-20230113230604456" style="zoom:50%;" /> | <img src="img/algo2/image-20230113230616826.png" alt="image-20230113230616826" style="zoom:50%;" /> | **Vlak**      |
-| <img src="img/algo2/image-20230113230645374.png" alt="image-20230113230645374" style="zoom:50%;" /> | <img src="img/algo2/image-20230113230706656.png" alt="image-20230113230706656" style="zoom:50%;" /> | **Vlak**      |
-| <img src="img/algo2/image-20230113230730486.png" alt="image-20230113230730486" style="zoom:50%;" /> | <img src="img/algo2/image-20230113230742472.png" alt="image-20230113230742472" style="zoom:50%;" /> | **Vlak**      |
-| $K_3,K_4,K_5,K_6, \dots$                                     | <img src="img/algo2/image-20230113230931074.png" alt="image-20230113230931074" style="zoom:50%;" /> | Max tot $K_4$ |
+| <img src="img/algo2/image-20230113230518386.png" alt="image-20230113230518386" style="zoom:50%;" /> |                                                              | Vlak               |
+| ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------ |
+| <img src="img/algo2/image-20230113230537963.png" alt="image-20230113230537963" style="zoom:50%;" /> |                                                              | **Vlak**           |
+| <img src="img/algo2/image-20230113230552805.png" alt="image-20230113230552805" style="zoom:50%;" /> |                                                              | **Vlak**           |
+| <img src="img/algo2/image-20230113230604456.png" alt="image-20230113230604456" style="zoom:50%;" /> | <img src="img/algo2/image-20230113230616826.png" alt="image-20230113230616826" style="zoom:50%;" /> | **Vlak**           |
+| <img src="img/algo2/image-20230113230645374.png" alt="image-20230113230645374" style="zoom:50%;" /> | <img src="img/algo2/image-20230113230706656.png" alt="image-20230113230706656" style="zoom:50%;" /> | **Vlak**           |
+| <img src="img/algo2/image-20230113230730486.png" alt="image-20230113230730486" style="zoom:50%;" /> | <img src="img/algo2/image-20230113230742472.png" alt="image-20230113230742472" style="zoom:50%;" /> | **Vlak**           |
+| $K_3,K_4,K_5,K_6, \dots$                                     | <img src="img/algo2/image-20230113230931074.png" alt="image-20230113230931074" style="zoom:50%;" /> | Max tot $K_4$ vlak |
 
 
 
@@ -851,11 +861,11 @@ Ik zou het echt niet weten //TODO
 > 19. Bereken voor onderstaande grafen telkens de boven- en ondergrenzen voor het chromatisch
 >     getal $\chi(G) : 1+ \delta_{max}$ en $\omega(G)$.
 
-| <img src="img/algo2/image-20230114145121259.png" alt="image-20230114145121259" style="zoom:50%;" /> | 4 en 6 |
-| ------------------------------------------------------------ | ------ |
-| <img src="img/algo2/image-20230114145131893.png" alt="image-20230114145131893" style="zoom:50%;" /> |        |
-| <img src="img/algo2/image-20230114145142135.png" alt="image-20230114145142135" style="zoom:50%;" /> |        |
-| <img src="img/algo2/image-20230114145151761.png" alt="image-20230114145151761" style="zoom:50%;" /> |        |
+| <img src="img/algo2/image-20230114145121259.png" alt="image-20230114145121259" style="zoom:50%;" /> | 4 en 6     |
+| ------------------------------------------------------------ | ---------- |
+| <img src="img/algo2/image-20230114145131893.png" alt="image-20230114145131893" style="zoom:50%;" /> | **4 en 7** |
+| <img src="img/algo2/image-20230114145142135.png" alt="image-20230114145142135" style="zoom:50%;" /> | **3 en 6** |
+| <img src="img/algo2/image-20230114145151761.png" alt="image-20230114145151761" style="zoom:50%;" /> | **2 en 4** |
 
 
 
@@ -865,9 +875,11 @@ Ik zou het echt niet weten //TODO
 
 
 
-> 21. Bepaal een zo goed mogelijke knoopkleuring voor bovenstaande grafen. Vergelijk dit met de hierboven bekomen boven- en ondergrenzen. 
+> 21. Bepaal een zo goed mogelijke inkleuring voor de onderstaande kaart van Europa.
 
 //TODO
+
+
 
 > 22. Vijf acteurs (A-B-C-D-E) willen meespelen in zeven verschillende films (1-7). Acteur A speelt mee in films 1, 2 en 3; acteur B in films 2, 3 en 5; acteur C in films 1 en 5; acteur D in films 4, 6 en 7; acteur E speelt mee in films 1 en 7. De opname van elke film neemt 1 maand in beslag en als eenzelfde acteur in meerdere verschillende films meespeelt, kunnen deze films niet op hetzelfde moment opgenomen worden. Hoeveel maanden zijn er minimaal nodig om alle films op te nemen?
 
@@ -955,6 +967,12 @@ Het kan met 4 kleuren.
 >     ontwerpen die voldoet aan al deze vereisten ? Zo ja, geef zo’n ontwerp. Zo neen, motiveer
 >     waarom niet.
 
+Ik denk dat je hier een vlakke voorstelling moet vinden. Dit is het beste wat ik vond.
+
+<img src="img/algo2/image-20230114220602732.png" alt="image-20230114220602732" style="zoom:50%;" />
+
+Het lijkt me onmogelijk.
+
 
 
 > 26. Een GSM-operator heeft gans België verdeeld in een groot aantal cellen van gelijke grootte, waarbij elke cel een regelmatige zeshoek vormt (honingraatpatroon). In het centrum van elke cel bevindt zich een zend- en ontvangstmast. De bandbreedte waarover de operator beschikt, laat hem toe om 63 frequenties te gebruiken voor zendsignalen (voor de eenvoud laten we ontvangstsignalen buiten beschouwing). Bijkomende restrictie is echter dat aangrenzende cellen niet dezelfde zendfrequenties mogen gebruiken, dit om te vermijden dat personen die zich op het grensgebied tussen twee cellen bevinden een mengeling van twee signalen zouden ontvangen. Bedoeling is nu om de zendfrequenties op een zo efficiënt mogelijke manier gelijkmatig te verdelen over de verschillende cellen. 
@@ -1012,6 +1030,8 @@ $ {\min (p_1,p_2)}$
 
 //TODO
 
+
+
 > 33. In een primitieve stam bevinden zich een aantal jongens en meisjes van huwbare leeftijd. Elk meisje kent sommige van deze jongens, maar lang niet allemaal. Vraag is: “Is het mogelijk om alle meisjes uit te huwelijken, zodat elk meisje trouwt met een jongen die ze kent?” Bepaal een strategie om dit (algemene) probleem op te lossen. Tot welk graafprobleem kan dit herleid worden?
 
 Beschouw een tweedelige graaf met aan de ene kant jongens en aan de andere kant meisjes. De jongens en meisjes die elkaar kennen zijn verbonden. De maximumkoppeling in deze graaf is de oplossing voor het probleem.
@@ -1020,7 +1040,7 @@ Beschouw een tweedelige graaf met aan de ene kant jongens en aan de andere kant 
 
 
 
-# Grafen deel 2
+# <u>Grafen deel 2</u>
 
 ## Verband tussen 4 boom-constructie algoritmen
 
@@ -1094,6 +1114,8 @@ Als we alle knopen van deze graaf op een rijtje zetten, op zo een manier dat all
 * Verwijder $v$ en alle pijlen die uit $v$ vertrekken uit de originele graaf
 * Herhaal tot er geen knopen meer zijn
 
+:bulb: <u>Bewijs</u>
+
 
 Kunnen we altijd een knoop met ingraad $0$ vinden? Dit valt te bewijzen vanuit het ongerijmde. Stel dat er geen knoop met ingraad $0$ is. Dat betekent dat er voor elke knoop een binnenkomende pijl is. Die pijl moet ergens vandaan komen. Omdat $G$ eindig is betekent dit dus dat er zich sowieso een lus zal vormen. Hiermee is de stelling bewezen en bekomen we ook de volgende wederzijdse implicatie:
 
@@ -1110,7 +1132,7 @@ Als we gewichten toekennen aan onze takken (al dan niet negatief), kunnen we het
   * Deze vind je door de goedkoopste binnenkomende verbinding te kiezen
 * Wanneer je de bestemming bereikt, heb ge automatisch ook de kortste afstand gevonden. Als je hebt bijgehouden welke takken tot die afstand lijden, heb je nu ook het kortste pad.
 
-
+<sub>Ik zie net dat ik leiden met een lange ij heb gespeld. Ik ga het zo laten want lijden is wel een goede beschrijving voor dit vak</sub>
 
 ### Langste pad
 
@@ -1130,10 +1152,10 @@ Hier doe je hetzelfde als bij het korste pad, maar geef je de knopen telkens een
 
 > 1. Zijn de onderstaande grafen Eulergrafen of niet? Motiveer je antwoord. Zo ja, bepaal m.b.v. het algoritme uit de cursus een Eulercircuit voor deze graaf. Leg stap voor stap uit hoe je dit resultaat bekomt.  Schrijf je eindresultaat op als een opeenvolging van knopen (te gebruiken notatie: bv. 3-4-10-6-3) 
 
-| <img src="img/algo2/image-20230114170451417.png" alt="image-20230114170451417" style="zoom:50%;" /> | Bevat een eulercircuit              | Eulergraaf          |
-| ------------------------------------------------------------ | ----------------------------------- | ------------------- |
-| <img src="img/algo2/image-20230114170516224.png" alt="image-20230114170516224" style="zoom:50%;" /> | Knoopgraden zijn niet allemaal even | **Geen eulergraaf** |
-| <img src="img/algo2/image-20230114170617951.png" alt="image-20230114170617951" style="zoom:50%;" /> | Bevat een eulercircuit              | **Eulergraaf**      |
+| <img src="img/algo2/image-20230114170451417.png" alt="image-20230114170451417" style="zoom:50%;" /> | Bevat een eulercircuit                  | Eulergraaf          |
+| ------------------------------------------------------------ | --------------------------------------- | ------------------- |
+| <img src="img/algo2/image-20230114170516224.png" alt="image-20230114170516224" style="zoom:50%;" /> | **Knoopgraden zijn niet allemaal even** | **Geen eulergraaf** |
+| <img src="img/algo2/image-20230114170617951.png" alt="image-20230114170617951" style="zoom:50%;" /> | **Bevat een eulercircuit**              | **Eulergraaf**      |
 
 
 
@@ -1161,7 +1183,7 @@ Er zijn meerdere oplossingen mogelijk als je op minstens één stap in het algor
 
 
 
-# Grafen deel 3: network flow problems
+# <u>Grafen deel 3: network flow problems</u>
 
 ## Terminologie
 
@@ -1220,6 +1242,8 @@ Een **cutset** is de kleinst mogelijke cut. Dit impliceert dat elke strikte subs
 
 Eerst een voorbeeld. Als je in deze graaf een cut maakt die resulteert in `[a,b,c]` en `[d,e]`, is één van de twee resulterende subgrafen niet geconnecteerd. Het is namelijk ook geen cutset, want de grootte van een cutset van de graaf is duidelijk $1$ hier. 
 
+:bulb: <u>Bewijs</u>
+
 Algemeen (bewijs uit contrapositie). We veronderstellen cutset van een graaf, waarvan één van de resulterende subgrafen niet geconnecteerd is. Het feit dat eentje niet geconnecteerd is impliceert dat we een kleinere cut zouden kunnen nemen van de originele graaf. Hier heb je de contradictie. 
 
 Nu hebben we bewezen dat de twee resulterende subgrafen van een cutset beide geconnecteerd moeten zijn. 
@@ -1244,9 +1268,11 @@ Ik denk dat het woord minimum hier zelfs overbodig is, aangezien een cutset alti
 
 
 
+:bulb: <u>Bewijs</u>
+
 Het valt te bewijzen dat $\kappa(G) \leq \lambda(G)$ (contrapositie):
 
-* Stel dat een vertex cutset $V_c$ en een edge cutset $E_c$  van $G$ hebben
+* Stel dat we een vertex cutset $V_c$ en een edge cutset $E_c$  van $G$ hebben
 * $\kappa(G) = \lvert V_c\rvert = v_c$   en  $\lambda(G) = \lvert E_c \rvert = e_c$
 * We veronderstellen nu dat $e_c < v_c$
 * Koppel elke edge in de edge cutset $E_c$ aan één van zijn vertices (dit is altijd mogelijk)
@@ -1508,7 +1534,9 @@ De minimum kardinaliteit van een $v$-$w$ vertex-cutset $\kappa(v,w)$ (die $v$ en
 
 ![image-20221225131412825](img/algo2/image-20221225131412825.png)
 
-We kunnen bewijzen dat $\kappa(v,w)$ gelijk is aan het aantal pairwise vertex-disjoint $v$-$w$ paths. Dus het aantal mogelijke paden van $v$ naar $w$ die geen vertices gemeen hebben. Dit aantal kunnen we vinden door $G$ te trnasformeren en het flow augmenting path algorithm toe te passen.
+:bulb: <u>Bewijs</u>
+
+We kunnen bewijzen dat $\kappa(v,w)$ gelijk is aan het aantal pairwise vertex-disjoint $v$-$w$ paths. Dus het aantal mogelijke paden van $v$ naar $w$ die geen vertices gemeen hebben. Dit aantal kunnen we vinden door $G$ te transformeren en het flow augmenting path algorithm toe te passen.
 
 * Maak van $G$ een gecapaciteerde graaf $G'$, met alle capaciteiten op $1$
 * Maak daar een digraaf $G''$ van, waarbij elke edge van $G'$ vervangen wordt door twee tegenovergestelde arcs met capaciteit $1$
@@ -1643,9 +1671,9 @@ Er bestaan blijkbaar niet echt efficiënte oplossingen om problemen van deze aar
 >
 >    Bepaal de knoop- en takconnectiviteit van onderstaande grafen 
 
-| ![image-20230114171450580](img/algo2/image-20230114171450580.png) | $\lambda(G) = 3$ | $\kappa(G) = 3$ | Disjuncte paden: 3 |
+| <img src="img/algo2/image-20230114171450580.png" alt="image-20230114171450580" style="zoom:50%;" /> | $\lambda(G) = 3$ | $\kappa(G) = 3$ | Disjuncte paden: 3 |
 | ------------------------------------------------------------ | ---------------- | --------------- | ------------------ |
-| ![image-20230114171547006](img/algo2/image-20230114171547006.png) | $\lambda(G) = 3$ | $\kappa(G) = 3$ | Disjuncte paden: 3 |
+| <img src="img/algo2/image-20230114171547006.png" alt="image-20230114171547006" style="zoom:50%;" /> | $\lambda(G) = 3$ | $\kappa(G) = 3$ | Disjuncte paden: 3 |
 
 > Voor beide bovenstaande grafen: bepaal het maximaal aantal takdisjuncte paden tussen de meest links gelegen en de meest rechts gelegen knoop. Wat is het verband met de takconnectiviteit?
 
@@ -2252,7 +2280,7 @@ Er is ook een manier om de boom lineair op te bouwen.
 
 We itereren over steeds langere prefixen. Voor elke prefix itereren we over steeds langere suffixen van deze prefix. We voegen ze in deze volgorde toe aan de lege suffixboom.
 
-# Examenvragen
+# <u>Examenvragen</u>
 
 
 
@@ -2360,6 +2388,220 @@ Pieter zei dat dat oké zou zijn, ookal is het niet zo mooi. Zoiets zou hij ons 
 
 ## Verzonnen vragen
 
+### Grafen
+
+> **Terminologie ongerichte grafen. Geef van de volgende begrippen het symbool en de betekenis:**
+
+| Begrip                             | Symbool               | Betekenis                                               |
+| ---------------------------------- | --------------------- | ------------------------------------------------------- |
+| Incidentie                         | $I(v)$                | De verzameling van takken die aan de knoop $v$ hangen   |
+| Graad                              | $\delta(v) = \# I(v)$ | Het aantal takken die aan $v$ hangen                    |
+| Adjacency/omgeving van een knoop   | $A(v)$                | De verzameling van alle buurknopen van $v$              |
+| Adjacency/omgeving van een tak $e$ | $/$                   | Verzameling van alle takken die een knoop delen met $e$ |
+| Orde                               | $p=\#V$               | Het aantal knopen van de graaf                          |
+| Grootte                            | $q=\#E$               | Het aantal takken van de graaf                          |
+| Knoopconnectiviteit                | $\kappa(G)$           | De minimum kardinaliteit van een vertex cutset van $G$  |
+| Takconnectiviteit                  | $\lambda(G)$          | De minimum kardinaliteit van een edge cutset van $G$    |
+
+> **Terminologie gerichte grafen. Geef van de volgende begrippen het symbool en de betekenis:**
+
+| Begrip         | Symbool      | Betekenis                                                |
+| -------------- | ------------ | -------------------------------------------------------- |
+| Uit-incidentie | $I(v)$       | De verzameling van pijlen die uit $v$ vertrekken         |
+| In-incidentie  | $I'(v)$      | De verzameling pijlen die in $v$ toekomen                |
+| Uitgraad       | $\delta(v)$  | Het aantal pijlen die uit $v$ vertrekken                 |
+| Ingraad        | $\delta'(v)$ | Het aantal pijlen die in $v$ toekomen                    |
+| Uit-adjacency  | $A(v)$       | De verzameling knopen waarin een pijl toekomt vanuit $v$ |
+| In-adjacency   | $A'(v)$      | De verzameling knopen waaruit een pijl vertrekt naar $v$ |
+
+> **Afstandsgerelateerde begrippen. Geef van de volgende begrippen de betekenis:**
+
+| Begrip                         | Betekenis                                         |
+| ------------------------------ | ------------------------------------------------- |
+| Excentriciteit (van knoop $v$) | De afstand van $v$ tot de knoop het verst van $v$ |
+| Straal                         | Minimale excentriciteit van een graaf             |
+| Diameter                       | Maximale excentriciteit van een graaf             |
+
+> **Kleurgerelateerde begrippen. Geef van de volgende begrippen de betekenis en indien gepast het symbool:**
+
+| Begrip                       | Symbool                 | Betekenis                                                    |
+| ---------------------------- | ----------------------- | ------------------------------------------------------------ |
+| Kliek                        | $/$                     | Complete subgraaf de geen deel is van een andere complete subgraaf |
+| Chromatisch getal            | $\chi(G)$               | Het minimaal aantal kleuren om de knopen van $G$ te kleuren  |
+| Ondergrens chromatisch getal | $\omega(G)$             | De grootte van de grootste kliek in $G$                      |
+| Bovengrens chromatisch getal | $1+\delta_{\text{max}}$ | De maximale knoopgraad $+1$                                  |
+
+
+
+> **Hoeveel takken heeft een boom met $p$ knopen? Bewijs.**
+
+Een boom met $p$ knopen heeft $p-1$ takken: $q = p-1$
+
+<u>Bewijs met inductie</u>:
+
+* Voor $p=1$ geldt de eigenschap ($1$ knoop en $0$ takken)
+* We veronderstellen dat de eigenschap geldt voor alle bomen met orde $\leq k$. Dan moeten we nu bewijzen dat de eigenschap geldt voor een boom met orde $k+1$
+* Neem één tak weg uit de boom met orde $k+1$
+  * De boom valt altijd uit elkaar in twee bomen, want een boom bevat geen cycli.
+  * We noemen deze resulterende bomen $p_1$ en $p_2$, ze hebben beide orde $\leq k$, dus geldt de eigenschap.  
+  * Het aantal knopen van deze bomen samen is: $p_1+p_2 = p$
+* Het totale aantal takken in de originele boom met orde $k+1$ is: $q = (p_1 - 1) + (p_2-1)+1$
+  * De $+1$ is de tak die we daarnet hadden weggehaald
+  * Voor de deelbomen mogen we de eigenschap gebruiken: $q_1 = p_1 -1$
+  * Zelfde voor $q_2 = p_2 -1$
+* Omdat $p_1+p_2 = p$
+  * $q = (p_1 - 1) + (p_2-1)+1 = p-1$ en de eigenschap is bewezen.
+
+
+
+> **Hoeveel takken bevat een complete graaf met $p$ knopen?** 
+
+$$
+q =C_p^2 = \frac{p(p-1)} 2
+$$
+
+
+
+
+
+> **Gegeven een geconnecteerde graaf $G$ met positieve takgewichten. Bewijs dat er voor $G$ een minimaal opspannende boom $G'$ bestaat.**
+
+* We hebben een gewogen, geconnecteerde graaf $G$ met positieve takgewichten. 
+* We tonen aan dat het probleem zeker een oplossing heeft:
+  * $G$ heeft zeker één opspannende subgraaf: $G$ zelf.
+  * $G$ heeft $2^q$ subgrafen met dezelfde knopenverzameling, sommige hiervan zijn opspannend.
+  * Er zijn dus meer dan één en minder dan oneindig opspannende subgrafen. Er bestaat zeker een element uit deze verzameling met minimaal gewicht.
+* We tonen aan dat minstens één opspannende subgraaf van $G$ met minimaal gewicht een opspannende boom is. Veronderstel dat dit element $G'$ bestaat.
+  * Als $G'$ een boom is, dan is hij ook een opspannende boom, want hij is sowieso een opspannende subgraaf.
+  * Als $G'$ geen boom is
+    * Dan bevat $G'$ minstens één cyclus
+    * We kunnen dus een tak wegnemen
+      * Deze tak heeft altijd gewicht $0$ (want het gewicht van de graaf was minimaal)
+    * Dit kunnen we herhalen totdat $G'$ geen cycli heeft en dus een boom is
+* We hebben dus zeker minstens één minimale oplossing die ook een opspannende boom is, maar niet alle minimale oplossingen zijn opspannende bomen. 
+
+
+
+> **Toon aan dat na de uitvoering van het algoritme van Dijkstra de labels in de permanente verzameling de juiste afstand uit de startknoop $s$ voorstellen**
+
+We tonen eerst aan dat tijdens het uitvoeren, alle labels in de permanente verzameling de juiste afstand vanuit $s$ voorstellen
+$$
+\forall v \in P :l(v) = d(s,v)
+$$
+We moeten alleen aantonen dat de eigenschap geldt, vlak voordat $v$ aan de permanente verzameling werd toegevoegd, want hij verandert daarna toch niet meer. Dit gaat met inductie:
+
+* Basisstap
+
+  * We voegen de startknoop toe aan de permanente verzameling. $l(s)=0$. 
+  * Dit is sowieso de correcte afstand
+
+* Inductie 
+
+  * We hebben nu zogezegd $x$ iteratiestappen doorlopen, we veronderstellen dat deze allemaal tot een geldige afstand hebben geleid.
+
+  * Op stap $x+1$ voegen we knoop $w$ toe. We willen aantonen dat $l(w) = d(s,w)$
+
+  * We splitsen deze stelling in twee, als we beide kunnen bewijzen hebben we de stelling ook bewezen:  
+
+  * $l(w) \geq d(s,w)$ 
+
+    * Als $l(w) = +\infty$ , zitten we sowieso goed.
+    * Als $l(w) \leq +\infty$, dan is $l(w)$ de lengte van een pad. $d(s,w)$ is het kortste pad dus deze is zeker niet langer. 
+    * Deze stelling is bewezen.
+
+  * $l(w) \leq d(s,w)$
+
+    * $$
+      \begin{align}
+      l(w) &= \min \{l(y) \space \vert \space y \in T \} &(1) \\
+      &= \min \{ l(x) + c(\{x,y\}) \space \vert \space x \in P , y \in T  \} &(2)\\
+      &= \min \{ d(s,x) + c(\{x,y\}) \space \vert \space x \in P , y \in T  \} &(3) \\
+      &= \min \{ d(s,y) \space \vert \space y \in T \} &(4) \\
+      &\leq d(s,w) &(5)
+      \end{align}
+      $$
+
+    1. $l(w)$ is gelijk aan het kleinste label in de tijdelijke verzameling
+    2. Is gelijk aan de kleinse som van een label in de permanente en een tak die aan die knoop hangt. 
+    3. Door onze veronderstelling dat de regel al geldt voor de eerste $x$ stappen, is dit label sowieso de kortste afstand $d(s,x)$. 
+    4. De kortste afstand van $s$ naar $x$ en de kleinste tak van $x$ naar $y$ zijn samen de kortste afstand van $s$ naar $y$.
+    5. De afstand van de vorige stap kan sowieso niet groter zijn dan de afstand van $s$ naar $w$, want $\min \{ d(s,y) \space \vert \space y \in T \}$ is de van alle kortste afstanden in de tijdelijke verzameling de kortste. We hebben de stelling bewezen.
+
+
+
+> **Geef voor elk van de volgende algoritmes het doel en de voorwaarden voor uitvoering.**
+
+| Algoritme              | Doel                               | Voorwaarden                              |
+| ---------------------- | ---------------------------------- | ---------------------------------------- |
+| Moore                  | Kortste-padboom vanuit een knoop   | Niet-gewogen graaf                       |
+| Dijkstra               | Kortste-padboom vanuit een knoop   | Gewogen graaf met positieve takgewichten |
+| Ford, Bellman en Moore | Zelfde als Dijkstra                | Negatieve gewichten zijn toegestaan      |
+| Floyd                  | Kortste pad van en naar elke knoop | //TODO                                   |
+
+
+
+> **Hoeveel gebieden bevat de vlakke voorstelling van een graaf? Toon aan.**
+
+* $g = q-p+2$, met $p$ het aantal knopen en $q$ het aantal takken
+
+<u>Bewijs met inductie</u>
+
+* Basisgeval
+  * Er is maar één mogelijke graaf met $q=0$. Deze bestaat uit één knoop.
+  * $g = 0 - 1 +2 = 1 \xRightarrow{\quad}$  Er is één gebied, het externe gebied. De formule klopt.
+* Inductie
+  * We veronderstellen dat de formule geld voor $q=k$. Nu willen we bewijzen dat hij geldt voor $q = k+1$. We kunnen opsplitsen in twee gevallen (voor de graaf $G$ met $k+1$ takken):
+  * $G$ is een boom
+    * $q = p-1$ (geldt voor alle bomen)
+    * Een boom heeft maar één gebied, het extern gebied: $g=1$
+    * $g = (p-1) - p + 2 = 1$
+    * Dit klopt, voor dit deel was inductie niet eens nodig.
+  * $G$ is geen boom
+    * Er bestaat een tak $e$ die op een cyclus ligt
+    * We nemen de graaf $G'$ (dit is $G$ zonder $e$), een vlakke geconnecteerde graaf met $k$ takken
+    * Volgens onze inductiehypothese heeft deze $g = q - p + 2$ gebieden
+    * Als we $e$ toevoegen aan $G'$ krijgen we één gebied meer
+    * $g = q - p + 2 + 1$
+    * $g = (k+1) - p + 2$
+    * De stelling is bewezen
+
+> **Wanneer is een graaf een Eulergraaf? Wat impliceert het wezen van een graaf als Eulergraaf?**
+
+Een graaf is een Eulergraaf als en slechts als hij een Eulercircuit bevat. Een Eulercircuit is een wandeling door de graaf die elke tak één keer gebruikt en eindigt op dezelfde knoop als hij begint. 
+
+* $G$ is een ongerichte Eulergraaf $\xLeftrightarrow{\quad}$ $G$ is geconnecteerd en al zijn knoopgraden zijn even
+* $G$ is een gerichte Eulergraaf $\xLeftrightarrow{\quad}$ $G$ is sterk geconnecteerd en voor elke knoop is de ingraad gelijk aan de uitgraad
+
+
+
+> **Heeft een gerichte lusloze graaf altijd een topologische rangschikking? Zo ja, toon aan. Zo nee, geef een tegenvoorbeeld.**
+
+<u>Bewijs</u>
+
+We kunnen een topologische rangschikking vinden als de graaf een knoop bevat met ingraad $0$ (ook in elke stap van het algoritme om de topologische rangschikking te vinden). 
+
+Dit valt te bewijzen vanuit het ongerijmde. Stel dat er geen knoop met ingraad $0$ is. Dat betekent dat er voor elke knoop een binnenkomende pijl is. Die pijl moet ergens vandaan komen. Omdat $G$ eindig is betekent dit dus dat er zich sowieso een lus zal vormen. Hiermee is de stelling bewezen en bekomen we ook de volgende wederzijdse implicatie:
+
+* $G$ is een gerichte lusloze graaf $\xLeftrightarrow{\quad}$ $G$ heeft een topologische rangschikking
+
+
+
+> **Is in een graaf altijd $\kappa(G) \leq \lambda(G)$? Toon aan.**
+
+Bewijs uit contrapositie:
+
+* Stel dat we een vertex cutset $V_c$ en een edge cutset $E_c$  van $G$ hebben
+* $\kappa(G) = \lvert V_c\rvert = v_c$   en  $\lambda(G) = \lvert E_c \rvert = e_c$
+* We veronderstellen nu dat $e_c < v_c$
+* Koppel elke edge in de edge cutset $E_c$ aan één van zijn vertices (dit is altijd mogelijk)
+  * Het verwijderen van $e_c$ edges resulteert per definitie in een graaf die niet geconnecteerd is
+  * Aan onze edges hebben we $e_c$ vertices gekoppeld. Als we een vertex verwijderen, verwijderen we per definitie ook al zijn edges.
+  * Dit betekent dus dat als we $e_c$ vertices verwijderen, de graaf ook niet meer geconnecteerd is. En dus dat $e_c$ groter dan of gelijk aan $v_c$ kan zijn. Hier heb je je contradictie en is er bewezen wat er te bewijzen viel.
+
+
+
+//TODO vanaf maximum flow problem.
+
 ### Strings
 
 > In de les hebben we geleerd dat we een non-deterministische automaat kunnen omzetten in een deterministische. Bewijs dat deze twee nog steeds logisch equivalent zijn.
@@ -2388,8 +2630,6 @@ Since we have shown that every string in the language of $N$ is also in the lang
 I hope this helps to prove that a DFA is logically equivalent to the NFA it was constructed from. Let me know if you have any other questions.
 
 
-
-### Grafen
 
 
 
