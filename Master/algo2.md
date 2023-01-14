@@ -859,6 +859,167 @@ Ik zou het echt niet weten //TODO
 
 
 
+> 20. Bepaal een zo goed mogelijke knoopkleuring voor bovenstaande grafen. Vergelijk dit met de hierboven bekomen boven- en ondergrenzen. 
+
+//TODO
+
+
+
+> 21. Bepaal een zo goed mogelijke knoopkleuring voor bovenstaande grafen. Vergelijk dit met de hierboven bekomen boven- en ondergrenzen. 
+
+//TODO
+
+> 22. Vijf acteurs (A-B-C-D-E) willen meespelen in zeven verschillende films (1-7). Acteur A speelt mee in films 1, 2 en 3; acteur B in films 2, 3 en 5; acteur C in films 1 en 5; acteur D in films 4, 6 en 7; acteur E speelt mee in films 1 en 7. De opname van elke film neemt 1 maand in beslag en als eenzelfde acteur in meerdere verschillende films meespeelt, kunnen deze films niet op hetzelfde moment opgenomen worden. Hoeveel maanden zijn er minimaal nodig om alle films op te nemen?
+
+Je kan het omvormen tot een graafkleuringsprobleem. Hieronder een mooie tekening. Elke verbinding stelt een acteur voor. Films die verbonden zijn door de zelfde acteur kunnen niet dezelfde kleur (tijdstip) hebben.
+
+```
+1->2->3->4->5->6->7 [style="invisible"]
+  1,6 [color=blue]
+  2,7[color=red]
+  4,5 [color=green]
+  3 [color=yellow]
+  1 -> 2 [label=A]
+  1 -> 3 [label=A]  
+  1 -> 5 [label=C]  
+  1 -> 7 [label=E]  
+  2 -> 3 [label=B]
+  2 -> 3 [label=A]
+  2 -> 5 [label=A]
+  3 -> 5 [label=B]
+  4 -> 6 [label=D]
+  4 -> 7 [label=D]
+  6 -> 7 [label=D]
+```
+
+<img src="img/algo2/image-20230114154304383.png" alt="image-20230114154304383" style="zoom:50%;" />
+
+We hebben dus 4 kleuren nodig. Dit komt overeen met 4 tijdstippen. 
+
+
+
+> 23. Voor de volgende commissies moeten vergaderingen vastgelegd worden: 
+>
+> •    commissie A = {Smith, Jones, Brown, Green} 
+>
+> •    commissie B = {Jones, Wagner, Cheese, Cummings} 
+>
+> •    commissie C = {Harris, Oliver, Smith} 
+>
+> •    commissie D = {Harris, Jones, Mason, Larson} 
+>
+> •    commissie E = {Oliver, Cummings, Larson} 
+>
+> Zijn drie vergadertijdstippen voldoende om alle commissies te laten samenkomen zonder dat iemand tegelijk op 2 (of meer) vergaderingen moet aanwezig zijn?
+
+```graphviz
+  A,D[color=blue]
+  B,C[color=red]
+  E[color=green]
+  
+  A -> B [label=Jones]
+  A -> C [label=Smith]
+  B -> D [label=Jones]
+  B -> E [label=Cummings]
+  C -> D [label=Harris]
+  C -> E [label=Oliver]
+  D -> E [label=Larson]
+```
+
+Gelijkaardig aan vorige opgave. 
+
+<img src="img/algo2/image-20230114155318468.png" alt="image-20230114155318468" style="zoom:50%;" />
+
+Je kan de graaf kleuren met 3 kleuren, dus 3 tijdstippen volstaan.
+
+
+
+
+
+> 24. Men wil een appartement (plattegrond zie figuur) volledig behangen, zodat in de kamers die aan elkaar palen een verschillend behang hangt (binnen eenzelfde kamer worden alle muren met hetzelfde behangpapier behangen). Hoeveel verschillende soorten behang heeft men hiervoor nodig?
+
+<img src="img/algo2/image-20230114155531725.png" alt="image-20230114155531725" style="zoom:50%;" />
+
+<img src="img/algo2/image-20230114155552591.png" alt="image-20230114155552591" style="zoom: 50%;" />
+
+Het kan met 4 kleuren. 
+
+> 25. Een architect dient een huis te ontwerpen voor een pasgetrouwd koppel. Het gelijkvloers van
+>     het huis dient volgende kamers te bevatten: een woonkamer, een eetkamer, een speelkamer,
+>     een keuken, twee slaapkamers, een badkamer en een hal. Het koppel staat erop dat alle
+>     kamers een muur gemeenschappelijk hebben met de hal. De keuken moet een muur
+>     gemeenschappelijk hebben met de eetkamer, de speelkamer en de badkamer. Beide
+>     slaapkamers dienen een muur gemeenschappelijk te hebben met de badkamer en de
+>     speelkamer. De woonkamer dient een muur gemeenschappelijk te hebben met de eetkamer en
+>     de speelkamer. Is het mogelijk voor de architect om een gelijkvloerse verdieping te
+>     ontwerpen die voldoet aan al deze vereisten ? Zo ja, geef zo’n ontwerp. Zo neen, motiveer
+>     waarom niet.
+
+
+
+> 26. Een GSM-operator heeft gans België verdeeld in een groot aantal cellen van gelijke grootte, waarbij elke cel een regelmatige zeshoek vormt (honingraatpatroon). In het centrum van elke cel bevindt zich een zend- en ontvangstmast. De bandbreedte waarover de operator beschikt, laat hem toe om 63 frequenties te gebruiken voor zendsignalen (voor de eenvoud laten we ontvangstsignalen buiten beschouwing). Bijkomende restrictie is echter dat aangrenzende cellen niet dezelfde zendfrequenties mogen gebruiken, dit om te vermijden dat personen die zich op het grensgebied tussen twee cellen bevinden een mengeling van twee signalen zouden ontvangen. Bedoeling is nu om de zendfrequenties op een zo efficiënt mogelijke manier gelijkmatig te verdelen over de verschillende cellen. 
+>
+>     a) Modelleer dit probleem als een grafenprobleem. Welk type probleem betreft het hier? Visueel modelleren volgens onderstaande graaf voor 7 cellen (elk snijpunt is een knoop) Knoopkleuringsprobleem, ondergrens bepalen via kliekgetal 
+>
+>     b) Bereken het aantal zendfrequenties dat per cel kan gebruikt worden. 
+>
+>     c) Wat als ook cellen die aan eenzelfde cel grenzen (m.a.w. buren van buren) niet van eenzelfde frequentie mogen gebruik maken, hoeveel zendfrequenties per cel blijven er dan nog over?
+
+
+
+> 27. Beschouw alle grafen met p knopen. Vind een bovengrens voor het aantal elementen dat een koppeling K in een dergelijke graaf kan bevatten. 
+
+$\lfloor \frac p 2 \rfloor$
+
+
+
+> 28. Beschouw alle grafen met q takken. Vind een bovengrens voor het aantal elementen dat een koppeling K in een dergelijke graaf kan bevatten 
+
+Lijkt mij $q$
+
+
+
+> 29. Bepaal een maximumkoppeling voor volgende grafen (het bepalen van een vergrotend K alternerend pad mag op zicht gebeuren):
+
+| ![image-20230114165155994](img/algo2/image-20230114165155994.png) | 1-2, 3-5                     |
+| ------------------------------------------------------------ | ---------------------------- |
+| ![image-20230114165203841](img/algo2/image-20230114165203841.png) | **1-6, 4-5, 2-10, 3-9, 7-8** |
+| ![image-20230114165213472](img/algo2/image-20230114165213472.png) | **1-2, 3-6, 4-7**            |
+
+
+
+> 30. Welke van de volgende grafen is tweedelig?
+
+| <img src="img/algo2/image-20230114165522812.png" alt="image-20230114165522812" style="zoom:50%;" /> |                                                     | Tweedelig          |
+| ------------------------------------------------------------ | --------------------------------------------------- | ------------------ |
+| <img src="img/algo2/image-20230114165530927.png" alt="image-20230114165530927" style="zoom:50%;" /> |                                                     | **Niet tweedelig** |
+| <img src="img/algo2/image-20230114165629561.png" alt="image-20230114165629561" style="zoom:50%;" /> | 1 7 3 9 5 12 13 aan één kant, de rest aan de andere | **Tweedelig**      |
+| <img src="img/algo2/image-20230114165700880.png" alt="image-20230114165700880" style="zoom:50%;" /> |                                                     | **Tweedelig**      |
+
+> Kan je uit bovenstaande oplossingen een verband leggen tussen het tweeledig karakter van een graaf enerzijds en het type cycli die voorkomen in de graaf?
+
+Elke knoop mag maar tot één cyclus behoren?
+
+
+
+> 31. Beschouw alle tweedelige grafen met $p_1$ knopen in $V_1$ en $p_2$ knopen in $V_2$. Vind een bovengrens voor het aantal elementen dat een toewijzing in een dergelijke graaf kan bevatten. Is deze bovengrens strikter of minder strikt dan de bovengrens uit opgave 26?
+
+$ {\min (p_1,p_2)}$
+
+
+
+> 32. Bepaal een maximumtoewijzing voor de grafen uit opgave 29 die tweedelig zijn (het bepalen van een vergrotend K-alternerend pad dient volgens het in de cursus beschreven algoritme te gebeuren). 
+
+//TODO
+
+> 33. In een primitieve stam bevinden zich een aantal jongens en meisjes van huwbare leeftijd. Elk meisje kent sommige van deze jongens, maar lang niet allemaal. Vraag is: “Is het mogelijk om alle meisjes uit te huwelijken, zodat elk meisje trouwt met een jongen die ze kent?” Bepaal een strategie om dit (algemene) probleem op te lossen. Tot welk graafprobleem kan dit herleid worden?
+
+Beschouw een tweedelige graaf met aan de ene kant jongens en aan de andere kant meisjes. De jongens en meisjes die elkaar kennen zijn verbonden. De maximumkoppeling in deze graaf is de oplossing voor het probleem.
+
+
+
+
+
 # Grafen deel 2
 
 ## Verband tussen 4 boom-constructie algoritmen
@@ -960,6 +1121,43 @@ Het langste pad vinden in een gerichte lusloze graaf is een stuk interessanter. 
 Hier doe je hetzelfde als bij het korste pad, maar geef je de knopen telkens een zo hoog mogelijk label. Als er meerdere start- en eindknopen zijn (knopen met in- of uitgraad $0$), voeg je een artificiële start- en eindknoop toe. 
 
 
+
+
+
+## Oefeningen
+
+
+
+> 1. Zijn de onderstaande grafen Eulergrafen of niet? Motiveer je antwoord. Zo ja, bepaal m.b.v. het algoritme uit de cursus een Eulercircuit voor deze graaf. Leg stap voor stap uit hoe je dit resultaat bekomt.  Schrijf je eindresultaat op als een opeenvolging van knopen (te gebruiken notatie: bv. 3-4-10-6-3) 
+
+| <img src="img/algo2/image-20230114170451417.png" alt="image-20230114170451417" style="zoom:50%;" /> | Bevat een eulercircuit              | Eulergraaf          |
+| ------------------------------------------------------------ | ----------------------------------- | ------------------- |
+| <img src="img/algo2/image-20230114170516224.png" alt="image-20230114170516224" style="zoom:50%;" /> | Knoopgraden zijn niet allemaal even | **Geen eulergraaf** |
+| <img src="img/algo2/image-20230114170617951.png" alt="image-20230114170617951" style="zoom:50%;" /> | Bevat een eulercircuit              | **Eulergraaf**      |
+
+
+
+
+
+> 2. Welke van de onderstaande grafen is een gerichte lusloze graaf?
+
+| <img src="img/algo2/image-20230114170719146.png" alt="image-20230114170719146" style="zoom:50%;" /> | Ja      |
+| ------------------------------------------------------------ | ------- |
+| <img src="img/algo2/image-20230114170730480.png" alt="image-20230114170730480" style="zoom:50%;" /> | **Ja**  |
+| <img src="img/algo2/image-20230114170754545.png" alt="image-20230114170754545" style="zoom:50%;" /> | **Nee** |
+| <img src="img/algo2/image-20230114170813585.png" alt="image-20230114170813585" style="zoom:50%;" /> | **Ja**  |
+
+
+
+> 3. Bepaal een topologische rangschikking voor elke lusloze graaf in bovenstaande opgave. Zijn er meerdere oplossingen mogelijk?
+
+Er zijn meerdere oplossingen mogelijk als je op minstens één stap in het algoritme meerdere knopen hebt met ingraad $0$.
+
+
+
+> 4. Een firma steunt een vereniging die geld wil inzamelen voor het goede doel door een record te breken: in exact 13 uur willen de leden met de fiets zoveel mogelijk kilometers afleggen. Er zijn “groep A” leden die 4 uur achtereen fietsen en zo 55 km afleggen, “groep B” leden houden het maar 3 uur vol en leggen zo 47 km af, en “groep C” leden fietsen 2 uur en leggen in die tijd 40 km af. Die afstanden (en tijden) zijn ondeelbaar, bv. een groep A lid kan niet 2 of 2.5u fietsen. Iedereen die nog aan het fietsen is na 10 uur, moet deel uitmaken van groep C. Na 13 uur mag niemand nog aan het fietsen zijn. Er mogen ook nooit twee leden tegelijk aan het fietsen zijn: het is een estafette. Per afgelegde km draagt de firma 1 Euro bij. Bepaal welke leden het best fietsen en in welke volgorde, gezien vanuit het standpunt van de firma: die wil wegens de slechte economische tijden zo weinig mogelijk uitgeven. Tot welk graafprobleem kan dit probleem herleid worden? Wat is het minimaal sponsorbedrag dat je bekomt?
+
+//TODO deze oefening vind ik vaag
 
 
 
@@ -1434,6 +1632,170 @@ $$
 En de flow voor alle commodities mag niet hoger zijn dan de capaciteit van een arc.
 
 Er bestaan blijkbaar niet echt efficiënte oplossingen om problemen van deze aard op te lossen. Hier eindigt de cursus. Bedankt voor uw tijd. 
+
+
+
+## Oefeningen
+
+
+
+> 1. Connectiviteit en disjuncte paden:
+>
+>    Bepaal de knoop- en takconnectiviteit van onderstaande grafen 
+
+| ![image-20230114171450580](img/algo2/image-20230114171450580.png) | $\lambda(G) = 3$ | $\kappa(G) = 3$ | Disjuncte paden: 3 |
+| ------------------------------------------------------------ | ---------------- | --------------- | ------------------ |
+| ![image-20230114171547006](img/algo2/image-20230114171547006.png) | $\lambda(G) = 3$ | $\kappa(G) = 3$ | Disjuncte paden: 3 |
+
+> Voor beide bovenstaande grafen: bepaal het maximaal aantal takdisjuncte paden tussen de meest links gelegen en de meest rechts gelegen knoop. Wat is het verband met de takconnectiviteit?
+
+Het aantal takdisjuncte paden is even groot als de takconnectiviteit.
+
+Analoog voor de knoopdisjuncte paden.
+
+
+
+
+
+> 2. Graad versus connectiviteit: 
+>
+>    (a)  Als voor alle knopen van een willekeurige ongerichte (geconnecteerde) graaf de knoopgraad $\geq n$ is, volgt daaruit dan dat de knoop-en link-connectiviteit van deze grafen  $\geq n$? Zo ja, bewijs. Zo neen, geef een tegenvoorbeeld. 
+>
+>    (b)  Teken een ongerichte graaf waarvan alle knopen exact een graad = 2 hebben en waarbij eveneens de knoop- en link-connectiviteit 2 is. Doe hetzelfde voor 3 en 4. 
+
+a)
+
+<img src="img/algo2/image-20230114172002533.png" alt="image-20230114172002533" style="zoom:50%;" />
+
+Voor deze graaf is de knoopgraad altijd groter dan 3. De knoopconnectiviteit is echter maar 1.
+
+b)
+
+<img src="img/algo2/image-20230114172130907.png" alt="image-20230114172130907" style="zoom:67%;" />
+
+
+
+> 3. Routering in glasvezelnetwerk: 
+>
+>    Beschouw een optisch transportnetwerk (zie figuur). Bij dit netwerk wordt gebruik gemaakt van N golflengten op elke vezel, elke golflengte transporteert 1 Gbit/s. De kost om een golflengte op een vezel te gebruiken is weergegeven naast de links in kEuro. Een operator wenst nu zoveel mogelijk verkeer op te zetten tussen A en B, en dit met een maximaal budget van 75 kEuro. 
+>
+>     
+>
+>    Los de volgende punten op: 
+>
+>    (a)  Stel dat het aantal golflengten op elke vezel onbeperkt is (N = $\infty$). Bespreek welke methode de operator kan gebruiken om te bepalen hoeveel verkeer (in geheel aantal Gbit/s) hij kan opzetten (binnen het budget van 75 kEuro) 
+>
+>    (b)  Bereken de hoeveelheid verkeer en de bijhorende totale kost. 
+>
+>    (c)  Geef de paden weer (en de bijhorende kost en gebruikte capaciteit) die opgezet worden in het optisch transportnetwerk. 
+>
+>    (d)  Stel nu dat het aantal golflengten op elke vezel wel beperkt is: N = 5. Bespreek welke methode de operator nu kan gebruiken om te bepalen hoeveel verkeer (in geheel aantal Gbit/s) hij kan opzetten (eveneens binnen het budget van 75 kEuro) 
+>
+>    (e) Bereken de hoeveelheid verkeer en de bijhorende totale kost. 
+>
+>    (f) Geef de paden weer (en de bijhorende kost en gebruikte capaciteit) die opgezet worden in het optisch transportnetwerk. 
+
+<img src="img/algo2/image-20230114172223465.png" alt="image-20230114172223465" style="zoom:67%;" />
+
+a) 
+$$
+\frac{75}{\text{totale kost kortste pad}} = \frac {75}7 = 10.71 \approx 10 \text{ Gbit/s}
+$$
+b)
+$$
+70\text{k euro}
+$$
+c)
+
+<img src="img/algo2/image-20230114172543203.png" alt="image-20230114172543203" style="zoom:50%;" /> 
+
+
+
+d) <img src="img/algo2/image-20230114172603376.png" alt="image-20230114172603376" style="zoom:50%;" />
+
+<img src="img/algo2/image-20230114172725564.png" alt="image-20230114172725564" style="zoom:50%;" /> 
+$$
+\frac{40}{11} = 3.63 \approx 3 \text{ Gbit/s}, 33\text{k euro}
+$$
+e)
+$$
+75 \text{k euro, } 8 \text{ Gbit/s}
+$$
+
+
+> 4. Routering in internet: 
+>
+>    Beschouw een klein netwerk van IP-routers. De routers worden verbonden met een aantal unidirectionele links zoals weergegeven in de figuur. De afstanden van de verbindingen tussen de routers zijn weergegeven in de figuur (naast de links). In de routers zullen de pakketten een vertraging oplopen (de gemiddelde vertraging is opgegeven in de routers). Op de links treedt er geen vertraging op. 
+>
+>    Los de volgende punten op: 
+>
+>    (a)  Welke route zal men volgen om de pakketten van A naar B te versturen, indien men zo weinig mogelijk afstand wil afleggen? Bespreek de algemene oplossingsmethode en geef de oplossing. 
+>
+>    (b)  Welke route zal men volgen om de pakketten van A naar B te versturen, indien men zo weinig mogelijk vertraging wenst te hebben? Bespreek de algemene oplossingsmethode en geef de oplossing. 
+
+
+
+<img src="img/algo2/image-20230114173006105.png" alt="image-20230114173006105" style="zoom:67%;" />
+
+a) Kortste pad probleem
+
+![image-20230114173059460](img/algo2/image-20230114173059460.png)
+
+b) Min cost probleem
+
+<img src="img/algo2/image-20230114173121526.png" alt="image-20230114173121526"  />
+
+> 5. Ontwerp topologie vezelnetwerk:
+>
+>    Beschouw een TV-operator. Deze wenst optische vezel te introduceren in zijn coax netwerk om aldus een grotere bandbreedte te bekomen (hybrid fiber/coax netwerk). Hiertoe zal hij naar elke straathoek (= elk kruispunt) één optische vezel leggen, vertrekkend vanuit de head-end die op straathoek A geplaatst is. Bereken de layout van het kabelnetwerk dat hij zal leggen (de kabels bevatten de vezels). Hierbij zal hij de lengte van de kabel wensen te minimaliseren om aldus de graafkosten te beperken. De onderstaande figuur geeft het stratenplan weer: lijnen zijn de straten (met opgegeven lengte) en knopen zijn de straathoeken.
+>
+>     
+>
+>    Opmerking: een kabel kan een onbeperkt aantal vezels bevatten en een kabel kan opgesplitst worden in kleinere kabels.
+
+<img src="img/algo2/image-20230114173233045.png" alt="image-20230114173233045" style="zoom:67%;" />
+
+> Los de volgende punten op: 
+>
+> (a)  Bespreek de algemene oplossingsmethode 
+>
+> (b)  Bereken de oplossing (= layout van het kabelnetwerk) 
+>
+> (c) Wat is de totale kabellengte
+>
+> (d) Als de TV-operator zijn head-end in B zou plaatsen, zou het resultaat (layout kabelnetwerk, lengte kabel) dan hetzelfde zijn?
+>
+> (e)       Wat is de totale gebruikte vezellengte als de head-end in A staat? En als hij in B staat? Bekomt men met de gebruikte oplossingsmethode gegarandeerd de kleinste vezellengte? Leg uit waarom (niet). 
+>
+> (f)       Hoe zou men de totale vezellengte vanuit een gegeven head-end (bv. A) kunnen minimaliseren (zonder dat men de kabellengte moet minimaliseren)? Schets de oplossingsmethode en bepaal de oplossing. 
+
+a) Minimale opspannende boom met het algoritme van Prim
+
+b) 
+
+<img src="img/algo2/image-20230114173431523.png" alt="image-20230114173431523" style="zoom:67%;" />
+
+c) De totale kabellengte bedraagt 14
+
+d) Geen verschil, de startknoop maakt niet uit bij het algoritme van Prim.
+
+e) 27 als de head-end in A staat
+
+<img src="img/algo2/image-20230114174310153.png" alt="image-20230114174310153" style="zoom:67%;" />
+
+55 als de head-end in B staat. Kan verschillen want er zijn wel meerdere minimale opspannende bomen. 
+
+
+
+f) Door met Dijkstra alle kortste paden te berekenen en dan een vezel aan te leggen voor elk pad.
+
+<img src="img/algo2/image-20230114174436671.png" alt="image-20230114174436671" style="zoom:67%;" />
+
+De totale vezellengte bedraagt dan 27.
+
+
+
+
 
 
 
