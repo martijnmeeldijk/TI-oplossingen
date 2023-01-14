@@ -714,6 +714,18 @@ Nee
 
 Ik denk dat omdat er niet op elke straathoek een automaat staat, het niet echt te herleiden valt naar een minimaal opspannende boomprobleem. 
 
+Tegenvoorbeeld voor ingenieur 1:
+
+| <img src="img/algo2/image-20230114151910867.png" alt="image-20230114151910867" style="zoom:50%;" /> | <img src="img/algo2/image-20230114152035744.png" alt="image-20230114152035744" style="zoom:50%;" /> | <img src="img/algo2/image-20230114152114797.png" alt="image-20230114152114797" style="zoom:50%;" /> |
+| ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| Neem deze opstelling, met de middelste node een lege straathoek. | Als we het algoritme van Dijkstra toepassen voor elke 2 automaten krijgen we deze graaf. | Van de vorige graaf is dit de minimaal opspannende boom. Duidelijk geen optimale oplossing. |
+
+
+
+Voor ingenieur 2:
+
+Het algoritme van Kruskal zal ervoor zorgen dat elke straathoek verbonden is. Ook diegene waar geen automaten op staan het algoritme maakt geen onderscheid tussen straathoeken met of zonder automaat.
+
 
 
 > 11. Gevraagd wordt om voor een gegeven graaf met positieve takgewichten de maximale
@@ -838,6 +850,12 @@ Ik zou het echt niet weten //TODO
 
 > 19. Bereken voor onderstaande grafen telkens de boven- en ondergrenzen voor het chromatisch
 >     getal $\chi(G) : 1+ \delta_{max}$ en $\omega(G)$.
+
+| <img src="img/algo2/image-20230114145121259.png" alt="image-20230114145121259" style="zoom:50%;" /> | 4 en 6 |
+| ------------------------------------------------------------ | ------ |
+| <img src="img/algo2/image-20230114145131893.png" alt="image-20230114145131893" style="zoom:50%;" /> |        |
+| <img src="img/algo2/image-20230114145142135.png" alt="image-20230114145142135" style="zoom:50%;" /> |        |
+| <img src="img/algo2/image-20230114145151761.png" alt="image-20230114145151761" style="zoom:50%;" /> |        |
 
 
 
