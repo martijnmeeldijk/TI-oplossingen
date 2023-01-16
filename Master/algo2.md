@@ -832,6 +832,42 @@ Misschien de som van de totale padlengte en het totale takgewicht minimaliseren?
 
 <img src="img/algo2/image-20230113230416615.png" alt="image-20230113230416615" style="zoom:67%;" />
 
+Het algoritme van Floyd geeft de volgende afstandsmatrix
+
+```
+0, 2, 5, 7, 9, 1, 2, 4, 6, 7, 4, 4, 5, 7, 8, 5, 6, 6, 7, 9, 
+2, 0, 3, 5, 8, 3, 4, 4, 6, 7, 6, 6, 7, 8, 8, 7, 8, 8, 9, 10, 
+5, 3, 0, 2, 5, 6, 3, 1, 3, 4, 6, 5, 4, 5, 5, 7, 8, 7, 6, 7, 
+7, 5, 2, 0, 3, 8, 5, 3, 2, 3, 7, 4, 3, 4, 4, 6, 7, 6, 5, 6, 
+9, 8, 5, 3, 0, 10, 7, 5, 3, 2, 8, 5, 4, 5, 3, 7, 8, 7, 6, 5, 
+1, 3, 6, 8, 10, 0, 3, 5, 7, 8, 3, 5, 6, 8, 9, 4, 5, 7, 8, 10, 
+2, 4, 3, 5, 7, 3, 0, 2, 4, 5, 3, 2, 3, 5, 6, 4, 5, 4, 5, 7, 
+4, 4, 1, 3, 5, 5, 2, 0, 2, 3, 5, 4, 3, 4, 4, 6, 7, 6, 5, 6, 
+6, 6, 3, 2, 3, 7, 4, 2, 0, 1, 5, 2, 1, 2, 2, 4, 5, 4, 3, 4, 
+7, 7, 4, 3, 2, 8, 5, 3, 1, 0, 6, 3, 2, 3, 1, 5, 6, 5, 4, 3, 
+4, 6, 6, 7, 8, 3, 3, 5, 5, 6, 0, 3, 4, 6, 7, 1, 2, 4, 5, 7, 
+4, 6, 5, 4, 5, 5, 2, 4, 2, 3, 3, 0, 1, 3, 4, 2, 3, 2, 3, 5, 
+5, 7, 4, 3, 4, 6, 3, 3, 1, 2, 4, 1, 0, 2, 3, 3, 4, 3, 3, 5, 
+7, 8, 5, 4, 5, 8, 5, 4, 2, 3, 6, 3, 2, 0, 3, 5, 4, 2, 1, 3, 
+8, 8, 5, 4, 3, 9, 6, 4, 2, 1, 7, 4, 3, 3, 0, 6, 7, 5, 4, 2, 
+5, 7, 7, 6, 7, 4, 4, 6, 4, 5, 1, 2, 3, 5, 6, 0, 1, 3, 4, 6, 
+6, 8, 8, 7, 8, 5, 5, 7, 5, 6, 2, 3, 4, 4, 7, 1, 0, 2, 3, 5, 
+6, 8, 7, 6, 7, 7, 4, 6, 4, 5, 4, 2, 3, 2, 5, 3, 2, 0, 1, 3, 
+7, 9, 6, 5, 6, 8, 5, 5, 3, 4, 5, 3, 3, 1, 4, 4, 3, 1, 0, 2, 
+9, 10, 7, 6, 5, 10, 7, 6, 4, 3, 7, 5, 5, 3, 2, 6, 5, 3, 2, 0, 
+
+```
+
+De diameter is het grootste getal in de matrix. = 10  (2-3-8-9-10-15-20).
+
+Om de straal te vinden neem je het maximum van elke kolom (of rij, komt op hetzelfde neer bij Floyd). 
+
+Het minimum van al deze waarden is de straal. = 6 (12-7-1-2) (vind je in de 12de rij/kolom).
+
+
+
+Ze zijn echt op hun kop gevallen als ze denken dat we dit met de hand gaan doen. Ik heb dit laten genereren op een random website. 
+
 
 
 > 17. Welke van de volgende grafen zijn vlakke grafen ? (Indien het een vlakke graaf betreft, geef
@@ -871,7 +907,11 @@ Misschien de som van de totale padlengte en het totale takgewicht minimaliseren?
 
 > 20. Bepaal een zo goed mogelijke knoopkleuring voor bovenstaande grafen. Vergelijk dit met de hierboven bekomen boven- en ondergrenzen. 
 
-//TODO
+| <img src="img/algo2/image-20230114145121259.png" alt="image-20230114145121259" style="zoom:50%;" /> | <img src="img/algo2/image-20230116163549999.png" alt="image-20230116163549999" style="zoom:50%;" /> |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| <img src="img/algo2/image-20230114145131893.png" alt="image-20230114145131893" style="zoom:50%;" /> | <img src="img/algo2/image-20230116163826910.png" alt="image-20230116163826910" style="zoom:50%;" /> |
+| <img src="img/algo2/image-20230114145142135.png" alt="image-20230114145142135" style="zoom:50%;" /> | <img src="img/algo2/image-20230116164204107.png" alt="image-20230116164204107" style="zoom:50%;" /> |
+| <img src="img/algo2/image-20230114145151761.png" alt="image-20230114145151761" style="zoom:50%;" /> | <img src="img/algo2/image-20230116164456931.png" alt="image-20230116164456931" style="zoom:50%;" /> |
 
 
 
@@ -954,7 +994,7 @@ Je kan de graaf kleuren met 3 kleuren, dus 3 tijdstippen volstaan.
 
 <img src="img/algo2/image-20230114155552591.png" alt="image-20230114155552591" style="zoom: 50%;" />
 
-Het kan met 4 kleuren. 
+Het kan met 4 kleuren. Meer informatie kan ik niet verschaffen.
 
 > 25. Een architect dient een huis te ontwerpen voor een pasgetrouwd koppel. Het gelijkvloers van
 >     het huis dient volgende kamers te bevatten: een woonkamer, een eetkamer, een speelkamer,
@@ -975,6 +1015,16 @@ Het lijkt me onmogelijk.
 
 
 
+Oke ik heb nog verder nagedacht. Ik denk dat het te herleiden valt naar een kleurenprobleem. Er kunnen in de realiteit maximum 3 kamers alledrie een muur met elkaar delen. Het kliekgetal moet dus kleiner zijn dan 3. Als we de graaf kunnen inkleuren met drie kleuren hebben we bewezen dat dit in ons geval effectief zo is.
+
+We kunnen effectief de graaf kleuren met 3 kleuren;
+
+<img src="img/algo2/image-20230116165458349.png" alt="image-20230116165458349" style="zoom:50%;" />
+
+
+
+
+
 > 26. Een GSM-operator heeft gans België verdeeld in een groot aantal cellen van gelijke grootte, waarbij elke cel een regelmatige zeshoek vormt (honingraatpatroon). In het centrum van elke cel bevindt zich een zend- en ontvangstmast. De bandbreedte waarover de operator beschikt, laat hem toe om 63 frequenties te gebruiken voor zendsignalen (voor de eenvoud laten we ontvangstsignalen buiten beschouwing). Bijkomende restrictie is echter dat aangrenzende cellen niet dezelfde zendfrequenties mogen gebruiken, dit om te vermijden dat personen die zich op het grensgebied tussen twee cellen bevinden een mengeling van twee signalen zouden ontvangen. Bedoeling is nu om de zendfrequenties op een zo efficiënt mogelijke manier gelijkmatig te verdelen over de verschillende cellen. 
 >
 >     a) Modelleer dit probleem als een grafenprobleem. Welk type probleem betreft het hier? Visueel modelleren volgens onderstaande graaf voor 7 cellen (elk snijpunt is een knoop) Knoopkleuringsprobleem, ondergrens bepalen via kliekgetal 
@@ -982,6 +1032,8 @@ Het lijkt me onmogelijk.
 >     b) Bereken het aantal zendfrequenties dat per cel kan gebruikt worden. 
 >
 >     c) Wat als ook cellen die aan eenzelfde cel grenzen (m.a.w. buren van buren) niet van eenzelfde frequentie mogen gebruik maken, hoeveel zendfrequenties per cel blijven er dan nog over?
+
+//TODO 
 
 
 
@@ -1179,7 +1231,11 @@ Er zijn meerdere oplossingen mogelijk als je op minstens één stap in het algor
 
 > 4. Een firma steunt een vereniging die geld wil inzamelen voor het goede doel door een record te breken: in exact 13 uur willen de leden met de fiets zoveel mogelijk kilometers afleggen. Er zijn “groep A” leden die 4 uur achtereen fietsen en zo 55 km afleggen, “groep B” leden houden het maar 3 uur vol en leggen zo 47 km af, en “groep C” leden fietsen 2 uur en leggen in die tijd 40 km af. Die afstanden (en tijden) zijn ondeelbaar, bv. een groep A lid kan niet 2 of 2.5u fietsen. Iedereen die nog aan het fietsen is na 10 uur, moet deel uitmaken van groep C. Na 13 uur mag niemand nog aan het fietsen zijn. Er mogen ook nooit twee leden tegelijk aan het fietsen zijn: het is een estafette. Per afgelegde km draagt de firma 1 Euro bij. Bepaal welke leden het best fietsen en in welke volgorde, gezien vanuit het standpunt van de firma: die wil wegens de slechte economische tijden zo weinig mogelijk uitgeven. Tot welk graafprobleem kan dit probleem herleid worden? Wat is het minimaal sponsorbedrag dat je bekomt?
 
-//TODO deze oefening vind ik vaag
+Je kan van achter naar voor een gerichte lusloze graaf opstellen omdat je weet dat je met twee groepen van C moet eindigen.
+
+<img src="img/algo2/image-20230116160217124.png" alt="image-20230116160217124" style="zoom:67%;" />
+
+Dan kan je het kortste pad (minste kilometers) gemakkelijk vinden. In dit geval is dat 221km.
 
 
 
@@ -1477,7 +1533,7 @@ Wanneer $r(ij) = 0$, laten we de pijl weg, want er kan toch niks meer bij.
 
 We willen een manier vinden om de grootst mogelijke flow in ons netwerk te bepalen. Dit kan met het flow augmenting path algorithm. Een flow augmenting path is pad van de source naar de sink waarvoor de residual capacity $d$ positief is.
 
-* De residual capacity $d$ van een augmenting path is het minimum alle $r(ij)$ op het pad. 
+* De residual capacity $d$ van een augmenting path is het minimum van alle $r(ij)$ op het pad. 
 
 Het algoritme is simpel. Je begint van een netwerk waar alle flows op nul staan. Je zoekt een flow augmenting path en past het residunetwerk aan volgend dat pad. Nu ga je door tot je geen flow augmenting path meer vindt. 
 
@@ -1592,7 +1648,7 @@ En de flow mag niet hoger zijn dan de capaciteit van een link.
 
 ![image-20221225143405511](img/algo2/image-20221225143405511.png)
 
-Hier breiden we het idee van een residunetwerk aan voor ons probleem. In essentie doen we exact hetzelfde als [hier](#residual-network), maar nemen we de cost mee. De toegevoegde arcs (in de tegenovergestelde richting) geven we de tegenovergestelde cost. 
+Hier breiden we het idee van een residunetwerk uit voor ons probleem. In essentie doen we exact hetzelfde als [hier](#residual-network), maar nemen we de cost mee. De toegevoegde arcs (in de tegenovergestelde richting) geven we de tegenovergestelde cost. 
 
 
 
@@ -2203,6 +2259,8 @@ Iets abstracter, kan je dit proces samenvatten met een paar regels:
 
 
 
+<sub>Wil je iets leuks weten. Het gemiddelde boek van 300 pagina's heeft ongeveer 90 000 woorden. De word count van mijn samenvattingen van dit en vorig jaar bedraagt tot op heden 227 341 woorden. Dat betekent dat ik ongeveer 2,53 boeken heb geschreven, alleen dat de inhoud niet leuk is zoals Harry Potter ofzo. Ik denk dat ik misschien eens een bezoekje aan een mentaal ziekenhuis moet gaan plegen. mvg martijn</sub>
+
 ### Boyer-Moore
 
 Dit algoritme is een verbetering op KMP. We proberen om in plaats van alle karakters van $T$ te lezen, zo veel mogelijk karakters over te slaan bij een mismatch. Dit doen we door te scannen **van rechts naar links**. 
@@ -2284,12 +2342,39 @@ We itereren over steeds langere prefixen. Voor elke prefix itereren we over stee
 
 
 
+## Vorige examens
+
+Het lijkt erop dat ze altijd maar 4 vragen stellen.
+
+* Januari 2022
+  * Grafen
+    * Bewijs van Dijkstra
+    * Vraagstuk euler
+  * Strings
+    * LZW Codering vraag
+    * Automaat vraagstuk
+* Augustus 2022
+  * Grafen
+    * Theorievraag over kleuren van grafen
+    * Vraagstuk waar je Bussacker-Gowen moest toepassen
+  * Strings
+    * Patricia tree oefening
+    * Elias delta en gammacode oefening
+
+
+
+## Voorbeelden 2023
+
+
+
 > Geef de Knuth-MorrisPratt-tabel voor de tekst BIMSALABIM.
 
 
 
 > Ontwerp een eenvoudigere / snellere hashfunctie voor RK en pas ze toe bij het zoeken naar het patroon 2 6 5 3 5 in de tekst
 > * 3 1 4 1 5 9 2 6 5 3 5 8 9 7 9 3
+
+//TODO 
 
 
 
@@ -2390,7 +2475,7 @@ Pieter zei dat dat oké zou zijn, ookal is het niet zo mooi. Zoiets zou hij ons 
 
 ### Grafen
 
-> **Terminologie ongerichte grafen. Geef van de volgende begrippen het symbool en de betekenis:**
+> **1. Terminologie ongerichte grafen. Geef van de volgende begrippen het symbool en de betekenis:**
 
 | Begrip                             | Symbool               | Betekenis                                               |
 | ---------------------------------- | --------------------- | ------------------------------------------------------- |
@@ -2403,7 +2488,7 @@ Pieter zei dat dat oké zou zijn, ookal is het niet zo mooi. Zoiets zou hij ons 
 | Knoopconnectiviteit                | $\kappa(G)$           | De minimum kardinaliteit van een vertex cutset van $G$  |
 | Takconnectiviteit                  | $\lambda(G)$          | De minimum kardinaliteit van een edge cutset van $G$    |
 
-> **Terminologie gerichte grafen. Geef van de volgende begrippen het symbool en de betekenis:**
+> **2. Terminologie gerichte grafen. Geef van de volgende begrippen het symbool en de betekenis:**
 
 | Begrip         | Symbool      | Betekenis                                                |
 | -------------- | ------------ | -------------------------------------------------------- |
@@ -2414,7 +2499,7 @@ Pieter zei dat dat oké zou zijn, ookal is het niet zo mooi. Zoiets zou hij ons 
 | Uit-adjacency  | $A(v)$       | De verzameling knopen waarin een pijl toekomt vanuit $v$ |
 | In-adjacency   | $A'(v)$      | De verzameling knopen waaruit een pijl vertrekt naar $v$ |
 
-> **Afstandsgerelateerde begrippen. Geef van de volgende begrippen de betekenis:**
+> **3. Afstandsgerelateerde begrippen. Geef van de volgende begrippen de betekenis:**
 
 | Begrip                         | Betekenis                                         |
 | ------------------------------ | ------------------------------------------------- |
@@ -2422,7 +2507,7 @@ Pieter zei dat dat oké zou zijn, ookal is het niet zo mooi. Zoiets zou hij ons 
 | Straal                         | Minimale excentriciteit van een graaf             |
 | Diameter                       | Maximale excentriciteit van een graaf             |
 
-> **Kleurgerelateerde begrippen. Geef van de volgende begrippen de betekenis en indien gepast het symbool:**
+> **4. Kleurgerelateerde begrippen. Geef van de volgende begrippen de betekenis en indien gepast het symbool:**
 
 | Begrip                       | Symbool                 | Betekenis                                                    |
 | ---------------------------- | ----------------------- | ------------------------------------------------------------ |
@@ -2431,9 +2516,16 @@ Pieter zei dat dat oké zou zijn, ookal is het niet zo mooi. Zoiets zou hij ons 
 | Ondergrens chromatisch getal | $\omega(G)$             | De grootte van de grootste kliek in $G$                      |
 | Bovengrens chromatisch getal | $1+\delta_{\text{max}}$ | De maximale knoopgraad $+1$                                  |
 
+> **5. Flow problemen. Geef van de volgende begrippen het symbool.**
+
+| Begrip     | Symbool |
+| ---------- | ------- |
+| cost       | $c(a)$  |
+| capaciteit | $u(a)$  |
 
 
-> **Hoeveel takken heeft een boom met $p$ knopen? Bewijs.**
+
+> **6. Hoeveel takken heeft een boom met $p$ knopen? Bewijs.**
 
 Een boom met $p$ knopen heeft $p-1$ takken: $q = p-1$
 
@@ -2454,7 +2546,7 @@ Een boom met $p$ knopen heeft $p-1$ takken: $q = p-1$
 
 
 
-> **Hoeveel takken bevat een complete graaf met $p$ knopen?** 
+> **7. Hoeveel takken bevat een complete graaf met $p$ knopen?** 
 
 $$
 q =C_p^2 = \frac{p(p-1)} 2
@@ -2464,7 +2556,7 @@ $$
 
 
 
-> **Gegeven een geconnecteerde graaf $G$ met positieve takgewichten. Bewijs dat er voor $G$ een minimaal opspannende boom $G'$ bestaat.**
+> **8. Gegeven een geconnecteerde graaf $G$ met positieve takgewichten. Bewijs dat er voor $G$ een minimaal opspannende boom $G'$ bestaat.**
 
 * We hebben een gewogen, geconnecteerde graaf $G$ met positieve takgewichten. 
 * We tonen aan dat het probleem zeker een oplossing heeft:
@@ -2482,7 +2574,7 @@ $$
 
 
 
-> **Toon aan dat na de uitvoering van het algoritme van Dijkstra de labels in de permanente verzameling de juiste afstand uit de startknoop $s$ voorstellen**
+> **9. Toon aan dat na de uitvoering van het algoritme van Dijkstra de labels in de permanente verzameling de juiste afstand uit de startknoop $s$ voorstellen**
 
 We tonen eerst aan dat tijdens het uitvoeren, alle labels in de permanente verzameling de juiste afstand vanuit $s$ voorstellen
 $$
@@ -2529,7 +2621,7 @@ We moeten alleen aantonen dat de eigenschap geldt, vlak voordat $v$ aan de perma
 
 
 
-> **Geef voor elk van de volgende algoritmes het doel en de voorwaarden voor uitvoering.**
+> **10. Geef voor elk van de volgende algoritmes het doel en de voorwaarden voor uitvoering.**
 
 | Algoritme              | Doel                               | Voorwaarden                              |
 | ---------------------- | ---------------------------------- | ---------------------------------------- |
@@ -2540,7 +2632,7 @@ We moeten alleen aantonen dat de eigenschap geldt, vlak voordat $v$ aan de perma
 
 
 
-> **Hoeveel gebieden bevat de vlakke voorstelling van een graaf? Toon aan.**
+> **11. Hoeveel gebieden bevat de vlakke voorstelling van een graaf? Toon aan.**
 
 * $g = q-p+2$, met $p$ het aantal knopen en $q$ het aantal takken
 
@@ -2565,7 +2657,7 @@ We moeten alleen aantonen dat de eigenschap geldt, vlak voordat $v$ aan de perma
     * $g = (k+1) - p + 2$
     * De stelling is bewezen
 
-> **Wanneer is een graaf een Eulergraaf? Wat impliceert het wezen van een graaf als Eulergraaf?**
+> **12. Wanneer is een graaf een Eulergraaf? Wat impliceert het wezen van een graaf als Eulergraaf?**
 
 Een graaf is een Eulergraaf als en slechts als hij een Eulercircuit bevat. Een Eulercircuit is een wandeling door de graaf die elke tak één keer gebruikt en eindigt op dezelfde knoop als hij begint. 
 
@@ -2574,9 +2666,16 @@ Een graaf is een Eulergraaf als en slechts als hij een Eulercircuit bevat. Een E
 
 
 
-> **Heeft een gerichte lusloze graaf altijd een topologische rangschikking? Zo ja, toon aan. Zo nee, geef een tegenvoorbeeld.**
+> **13. Heeft een gerichte lusloze graaf altijd een topologische rangschikking? Zo ja, toon aan. Zo nee, geef een tegenvoorbeeld.**
 
 <u>Bewijs</u>
+
+Als we alle knopen van deze graaf op een rijtje zetten, op zo een manier dat alle pijlen naar rechts wijzen, bekomen we een **topologische rangschikking**. Hier bestaat dan ook weer een algoritme voor:
+
+* Zoek een knoop $v$ met ingraad $0$
+* Zet $v$ helemaal links
+* Verwijder $v$ en alle pijlen die uit $v$ vertrekken uit de originele graaf
+* Herhaal tot er geen knopen meer zijn
 
 We kunnen een topologische rangschikking vinden als de graaf een knoop bevat met ingraad $0$ (ook in elke stap van het algoritme om de topologische rangschikking te vinden). 
 
@@ -2586,7 +2685,7 @@ Dit valt te bewijzen vanuit het ongerijmde. Stel dat er geen knoop met ingraad $
 
 
 
-> **Is in een graaf altijd $\kappa(G) \leq \lambda(G)$? Toon aan.**
+> **14. Is in een graaf altijd $\kappa(G) \leq \lambda(G)$? Toon aan.**
 
 Bewijs uit contrapositie:
 
@@ -2600,7 +2699,42 @@ Bewijs uit contrapositie:
 
 
 
-//TODO vanaf maximum flow problem.
+> **15. Hoe kan je $\kappa(G)$ van een graaf $G$ vinden, gebruik makende van een maximum flow probleem?**
+
+We kunnen bewijzen dat $\kappa(v,w)$ gelijk is aan het aantal pairwise vertex-disjoint $v$-$w$ paths. Dus het aantal mogelijke paden van $v$ naar $w$ die geen vertices gemeen hebben. Dit aantal kunnen we vinden door $G$ te transformeren en het flow augmenting path algorithm toe te passen.
+
+* Maak van $G$ een gecapaciteerde graaf $G'$, met alle capaciteiten op $1$
+* Maak daar een digraaf $G''$ van, waarbij elke edge van $G'$ vervangen wordt door twee tegenovergestelde arcs met capaciteit $1$
+* Verander deze in een graaf $G'''$, waarbij je van elke vertex $v$ twee vertices $v'$ en $v''$ maakt
+  * Elke arc naar $v$ in $G''$ wordt een arc naar $v'$
+  * Elke arc vanuit $v$ in $G''$ wordt een arc vanuit $v''$
+  * Maak een arc van elke $v'$ naar $v''$
+
+De maximale flow tussen $v''$ en $w'$ is nu gelijk aan het aantal pairwise vertex-disjoint $v$-$w$ paden in de orginele graaf $G$
+
+![image-20221225131431456](img/algo2/image-20221225131431456.png)
+
+Omdat de capaciteit van elke edge in het netwerk op $1$ staat, is de maximale flow gelijk aan het maximaal aantal edges dat kan gebruikt worden om flow te sturen van $v''$ naar $w'$. Elk pad in de originele graaf komt overeen met één eenheid flow in het netwerk. Elk van de edges in $G''$ komt overeen met een $v$-$w$ pad in $G$. 
+
+
+
+> **16. Bespreek het verloop van het algoritme van Busacker en Gowen.**
+
+Het algoritme van Busacker en Gowen biedt een manier om de minimal cost flow $f$ in een netwerk $N$ van een source vertex $s$ naar een sink vertex $t$ met demand $d$ te bepalen. 
+
+Het algoritme identificeert kortste augmenterende paden in het residunetwerk en voegt flow toe totdat de demand $d$ is vervuld en verloopt als volgt:
+
+* We hebben een bepaalde demand $d$, de flow $f$ zetten we initieel op $0$
+* Zolang $F<d$, herhaal:
+  * Vind het kortste augmenterende pad $P$ van $s$ naar $t$ in $N(f)$
+    * Met Ford-Bellman-Moore
+    * $N(f)$ is ons residunetwerk met flow $f$
+  * $\delta = \min \{ \min \{ r(ij):ij \in P \}, (d-F) \}$
+    * De toe te voegen flow is het minimale residu in het pad
+    * Als dit groter is dan de demand, dan moeten we alleen de resterende demand toevoegen
+  * Verhoog de flow $f$ op het pad $P$ met $\delta$
+  * Update het residunetwerk $N(f)$
+  * Voeg de toegevoegde flow bij $F = F + \delta$ toe.
 
 ### Strings
 
