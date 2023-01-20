@@ -116,22 +116,22 @@ Zorg ervoor dat je een duidelijke lijn trekt tussen je verschillende microservic
 
 Hier een overzicht van de voor- en nadelen van een applicatie ontwikkeld als monoliet tegenover microservices:
 
-* Monolith
-  * Voordelen
+* <u>Monolith</u>
+  * **Voordelen**
     * Goed voor een beginnende applicatie
     * Geen complexiteit van verschillende services
-  * Nadelen
+  * **Nadelen**
     * Codebase moeilijk te begrijpen
     * Moeilijk schaalbaar, want elke server moet de volledige applicatiestack draaien
     * Moeilijk uitbreidbaar en onderhoudbaar, want één verandering kan veel gevolgen hebben
     * Je systeem kan platliggen door één bug
-* Microservices
-  * Voordelen
+* <u>Microservices</u>
+  * **Voordelen**
     * Services kunnen onafhankelijk gedeployed worden
     * Gemakkelijker uit te breiden en te onderhouden, één verandering vereist typisch geen aanpassing in meerdere microservices. Fouten worden ook niet overgedragen tussen services.
     * Schaalbaarder
     * Services kunnen in verschillende talen/stacks ontwikkeld worden, met verschillende databanken
-  * Nadelen
+  * **Nadelen**
     * Foute toepassing kan leiden tot een gedistribueerde monoliet
     * Gedistribueerde systemen zijn complex
     * Communicatie over het netwerk is trager. Data moet geserialiseerd worden en over een mogelijk onstabiele verbinding verstuurd worden.
@@ -147,9 +147,9 @@ Bij SOA ligt de nadruk op services maken die gedeeld kunnen worden doorheen je a
 
 
 
+
+
 # 2 - Decomposing
-
-
 
 ## Requirements analysis
 
@@ -396,7 +396,17 @@ Een manier om hiermee om te gaan is CQRS.
 
 <img src="img/systeemontwerp/image-20230106175753828.png" alt="image-20230106175753828" style="zoom: 67%;" />
 
-CQRS is een patroon dat het domeinmodel in twee delen splitst. Het **read model** bevat de nodige voorzieningen voor queries en het **write model** bevat dan de functies voor business tasks. We voorzien dus twee verschillende modellen. 
+CQRS is een patroon dat het domeinmodel in twee delen splitst. Het **read model** bevat de nodige voorzieningen voor queries, en staat dus bijgevolg in voor de presentatietaken. Het **write model** bevat dan de functies voor het afhandelen en verwerken van commands, en staat dus in voor alle business tasks. We voorzien dus twee verschillende modellen. 
+
+We kunnen gebruik maken van **materialized views**, dit kan je het gemakkelijkst zien al een gecachte query. De query wordt eigenlijk op voorhand gedraaid en in een virtuele tabel opgeslagen. Dit zullen we typisch doen om de performatie van complexe queries (typisch met joins en aggregatie) te verbeteren. Deze manier van werken is niet speciaal eigen aan CQRS, maar ze gaan wel goed samen. 
+
+| ![image-20230120113555869](img/systeemontwerp/image-20230120113555869.png) | ![image-20230120113601636](img/systeemontwerp/image-20230120113601636.png) |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| Zonder materialized views zetten we veel druk op een enkele event stream, waardoor minder belangrijke pagina's de performantie van belangrijke pagina's kunnen verlagen. | Writes gaan nog steeds via het domeinmodel naar de event stream, maar reads worden gedaan via de materialized views. De druk op de event stream is hier een stuk lichter. |
+
+
+
+Door de opsplitsing te maken met CQRS zorgen we er bovendien voor dat we bij het ontwikkelen van ons model we onszelf geen zorgen moeten maken over presentationele vereisten. We hoeven geen 'customer' godklasse te maken, omdat we aggregaten kunnen voorzien die verantwoordelijk zijn voor het presenteren van gelijkaardige conceptuele klassen. Een **command handler** verwerkt een bepaalde command en bevat de logica om de vervulling van een bepaalde taak te orchestreren. Hij zal antwoorden met een bevetiging of de taak al dan niet vervuld is. Aan de 'query side' kunnen we DTO's (data transfer objects) voorzien. Dit zijn view models, op maat gemaakt voor de specifieke behoeftes van een view. Als we hier nog een stapje verder in gaan kunnen we gebruik maken van materialized views, zoals ik hierboven al mooi heb uitgelegd.
 
 //TODO misschien voorbeeld van FTGO
 
@@ -408,29 +418,522 @@ CQRS is een patroon dat het domeinmodel in twee delen splitst. Het **read model*
 
 Een **API composer** implementeert een query hem samen te stellen uit queries naar één of meerdere **provider services**. Elk van deze provider services is eigenaar van zijn data. De API composer voorziet dan een API die zich voordoet als één service, maar eigenlijk meerdere queries uitvoert om een samengesteld resultaat af te leveren.
 
+<img src="img/systeemontwerp/image-20230120120414495.png" alt="image-20230120120414495" style="zoom:50%;" />
+
 Wie moet er nu de rol innemmen van API composer? 
 
-* Client
-* API gateway: als de query deel is van de externe API
-* Service: als de query wordt gebruikt door meerdere interne services
+* **Client**: stuurt een request naar bijvoorbeeld de API gateway met een set van parameters en endpoints die opgeroepen moeten worden. De client zal de data dan zelf verwerken en aggregeren. 
+* **API gateway**: als de query deel is van de externe API. Hier zal de gateway het voor de client doen lijken alsof er maar één API is en de taken van het vorige puntje voor hem uitvoeren. 
+* **Service**: als de query wordt gebruikt door meerdere interne services en te complex is voor de API gateway. 
 
-Het gebruikt van een API composer is simpel en intuïtief, maar zorgt wel voor meer overhead. Het kan dat je availability minder goed is omdat de composer gedeeltelijke of gecachte data teruggeeft. Om dat hij meerdere queries naar meerdere databanken doet, verlies je ook transactionele dataconsistentie. 
+Het gebruikt van een API composer is **simpel** en intuïtief, maar zorgt wel voor **meer overhead**. Het kan dat je **availability** **minder** goed is omdat de composer gedeeltelijke of gecachte data teruggeeft. Om dat hij meerdere queries naar meerdere databanken doet, **verlies** je ook **transactionele dataconsistentie**. 
+
+<img src="img/systeemontwerp/image-20230120112846829.png" alt="image-20230120112846829" style="zoom:67%;" />
+
+API decomposition is niet altijd een goede oplossing. In dit voorbeeld houden de delivery en accounting service niet de nodige data bij om te kunnen zoeken op een keyword, waardoor ze alle orders van een bepaalde consumer zullen teruggeven. 
 
 
 
 # 4 - Interaction between microservices
 
+De interactie tussen verschillende services van je applicatie is een belangrijke architecturale beslissing. Wat zijn de verschillende manieren om interactie te voorzien en wat zijn hun voor- en nadelen. Find out in the next episode of: Veel Te Lange Martijn Samenvattingen Die Meer Inhoud Hebben Dan De Cursus Zelf &trade;
+
+
+
+## Interaction styles
+
+We kunnen interactie implementeren volgens verschillende 'styles'.
+
+|                | one-to-one                                    | one-to-many             |
+| -------------- | --------------------------------------------- | ----------------------- |
+| **synchroon**  | request/response                              | /                       |
+| **asynchroon** | request/async response, one way notifications | publish/async responses |
+
+Belangrijk om te weten is dat services gebruik kunnen maken van een combinatie van styles. Verder is een asynchrone interaction style niet hetzelfde als asynchrone I/O. Bij asynchrone I/O wordt in de server geen thread geblokkeerd na het versturen van data, dit heeft niet echt iets te maken met dit onderwerp en wordt onafhankelijk geïmplementeerd.
+
+We zullen nu een aantal interaction styles behandelen.
+
+### Synchronous remote procedure invocation
+
+<img src="img/systeemontwerp/image-20230120124809131.png" alt="image-20230120124809131" style="zoom:50%;" />
+
+Als we iets van een andere service (remote) willen, stellen we een rechtstreekse vraag (invocation) en wachten we op het antwoord (synchronous). Als we zelf maar een **partial failure** hebben, zal deze methode tekort schieten. Een andere uitdaging: hoe weet de client de locatie van de services?
+
+#### REST
+
+Een voorbeeld van een implementatie die deze methode gebruikt is REST. Elke REST resource stelt een business concept voor. Een operatie op een resource wordt dan voorgesteld door een HTTP verb (GET, PUT, DELETE, ...).
+
+* Voordelen
+  * Simpel
+  * Directe ondersteuning voor request/reply interactiestijl
+  * HTTP is makkelijk voor firewalls
+  * Geen tussenliggende broker nodig
+* Nadelen/uitdagingen
+  * Lagere availability (gedeeltelijke failure maakt de applicatie onbruikbaar door een cascade van failures)
+  * Cients moeten de locaties (urls) van de services kennen. Service discovery is dus vereist.
+  * Soms moeilijk om verschillende update operaties op HTTP verbs te mappen
+
+
+
+Er zijn een aantal manieren om om te gaan met **gedeeltelijke failures**. 
+
+* Bulkhead
+  * Dit is een muur in een ship die ervoor zorgt dat niet het hele schip volloopt wanneer we een lek hebben.
+  * We isoleren resources zodat ze beschermt zijn wanneer een andere resource 'volloopt'.
+* Circuit breaker (een zekering zoals in je kast in de kelder)
+  * Door een circuit breaker voor onze services te zetten kunnen we snel zien of deze down is of niet.
+* Fallback strategy
+  * We kunnen case-by-case vastleggen wat er moet gebeuren bij een failure. Bijvoorbeeld een error of een default of gecachte waarde terugsturen.
+
+### Asynchrone communicatie: Messaging
+
+<img src="img/systeemontwerp/image-20230120135907110.png" alt="image-20230120135907110" style="zoom:50%;" />
+
+We kunnen onze communicatie ook laten verlopen in de vorm van **messages**. Een message kan een command, een antwoord op een command of een event bevatten. De messages lopen dan via een **channel.** Dit kan point-to-point of point-to-multipoint.
+
+Eigenlijk kan je messaging gebruiken voor alle verschillende communication styles. (request/reply, request/async reply, ...)
+
+
+
+#### Brokerless messaging
+
+We kunnen ook doen aan messaging zonder gebruik te maken van een (blijkbaar hierboven geïmpliceerde) message broker. Dit heeft een aantal voor- en nadelen.
+
+* Voordelen
+  * Betere latency en lichter netwerkverkeer
+  * Geen single point of failure
+  * Minder operationele complexiteit (onderhoud en set-up van de broker)
+* Nadelen
+  * Services moeten elkaars locaties kennen.
+  * Minder availability (zender en ontvanger moeten beschikbaar zijn).
+  * Geavanceerde mechanismen zoals guaranteed delivery zijn moeilijker te implementeren.
+
+#### Message broker
+
+Als we dan toch kiezen voor een message broker:
+
+* Voordelen
+  * Zender moet de locatie van de ontvanger niet kennen (loose coupling)
+  * Message buffering als de ontvanger traag of offline is (betere availability)
+
+
+
+Er zijn nog een aantal problemen die zich voordoen bij het gebruik van messaging. 
+
+* Wat als we meerdere instanties hebben van dezelfde service?
+  * Als we op één instantie een bestelling maken en op de andere de bestelling annuleren, kan het dat het tweede bericht eerst verwerkt wordt. 
+  * We moeten ervoor zorgen dat elke message één keer en dat alle messages in de juiste volgorde worden verwerkt.
+* Wat als we meerdere consumers hebben op dezelfde message stream?
+  * Onze bestelling moet misschien zowel door marketing als door de keuken verwerkt worden.
+
+
+
+##### Kafka
+
+Apache Kafka tracht een oplossing te voorzien voor deze problemen. 
+
+Ik ga voor nu, omdat ik hem niet zo belangrijk acht, de uitleg over Kafka achterwege laten. //TODO
+
+
+
+### Elimination synchronous interaction
+
+Synchrone interactie vermindert in de meeste gevallen availability. Als je allemaal microservices hebben die synchrone calls naar elkaar maken, zal het hele boeltje kapotgaan als er ook maar één microservice eventjes down is. Eén manier om synchrone interactie te verminderen is het bijhouden van **duplicate data**. Dan houdt onze service een kopie bij van de data die hij nodig heeft om een request af te handelen. Een andere manier is om **direct een response** terug te sturen, **voordat het request verwerkt** is. Hierdoor kan je de client wel een stuk minder garanties geven.
+
+
+
+## SAGA
+
+In een monolithisch ontwerp hebben we het voordeel van transactionele garantie. Als we iets aanpassen weten we zeker dat het aangepast is en dat andere onderdelen van de applicatie de juiste nieuwe data gebruiken. Dit concept ontbreekt tot nu toe in onze microservice architectuur. We hebben een nood aan **gedistribueerde transacties**.
+
+Eén manier om dit te implementeren is aan de hand van een **two phase commit** (2PC). In de eerste fase sturen we onze data naar alle servers, deze maken zich vervolgens klaar. De tweede fase begint pas als alle servers 'oké' hebben gezegd, waarna ze de data verwerken. Dit is natuurlijk weer een synchrone operatie die de availability aanzienlijk verlaagt en bovendien maar beperkt ondersteund wordt.
+
+<img src="img/systeemontwerp/image-20230120142825247.png" alt="image-20230120142825247" style="zoom:50%;" />
+
+Een SAGA is een sequentie van locale transacties. Voor elk systeemcommando dat data in meerdere services moet aanpassen kunnen we een SAGA samenstellen. Het is bij wijze dus een verhaaltje dat doorlopen moet worden door onze services. Als één service klaar is met zijn transactie, stuurt hij een message die de volgende transactie triggert. 
+
+Als dan één van de middelste transacties misloopt, zal voor elk van deze transacties een **compensating transaction** uitgevoerd worden. Deze zullen in een sequentie van tegengestelde volgorde uitgevoerd worden om de vorige transacties van de onvolledige SAGA ongedaan te maken. 
+
+De transactie `createOrder()` kan dan bijvoorbeeld de compenserende transactie `rejectOrder()` hebben. Alleen transacties die gevolgd worden door stappen die mis kunnen lopen vereisen een compenserende transactie. Voor read-only transacties is dit dus niet nodig.
+
+### SAGA Coordination
+
+Het coördineren van een SAGA kan op twee manieren gebeuren. 
+
+Volgens een **choreografie** worden beslissingen en sequentielogica gedistribueerd afgehandeld. De communiactie verloopt dan via messages. Aan de andere kant kunnen we met **orchestratie** de coördinatielogica centraliseren met een *orchestrator* klasse. De communicatie loopt dan via commando's.
+
+
+
+#### Choreography
+
+<img src="img/systeemontwerp/image-20230120144005009.png" alt="image-20230120144005009" style="zoom:50%;" />
+
+Choreografie kan je best gebruiken voor **heel simpele SAGA's**. Elke service moet zelf ontvangen events kunnen mappen op zijn eigen data. Ze moeten basically zelf weten wat ze moeten doen. Elke event moet beschikken over een **correlation ID**. Deze geeft dan aan welke berichten bij elkaar horen. 
+
+Deze aanpak is simpel, maar er zijn direct een aantal nadelen zichtbaar:
+
+* Verdeelde SAGA implementatie is onoverzichtelijk en moeilijk te begrijpen
+* Cyclische dependencies tussen services
+* Risico op tight coupling: elke deelnemer moet subscriben op alle events die hem beïnvloeden
+
+
+
+#### Orchestration
+
+<img src="img/systeemontwerp/image-20230120153607831.png" alt="image-20230120153607831" style="zoom:50%;" />
+
+Bij orchestratie scheiden we de belangen. Deelnemende services moeten namelijk niets weten over de events van andere services. Bovendien zijn domeinaggregaten simpeler. Je moet hier natuurlijk wel oppassen dat je niet **te veel** business logica **centraliseert** in de orchestrator. 
+
+//TODO choreografie vs orchestratie tabel ofzo maken
+
 
 
 # 5 - Scaling and caching
+
+## Scaling
+
+We behandelen in dit deel vier types van scaling:
+
+* <u>Vertical scaling</u>
+  * Een betere machine kopen
+  * **Voordelen**
+    * Makkelijk
+    * Risicovrij (in de cloud)
+    * Dedicated hardware (mainframes)
+  * **Beperkingen**
+    * De prestaties van één core zijn beperkt
+    * Weinig impact op rubuustheid van je systeem
+    * Heel duur
+* <u>Horizontal duplication</u>
+  * Meer machines kopen die hetzelfde doen
+  * Kan d.m.v. loadbalancing of meerdere concurrerende consumers
+  * **Voordelen**
+    * Makkelijk
+    * Goedkoper
+    * Snelle manier naar robuustheid
+  * **Beperkingen**
+    * Meer infrastructuur nodig
+    * Blunt (for monoliths): monolithische systemen schalen niet goed horizontaal
+    * Mogelijke veranderingen in code
+* <u>Data partitioning</u>
+  * Het werk verdelen op basis van data
+  * Kan op databaseniveau of op serviceniveau met een proxy (of zelfs op geografisch niveau)
+  * **Voordelen**
+    * Nuttig voor workloads die beperkt zijn door writes
+    * Verbetert latency
+    * Partial failures
+  * **Beperkingen**
+    * Is risky als je code gaat aanpassen
+    * Beperkte impact op robuustheid
+    * Data wordt verdeeld opgeslagen
+* <u>Functional partitioning</u>
+  * Het werk verdelen op basis van het soort werk
+  * **Voordelen**
+    * Granulair herschalen
+    * Kost optimaliseren
+    * Partial failures
+  * **Beperkingen**
+    * Is risky als je code gaat aanpassen
+    * Beperkte impact op robuustheid
+    * Data wordt verdeeld opgeslagen
+    * Meer infrastructuur nodig
+
+Uiteindelijk is geen aanpak overduidelijk beter dan een andere. Je kan best een combinatie van de bovenvermelde methodes gebruiken voor een optimaal resultaat.
+
+
+
+## Caching
+
+Een manier om de performantie van ons systeem te verbeteren is door responses op te slaan en ze bij te houden voor toekomstige requests. Dit staat beter bekend als **caching**. Hierdoor kan onze server veel sneller antwoorden wanneer hij vaak dezelfde vraag krijgt.
+
+<img src="img/systeemontwerp/image-20230120160433796.png" alt="image-20230120160433796" style="zoom:50%;" />
+
+Bij een **cache hit** zit de data al in de cache en hoeft deze dus niet opgehaald te worden. Bij een **cache miss** zal dit wel moeten gebeuren. Logischerwijs willen we in onze applicatie dus zo veel mogelijk cache hits. 
+
+Waarom moeten we cachen? (ik zou veel liever cashen)
+
+* Performance
+  * We kunnen geaggregeerde resultaten opslaan
+* Scaling
+  * Read replicas
+  * Caching HTTP REST proxies
+* Rubustness
+  * Caching downstream responses
+  * Tijdens downtime een statische kopie tonen
+
+Caching kan gebeuren op de machine van de client, maar kan bijvoorbeeld ook voorzien worden door een CDN. In een systeem kan je caching op het niveau van een proxy implementeren of server-side. 
+
+We zien drie manieren om writes af te handelen als we gebruik maken van caching:
+
+* <u>Write around</u>
+  * <img src="img/systeemontwerp/image-20230120161416169.png" alt="image-20230120161416169" style="zoom:33%;" /> 
+  * Reads gaan door de cache en writes gaan er 'rond', rechtstreeks naar de DB.
+  * Hierdoor hebben we wel een cache invalidation systeem nodig
+    * TTL
+    * Conditional GETs
+    * Notification-based (domain events)
+* <u>Write through</u>
+  * <img src="img/systeemontwerp/image-20230120161634593.png" alt="image-20230120161634593" style="zoom:50%;" /> 
+  * Elke write past zowel de cache als de DB aan
+  * Dit is makkelijk, maar wat doen we als er een call misloopt?
+* <u>Write back</u>
+  * <img src="img/systeemontwerp/image-20230120161744540.png" alt="image-20230120161744540" style="zoom:50%;" /> 
+  * App schrijft naar de cache, cache schrijft naar de DB
+  * Snel, maar gevaarlijk
+
+
+
+Er zijn ook een aantal dingen waar je op moet letten bij het gebruik van caching: 
+
+* Op te veel plaatsen cachen
+* Versheid vs optimalisatie
+  * Is het een probleem dat dingen verouderd zijn? Hangt af van de use-case.
+* Cashe Poisoning
+* Cold start
+  * Een cache moet eerst warm worden (zoals een motor). Pas na een aantal misses zal er genoeg nuttige data in de cache zitten om effectief performantiewinst te bekomen.
 
 
 
 # 6 - Resiliency and chaos engineering
 
+## Resiliency
+
+Elke applicatie heeft nood aan weerbaarheid (resiliency). We maken het onderscheid tussen vier verschillende types:
+
+* Rubustness
+  * Omgaan met verwachte omstandigheden
+* Graceful extensibility
+  * Omgaan met onverwachte omstandigheden
+* Rebound
+  * Herstellen na een storing
+* Sustained adaptability
+  * Aanpassing aan verandering op lange termijn
+
+//TODO overzicht uitbreiden wanneer de rest van het hoofdstuk is verwerkt
+
+
+
+Deze slide zit er een beetje random tussen, maar **graceful degradation** betekent dat je wanneer een service niet meer beschikbaar, toch een soort compromis kunt voorzien. Dit kan bijvorbeeld een gecached resultaat zijn. Als bij Netflix de servers die films voor je aanraden kapot zijn, kunnen ze je bijvoorbeeld gewoon een lijst met populaire films geven zonder dat je te veel ongemak moet doorstaan.
+
+
+
+### Stability patterns
+
+#### Time-outs
+
+<img src="img/systeemontwerp/image-20230120175145308.png" alt="image-20230120175145308" style="zoom:50%;" />
+
+In dit voorbeeldje antwoordt de Turnip ads server heel traag, waarna hij kapot gaat. Alle workers in de centrale worker pool zijn aan het wachten op een antwoord, waardoor er geen plaats meer is voor nieuwe requests. Een mogelijke oplossing voor dit probleem is het gebruik maken van time-outs.
+
+<img src="img/systeemontwerp/image-20230120175629132.png" alt="image-20230120175629132" style="zoom: 33%;" />
+
+Er zijn drie belangrijke vragen die we moeten stellen bij het gebruik van time-outs:
+
+* Hoe lang?
+  * Time-outs op basis van context
+    * Latency budget overschreden
+    * Nutteloos response
+  * Fail quickly
+  * Trace production application to find typical values
+* Waar?
+  * Elke out-of-process call heeft een time-out nodig
+* Hoe?
+  * Service meshes voor TCP/IP calls
+  * Libraries voor IPC calls
+    * Synchroon: het proces killen (let op de state!)
+    * Asynchroon: timeout context toevoegen in elke function call
+      * `requestStart`, `requestMaxDuration`
+      * Oppassen voor 'hanging processes'
+
+
+
+//TODO te weinig uitleg, aanvullen
+
+
+
+#### Retries
+
+//TODO, slides vaag, misschien video checken
+
+
+
+#### Bulkheads
+
+We hebben eerder in deze samenvatting bulkheads al eens behandeld. Een bulkhead is een muur in een schip die ervoor zorgt dat niet het hele schip volloopt wanneer je met een lek te maken krijgt. Ookal zaten de bulkheads van de titanic ver boven de waterlijn, waren ze langs de bovenkant niet gesloten. Vanaf dat de eerste vijf compartimenten gevuld waren, begon de boeg te zinken en liepen ook de andere compartimenten vol. 
+
+In systeemontwerp isoleren we met een **bulkhead** resources van elkaar om failures te beperken.
+
+We kunnen dit op een aantal manieren:
+
+* Scheiding van downstream calls
+  * Connection pools
+* Scheiding van concerns
+  * Decomposing tot microservices
+* Scheiding van queues
+* Scheiding van APIs
+* Scheiding van users
+
+
+
+Een **circuit breaker** is een automatisch mechanisme om een bulkhead te sluiten (was duidelijk niet aanwezig op de titanic). Zo beschermen we consumers van een probleem downstream en beschermen we downstream services tegen overbelasting. Bijvevolg kunnen we cascading failures voorkomen.
+
+We kunnen de circuit breaker bijvoorbeeld instellen om open te schieten (zoals in je electriciteitskast) wanneer een bepaald aantal requests is mislukt.
+
+Even voor de duidelijkheid, als een circuit breaker open is, dan laat hij niks meer door. Ik vind het een beetje dom dat ze zoveel moeite doen om de analogie met de electriciteitskast staande te houden, ookal is 'open' voor een afgesloten service best verwarrend. Wanneer het circuit open is kunnen we:
+
+* Fail fast
+  * Dat de error zich omhoog in de chain propageert
+* Graceful degradation
+  * Gereduceerde functionaliteit
+* Gebruik gecachte versie
+  * Outdated resultaten teruggeven
+* Requests in een queue steken
+  * Goed voor sommige asynchrone implementaties
+
+
+
+#### Idempotency
+
+Eénzelfde actie moet altijd hetzelfde resultaat hebben, ookal wordt hij meerdere keren uitgevoerd. 
+
+* Waarom?
+  * Retries 
+  * At-least-once delivery 
+  * Eventual consistency: dat na een update we uiteindelijk wel ooit de juiste geüpdate waarde krijgen
+* Hoe?
+  * Message/action IDs
+  * HTTP PUT in plaats van POST
+  * Idempotente message/action formats
+
+
+
+#### Redundancy
+
+Deze is redelijk obvious. We kunnen redundantie wel op meerdere plekken voorzien:
+
+* Mensen
+* Microservices
+* Data opslag
+
+
+
+#### Spreading risk
+
+We moeten best ons risico verspreiden over:
+
+* Verschillende machines
+* Verschillende availability zones
+* Verschillende regio's
+
+De slide zegt ook dat we niet blind op SLA garanties moeten vertrouwen. Bedankt Merlijn :tophat: :rabbit2: Sorry dat sloeg niet echt op deze slide maar eerder dit vak in zijn geheel.
+
+
+
+#### Isolation
+
+* Communicatie: reduce, async, cache
+* Fysiek: contain, virtualize, move
+* Data: reduce DB tenants, reduce storage users
+
+Er is altijd een trade-off van complexiteit en kost tegenover isolation. 
+
+
+
+## Chaos engineering
+
+Bij chaos engineering experimenteren we op een systeem met als doel vertrouwen in zijn weerstand tegen turbulente omstandigheden in productie te kweken. We gaan in essentie willekeurige machines uitzetten en zien wat er gebeurt. Een aantal leuke termen in dit thema zijn:
+
+* Chaos monkey
+  * Introduceert willeurige failures in productie AWS services
+* Chaos gorilla
+  * Zet een volledige AWS availability zone uit
+* Latency monkey
+  * Introduceert willekeurige vertragingen
+
+Door in een organisatie **game days** te organiseren waar systeemfailures worden gesimuleerd kunnen we zien hoe de mensen en de software reageren om zo zwakke punten te vinden. Deze kunnen dan aangekaart worden in trainingen.
+
+
+
+### Blame culture
+
+Omdat iedereen bang is om beschuldigt te worden, worden problemen of fouten vaak verborgen. Daardoor is het soms moeilijk om de root cause te vinden, mede door nutteloze post-mortems. We kunnen niet leren uit onze fouten en deze cultuur zaait wantrouwen. 
+
+Het streefdoel is een **blameless post-mortem**. We willen een gedetailleerd overzicht van:
+
+* Welke acties er wanneer zijn ondernomen
+* Welke effecten er geobeserveerd zijn
+* Welke verwachtingen er waren
+* Welke assumpties er gemaakt werden
+* Hoe de sequentie van gebeurtenissen begrepen werd toen hij plaatsvond
+
+Dit overzicht moet gedeeld kunnen worden zonder angst voor bestraffing of retributies. We gaan op zoek naar de **second story**. 
+
+| First Stories                                                | Second Stories                                               |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| Human error is seen as cause of failure                      | Human error is seen as the effect of systemic vulnerabilities deeper inside the organization |
+| Saying what people should have done is a satisfying way to describe failure | Saying what people should have done doesn’t explain why it made sense for them to do what they did |
+| Telling people to be more careful will make the problem go away | Only by constantly seeking out vulnerabilities can organizations enhance safety |
+
 
 
 # 7 - Organizational structures
+
+## Loosely coupled organizations
+
+Een verschuiving naar microservice architectuur vereist ook een verschuiving in de structuur van je organisatie.
+
+We hebben nood aan teams die:
+
+* Grootschalige design changes kunnen maken
+  * Zonder toestemming van buitenaf
+  * Zonder veranderingen buitenaf
+* Hun werk kunnen afmaken 
+  * zonder communicatie naar buiten
+* Hun product on demand uitbrengen
+  * Ongeacht afhankelijke services
+* On demand kunnen testen 
+  * Zonder geïntegreerde testomgeving
+* Deployments kunnen doen
+  * Tijdens de werkuren met verwaarloosbare downtime
+
+### Stream aligned teams
+
+<img src="img/systeemontwerp/image-20230120220218696.png" alt="image-20230120220218696" style="zoom:50%;" />
+
+We zorgen ervoor dat een team verantwoordelijk is voor één **valuable stream of work**. Het team kan zo snel, veilig en onafhankelijk mogelijk user value afleveren zonder hand-offs naar andere teams. We houden deze teams best zo klein mogelijk. Proefondervindelijk vastgesteld is dat vanaf 9 mensen een team minder efficiënt wordt.
+
+Door kleinere teams is iedereen gefocust op dezelfde doelen. Het is makkelijker om werk te coördineren en om op dezelfde lijn te blijven. Elk team heeft wel echter nood aan **autonomie**. Dit betreft:
+
+* Macht om beslissingen te maken
+* Macht om te kunnen handelen zonder coördinatie
+
+
+
+### Ownership
+
+Er zijn twee methodes om om te gaan met het eigendom van code:
+
+* **Strong ownership**
+  * Een microservice (of meerdere) zijn eigendom van een team
+  * Externe mensen moeten hun aanspreken voor veranderingen
+  * Het team beslist de manier van werken
+    * Technologie 
+    * Coding standards, idioms
+    * Deployment
+  * Er is meer ruimte voor variatie en experimentatie
+* **Collective ownership**
+  * Elk team kan elke microservice wijzigen
+  * Hierdoor kan je mensen verplaatsen naar waar ze nodig zijn
+  * Hier is extra coördinatie nodig zodat teams elkaar niet voor de voeten lopen
+  * Consistentie nodig tussen microservices
+  * Dit stimuleert tight coupling tussen services (gedistribueerde monoliet)
+* 
+
+//TODO slide 325
+
+Een extreme manier van strong ownership is **full life-cycle ownership**. Hier handelt elk team alsof ze een apart project of bedrijf zijn. Het design, programmeren, deployen, beheren en decommisioneren wordt allemaal binnen het team afgehandeld. Deze manier van werken is niet speciaal een vereiste, maar eerder een streefdoel.
+
+
 
 # ----------Labo-----------
 
