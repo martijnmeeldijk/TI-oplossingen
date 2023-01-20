@@ -2344,7 +2344,7 @@ We itereren over steeds langere prefixen. Voor elke prefix itereren we over stee
 
 ## Vorige examens
 
-Het lijkt erop dat ze altijd maar 4 vragen stellen.
+
 
 * Januari 2022
   * Grafen
@@ -2360,6 +2360,23 @@ Het lijkt erop dat ze altijd maar 4 vragen stellen.
   * Strings
     * Patricia tree oefening
     * Elias delta en gammacode oefening
+* Januari 2023
+  * Strings
+    * Suffix tree: teken de staartpointers voor het voorbeeld van 'mississippi' letterlijk uit de slides
+    * Geef de regex voor de string uit $\{0,1\}*$ met geen enkel paar dezelfde opeenvolgende symbolen
+    * KMP tabel voor het woord 'algoritme'
+
+  * Grafen
+    * Waarvoor dient een residueel netwerk? Leg uit in abstracte termen (wanneer moet je pijlen toevoegen enzo) zonder een voorbeeld.
+    * Een tekening met steden en wegen. Op elke weg stond een nummertje en op elke stad ook. Het nummertje stond voor een tijd in minuten om de weg te gebruiken of om de stad te doorkruisen. Vorm dit om tot een gekend grafenprobleem en los op.
+    * Een boom met $p$ knopen heeft $p-1$ takken. Toon aan.
+
+  * Labo oefening
+    * Elias' delta en gammacode
+    * Kortste pad in een gerichte lusloze graaf
+
+
+
 
 
 
