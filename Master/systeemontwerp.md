@@ -132,7 +132,7 @@ Hier een overzicht van de voor- en nadelen van een applicatie ontwikkeld als mon
     * Schaalbaarder
     * Services kunnen in verschillende talen/stacks ontwikkeld worden, met verschillende databanken
   * **Nadelen**
-    * Foute toepassing kan leiden tot een gedistribueerde monoliet
+    * Foute toepassing kan leiden tot een gedistribueerde monoliet, het soms moeilijk om de lijn te trekken tussen verschillende services
     * Gedistribueerde systemen zijn complex
     * Communicatie over het netwerk is trager. Data moet geserialiseerd worden en over een mogelijk onstabiele verbinding verstuurd worden.
     * Moeilijker om tests te schrijven die meerdere services omvatten
@@ -927,11 +927,524 @@ Er zijn twee methodes om om te gaan met het eigendom van code:
   * Hier is extra coördinatie nodig zodat teams elkaar niet voor de voeten lopen
   * Consistentie nodig tussen microservices
   * Dit stimuleert tight coupling tussen services (gedistribueerde monoliet)
-* 
 
-//TODO slide 325
+Eén probleem dat soms meekomt met collective ownership is de "man-month". Werk wordt vaak ingeschat als x aantal manuren, wat impliceert dat een dubbel aantal mensen ervoor zou zorgen dat de taak dubbel zo snel af is. Dit is natuurlijk totaal verkeerd.
 
 Een extreme manier van strong ownership is **full life-cycle ownership**. Hier handelt elk team alsof ze een apart project of bedrijf zijn. Het design, programmeren, deployen, beheren en decommisioneren wordt allemaal binnen het team afgehandeld. Deze manier van werken is niet speciaal een vereiste, maar eerder een streefdoel.
+
+
+
+### Enabling teams
+
+Stel je voor dat we nu een aantal teams hebben met strong ownership. Eén team is verantwoordelijk voor één microservice en een ander team voor een andere. De teams gebruiken totaal verschillende tech stacks. Hoe kunnen ze nu de applicatie in zijn geheel testen? 
+
+Een mogelijke oplossing is om een **enabling team** te voorzien. Dit team heeft als verantwoordelijkheid om andere teams te 'enablen'. Zij voorzien ondersteuning, technische infrastructuur en gedeelde services, waardoor de andere teams zich volledig kunnen focussen op hun eigen verantwoordelijkheden en dus meer waarde kunnen leveren.
+
+Om kennis op een informele manier te delen, kunnen we binnen een bedrijf **communities of practice** vormen. Dit zijn groepjes van mensen die typisch gevormd worden rond een **gedeeld veld van interesse**. Zo kunnen mensen van verschillende teams bijvoorbeeld ervaringen met elkaar delen en feedback aan elkaar geven. Deze groepjes worden meestal gevormd **rond één bepaalde technologie**, zoals Python of Kubernetes. Door regelmatige meetings en gedeelde forums of kanalen kunnen ze werken aan documentatie en tooling of discussiëren over best-practices.
+
+Bij grotere projecten is er dan bovendien wellicht nood aan een **platform team.** Dit team onderhoudt en beheert het gedeelde platform en voorziet typisch de infrastructuur en fundering voor de applicatie. In het perspectief van het platform team zijn de developers de gebruikers. Het platform team voorziet dan een **paved road** voor de andere teams. Dit kan frameworks of infrastructuur omvatten, maar ook bepaalde requirements waaraan teams moeten voldoen. Het platform team legt al het ware de weg aan die de ontwikkelaars moeten volgen. Het is belangrijk dat het platform team de andere teams niet volledig de les gaat lezen en ze gaat verplichten om het platform te gebruiken, maar eerder een manier voorziet om het leven van de andere teams te vergemakkelijken zodat zij zich op hun hoofdtaak kunnen richten. 
+
+
+
+### Internal open source
+
+We kunnen binnen een bedrijf de broncode van de gehele applicatie voor iedereen zichtbaar maken. Dit fenomeen staat ook bekend als **internal open source**. Teams van andere onderdelen kunnen dan pull requests openen op de code van andere teams. Dit zorgt natuurlijk voor een klein beetje extra overhead, omdat deze dan ook weer nagekeken moeten worden. Deze reviews worden best gedaan door collega's en best zo snel mogelijk. 
+
+Deze manier van werken wordt best pas gehanteerd als de codebase **mature** is. Want als de visie van het project nog niet duidelijk is, zijn bijdragen van andere teams waarschijnlijk niet zo zinvol.
+
+
+
+# <u>Examenvragen</u>
+
+Dit zijn de puntjes van het document, omgezet in vraagvorm.
+
+
+
+## 1 - Introduction to microservices
+
+> **Wat zijn de voor- en nadelen van het ontwikkelen van een applicatie als monoliet of als microservices.**
+
+* <u>Monolith</u>
+  * **Voordelen**
+    * Goed voor een beginnende applicatie
+    * Geen complexiteit van verschillende services
+  * **Nadelen**
+    * Codebase moeilijk te begrijpen
+    * Moeilijk schaalbaar, want elke server moet de volledige applicatiestack draaien
+    * Moeilijk uitbreidbaar en onderhoudbaar, want één verandering kan veel gevolgen hebben
+    * Je systeem kan platliggen door één bug
+* <u>Microservices</u>
+  * **Voordelen**
+    * Services kunnen onafhankelijk gedeployed worden
+    * Gemakkelijker uit te breiden en te onderhouden, één verandering vereist typisch geen aanpassing in meerdere microservices. Fouten worden ook niet overgedragen tussen services.
+    * Schaalbaarder
+    * Services kunnen in verschillende talen/stacks ontwikkeld worden, met verschillende databanken
+  * **Nadelen**
+    * Foute toepassing kan leiden tot een gedistribueerde monoliet, het soms moeilijk om de lijn te trekken tussen verschillende services
+    * Gedistribueerde systemen zijn complex
+    * Communicatie over het netwerk is trager. Data moet geserialiseerd worden en over een mogelijk onstabiele verbinding verstuurd worden.
+    * Moeilijker om tests te schrijven die meerdere services omvatten
+    * Microservices introduceren veel overhead, zowel technisch als organisatorisch. Elke service is verantwoordelijk voor zijn eigen opslag et cetera. Veel services vereisen veel werknemers.
+    * Beter geschikt voor grote bedrijven dan voor startups
+
+
+
+> **Geef 3 redenen om over te schakelen naar een microservicearchitectuur en leg uit.**
+
+* <u>Wanneer de applicatie en functionaliteit groeit</u>
+  * **Codebase te groot** om door één persoon begrepen te worden
+  * Grote codebase is **traag** voor **IDE**
+  * Lange startup vertraagt de **edit-build-test** loop
+  * Langetermijnscommitment tot **één technology stack**
+* <u>Wanneer de nood voor agile ontwikkeling groeit</u>
+  * Voor veranderingen in de code van één deel moet de **hele applicatie gerebuild** worden
+  * Continuous integration moet de **volledige test suite draaien**
+* <u>Wanneer de vraag naar het systeem groeit</u>
+  * **Reliability**: **één bug** kan het hele systeem neerhalen
+  * Moeilijk om **omhoog** te **schalen**, we moeten de volledige applicatie repliceren
+  * Verschillende modules kunnen **verschillende resource requirements** hebben
+
+
+
+> **Wat zijn microservices? Leg uit en geef een aantals eigenschappen.**
+
+* Microservice architectural style
+  * Ontwikkel een applicatie als een **verzameling van kleine services**
+  * Elke **service** draait zijn **eigen proces**
+  * Services **communiceren** met elkaar via **lightweight mechanismen** (http, ...)
+* Microservices 
+  * Georganiseerd volgens **business capabilities** (niet technische)
+  * Kunnen **onafhankelijk** geautomatiseerd **gedeployed** worden
+  * Zo weinig mogelijk gecentraliseerd beheer
+  * Kunnen in **verschillende** **talen/stacks** ontwikkeld worden, met verschillende databanken
+  * **Data** wordt **gedecentraliseerd** beheerd
+    * **Eventual consistency** (wijzigingen niet direct doorgevoerd, zal uiteindelijk wel goed komen)
+  * **Loose coupling**
+    * Alleen interactie via **API**
+    * **Geïsoleerde pipeline**
+  * Strong functional cohesion
+
+
+
+> **Wat is Conways law?**
+
+"Any organization that designs a system will produce a design whose structure is a copy of the organization's communication structure."
+
+
+
+> **Wat is het verschil tussen SOA en microservices?**
+
+Bij SOA ligt de nadruk op services maken die gedeeld kunnen worden doorheen je applicatie. Microservices gaan een stapje verder hier bovenop. Onze hele architectuur is in dit geval gebouwd op individuele services die onafhankelijk werken. Nog een verschil is dat we bij microservices onze services **zo klein mogelijk** maken, dit is geen vereiste voor SOA.
+
+De verschillende services zijn **loosely coupled** en geïmplementeerd volgens **domain driven design**, hun codebases zijn niet afhankelijk van elkaar en maken kunnen ieder gebruik maken van hun eigen tech stack. Er zijn duidelijke **boundaries** tussen de microservices en ze communiceren enkel via een **API**. 
+
+
+
+## 2 - Decomposing
+
+> **Wat is requirements analysis?**
+
+Requirements analysis is een proces waarbij we de vereisten van een systeem **identificeren, documenteren en verifiëren**. We verzamelen en analyseren informatie van stakeholders omtrent de noden en doelen van het systeem.
+
+We kunnen de requirements van een systeem opsplitsen in twee categorieën:
+
+* <u>Functional</u>
+  * Wat moet het systeem **doen**?
+  * Scalability, reliability, ... Alle -ilities
+* <u>Non-functional</u>
+  * Wat moet het systeem **zijn**?
+  * Pizza verkopen of overheden destabiliseren om bananen te kunnen verkopen?
+
+
+
+> **Geef de verschillende geziene diagrammen en hun doel. Wat zijn de drie zaken die je kan verbeteren met behulp van een goed diagram?**
+
+Een diagram kan je helpen door drie dingen te verbeteren:
+
+* **Understanding**: nadenken wanneer je tekent
+* **Collaboration**: samen diagrammen maken
+* **Communication**: visueel hulpmiddel, gedeelde taal, snel overzicht
+
+
+
+De verschillende soorten diagrammen:
+
+* <u>Domain diagram</u>
+  * Het **domeinmodel** voorstellen (bv. **UML** klassediagram)
+  * Bevat: Inheritance, association, depends-on
+* <u>Sequence diagram</u>
+  * **Eén mogelijke sequentie** van **interacties** voorstellen (tussen gebruikers en/of machines/systemen) (bv. UML sequence diagram)
+  * Nuttig voor impact op **niet-functionele requirements**
+    * Blokkerende threads/processen
+    * Failing/trage remote service
+    * Synchronisatie van *state*
+    * Trage database queries
+  * Bevat: Objecten, relaties (interprocescommunicatie)
+* <u>Process diagram</u>
+  * Beschrijft een **volledige workflow** (bv. BPMN process diagram)
+  * Bestaat uit **meerdere sequenties**
+  * Stappen, wie doet wat, wat is het proces
+  * Bevat: Processen, control flow, data flow
+* <u>Service diagram</u>
+  * Overzicht van verschillende **services** en hun **interacties**
+  * Overzicht op **high-level** interacties en structuur van het systeem
+  * Opletten op consistentie
+    * Zijn pijlen data of control flow?
+    * Betekenis van labels en relaties
+    * Geen geïsoleerde entiteiten
+    * Vermijd afkortingen
+  * Bevat: Services en actors, interacties
+
+ 
+
+
+
+> **Wat zijn een aantal voorwaarden voor het maken van een goed diagram?**
+
+* Duidelijkheid: een diagram moet gemakkelijk te begrijpen zijn en moet de over te brengen informatie duidelijk overdragen. 
+* Eenvoud: een diagram moet zo simpel mogelijk zijn, en enkel de nodig informatie bevatten
+* Consistentie: het is belangrijk om consistent te zijn met vormen, kleuren en taalgebruik
+* Relevantie: het diagram moet relevant zijn voor het systeem en geen irrelevante informatie bevatten
+
+<sub>Dit staat volgens mij niet in de slides maar ik vond het nuttig</sub>
+
+
+
+> **Welke drie stappen volgt het proces voor het bouwen van een microservice architectuur?**
+
+1. <u>Identify and understand system operations</u>
+   * **1a. Create a high-level domain model**: praat met experten ubiquitous language om inzicht te krijgen in het probleemdomein
+   * **1b. Define the requests that your application must handle**: we moeten weten welke systeemoperaties ons systeem moet ondersteuenen. Het is belangrijk om hier technische termen te vermijden. Er zijn twee soorten systeemoperaties:
+     * **Commands**: CRUD
+     * **Queries**: enkel lezen (typisch voor UI)
+2. <u>Identify services</u> 
+   * **Decompose monolith into microservices**. Dit kan op één of meerdere van de volgende manieren:
+     * **By business capabilities**: splits de logica op volgens wat de organisatie doet (sales, marketing, customer service, ...)
+     * **By sub-domain**: maak een *model* voor elk subdomein van je business. Dit model heeft een andere context in elk subdomein. 
+     * **By technology**: kan goed zijn voor performance, maar je systeem wordt wel gelaagd en dat is bad
+     * **By data**: Nuttig voor GDPR, bijvoorbeeld green en red zone. Voegt wel complexiteit toe.
+3. <u>Define service APIs and collaborations</u>
+   * Dit kunnen operaties of events zijn
+   * **3a. Decide which service is the entry point for each system operation**
+   * **3b. Determine the methods needed to support collaboration between services**
+
+
+
+
+
+> **Op welke 4 manieren kan je een systeem decomposen in microservices?**
+
+* **By business capabilities**: splits de logica op volgens wat de organisatie doet (sales, marketing, customer service, ...)
+* **By sub-domain**: maak een *model* voor elk subdomein van je business. Dit model heeft een andere context in elk subdomein. 
+* **By technology**: kan goed zijn voor performance, maar je moet oppassen dat je systeem niet gelaagd wordt want dat is bad
+* **By data**: Nuttig voor GDPR, bijvoorbeeld green en red zone. Voegt wel complexiteit toe.
+
+
+
+> **Met welke vier obstakels kan je te maken krijgen bij decompositie?**
+
+* **Trage netwerkverbinding**: vermijd dus overtollige communicatie tussen services
+* **Synchrone operaties**: hierdoor wordt ons hele systeem vertraagd. Werk zo veel mogelijk asynchroon
+* **Verspreide data**: een atomaire update van data is alleen mogelijk binnen één microservice
+* **God classes**: Dit is een klasse die te veel verantwoordelijkheid bezit. Er zijn te veel andere services of klassen van hem afhankelijk. We kunnen het systeem opsplitsen in verschillende models die ieder geldig zijn in hun eigen **bounded context**, de er wordt in elk model enkel nadruk gelegd op de functionaliteit die daar nodig is, waardoor de functionaliteit van de god class verdeeld wordt.
+
+
+
+## 3 - Microservice internal
+
+> **Wat zijn de problemen met een gelaagde architectuur?**
+
+* Eén presentatielaag
+* Eén persistentielaag
+  * Business logica hangt af van persistentielaag. Onmogelijk om te testen zonder DB.
+* Sterke afhankelijkheid tussen lagen
+  * Beperkte herbruikbaarheid van onderdelen
+* Beperkte schaalbaarheid
+* Niet flexibel voor verandering
+
+
+
+> **Wat zijn onion style en hexagonal style? Wat is hun doel? Maak een tekening en leg uit.**
+
+Het zijn alternatieven voor het layered model om een applicatie te bouwen. 
+
+
+
+<u>Hexagonal style</u>
+
+<img src="img/systeemontwerp/image-20230106140927278.png" alt="image-20230106140927278" style="zoom: 33%;" />
+
+In het midden van de applicatie zit de **application core**. Dit is de business logica. Rond de applicatie hangen verschillende adapters:
+
+* **Onbound adapter** 
+  * Voorziet een API om de businesslogica op te roepe
+  * Bijvoorbeeld REST API, GUI, 
+  * Command handler: bv. Kafka queue met events die verwerkt dienen te worden
+* **Outbound adapter** 
+  * Roept andere systemen aan
+  * Database
+  * Call naar een externe service (bv. betaling)
+  * Publishen naar een Kafka queue
+
+Er is geen vast aantal lagen zoals bij een layered architectuur. We hebben verschillende adapters die niet speciaal in een bepaalde laag worden gegroepeerd. Deze architectuur kan gebruikt worden voor elke microservice in een applicatie.
+
+
+
+<u>Onion style</u>
+
+Een vernieuwde versie van de hexagonale stijl is de onion style. Het model is past beter in het kader van domain driven development. 
+
+<img src="img/systeemontwerp/image-20230106155630692.png" alt="image-20230106155630692" style="zoom: 33%;" />
+
+We krijgen drie lagen: 
+
+* Domeinmodel: Specifieke logica om specifieke informatie te beschrijven die de applicatie gaat bijhouden
+* Applicatielaag: Bevat veel van de logica. Dit is het deel dat effectief dingen gaat doen.
+* Adapters: ongeveer hetzelfde als bij onion style (inbound/outbound)
+
+Iedere laag is verbonden met de andere laag via interfaces. 
+
+Elke laag is enkel afhankelijk van onderliggende lagen. 
+
+
+
+
+
+> **Vergelijk een transaction script met een rich domain model. Wat betekenen ze en wat zijn de verschillen, voor- en nadelen.** 
+
+Dit zijn twee verschillende methodes om de business logica van een applicatie te ontwikkelen.
+
+* <u>Transaction script</u>
+  * Volledige scheiding tussen de logica die dingen verandert en de data opslag zelf
+    * Klassen bevatten enkel een state
+    * Services implementeren alle logica
+  * Veel herhaalde logica voor services die bepaalde klassen gebruiken.
+  * Simpel en gemakkelijk te implementeren
+* <u>Rich Domain Model</u>
+  * Kleine klassen met beperkte verantwoordelijkheid
+  * Klassen kunnen ook logica bevatten:
+    * Klassen met logica (en state)
+    * Klassen zonder logica, enkel met state
+    * Services (klassen met enkel logica)
+  * Klassen kunnen er nu zelf voor zorgen dat de data altijd consistent is
+
+
+
+
+
+> **Wat zijn de verschillende patterns die gebruikt worden om een rich domain model te maken? Geef voor elk concept ook een korte uitleg.**
+
+Om het business domein voor te stellen, maken we gebruik van de volgende concepten:
+
+* Entities
+  * Wordt gedefineerd door zijn identiteit, niet zijn attributen
+  * Twee entiteiten met gelijke attributen zijn niet speciaal aan elkaar gelijk (of ongelijk bij ongelijke attributen)
+  * Wordt geïdentificeerd door een ID
+    * Losgekoppeld van alle andere zaken (gebruik dus een UUID en geen database index of rijksregisternummer)
+  * Bijvoorbeeld een product of een persoon
+* Values
+  * Worden alleen onderscheiden door hun eigenschappen
+  * Beschrijven domein-relevante attributen van entiteiten
+    * Hebben dus alleen betekenis binnen de context van een ander object
+  * Twee values zijn gelijk als hun attributen gelijk zijn
+  * Bijvoorbeeld een prijs of een kleur
+* Domain service
+  * Stelt het gedrag voor en is dus stateless
+  * Bevat business logica die moeilijk in één entity of value past
+  * Orchestreert business logica
+* Domain events
+  * Geven aan dat er iets is gebeurd in het probleemdomein
+  * Worden gegenereerd wanneer een aggregaat van staat verandert
+  * Ze triggeren dan een side-effect (zoals iets anders updaten)
+  * Om dataconsistentie te behouden
+  * Kan ook een andere actie triggeren (email, melding naar andere app, ...)
+
+
+
+Om het aanmaken en de persistentie van modelobjecten te voor te stellen gebruiken we:
+
+* Aggregates
+  * <img src="img/systeemontwerp/image-20230106163306967.png" alt="image-20230106163306967" style="zoom:33%;" /> 
+  * Indien we een groot model hebben met veel objecten, kunnen we het best opspliten in aggregaten
+  * Een aggregaat heeft één **root entity** en een aantal value objecten
+  * In de database zal één transactie dan ook één aggregaat updaten of aanmaken. Wanneer meerdere transacties nodig zijn gebruik je best een saga.
+  * Het is de bedoeling dat we in de applicatie alleen verwijzen naar de root van een aggregaat. Niet-root entiteiten kunnen wel verwijzingen bevatten naar de root van andere aggregaten. 
+  * Referenties tussen aggregaten moeten primary keys gebruiken
+* Repository
+  * Is verantwoordelijk voor het ophalen en persisteren van aggregate roots
+  * Verbergt onderliggende technologie
+
+* Factory (niet besproken) 
+
+> **Leg uit. Wat is CQRS?**
+
+Het staat voor command-query responsibility segregation. We splitsen het domeinmodel in twee delen:
+
+* **Read model** 
+  * Bevat de nodige voorzieningen voor queries
+  * Staat in voor de presentatietaken
+  * DTO's (data transfer objects)
+    * view models, op maat gemaakt voor de specifieke behoeftes van een view
+  * Materialized views
+* **Write model** 
+  * Functies voor het afhandelen en verwerken van commands
+  * Staat in voor alle business tasks
+  * Geen zorgen over presentationele vereisten
+  * Command handler verwerkt een bepaalde command en bevat de logica om de vervulling van een bepaalde taak te orchestreren
+
+Geeft extra complexiteit, maar deze is wel gescheiden van de rest van de applicatie. 
+
+//TODO wat als je het niet zo doet?
+
+
+
+> **Wat is het nut van een API composer. Wie kan er de rol innemen van een API composer?** 
+
+Een **API composer** implementeert een query hem samen te stellen uit queries naar één of meerdere **provider services**. Elk van deze provider services is eigenaar van zijn data. De API composer voorziet dan een API die zich voordoet als één service, maar eigenlijk meerdere queries uitvoert om een samengesteld resultaat af te leveren.
+
+* **Client**: stuurt een request naar bijvoorbeeld de API gateway met een set van parameters en endpoints die opgeroepen moeten worden. De client zal de data dan zelf verwerken en aggregeren. 
+* **API gateway**: als de query deel is van de externe API. Hier zal de gateway het voor de client doen lijken alsof er maar één API is en de taken van het vorige puntje voor hem uitvoeren. 
+* **Service**: als de query wordt gebruikt door meerdere interne services en te complex is voor de API gateway. 
+
+Het gebruikt van een API composer is **simpel** en intuïtief, maar zorgt wel voor **meer overhead**. Het kan dat je **availability** **minder** goed is omdat de composer gedeeltelijke of gecachte data teruggeeft. Om dat hij meerdere queries naar meerdere databanken doet, **verlies** je ook **transactionele dataconsistentie**. 
+
+
+
+## 4 - Microservice interaction
+
+> **Wat zijn een aantal mogelijk interaction styles voor microservices en wat zijn hun voor- en nadelen?**
+
+
+
+> **Wat is het verschil tussen brokered en brokerless messaging? Wat zijn de voor- en nadelen?**
+
+
+
+> **Wat zijn een aantal problemen met synchrone interactie en hoe kunnen we ze oplossen?**
+
+
+
+> **Wat is een SAGA?**
+
+
+
+> **Welke problemen kunnen opgelost worden door SAGAs?**
+
+
+
+> **Wat zijn de voor- en nadelen van SAGAs?**
+
+
+
+> **Hoe werkt een SAGA?**
+
+
+
+> **Wat is het verschil tussen choreography en orchestration?**
+
+
+
+## 5 - Scaling and caching
+
+> **Welke zijn de vier types van scaling en wat zijn hun sterktes en beperkingen?**
+
+
+
+> **Wat betekenen cache hit en cache miss? Waarom zijn deze termen belangrijk?** 
+
+
+
+> **Geef 3 redenen om caching te gebruiken in een applicatie.**
+
+
+
+> **Welke verschillende methodes zijn er om om te gaan met writes in de context van caching?**
+
+
+
+> **Wat zijn een aantal valkuilen waarbij je rekening moet houden als je gebruik maakt van caching?**
+
+
+
+## 6 - Resiliency & Chaos Engineering
+
+> **Welke zijn de vier types van resiliency. Geef voor elke type een korte verduidelijking.**
+
+
+
+> **Wat is een time-out? Welke vragen moeten we onszelf stellen bij het gebruik van time-outs?** 
+
+
+
+> **Wat zijn retries? Wat zijn de gevaren en hoe kunnen we ermee omgaan?**
+
+
+
+> **Wat is een bulkhead?**
+
+
+
+> **Wat is een circuit breaker? Welke dingen kunnen we doen wanneer deze in gebruik is?** 
+
+
+
+> **Waarom hebben we idempotentie nodig? Hoe kunnen we het implementeren?**
+
+
+
+> **Wat is redundantie? Op welke plaatsen kan dit voorzien worden?**
+
+
+
+> **Wat is chaos engineering? Waarom is het nuttig?**
+
+
+
+## 7 - Organizational structures
+
+> **Tot welke 6 zaken moeten teams in staat zijn in een loosely coupled organization?**
+
+* Grootschalige design changes kunnen maken
+  * Zonder toestemming van buitenaf
+  * Zonder veranderingen buitenaf
+* Hun werk kunnen afmaken 
+  * zonder communicatie naar buiten
+* Hun product on demand uitbrengen
+  * Ongeacht afhankelijke services
+* On demand kunnen testen 
+  * Zonder geïntegreerde testomgeving
+* Deployments kunnen doen
+  * Tijdens de werkuren met verwaarloosbare downtime
+
+
+
+> **Wat zijn stream aligned teams? Wat is het belang van autonomie in dit kader?**
+
+
+
+> **Wat is het verchil tussen strong ownership en collective ownership? Wat zijn de voor-en nadelen?**
+
+
+
+> **Wat is full-lifecycle ownership?**
+
+
+
+> **Wat zijn enabling teams?**
+
+
+
+> **Wat zijn communities of practice?**
+
+
+
+> **Wat is een platform team? Wat betekent de term paved road in dit kader?**
+
+
+
+> **Wat is internal open source?** 
+
+
 
 
 
