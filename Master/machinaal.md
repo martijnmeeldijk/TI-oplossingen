@@ -595,7 +595,24 @@ $$
 
 # 5 - Support vector machines
 
-Een support vector machine is een krachtig machine learning model waarmee je lineaire en non-lineaire classificatieproblemen mee kunt oplossen. 
+## Linear classification
+
+<img src="img/machinaal/image-20230122112307960.png" alt="image-20230122112307960" style="zoom: 50%;" />
+
+Bij lineaire classificatie zoeken we een discriminator functie $g(x)$ die de samples in twee categorieën opsplitst. Door de vector van een punt ($x$) te projecteren op de rechte door de oorsprong, loodrecht op $g(x)$ kunnen we wiskundig aantonen of een punt tot de klasse behoort of niet. 
+$$
+\mathbf w ^T \mathbf x \geq c \xRightarrow{\enspace} \mathbf x \text{ behoort tot klasse 1}\\
+\mathbf w ^T \mathbf x < c \xRightarrow{\enspace} \mathbf x \text{ behoort tot klasse 2}
+$$
+Je kan het ook iets mooier schrijven met $b = -c$
+$$
+g(\mathbf x) = \mathbf w^T \mathbf x + b \geq 0 \xRightarrow{\enspace} \mathbf x \text{ behoort tot klasse 1}\\
+g(\mathbf x) = \mathbf w^T \mathbf x + b < 0 \xRightarrow{\enspace} \mathbf x \text{ behoort tot klasse 2}\\
+$$
+
+## Marges toevoegen
+
+Een support vector machine is een krachtig machine learning model waarmee je lineaire en non-lineaire classificatieproblemen mee kunt oplossen. Om daar te geraken introduceren we een marge in onze decision rule.
 
 <img src="img/machinaal/image-20230107151427817.png" alt="image-20230107151427817" style="zoom:50%;" />
 
@@ -645,10 +662,190 @@ Als we te maken hebben met een uitschieter, kan het onmogelijk zijn om een lijn 
 
 We willen een kleine hoeveelheid misclassificaties (waarden aan de verkeerde kant van de straat) toelaten. Waarden mogen soms ook op de straat liggen. 
 
+<img src="img/machinaal/image-20230122113406196.png" alt="image-20230122113406196" style="zoom:50%;" />
+
 Dit kunnen we doen door een bepaalde hoeveelheid **error** te tolereren: $\upzeta^{(i)} \geq 0$
 $$
 g(\mathbf x ^{\mathbf i}) = t^{(i)}(\mathbf w^T \mathbf x ^{(i)} + b) \geq 1 - \upzeta^{(i)}
 $$
+
+In het voorbeeldje hierboven zal voor punt `b` onze $\zeta^{(i)}$ dus groter moeten zijn dan $1$, want we moeten meer dan $1$ van hem aftrekken om aan de juiste kant van de straat te geraken. Ons doel is natuurlijk om een classifier te vinden waarvoor we zo veel mogelijk $\zeta$ 's op nul kunnen zetten.   
+
+We kunnen dit in de vorm van een minimalisatieprobleem als volgt voorstellen:
+
+
+$$
+\min_{\mathbf w ,b,\zeta} \frac 1 2 \lVert\mathbf w \rVert^2 + C \sum^m_{i=1}\zeta^{(i)}\\
+\begin{align}
+\text{ onderhevig aan: } t^{(i)}(\mathbf w ^T \mathbf x^{(i)}+b) \geq &1 - \zeta^{(i)} \quad \forall i\\
+\zeta^{(i)} \geq &0
+\end{align}
+$$
+
+* Door $\frac 1 2 \lVert \mathbf w \rVert ^2$ te minimaliseren, maximaliseren we de marge (breedte van de straat)
+* $C$ is een hyperparameter die we zelf moeten afstellen die aangeeft hoe hard de fouten zullen doorwegen
+* $\zeta^{(i)}$ is de fout
+
+
+
+//TODO hinge (ik denk dat we dat misschien niet moeten vanbuiten kennen)
+
+## Stadardization
+
+| Unscaled                                                     | Scaled                                                       |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| <img src="img/machinaal/image-20230122115016789.png" alt="image-20230122115016789" style="zoom:67%;" /> | <img src="img/machinaal/image-20230122115045682.png" alt="image-20230122115045682" style="zoom:67%;" /> |
+
+Als je met features werkt die ordes van magnitude van elkaar verschillen, zal het resultaat van SVM gedomineerd worden door de feature met de grootste schaal. Daardoor is het soms een goed idee om eerst je features te standaardiseren. 
+$$
+x_{0, \text{ scaled}} = \frac{x_0 - \mu_{x_0}}{\sigma_{x_0}}
+$$
+
+## Support vector
+
+### Generalized Lagrangian
+
+Neem ons optimalisatieprobleem:
+$$
+\min_{\mathbf w ,b,\zeta} \frac 1 2 \lVert\mathbf w \rVert^2 + C \sum^m_{i=1}\zeta^{(i)}\\
+\begin{align}
+\text{ onderhevig aan: } t^{(i)}(\mathbf w ^T \mathbf x^{(i)}+b) \geq &1 - \zeta^{(i)} \quad \forall i\\
+\zeta^{(i)} \geq &0
+\end{align}
+$$
+Dit probleem kan alleen opgelost worden met quadratic programming. We kunnen dit probleem makkelijker maken om op te lossen met de Generalized Lagrangian. Hierdoor wordt het een convex optimalisatieprobleem dat veel efficiënter opgelost kan worden:
+$$
+\begin{align}
+\mathcal{L}(\mathbf w ,b,\zeta^{(i)}, \alpha^{(i)}, \beta^{(i)}) &= \frac 1 2 \mathbf w ^T \mathbf w + C \sum^m_{i=1} \zeta^{(i)} 
+\\&- \sum^m_{i=1} \alpha^{(i)} (t^{(i)}(\mathbf w^T \mathbf {x^{(i)}}+b)-1 + \zeta^{(i)}) 
+\\&- \sum^m_{i=1}\beta^{(i)} \zeta^{(i)}
+\end{align}
+$$
+//TODO ik begrijp dit niet
+
+
+
+### Intuition in the the solution of SVM
+
+//TODO (slide 29 vooral)
+
+
+
+### The dual problem
+
+> U dient enkel te weten 
+>
+> 1. waarom we soms het duale probleem verkiezen over het primaire en 
+> 2. dat in de duale formulering enkel het dot product van datapunten voorkomt; waardoor de kernel trick kan toegepast worden
+
+
+
+## The kernel trick
+
+Wat als we nu beschikken over data die niet lineair te scheiden valt? 
+
+<img src="img/machinaal/image-20230122122425187.png" alt="image-20230122122425187" style="zoom:50%;" />
+
+Eén optie is om een kwadratische functie te vinden die de klassen van elkaar scheidt. Dan zullen we meer parameters moeten trainen. Bovendien verhogen we op deze wijze ook de kans op overfitting. 
+
+Een andere optie is om niet-lineaire combinaties van de bestaande features toe te voegen als nieuwe features. Dit correspondeert in essentie met een transformatie naar een hogere dimensie. In deze hogere dimensie kunnen we dan gewoon een lineaire classifier proberen te fitten. 
+
+| Origineel                                                    | Hogere dimensie                                              |                                                              |
+| ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| <img src="img/machinaal/image-20230122122959200.png" alt="image-20230122122959200" style="zoom:50%;" /> | <img src="img/machinaal/image-20230122123015122.png" alt="image-20230122123015122" style="zoom:50%;" /> | We voegen de feature $x^2$ toe. We gaan van 1 dimensie naar 2 dimensies. |
+| <img src="img/machinaal/image-20230122122425187.png" alt="image-20230122122425187" style="zoom:50%;" /> | <img src="img/machinaal/image-20230122123036312.png" alt="image-20230122123036312" style="zoom:50%;" /> | $\varphi \left(\begin{bmatrix} x_{1} \\x_{2} \\       \end{bmatrix}\right) = \begin{bmatrix} x_{1}^2 \\x_{2}^2 \\ \sqrt2 x_1x_2      \end{bmatrix}$ |
+
+
+
+> U moet in woorden kunnen uitleggen wat de kernel trick is, maar hoeft geen formules te kennen van individuele kernels. Slides 46-48 zijn te kennen in die zin dat u 
+>
+> 1. kan aanwijzen door welk type kernel een scheidingslijn is gegenereerd, en 
+> 2. kwalitatief kan zeggen wat de impact van een hyperparameter van een bepaalde kernel is op de vorm van de scheidingslijn (Hoe vervormt de scheidingslijn bij grotere waarde van c bij polynomiale kernel? Hoe vervormt die bij grotere waarde van gamma bij RBF?). 
+>
+> De Sigmoid kernel is niet te kennen.
+
+//TODO effectieve uitleg kernel trick (boek p 198)
+
+
+
+# 6 - Decision trees
+
+Een **decision tree** is een andere manier van supervised learning. Ze zijn geschikt voor zowel classificatie als regressie. We splitsen een beslissing op in een sequentie van kleinere beslissingen, elk gebaseerd op één feature. Je verdeelt de feature ruimte eigenlijk in vakjes. Als een nieuwe waarde dan in een bepaald vakje zit, kan je veronderstellen dat hij dezelfde te voorspellen waarde heeft als de gekende waarden in dat vakje.
+
+| Classification                                               | Regression                                                   |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| Voorspel het behoren tot een bepaalde klasse                 | Voorspel een continue waarde                                 |
+| <img src="img/machinaal/image-20230122134243996.png" alt="image-20230122134243996" style="zoom: 67%;" /> | <img src="img/machinaal/image-20230122134309245.png" alt="image-20230122134309245" style="zoom: 67%;" /> |
+| De bladeren bevatten de probabiliteit voor een klasse        | De bladeren bevatten voorspelde waardes                      |
+| <img src="img/machinaal/image-20230122134428359.png" alt="image-20230122134428359" style="zoom:67%;" /> | <img src="img/machinaal/image-20230122134438742.png" alt="image-20230122134438742" style="zoom:67%;" /> |
+| Interne knopen geven een scheiding aan voor de resterende datapunten | Alle waarden in hetzelfde vakje resulteren in dezelfde voorspelling |
+
+
+
+### Building a decision tree
+
+Hoe stellen we deze boom nu op? Gegeven een bepaalde dataset met features en labels, moeten we de dataset in twee splitsen door een vraag te stellen. Dit blijven we herhalen tot een bepaalde diepte of als we niet meer verder kunnen splitsen.
+
+Het vinden van de optimale beslissingsboom is een NP-compleet probleem, dus we zullen gebruik moeten maken een greedy methode. We kiezen de vraag die ons op dat moment de meeste informatie zal opleveren. 
+
+
+
+#### CART
+
+Eén manier om zo'n boom op te stellen is met CART (classification and regression trees). Dan werken we als volgt:
+
+* Loop over alle features
+  * Kies een bepaalde threshold (bijvoorbeeld het gemiddelde of de mediaan van die feature)
+    * Je kan ook meerdere thresholds uitproberen per feature om een betere split te krijgen
+  * Splits de datapunten op basis van de threshold (groter dan en kleiner dan)
+  * Meet hoe goed de splitsing is met een **cost function**
+* Kies de beste splitsing
+* Herhaal dit tot een bepaalde diepte of als we niet verder kunnen splitsen
+
+
+
+##### Classificatie
+
+De cost function ziet er dan zo uit:
+
+
+$$
+J(k,t_k) =\frac{ m_\text{left}}{m}G_\text{left} + \frac{m_\text{right}} m G_\text{right}
+$$
+
+* $m_\text{left}$: hoeveel er nee hebben geantwoord
+* $m_\text{right}$: hoeveel er ja hebben geantwoord
+* $G_\text{left}$: de **impurity** van het linkerdeel, dit geeft aan hoe homogeen de waarden in het linkerdeel zijn
+  * $G = 1 - \sum^c_{i=1}(p_i)^2$
+  * Met $C$ het aantal klassen en $p_i$ voor een klasse hoeveel procent van de punten hij bevat
+  * Als $G=1$ zijn alle elementen in de set van dezelfde klasse
+  * Als $G=0$ zijn alle elementen in de set van verschillende klassen
+* $G_\text{right}$: de **impurity** van het rechterdeel (analoog aan het vorige)
+
+
+
+##### Regressie
+
+Als we CART gebruiken voor regressie, gebruiken we voor $G$ de **sum-of-squares error**.
+$$
+G = \sum_{i=1}^n (y_i - f(x_i))^2
+$$
+
+* $n$: het aantal datapunten in de splitsing
+* $y_i$: de target
+* $f(x_i)$: de voorspelling (het gemiddelde van de targets in de splitsing)
+
+
+
+#### Entropie
+
+<img src="img/machinaal/image-20230122142859787.png" alt="image-20230122142859787" style="zoom:50%;" />
+
+In plaats van de Gini impurity kunnen we gebruik maken van **entropie**. We zoeken dan in elke split een waarde die de entropie vermindert. De entropie zal nul zijn als onze node alleen waardes van één klasse bevat.
+$$
+H_i = - \sum_{\substack{k=1\\p_{i,k \neq 0}}}^n p_{i,k} \log_2(p_{i,k})
+$$
+
 
 
 # Examenvragen
@@ -658,6 +855,8 @@ $$
 
 
 ## Vragen uit de slides
+
+### Training models
 
 > What is (linear) regression ? 
 
@@ -700,3 +899,52 @@ $$
 
 
 > What is cross entropy ?
+
+
+
+### SVM
+
+> Why is it called support vector machine?
+
+Support Vectors
+
+> What if my data is not linearly separable? 
+
+Kernel trick 
+
+> How to find the best value for hyperparameter C? 
+
+Hyperparameter search with cross-validation
+
+> How to extend to more than 2 classes?
+
+Multiclass classification
+
+
+
+> Principle of (linear) SVM
+
+
+
+> General structure of the objective function
+
+
+
+> Difference between hard and soft margin classification
+
+
+
+> Role of slack variables in soft margin classification
+
+
+
+> What is the role of the hyperparameter in SVM?
+
+
+
+> Why do we need to apply feature scaling in SVM?
+
+
+
+## Vragen uit het boek
+
