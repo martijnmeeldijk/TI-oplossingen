@@ -2,7 +2,9 @@
 
 Deze samenvatting omvat de onderwerpen gezien in de slides. Waar de uitleg tekortschiet heb ik aangevuld met informatie uit het boek [(hier is de pdf)](https://www.knowledgeisle.com/wp-content/uploads/2019/12/2-Aur%C3%A9lien-G%C3%A9ron-Hands-On-Machine-Learning-with-Scikit-Learn-Keras-and-Tensorflow_-Concepts-Tools-and-Techniques-to-Build-Intelligent-Systems-O%E2%80%99Reilly-Media-2019.pdf).
 
-De [oplossingen](https://waxworksmath.com/Authors/G_M/Geron/WriteUp/Weatherwax_Geron_Solutions.pdf) voor de oefeningen in het boek
+De [oplossingen](https://waxworksmath.com/Authors/G_M/Geron/WriteUp/Weatherwax_Geron_Solutions.pdf) voor de oefeningen in het boek. Deze zijn gemaakt door een student denk ik.
+
+Oké ik heb een betere digitale versie van het [boek](https://dokumen.pub/hands-on-machine-learning-with-scikit-learn-keras-and-tensorflow-2ndnbsped-978-1-492-03264-9.html) gevonden (met oplossingen). Het is wel een vage site, maar het boek ziet er goed uit. Die andere pdf die ik had was een early release en bevatte ook geen oplossingen.
 
 ## Puntenverdeling
 
@@ -15,7 +17,7 @@ Evaluation:
 
 # 1 - The ML Landscape
 
-(boek p3)
+<sub>p3</sub>
 
 ## ML Types
 
@@ -164,7 +166,7 @@ $$
 
 ## Get the data
 
-
+//laat zitten
 
 ## Discover and visualize the data to gain insights
 
@@ -738,7 +740,7 @@ $$
 > 1. waarom we soms het duale probleem verkiezen over het primaire en 
 > 2. dat in de duale formulering enkel het dot product van datapunten voorkomt; waardoor de kernel trick kan toegepast worden
 
-
+//TODO
 
 ## The kernel trick
 
@@ -845,6 +847,262 @@ In plaats van de Gini impurity kunnen we gebruik maken van **entropie**. We zoek
 $$
 H_i = - \sum_{\substack{k=1\\p_{i,k \neq 0}}}^n p_{i,k} \log_2(p_{i,k})
 $$
+
+## Bias-variance trade-offs
+
+<img src="img/machinaal/image-20230122173558537.png" alt="image-20230122173558537" style="zoom:67%;" />
+
+In bovenstaand plaatje zie je de visualisatie van een Decision Tree met diepte 1, 2 en 3. In de eerste twee zijn er een aantal misclassificaties. Ik het derde plaatje worden alle trainingsinstanties correct geclassificeerd. Is dit dat een goed model? 
+
+Waarschijnlijk niet. Het model is mogelijks onderhevig aan overfitting. Een eigenschap van decision trees is dat het aantal parameters niet bekend is voordat we het model trainen. Decision Trees zijn **non-parametric**. 
+
+
+
+## Regularisatie
+
+Omdat Decision Trees gevoelig zijn aan overfitting, hebben we nood aan regularisatie. We willen de vrijheid van het model beperken zodat we niet oneindig veel variabelen kunnen gebruiken om onze functie te modelleren. 
+
+We kunnen een aantal beperkingen introduceren:
+
+* `Min_samples_split`: minimum aantal samples die een knoop moet bevatten als hij wilt splitsen
+* `Min_samples_leaf`: minimum aantal samples die een blad moet bevatten
+* `Min_weight_fraction_leaf`: zelfde als het vorige, maar als een fractie van het totaal aantal gewogen instanties
+* `Max_height`: maximale hoogte van de boom 
+* `Max_leaf_nodes`: maximum aantal bladknopen
+
+<img src="img/machinaal/image-20230122174807255.png" alt="image-20230122174807255" style="zoom:50%;" />
+
+Hetzelfde geldt nog steeds wanneer je Decision Trees gebruikt voor regressie. 
+
+
+
+## Voor- en nadelen
+
+Bij het gebruik van Decision Trees komen een aantal voor- en nadelen kijken:
+
+* Voordelen
+  * Gemakkelijk te begrijpen
+  * Kan **niet-lineaire** interacties tussen features modelleren
+  * Zeer snel $O(\log m)$ ($m$ aantal training samples), zeker bij **inferentie**
+  * Gemakkelijk te implementeren
+  * Kan helpen bij het zoeken naar **feature importance**
+  * Kunnen gemakkelijk gecombineerd worden in ensembles
+  * Ondersteunt meerdere outputs
+* Nadelen
+  * Instabiel, een kleine wijziging in de data veroorzaakt een grote wijziging in de boom
+  * Alle decisions worden gemaakt door loodrechte scheidingslijnen
+    * De dataset roteren resulteert dus in een compleet andere tree
+    * Kan verholpen worden door preprocessing met PCA (dan verlies je wel interpreteerbaarheid) //TODO wat is PCA?
+  * Ze zijn relatief inaccuraat, er zijn modellen die het beter doen op dezelfde soort data
+  * Gevoelig aan **overfitting**
+  * Omdat ze alleen stapfuncties gebruiken om de decision boundary te modelleren is het moeilijk om:
+    * Lineaire relaties te modelleren
+    * Smooth functies te benaderen
+
+
+
+Hier zie je wat er gebeurt als je de data roteert:
+
+<img src="img/machinaal/image-20230122175409869.png" alt="image-20230122175409869" style="zoom:50%;" />
+
+Decision Trees doen dus ook gek bij gladde curves:
+
+<img src="img/machinaal/image-20230122175759913.png" alt="image-20230122175759913" style="zoom:50%;" />
+
+
+
+# 7 - Ensembles
+
+Stel je voor dat je een moeilijke vraag stelt aan duizenden willekeurige mensen en een aggregatie maakt van hun antwoorden. In veel gevallen is dit geaggregeerde antwoord waarschijnlijk beter dan het antwoord van één expert. Analoog kunnen we door meerdere modellen te combineren op dezelfde wijze ook een beter resultaat krijgen. Deze techniek heet **ensemble learning**. 
+
+Hierdoor kunnen meerdere zwakke modellen combineren tot één sterk model. Net als die ene scene in de Bionicle film van 2003 waar op het einde die twee Bionicles samensmelten en een sterkere Bionicle worden. (sorry spoilers)
+
+We volgen bij ensembles altijd **twee stappen**:
+
+* Zorg ervoor dat alle modellen verschillende dingen leren
+* Combineer de individuele voorspellingen
+
+
+
+We zullen de volgende technieken bespreken:
+
+* **Voting**: we trainen modellen op licht verschillende datasets en combineren ze door het gemiddelde te nemen of de waarde die het meest is gekozen (een vote dus)
+* **Boosting**: We trainen modellen die de voorspellingen van andere modellen verbeteren
+* **Stacking**: We trainen een model dat de voorspellingen van andere modellen als input neemt
+
+
+
+## Voting
+
+We trainen hier verschillende modellen op verschillende versies van de data. 
+
+<img src="img/machinaal/image-20230122181658749.png" alt="image-20230122181658749" style="zoom:50%;" />
+
+We kunnen totaal verschillende modellen trainen op dezelfde data. Gek genoeg zal in veel gevallen de accuracy van het ensemble zelfs hoger zijn dan de hoogste accuracy van de gebruikte modellen. Een andere manier van aanpak is om verschillende modellen van dezelfde soort te trainen op verschillende trainingsdata. 
+
+<img src="img/machinaal/image-20230122181331588.png" alt="image-20230122181331588" style="zoom:50%;" />
+
+Er zijn een aantal technieken die het probleem op deze manier aanpakken:
+
+* **Bagging**: (kort voor bootstrap aggregating) 
+  * We maken meerdere training sets door random samples te nemen uit de training set **met terugleggen**
+  * Het kan dus dat onze nieuwe training sets duplicaten bevatten.
+  * Geeft meestal betere resultaten
+* **Pasting**: 
+  * We maken meerdere training sets door random samples te nemen uit de training set **zonder terugleggen**
+  * Eén training set kan niet twee keer dezelfde waarde bevatten
+  * Tussen verschillende training sets kunnen waarden wel opnieuw voorkomen
+* **Random subspaces**
+  * We gebruiken willekeurige subsets van de features
+* **Random patches**
+  * We nemen zowel willekeurige subsets van de features als willekeurige datapunten
+
+Een goeie keuze voor deze werkwijze is om  **Decision Trees** te gebruiken. Doordat zelfs een kleine verandering in data een totaal andere boom geeft, geven ze de variatie die we nodig hebben voor ensembles. Hun zwakte wordt op deze wijze een sterkte. 
+
+Bij het gebruik van bagging introduceren we de term **out-of-bag samples**. Dit zijn samples die voor een bepaald model niet in de training set zaten. Elke instantie van de volledige training set zal out-of-bag zijn voor een aantal van de modellen. Deze kunnen dan gebruikt worden voor de evaluatie van je model, zonder nood aan een extra test set. 
+
+Neem een instantie en laat alle modellen waarvoor deze out-of-bag is een voorspelling maken voor deze instantie. Dan neem je van die modellen de majority vote. Nu kan je voor alle out-of-bag samples deze berekening doen (de OOB error) als performantiemetriek. Je moet wel oppassen, want deze methode doet het model soms beter blijken dan het eigenlijk is. 
+
+
+
+### Random forests 
+
+<img src="img/machinaal/image-20230123122801389.png" alt="image-20230123122801389" style="zoom:67%;" />
+
+Als we een ensemble van decision trees gaan trainen met bagging, bekomen we een **random forest**. Dit soort model kan dus (net als decision trees) gebruikt worden voor zowel classificatie en regressie. 
+
+* Elke boom wordt getraind op een **random subset van de data** (bagging)
+* Om de bomen extra random te maken, nemen we bij het trainen bovendien op **elk niveau** van een gegeven boom een **random subset van de features** en berekenen we de beste split uit deze subset. 
+* **Extra trees**: We voegen bij deze variant een random threshold toe (in plaats van te zoeken naar de beste threshold) om nog meer diversiteit te krijgen in de bomen. De bomen zullen minder gebalanceerd zijn, maar dit willen we juist. Dit wordt ook wel een Extremely Random Trees ensemble genoemd.
+
+Een ander nuttig gegeven aan random forests is dat ze het makkelijk maken om de **relatieve importance** van elke feature te bepalen. Voor een bepaalde feature kan zijn belang afgeleid worden door te kijken hoeveel de knopen die deze feature gebruiken gemiddeld de impurity doen afnemen. 
+
+
+
+## Boosting
+
+Het principe van boosting is om verschillende modellen te trainen die elkaars fouten verbeteren. In tegenstelling tot voting moeten de modellen sequentieel getraind worden. Dit kan dus niet parallel, waardoor het mogelijks langer duurt. 
+
+We zien twee methodes van boosting: gradient boost en Adaboost. 
+
+
+
+### AdaBoost
+
+We trainen een sequentie van modellen waar elk volgend model meer focus legt op de datapunten waar het vorige model fout zat. 
+
+<img src="img/machinaal/image-20230123125028046.png" alt="image-20230123125028046" style="zoom:33%;" />
+
+Om dit mogelijk te maken, zullen we moeten werken met gewichten:
+
+* **Instance weight** $w^{(i)}$: dit is het gewicht van een sample. Als deze sample fout wordt geclassificeerd door een model, zullen we dit gewicht verhogen.
+* **Predictor weight** $\alpha^{(i)}$: elk model krijgt ook een gewicht. Hoe accurater een model is, hoe hoger zijn gewicht zal zijn. Dit gewicht wordt dan gebruikt voor de berekening van de uiteindelijke voorspelling.
+
+
+
+:birthday: hoera we moeten de formules niet kennen. We zullen de stappen in woorden beschrijven zonder enge tekens:
+
+1. Initialiseer all instance weights
+2. Train het model en bereken zijn gewogen error rate
+3. Bereken de predictor weight
+4. Werk de instance weights bij en normaliseer ze
+5. Herhaal stappen 2-4 tot een bepaald aantal predictors of als het juiste resultaat is bereikt
+6. Bereken de gewogen voorspelling van de modellen samen, rekening houdende met de predictor weights
+
+
+
+### Gradient boost
+
+Net als bij AdaBoost, trainen we een sequentie van modellen. Het verschil zit echter in het feit dat gradient boost niet elke ronde de instance weights zal bijwerken, maar zal proberen om de nieuwe predictor te fitten op de **residual error** gemaakt door de vorige predictor. De residual error is het verschil tussen de echte waarde en de voorspelde waarde. 
+
+Als je deze samentelt, bekom je natuurlijk een waarde die dichter ligt bij de echte waarde. Dit wordt dan ook gedaan. 
+
+<img src="img/machinaal/image-20230123131634232.png" alt="image-20230123131634232" style="zoom: 67%;" />
+
+In het voorbeeld zie je links de voorspellingen van elk model apart. Rechts wordt in elke rij de uitkomst van de het huidige en de vorige modellen samengeteld tot een ensemble. Je ziet dat de derde (rechts onder) al een stuk beter presteert. 
+
+Als we gradient boost willen gebruiken voor **classificatie**, zal onze residual error het verschil zijn tussen de voorspelde kans  voor het behoren tot een bepaalde klasse (tussen 0 en 1) en de effectieve waarde voor deze klasse (0 of 1). 
+
+#### Link met gradient descent
+
+Bij gradient descent berekenen we de afgeleide van de *loss*, rekening houdend met de parameters. Dit vertelt ons dan in welke richting we de parameters moeten aanpassen om de *loss* te verminderen. 
+
+Bij gradient boost proberen we de voorspellingen van het vorige model aan te passen om de *loss* te verminderen. We berekenen dus ook de afgeleide van de *loss* functie, maar dan rekening houdend met met de output van het vorige model. Dit zegt ons dan hoe we de output moeten veranderen om de *loss* te verminderen. In essentie probeert het nieuwe model dus de gradiënt te schatten. 
+
+#### Regularisatie
+
+Gradient boosting kan ook weer gevoelig zijn aan overfitting. Hiervoor kunnen we ook weer een aantal dingen doen:
+
+* **Shrinkage**: verminder de bijdrage van elk volgend model. Dit staat ook gekend als **learning rate** en zal ervoor zorgen dat we fouten niet te ver door modelleren. 
+* Het aantal trees beperken
+* Maximum diepte van trees
+* Je kan de regularisatietechnieken van de onderliggende modellen gebruiken
+
+
+
+## Stacking
+
+Stacking staat voor stacked generalization en is gebaseerd op een simpel idee. In plaats van triviale functies zoals voting te gebruiken om modellen samen te voegen, trainen we een model om deze operatie uit te voeren. 
+
+| <img src="img/machinaal/image-20230123143649618.png" alt="image-20230123143649618" style="zoom: 50%;" /> | <img src="img/machinaal/image-20230123143705670.png" alt="image-20230123143705670" style="zoom: 50%;" /> |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+
+We splitsen de training set in twee. Op het eerste deel trainen we onze modellen. Op het tweede deel laten we de getrainde modellen voorspellingen maken, dit vormt deze set om tot een **blending data set**. Nu kunnen we een model, genaamd een **blender** trainen op deze voorspellingen. 
+
+
+
+# 8 - Dimensionality reduction
+
+Veel machine learning problemen gebruiken duizenden of zelfs miljoenen features voor elke training instance. Deze features vertragen niet alleen het trainen, maar kunnen het ook moeilijker maken om een goede oplossing te vinden. Dit probleem wordt vaak de **curse of dimensionality** genoemd.
+
+Gelukkig kunnen we in de echte wereld vaak het aantal dimensies aanzienlijk verkleinen. Hoe? Dat zullen we zo meteen bespreken.
+
+Een kleine voetnoot. Het verminderen van dimensionaliteit veroorzaakt wel enigszins verlies van informatie. Zelfs al zorgt het voor versnelde training, kan het dat je model wat minder goed presteert. In sommige gevallen kan het verminderen van dimensionaliteit de hoeveelheid ruis in je data verminderen, maar in de meeste gevallen zal dat niet zo zijn en zal enkel het trainen versneld worden. Probeer dus altijd eerst te trainen op de originele data. 
+
+
+
+## Curse of Dimensionality
+
+Als het aantal features toeneemt, groeit de hoeveelheid data die we nodig hebben om accurate voorspellingen te maken exponentieel. 
+
+<img src="img/machinaal/image-20230123145426270.png" alt="image-20230123145426270" style="zoom:50%;" />
+
+Hoe meer dimensies we hebben in onze data, hoe kleiner de verhouding tussen de afstand tot het dichtste en verste punt wordt. Afstand verliest zijn betekenis. 
+
+
+
+<img src="img/machinaal/image-20230123150238274.png" alt="image-20230123150238274" style="zoom:50%;" />
+
+Neem een hyperkubus in 2D (een vierkant dus) met zijde 1. Als we twee willekeurig punten in dit vierkant nemen, liggen ze gemiddeld 0.52 uit elkaar. In 3D bedraagt deze afstand 0,66. Gaan we naar 1000 000 dimensies, is deze afstand 408,25. Ookal is de zijde nog steeds één, is er gewoon meer ruimte in hogere dimensies, waardoor onze data schaarser wordt.
+
+| <img src="img/machinaal/image-20230123150324713.png" alt="image-20230123150324713" style="zoom:67%;" /> | <img src="img/machinaal/image-20230123150352464.png" alt="image-20230123150352464" style="zoom:50%;" /> |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+
+Als we een hyperbal in een hyperkubus steken, zal naarmate de hoeveelheid dimensies toeneemt, de massa van de bal in verhouding met die van de kubus exponentieel afnemen. 
+
+## Manifold hypothesis
+
+Bij problemen in de echte wereld liggen training instanties gelukkig **nooit** uniform verspreid overheen alle dimensies. 
+
+# 9 - Unsupervised learning
+
+
+
+# 10 - Deep learning
+
+
+
+# 14 - CNN
+
+
+
+# 15 - RNN
+
+
+
+# 17 - Representation learning
+
+
 
 
 
