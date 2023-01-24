@@ -1099,7 +1099,24 @@ Willen we dit nu toepassen, kan dat op twee manieren:
 
 ### Principal component analysis 
 
-//TODO
+<img src="img/machinaal/Q7HIP.gif" alt="PCA animation: variance and reconstruction error" style="zoom:67%;" />
+
+Het principe van principle component analysis is om een hypervlak van een lagere dimensie te vinden en onze data daarop te projecteren. Hoe vinden we nu zo'n vlak?
+
+We doen dit door de **principle component** te zoeken. Dit is de richting van grootste variantie in onze data. Dan gaan we verder door een volgende principle component te zoeken, orthogonaal op de vorige. Al deze principle components samen vormen een hypervlak waarop we onze data kunnen projecteren, met een zo laag mogelijk verlies aan variantie.
+
+| <img src="img/machinaal/image-20230124174905631.png" alt="image-20230124174905631" style="zoom:67%;" /> | ![image-20230124174934388](img/machinaal/image-20230124174934388.png) |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+
+In de praktijk volgen we deze stappen:
+
+* Centreer de dataset rond het gemiddelde
+* Bereken de covariantiematrix $\mathbf C$ van de dataset
+* Bereken de eigenvectoren en hun corresponderende eigenwaarden van de covariantiematrix
+* Maak een $n \times d$ matrix $\mathbf W$ die de eigenvectoren bevat die overeenkomen met de $d$ grootste eigenwaarden van $\mathbf C$
+  * De eigenvector met de grootste eigenwaarde is de eerste principal component
+* Nu kunnen we $\mathbf W$ gebruiken om de samples naar de nieuwe subspace te transformeren
+* We kunnen de data reconstrueren met de inverse van $\mathbf W$
 
 
 
@@ -1520,7 +1537,9 @@ Er zijn nog een aantal dingen die we kunnen doen om het trainen van ons model te
 
 
 
-### Learning rate scheduling
+## Learning rate scheduling
+
+<img src="img/machinaal/image-20230124141601020.png" alt="image-20230124141601020" style="zoom:50%;" />
 
 De learning rate is meestal de belangrijkste parameter die je moet afstellen. Als deze te hoog is zal het model niet convergeren. Als hij te laag is kan het dat het heel lang duurt om te convergeren of dat we vastraken in een lokaal minimum.
 
@@ -1532,7 +1551,7 @@ We beginnen best met een hoge learning rate, die we gradueel doen afnemen met:
 
 
 
-### Regularization
+## Regularization
 
 Door hun miljoenen parameters zijn neurale netwerken vaak gevoelig aan overfitting. We hebben nood aan regularisatie. 
 
@@ -1545,17 +1564,186 @@ Door hun miljoenen parameters zijn neurale netwerken vaak gevoelig aan overfitti
   * En forceert elke neuron om onafhankelijker te zijn
   * Bij inferentie worden alle neuronen terug gebruikt, maar worden ze geschaald door de factor die werd gebruikt tijdens het trainen. 
 
+## Normalization
+
+Het is meestal een goed idee om je data te normaliseren voordat je hem in een model steekt. 
+
+Dit kan op meerdere manieren:
+
+* Min-max normalisatie: schalen naar $[0,1]$
+* Zero-center: het gemiddelde ervan aftrekken
+* Standaardiseren: gemiddelde aftrekken, delen door $\sigma$
+
+Voor afbeeldingen kan je
+
+* Gemiddelde afbeelding ervan aftrekken
+* Gemiddelde RGB waarde aftrekken
+* Gemiddelde RGB waarde aftrekken en delen door standaardafwijking
+
+
+
+## Hyper parameter tuning
+
+Als je alles handmatig doet, noemt men dit ook wel **grad student descent**. 
+
+Een goede algemene aanpak:
+
+* Neem een simpel model zonder regularisatie
+* Doe een sanity check voor de loss (is deze wat je zou verwachten)
+* Overfit op een klein deel van de dataset
+  * Probeer verschillende modellen
+  * Probeer verschillende learning rates
+* Train de meest veelbelovende modellen op de volledige dataset voor een aantal epochs, met verschillende optimizers
+* Pas regularisatie toe en train op de volledige dataset 
+
+
+
 
 
 # 14 - CNN
 
+<img src="img/machinaal/image-20230124142733318.png" alt="image-20230124142733318" style="zoom:50%;" />
 
+De fully connected neurale netwerken die we tot nu toe behandeld hebben verwachten altijd een 1D input. Als we nu een input van een hogere dimensie hebben, zullen we deze moeten *flattenen* naar 1D. Hierdoor zal wel wat informatie verloren gaan, aangzien het model niet meer precies zal weten welke pixels bij elkaar in de buurt lagen. 
+
+* Het model zal dus zelf moeten leren leren dat sommige inputs gerelateerd zijn.
+* Bovendien zal deze methode resulteren in een gigantisch aantal verbindingen. 
+
+CNN's trachten deze problemen op te lossen. 
+
+## Convolutional neural networks
+
+<img src="img/machinaal/image-20230124143517164.png" alt="image-20230124143517164" style="zoom:50%;" />
+
+Convolutionele neurale netwerken zijn gebaseerd op de structuur van de visuele cortex van een brein. 
+
+De 2D structuur van de input wordt behouden en de neuronen in een **convolutional layer** worden in een 2D structuur geordend. 
+
+* Elke neuron heeft verbindingen naar een klein vlak in de vorige laag
+  * Hij is dus alleen gevoelig voor dat gebied
+  * Dit is de **receptive field**
+* Een CNN volgt een **hiërarchische structuur**
+  * De eerste lagen focussen op kleine, low-level features
+  * De diepere lagen brengen deze samen in high level features
+* **Weight reuse**
+  * Alle neuronen in dezelfde laag gebruiken dezelfde gewichten
+  * Deze gewichten vormen dan een filter (**kernel**) die de input overloopt
+
+<img src="img/machinaal/image-20230124145218836.png" alt="image-20230124145218836" style="zoom:50%;" />
+
+De kernel is dus een vierkantje (van bijvoorbeeld 3x3) dat we over onze afbeelding gaan schuiven. 
+
+* We schuiven hem altijd een bepaalde hoeveelheid op
+  * Dit heet de **stride**, deze is 2 in het plaatje.
+* Door de input dan met de kernel te **convolueren**, krijgen we 
+  * Een **feature map**, een gefilterde versie van de afbeelding
+  * Zo kunnen we in de afbeelding bepaalde gebieden detecteren
+    * Horizontale of verticale lijnen
+    * Kleurovergangen
+* Elke laag gebuikt $N$ verschillende filters
+  * Dit resulteert dus in $N$ feature maps voor elke laag
+  * <img src="img/machinaal/image-20230124145642021.png" alt="image-20230124145642021" style="zoom:33%;" /> 
+* De gewichten van de filters worden geleerd met gradient descent
+
+
+
+Vervolgens stapelen we meerdere lagen met meerdere feature maps op elkaar, met telkens een niet-lineaire activatiefunctie er tussen. Elke laag aggregeert informatie van de vorige lagen. Naarmate je dieper in het model gaat zal de **receptive field** steeds groter worden. 
+
+<img src="img/machinaal/image-20230124145423137.png" alt="image-20230124145423137" style="zoom:50%;" />
+
+### Output size
+
+Soms kan het dat door de grootte van de kernel en de stride, sommige waarden (aan de rand bijvoorbeeld) worden genegeerd. Dit kan opgelost worden met **zero padding**. 
+
+* Het aantal dimensies van de output
+
+//TODO
 
 # 15 - RNN
 
 
 
-# 17 - Representation learning
+# 17 - Representation learning / Generative models
+
+Als we proberen om goede feature descriptions uit data te halen zonder deze manueel te definiëren, spreken we over **representation learning**. Dit doen neurale netwerken typisch. Autoencoders kunnen gebruikt worden om dit unsupervised te doen. 
+
+**Generative modelling** wordt gebruikt om realistische samples te genereren. In dit hoofdstuk zullen we zien hoe we beide kunnen doen aan de hand van autoencoders en Generative Adverserial Networks. 
+
+
+
+## Autoencoders
+
+<img src="img/machinaal/image-20230124155628141.png" alt="image-20230124155628141" style="zoom:67%;" />
+
+Zoals al eerder besproken, bestaat een autoencoder uit twee delen:
+
+* Encoder
+  * Deze transformeert de input naar een **latent space representation**
+  * Dit is een abstracte multidimensionale representatie van de features
+* Decoder
+  * Gebruikt deze representatie om de input te reconstrueren
+
+Ze kunnen beide fully connected, convolutional of recurrent lagen gebruiken en worden getraind met gradient descent. 
+
+Autoencoders kunnen gebruikt worden voor dimensionaliteitsreductie, pre-training en anomaly detection. 
+
+
+
+### Denoising autoencoder
+
+<img src="img/machinaal/image-20230124160635658.png" alt="image-20230124160635658" style="zoom:50%;" />
+
+Door willekeurige noise toe te voegen aan de inputs tijdens het trainen, kunnen we het model te trainen om de originele input te vinden. Dit kans ons helpen om goede high-level features te vinden, of om ruis uit afbeeldingen te halen. 
+
+
+
+### Variational autoencoders
+
+<img src="img/machinaal/image-20230124160931323.png" alt="image-20230124160931323" style="zoom:50%;" />
+
+In plaats van rechtstreeks een encodering te maken voor een gegeven input, maakt de encoder een *mean coding* $\pmb \mu$ en een standaardafwijking $\pmb \sigma$. We nemen een willekeurige sample uit deze distributie, die dan aan de decoder gegeven wordt. 
+
+Wanneer het model getraind is, kunnen we dus gemakkelijk nieuwe instanties genereren door ruis te voeren aan de decoder. 
+
+Het model wordt getraind met twee loss functies:
+
+* Reconstruction loss (bv. MSE)
+* Latent loss
+  * Forceert het model om encoderingen terug te geven die eruitzien alsof ze uit een Gaussiaanse verdeling gesampled waren 
+
+VAEs stimuleren het 'ontrafelen' van onderliggende factoren. Eén dimensie van de latent code kan dan één onderliggende eigenschap voorstellen (lijn dikte, hoek, ...). Deze ontrafeling is nuttig om high level informatie uit je input te halen. 
+
+Variational autoencoders waren een tijdje heel erg populair, maar ze zijn ingehaalde door Generative Adverserial Networks, dit in staat zijn tot veel betere resultaten.
+
+
+
+## Generative adverserial models
+
+<img src="img/machinaal/image-20230124163141556.png" alt="image-20230124163141556" style="zoom:50%;" />
+
+We trainen twee neurale netwerken door ze tegen elkaar op te zetten:
+
+* **Generator**
+  * Genereert een sample vanuit ruis, met als doel de discriminator te foppen
+  * Ziet nooit echte samples
+  * Gebruikt **generator loss** als loss functie, deze zal laag zijn als de discriminator het verschil **niet** kan zien
+* **Discriminator**:
+  * Probeert de het verschil te zien tussen echt samples en gegenereerde samples
+  * Gebruikt **discriminator loss**, zal laag zijn als hij het verschil kan zien
+
+Tijdens het trainen proberen de generator en de discriminator dus constant elkaar te slim af te zijn. Dit resulteert wel in een zeer complex optimalisatieprobleem en is dus zeer gevoelig aan de instellingen van de hyperparameters. Het kan dat we te maken krijgen met **mode collapse**, dit doet zich voor als de outputs van de generator steeds minder divers worden. Als de generator bijvoorbeeld merkt dat de discriminator het moeilijk heeft met schoenen herkennen, kan het dat hij alleen nog maar schoenen genereert. 
+
+
+
+## Diffusion models
+
+<img src="img/machinaal/image-20230124173330330.png" alt="image-20230124173330330" style="zoom:50%;" />
+
+We voegen een klein beetje ruis toe aan onze data en trainen een model om deze ruis te verwijderen. Als we zo meerdere modellen achter elkaar zetten kunnen we zelfs modellen maken die ruis omzetten tot een overtuigend resultaat.
+
+
+
+
 
 
 
