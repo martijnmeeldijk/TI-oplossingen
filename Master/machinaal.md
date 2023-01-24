@@ -1082,13 +1082,468 @@ Als we een hyperbal in een hyperkubus steken, zal naarmate de hoeveelheid dimens
 
 ## Manifold hypothesis
 
-Bij problemen in de echte wereld liggen training instanties gelukkig **nooit** uniform verspreid overheen alle dimensies. 
+<img src="img/machinaal/image-20230123151847165.png" alt="image-20230123151847165" style="zoom:50%;" />
+
+Bij problemen in de echte wereld liggen training instanties gelukkig **nooit** uniform verspreid overheen alle dimensies. De **manifold hypothese** vertelt ons dat we in onze ruimte van trainingsinstanties een soort subruimte (manifold) kunnen vinden die onze instanties bevat. 
+
+Willen we dit nu toepassen, kan dat op twee manieren:
+
+* **Feature selection**: We kiezen de nuttigste features
+* **Feature projection**: We transformeren en projecteren om nieuwe features te bekomen
+  * Principal component analysis: nieuwe features uit lineaire combinaties van de huidige features
+  * Manifold Learning: uit niet-lineaire combinaties
+
+
+
+## Linear dimensionality reduction
+
+### Principal component analysis 
+
+//TODO
+
+
+
+## Non-linear dimensionality reduction
+
+### Manifolds
+
+Stel je de volgende situatie voor:
+
+<img src="img/machinaal/image-20230123153047297.png" alt="image-20230123153047297" style="zoom:50%;" />
+
+| ![image-20230123153116856](img/machinaal/image-20230123153116856.png) | ![image-20230123153132754](img/machinaal/image-20230123153132754.png) |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| Als we projecteren op het XY-vlak                            | Als we de rol "ontrollen".                                   |
+
+Lineaire dimensionaliteitsreductie schiet hier duidelijk tekort. Er zijn een hele boel verschillende manieren om aan niet-lineaire dimensionaliteitsreductie te doen. Want meestal zal de oplossing niet zo duidelijk zijn als in dit voorbeeld. Met grid search kan je dan vinden welke manier het beste werkt. 
+
+
+
+### Linear local embedding
+
+We kunnen ook op een andere manier de dimensionaliteit van onze data reduceren. 
+
+Het hoofdidee achter **linear local embedding** is om te proberen elk datapunt uit te drukken als een lineaire combinatie van zijn $k$ dichtstbijzijnde buren. Het algoritme vindt voor elk punt de $k$ dichtstbijzijnde buren en maakt daarvoor een matrix $\hat {\mathbf W}$. Deze bevat voor elk van de buren een gewicht zodat de lineaire combinatie van de buren met die gewichten het originele punt zo goed mogelijk benaderen. 
+
+| <img src="img/machinaal/image-20230123163727284.png" alt="image-20230123163727284" style="zoom:67%;" /> | ![image-20230123163748066](img/machinaal/image-20230123163748066.png) |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| $\hat{\mathbf W} = \underset{\mathbf W}{\mathrm{argmin}} \sum_{i=1}^m \left( \mathbf x^{(i)} - \sum_{j=1}^m w_{i,j} \mathbf x^{(j)} \right)^2 \\ \text{onderhevig aan: } \begin{cases} w_{i,j = 0}  &\text{ als } \mathbf x^{(j)} \text{ geen van de} \text{ knn is van } \mathbf x^{(i)}\\ \sum_{j=1}^m w_{i,j} = 1 &\text{ voor } i = 1,2, \dots,m \end{cases}$ | $\mathbf{\hat Z} = \underset{\mathbf Z}{\mathrm{argmin}} \sum_{i=1}^m \left( \mathbf z^{(i)} - \sum_{j=1}^m \hat w_{i,j} \mathbf z^{(j)} \right)^2$ |
+
+Nu proberen we alle punten te projecteren naar een lager dimensie, resulterend in een punt $\mathbf z^{(i)}$. Dan minimaliseren we de afstand tussen dit punt en de lineaire combinatie gebruik makende van de gewichten van daarnet met zijn buren in deze ruimte van lagere dimensie. 
+
+Als resultaat krijgen we een projectie die voor elk punt de afstanden tot zijn buren zo goed mogelijk bewaart.
+
+
+
+### Kernelized PCA
+
+<img src="img/machinaal/image-20230123170822227.png" alt="image-20230123170822227" style="zoom:50%;" />
+
+We transformeren eerst onze data naar een hogere dimensie met een transformatiefunctie genaamd de **kernel**. In deze nieuwe ruimte doen we dan PCA. Door de transformatiefunctie goed te kiezen (kernel trick), kunnen we dit grote probleem toch nog net oplossen. Deze methode vergt dus vrij veel rekenkracht.
+
+
+
+<img src="img/machinaal/image-20230123171048774.png" alt="image-20230123171048774" style="zoom:67%;" />
+
+//TODO pre image error
+
+
+
+
+
+
 
 # 9 - Unsupervised learning
 
+## Clustering
+
+Clustering is een techniek die valt onder unsupervised learning omdat er geen *ground truth* is om te evalueren hoe goed je clustering algoritme is. Het doel is om groepen van gelijkaardige instanties te vinden en deze een clusternummer te geven. 
+
+Dit is nuttig om bijvoorbeeld de gelijkaardigheid tussen liedjes op Spotify te vinden. Clustering kan ook gebruikt worden voor data-analyse of anomaly detection. 
 
 
-# 10 - Deep learning
+
+### K-means clustering
+
+Het K-means clustering algoritme werk als volgt:
+
+* Kies een getal $k$, dit is het aantal clusters
+* Kies $k$ willekeurige punten als cluster centers: $C^{(1)}, \dots ,C^{(k)}$
+* Herhaal
+  * Wijs elk punt $\mathbf x^{(i)}$ toe aan het dichtstbijzijnde cluster center
+  * $b^{(i,j)} = \begin{cases} 1 \text{ als } j =\underset{k}{\mathrm{argmin}} \sum_{l=1}^n(x_l^{(i)} - C_l^{(k)})^2 \\0  \end{cases}$
+  * Bereken het nieuwe centrum van elke cluster
+  * $C_\text{new}^{(k)} = \frac{\sum_{i=1}^m b^{(i,k)} \mathbf x^{(i)}}{\sum_{i=1}^m b^{(i,k)}}$
+  * Stop wanneer het resultaat convergeert of als je tevreden bent
+
+Belangrijk om te weten is dat het resultaat niet altijd convergeert naar een globaal minimum, we kunnen ook vastraken in een lokaal minimum. Of dit al dan niet zo zal zijn hangt af van de keuze van de initiële clustercentra. 
+
+De toewijzing van een punt tot een cluster wordt volledig gebaseerd op zijn afstand tot het clustercentrum.
+
+
+
+#### Aantal clusters
+
+Hoe weten we nu wat het optimale aantal clusters is voor onze data?
+
+We proberen gewoon voor een aantal verschillende $k$-waarden het algoritme uit en vergelijken de resultaten aan de hand van een elbow plot.
+
+<img src="img/machinaal/image-20230123175321060.png" alt="image-20230123175321060" style="zoom:50%;" />
+
+We berekenen voor elk punt de afstand tot zijn dichtstbijzijnde clustercentrum en nemen daar het gemiddelde van:
+$$
+\frac 1 m \sum_{i=1}^m \min_C \lVert \mathbf x^{(i)} - C^j \rVert^2
+$$
+Dit noemen we de **inertia** van ons clusteringresultaat. Als we al deze inertias op een grafiek zetten krijgen we het resultaat hierboven. Het buigpunt (elbow) van deze curve zal typisch de best $k$ geven, want hoe hoger we $k$ nemen, hoe groter de kans op overfitting.
+
+
+
+#### Silhouette score 
+
+<img src="img/machinaal/image-20230123180710390.png" alt="image-20230123180710390" style="zoom:50%;" />
+
+Een andere manier om de prestatie van k-means clustering te kwantificeren is door middel van een **silhouette score**.
+
+Neem:
+
+* $a^{(i)}$: de gemiddelde afstand van een punt tot alle andere punten in dezelfde cluster
+* $b^{(i)}$: gemiddelde afstand van een punt tot alle waarden in de volgende dichtstbijzijnde cluster
+* $s^{(i)} = \frac{b^{(i)} - a^{(i)}}{\max \{a^{(i)}, b^{(i)} \}}$: de silhouette score
+
+Deze score zal hoog zijn als punten binnen een cluster dicht bij elkaar liggen en punten van verschillende clusters ver uit elkaar liggen. Als de silhouette score van een punt negatief is, dan ligt hij dichter bij een andere cluster dan bij zijn eigen cluster.
+
+
+
+#### Silhouette plot
+
+In de volgende plots geeft de rode lijn de gemiddelde silhouette score aan voor de gekozen $k$. De gekleurde vormen stellen de silhouette score voor elk individueel punt voor, gegroepeerd per cluster. 
+
+| <img src="img/machinaal/image-20230123181047820.png" alt="image-20230123181047820" style="zoom:50%;" /> | <img src="img/machinaal/image-20230123181056444.png" alt="image-20230123181056444" style="zoom:50%;" /> |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| <img src="img/machinaal/image-20230123180956485.png" alt="image-20230123180956485" style="zoom: 50%;" /> | <img src="img/machinaal/image-20230123181014348.png" alt="image-20230123181014348" style="zoom:50%;" /> |
+| <img src="img/machinaal/image-20230123181205545.png" alt="image-20230123181205545" style="zoom:50%;" /> | <img src="img/machinaal/image-20230123181216127.png" alt="image-20230123181216127" style="zoom:50%;" /> |
+| <img src="img/machinaal/image-20230123181116595.png" alt="image-20230123181116595" style="zoom:50%;" /> | <img src="img/machinaal/image-20230123181128184.png" alt="image-20230123181128184" style="zoom:50%;" /> |
+
+In deze plots willen we voor elke cluster liefst zo veel mogelijk waarden in de buurt van ons gemiddelde. 
+
+
+
+#### Centroid initialization
+
+<img src="img/machinaal/image-20230123201735868.png" alt="image-20230123201735868" style="zoom:50%;" />
+
+Bij het initialiseren van het algoritme worden willekeurige clustercentrums gekozen. Dit plaatje toont redelijk duidelijk dat dit ervoor kan zorgen dat je clustering op niks trekt doordat hij in een lokaal minimum blijft vastzitten of dat het erg lang duurt om tot het globale minimum te raken. 
+
+Een andere manier is om alle punten initieel willekeurige clusternummers te geven en dan te vertrekken van de clustercentrums van deze willekeurige clusters, maar deze methode blijkt meestal pure schijt op te leveren.
+
+De beste manier is de kmeans++ methode. Deze methode begint ook met een random punt, maar de volgende punten zullen volgens een bepaalde distributie gekozen worden, rekening houdend met de afstand tot de al gekozen punten. Zo liggen de initiële centrums niet te dicht bij elkaar.
+
+
+
+#### Nadelen
+
+<img src="img/machinaal/image-20230123202607666.png" alt="image-20230123202607666" style="zoom:50%;" />
+
+* K-means werkt het best voor **cirkelvormige** clusters. 
+* Je moet altijd je data standaardiseren voordat je k-means toepast.
+* K-means kan moeilijk omgaan met verschillen in densiteit
+* De variantie van features moet gelijkaardig zijn voor alle clusters
+* K-means kan moeilijk omgaan met clusters van verschillende grootte (aantal items)
+* In hogere dimensies heeft afstand ook minder betekenis 
+
+
+
+### DBScan
+
+<img src="img/machinaal/dbscan.gif" alt="Density-Based Spatial Clustering of Applications with Noise (DBSCAN)" style="zoom:33%;" />
+
+Een cluster is een continu gebied in de ruimte met hoge densiteit, gescheiden van andere clusters door continue gebieden met lage densiteit. DBScan (Density-Based Spatial Clustering of Applications with Noise) pakt clustering op een andere manier aan gebruik makende van deze eigenschap:
+
+* Een **dense point** is een punt met ten minste `minPts` aantal andere punten binnen een afstand $\epsilon$
+* Het algoritme verloopt als volgt:
+  * Neem een willekeurig punt $p$
+  * Initialiseer een nieuwe cluster op dit punt
+    * Als $p$ niet dense is veronderstel je dat hij ruis is
+    * Als $p$ dense is
+      * Voeg alle punten dichter dan $\epsilon$ toe aan de cluster
+      * En voeg voor alle punten die je net hebt toegevoegd recursief hun buren dichter dan $\epsilon$ toe aan de cluster tot je niet meer verder kan
+  * Nu neem je opnieuw een willekeurig punt en je begint opnieuw
+
+
+
+* <u>Voordelen</u>
+  * We moeten niet handmatig het aantal clusters kiezen
+  * Kan omgaan met clusters van eender welke vorm
+  * Werkt goed als clusters dense genoeg zijn er ver genoeg liggen van andere clusters
+* <u>Nadelen</u>
+  * Niet deterministisch (maar dat maakt niet zo veel uit in de praktijk)
+  * Gebruikt een afstandsmetriek
+    * Pas op met scaling
+    * Curse of dimensionality
+  * Het is moeilijk om de juiste hyperparameters ($\epsilon$, `minPts`) te kiezen als we te maken hebben met regio's met verschillende densiteit
+
+
+
+### Hierarchical clustering
+
+<img src="img/machinaal/image-20230123204823458.png" alt="image-20230123204823458" style="zoom: 50%;" />
+
+We kunnen ook vertrekken door alle punten in één cluster te steken en deze cluster in twee te delen. De resulterende clusters delen we opnieuw in twee. Dit is een **top-down** benadering van hiërarchisch clusteren, oftewel divisive clustering.
+
+Zoals je misschien al het zien aankomen, kunnen we ook **bottom-up** werken, door eerst alle elementen hun eigen cluster te geven en in elke iteratiestap nabije clusters samen te voegen. Dit is ook wel gekend als agglomerative clustering. 
+
+In de afbeelding geeft de rode stippelijn aan waar we "gestopt" zijn. De resulterende clusters worden aangeduid door de plaats waar de lijn de grafiek snijdt.
+
+Voor beide wijzes van aanpak hebben we nood aan een bepaalde metriek om de afstand tussen clusters te bepalen. Dit kan bijvoorbeeld op deze drie manieren:
+
+<img src="img/machinaal/image-20230123205257693.png" alt="image-20230123205257693" style="zoom: 50%;" />
+
+
+
+## Gaussian mixture models
+
+//TODO
+
+
+
+# 10 - Introduction to deep neural networks
+
+## History
+
+### 1st wave: Perceptron
+
+<img src="img/machinaal/image-20230123211030206.png" alt="image-20230123211030206" style="zoom:67%;" />
+
+De eerste poging tot het maken van een neuraal netwerk deed zich voor in de fifties. Geïnspireerd op neuronen in een brein, gebruikte deze methode een simpele methode om bij te leren. 
+$$
+w_{i,j}^\text{(next)} = w_{i,j} + \eta(y_j - \hat y_j)x_i
+$$
+Met: 
+
+* $w_{i,j}$: het gewicht 
+* $\eta$: de learning rate
+* $y_j - \hat y_j$: het verschil tussen de target en de voorspelling
+
+Elke iteratie zal het gewicht dus een beetje meer in de juiste richting gaan. Omdat een perceptron maar één laag heeft, zal hij alleen maar lineaire relaties kunnen modelleren. In essentie doet dit hetzelfde als lineaire of logistic regression. 
+
+<img src="img/machinaal/image-20230123211803135.png" alt="image-20230123211803135" style="zoom:50%;" />
+
+De interesse in perceptrons nam snel af in de sixties omdat ze toch niet zo ongelofelijk goed bleken te zijn. 
+
+
+
+### 2nd wave: Distributed representations
+
+In de 80s en 90s kreeg **connectionism** meer populariteit. Het idee hier achter is om het systeem voor te stellen door veel features die elk meerdere inputs beïnvloeden. Er werden ook meerdere lagen toegevoegd, gebruik makende van **backpropagation**. Dit zorgde ervoor dat ook niet-lineaire problemen gemodelleerd konden worden. Uiteindelijk werkten de neurale netwerken toch weer niet zo goed en werden ze vergeten. 
+
+
+
+### 3rd wave: Deep learning
+
+Vanaf 2010 begonnen neurale netwerken het ineens heel goed te doen. Dit kwam door twee redenen:
+
+* Veel grotere training datasets 
+* Snellere GPU's (SIMD)
+
+
+
+## Deep neural networks
+
+De term **deep** slaat op het feit dat het model ook leert om de features uit ruwe informatie te halen, zonder dat dit hand matig gedaan moet worden. 
+
+
+
+<img src="img/machinaal/image-20230123212923984.png" alt="image-20230123212923984" style="zoom:50%;" />
+
+Een neuraal netwerk bestaat uit:
+
+* Input neurons
+* Hidden neurons
+* Output neurons
+  * Bij regressie kan dit bijvoorbeeld 1 neuron zijn, omdat we maar één waarde willen voorspellen
+  * Voor classificatie nemen we typisch evenveel neurons als klassen
+
+Elke laag is op een bepaalde manier verbonden met de volgende laag (hoe precies zullen we later bespreken). Elk van deze verbindingen krijgt een bepaald gewicht. Deze gewichten vormen dan samen met de inputs een lineaire combinatie die bepaalt of de volgende neuron geactiveerd zal worden. 
+
+We voegen na elke laag een **niet-lineaire activatiefunctie** toe die het netwerk toestaat om ook niet-lineaire relaties te modelleren. 
+
+Hiervoor zijn een aantal opties:
+
+<img src="img/machinaal/image-20230123214104315.png" alt="image-20230123214104315" style="zoom:67%;" />
+
+De populairste is ReLU. Hij is simpel, efficiënt en presteert om de één of andere reden zeer goed.
+
+
+
+### Training
+
+<img src="img/machinaal/image-20230124113045576.png" alt="image-20230124113045576" style="zoom:50%;" />
+
+Er is geen closed form oplossing voor dit optimalisatieprobleem. Daarom gebruiken we in de plaats een iteratief **gradient descent** algoritme. 
+
+* We starten van willekeurige initiële parameters
+  * We berekenen de loss van het model op een aantal inputs
+* Dan gebruiken we de gradiënt om een nieuwe set (hopelijk betere) parameters te berekenen
+* Het is een **niet-convex** optimalisatieprobleem, dus er is geen garantie dat we ooit het globale minimum zullen vinden
+  * Toch werkt het heel goed in de praktijk, want uiteindelijk maakt het niet super veel uit of we in een lokaal of globaal minimum zitten
+
+### Backpropagation
+
+<img src="img/machinaal/image-20230124114632852.png" alt="image-20230124114632852" style="zoom:50%;" />
+
+Oké, we hebben nu gezien wat gradient decent is en hoe een neuraal netwerk ongeveer werkt, maar hoe moeten we nu de gewichten van ons model aanpassen?
+
+Het principe van **backpropagation** is om een fout achterwaarts terug te laten propageren door een neuraal netwerk. Dit kunnen we door middel van de kettingregel:
+
+* Een neuraal netwerk is een geneste functie $f_1(f_2(f_3(f_4(x))))$
+* We gebruiken de kettingregel om de afgeleide van de cost functie te berekenen
+  * Rekening houdend met de output en gewichten van elke laag
+  * Hiermee berekenen we de gradient van de cost function
+  * En kunnen we onze gewichten aanpassen in de richting van de negatieve gradient (en dus dalen)
+
+De algemene voorwaarde van backpropagation is dat zowel het model als de loss functie **volledig afleidbaar** moeten zijn.
+
+
+
+### Regressie
+
+<img src="img/machinaal/image-20230124114745968.png" alt="image-20230124114745968" style="zoom:50%;" />
+
+We kunnen neurale netwerken (zoals eerder vermeld) ook gebruiken voor regressie.
+
+* Typisch **één output neuron** (voor regressie met meerdere variabelen gebruiken we er natuurlijk meer)
+  * Kan zonder activatiefunctie
+  * Sigmoid of tanh activatiefunctie
+* Let op scaling!
+* Loss functie
+  * Typisch mean-squared error 
+  * Mean-absolute error (als je veel outliers hebt)
+
+### Classificatie
+
+<img src="img/machinaal/image-20230124115208574.png" alt="image-20230124115208574" style="zoom:50%;" />
+
+* Typisch meerdere output neurons (evenveel als klassen)
+* One-hot encoding
+  * Eén attribuut per categorie
+  * Waarde 1 als de instantie in de categorie hoort 
+  * Anders 0
+* Loss-functie
+  * Cross-entropy loss
+* Een neuraal netwerk met één laag is hetzelfde als softmax regression
+
+
+
+### Autoencoder
+
+<img src="img/machinaal/image-20230124115631194.png" alt="image-20230124115631194" style="zoom: 67%;" />
+
+We kunnen neurale netwerken ook gebruiken voor dimensionaliteitsreductie. Hiervoor gebruiken we een **autoencoder**. Dit is een model dat we trainen om zijn eigen input te reconstrueren. Klinkt simpel genoeg. Het coole deel zit in het midden. Door hier een **bottleneck** laag te plaatsen, forceren we eigenlijk het model om de input te comprimeren naar een lagere dimensie, waarna het model vervolgens moet proberen om de input terug voor te stellen vanuit deze verminderde voorstelling. 
+
+Als we dan het decoder-gedeelte weghalen, hebben we een netwerk dat de dimensionaliteit van onze data kan reduceren. 
+
+Autoencoders hebben dus meerdere praktische toepassingen:
+
+* Dimensionaliteitsreductie
+* Anomaly detection: we kunnen de reconstructiefout gebruiken als metriek om te bepalen of een waarde 'normaal' is
+* Unsupervised pre-training 
+
+
+
+### Hyperparameters
+
+Hier een opsomming van de hyperparameters die we dus zelf zullen moeten afstellen:
+
+* Aantal lagen
+* Aantal neuronen per laag
+* Activatiefuncties
+* Learning rate en batch size
+* Trainingsalgoritme en loss functie
+* Initialisatie van de parameters
+* Noise en data augmentatie
+* Regularisatie
+
+
+
+
+
+# 11 - Training deep neural networks
+
+Het trainen van diepe neurale netwerken ligt niet voor de hand. We hebben een groot aantal parameters, waardoor we grote hoeveelheden data nodig hebben. Het model is een complexe geneste functie, waardoor we te maken krijgen met een niet-convex optimalisatieprobleem. En dan hebben we nog niet gesproken over overfitting. 
+
+
+
+## Vanishing / exploding gradients
+
+Als we meerdere lagen achter elkaar een sigmoid activatiefunctie gebruiken, zal naarmate we dieper in ons netwerk afzakken, de gradiënt steeds kleiner worden. Dit fenomeen noemt men *vanishing gradients*. Het omgekeerde is ook mogelijk. De gradiënten worden zo groot dat het correct updaten van gewichten bijna onmogelijk. Dit staat dan bekend als *exploding gradients*.
+
+We bespreken drie mogelijke oplossingen voor dit probleem
+
+### 1: Weight initialization
+
+De verdeling van de initiële gewichten van een model heeft een grote impact op de training van het model. Een veelvoorkomende strategie is om samples te nemen uit de normale verdeling. Het kiezen van de juiste initialisatietechniek is natte-vinger-werk. 
+
+### 2: Activation functions
+
+<img src="img/machinaal/image-20230124122209389.png" alt="image-20230124122209389" style="zoom:50%;" />
+
+De sigmoid activatiefunctie is niet altijd de beste oplossing omdat hij **saturerend** is. Een beter optie is ReLU (Rectified linear units), maar deze functie lijdt soms aan **dying neurons**. Hier blijven neurons 0 outputten en worden ze niet meer geupdate. Om dit probleem tegen te gaan kunnen we gebruik maken van Leaky ReLU of één van de andere opties in het plaatje. 
+
+<img src="img/machinaal/image-20230124121859045.png" alt="image-20230124121859045" style="zoom:67%;" />
+
+### 3: Batchnorm
+
+Een andere manier om de training van ons model te verbeteren is **batchnorm**, kort voor batch normalization. We normaliseren de activaties door de gemiddelde activatie per batch er van af te trekken en ze te delen door de standaardafwijking van de batch tijdens het trainen.
+
+Omdat het gemiddelde en de standaardafwijking veranderen tijdens het trainen, wat kan leiden tot destabilisatie van het model, houdt het algoritme een **moving average** bij tijdens het trainen. Deze worden dan gebruikt bij inference (want dan hebben we geen gemiddelde en standaardafwijking, maar we hebben ze wel nodig).
+
+We weten eigenlijk niet echt waarom dit zo goed werkt.  
+
+
+
+## Optimization algorithms
+
+Er zijn nog een aantal dingen die we kunnen doen om het trainen van ons model te optimaliseren:
+
+* **Momentum**
+  * We gebruiken vorige gradiënten om bij te houden in welke 'richting' we bewegen
+  * Hierdoor kunnen we soms sneller convergeren
+  * De nieuwe richting is dan een gewogen som van de gradiënt $\nabla_\theta J (\theta)$ en de momentum vector $m$
+    * $m \leftarrow \beta m − \eta\nabla_\theta J (\theta)$
+      * Het momentum $\beta$ is dan typisch 0.9
+    * $\theta \leftarrow \theta + m$
+* **Adaptive learning rate**
+  * Er zijn een aantal algoritmes die de learning rate verschillend aanpassen
+* **Second order methods**
+  * Gebruiken partiële afgeleiden van de tweede orde om de buiging rond een punt te schatten
+  * Zijn duur om te gebruiken
+
+
+
+### Learning rate scheduling
+
+De learning rate is meestal de belangrijkste parameter die je moet afstellen. Als deze te hoog is zal het model niet convergeren. Als hij te laag is kan het dat het heel lang duurt om te convergeren of dat we vastraken in een lokaal minimum.
+
+We beginnen best met een hoge learning rate, die we gradueel doen afnemen met:
+
+* Power scheduling
+* Exponential scheduling
+* Piecewise constant
+
+
+
+### Regularization
+
+Door hun miljoenen parameters zijn neurale netwerken vaak gevoelig aan overfitting. We hebben nood aan regularisatie. 
+
+* Meer training data gebruiken
+* Data augmentation en randomness toevoegen
+* $L_1$ en $L_2$ regularisatie
+* **Dropout**
+  * Zet een willekeurige subset van de activaties op nul
+  * Dit maakt het model robuuster
+  * En forceert elke neuron om onafhankelijker te zijn
+  * Bij inferentie worden alle neuronen terug gebruikt, maar worden ze geschaald door de factor die werd gebruikt tijdens het trainen. 
 
 
 
