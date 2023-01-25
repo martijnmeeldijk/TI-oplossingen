@@ -1409,6 +1409,98 @@ We kunnen generative modellinge gebruiken voor:
 $$
 P_\text{model}(𝑥;\mu,\sigma) = \frac{1}{\sigma \sqrt{2 \pi}}e^\frac{-(x-\mu)^2}{2\sigma^2}
 $$
+Als onze data een normale verdeling volgt, zit dat er zo uit. Het kan ook dat onze data meerdere groepen bevat. Dan krijgen we te maken met een **multimodale verdeling.** De data is dan verdeeld als een som van normale verdelingen, oftewel de **mixture components**. De som moet gewogen zijn om aan de eigenschappen van een densiteitsfunctie te voldoen. Dit doen we zo:
+$$
+P_\text{model}(𝑥;\theta) = \sum_{i=1}^k \phi_i \mathcal N(x; \mu_i,  \sigma_i)
+=  \sum_{i=1}^k \phi_i \frac{1}{\sigma \sqrt{2 \pi}}e^\frac{-(x-\mu)^2}{2\sigma^2}
+$$
+Met:
+$$
+\sum_{i=1}^k \phi_i = 1 \text{ en } 0 \leq \phi_i \leq 1
+$$
+$\phi_i$ zal dus groter zijn voor de verdelingen waarvan er meer samples in onze dataset zitten.
+
+| <img src="img/machinaal/image-20230125143612981.png" alt="image-20230125143612981" style="zoom:50%;" /> | <img src="img/machinaal/image-20230125143621304.png" alt="image-20230125143621304" style="zoom:50%;" /> |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+
+
+
+### Soft clustering
+
+Je kan GMM's dus ook gebruiken voor soft clustering. 
+
+We vertrekken van twee veronderstellingen:
+
+* Het aantal clusters
+* Dat de features van elementen in dezelfde cluster normaal verdeeld zijn
+
+Nu fitten we de parameters van GMM op de training set (alle $\sigma$'s, $\mu$'s en $\phi$'s). Voor een nieuwe instantie kunnen we dan de functiewaarde voor iedere individuele curve nemen als soft label.
+
+<img src="img/machinaal/image-20230125144755009.png" alt="image-20230125144755009" style="zoom:50%;" />
+
+Oké, maar hoe kunnen we dit resultaat nu vinden. Dat kan met **expectation maximalization**. Dit algoritme werkt als volgt.
+
+* Vertrek van willekeurige distributieparameters
+* Herhaal tot convergentie:
+  * Bereken de soft labels op basis van de huidige distributieparameters
+    * Het algoritme schat voor elke instantie de kans dat het tot een bepaalde cluster behoort
+    * **Expectation stap**
+  * Update de clusters, gebruik makende van alle instanties in de dataset
+    * **Maximization stap**
+    * We updaten dus de distributieparameters
+
+| ![image-20230125150934917](img/machinaal/image-20230125150934917.png) | ![image-20230125150948841](img/machinaal/image-20230125150948841.png) | ![image-20230125150959423](img/machinaal/image-20230125150959423.png) |
+| ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
+
+Hier zie je dus dat we beginnen van willekeurige distributieparameters. Door dan labels toe te passen op basis van die parameters en daaruit nieuwe parameters te berekenen, trekt het algoritme zichzelf recht na een aantal stappen. 
+
+
+
+### Maximum likelihood estimation
+
+We kennen het woord **probabiliteit**, deze waarde vertelt ons hoe waarschijnlijk een bepaalde uitkomst $x$ is, gegeven een set van parameters $\theta$. 
+
+**Likelihood** kan je interpreteren als het omgekeerde. Deze term wordt gebruikt om te beschrijven hoe waarschijnlijk een bepaalde set parameters $\theta$ is, gegeven een bekende uitkomst $x$.
+
+Een zo goed mogelijk model maximaliseert de **joint probability** (het product van alle probabiliteiten) van alle items $x^{(i)}$ uit onze dataset. 
+
+De functie die als variabele parameters $\theta$ neemt en met deze $\theta$ de joint probability van alle $x^{(i)}$ berekent, is dan de likelihood functie:
+$$
+\mathcal L (\pmb \theta) = \prod_{i=1}^m p_\text{model}(x_i;\pmb \theta)
+$$
+We kunnen deze functie plotten:
+
+<img src="img/machinaal/image-20230125153920030.png" alt="image-20230125153920030" style="zoom: 67%;" />
+
+Het is belangrijk om te weten dat $\mathcal L$ geen probabiliteitsdistributiefunctie is. Als je hem integreert krijg je niet altijd 1. De parameters die leiden tot de maximale waarde van deze functie meest waarschijnlijke modelparameters.
+
+#### Minimum loglikelihood
+
+Omdat het product van veel kleine termen berekenen vervelend is en maximaliseren blijkbaar kut is, kunnen we in plaats van $\mathcal L$ te maximaliseren, zijn **negatieve logaritme minimaliseren**.
+
+Omdat de $\log$ van een product gelijk is aan een som van logaritmes:
+$$
+\mathcal{LL} (\pmb \theta) = \sum_{i=1}^m \log p_{model}(x^{(i)}; \pmb \theta)
+$$
+Je kan dit dus gebruiken voor een normale verdeling, maar voor Gaussian Mixture models bestaat er geen analytische oplossing voor dit probleem. 
+
+
+
+
+
+### Regularisatie
+
+We kunnen het aantal trainbare parameters beperken op bepaalde beperkingen opleggen aan de covariantiematrices, waardoor de clusters verplicht worden om een bepaalde vorm aan te nemen De opties voor `covariance_type` zijn:
+
+* `full`: geen beperking
+* `tied`: clusters moeten dezelfde vorm, grootte en oriëntatie hebben
+* `diag`: de assen van de ellipsoïde clusters moeten evenwijdig zijn aan de coördinaat-assen
+* `spherical`: alle clusters moeten mooi rond zijn (ze mogen wel verschillende groottes hebben)
+
+| Zonder regularisatie                                         | Met regularisatie                                            |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| ![image-20230125151830173](img/machinaal/image-20230125151830173.png) | ![image-20230125151841965](img/machinaal/image-20230125151841965.png) |
+
 
 
 # 10 - Introduction to deep neural networks
@@ -1948,6 +2040,50 @@ Multiclass classification
 
 
 > What can be an inductive bias to prefer one kernel over the other? (as alternative for doing a grid search)
+
+
+
+### GMM
+
+> What is a Gaussian distribution?
+
+
+
+> What is a unimodal distribution?
+
+
+
+> What is a multivariate distribution?
+
+
+
+> What is a multimodal distribution?
+
+
+
+> What are the parameters of a Gaussian distribution? How do they influence the shape of the distribution?
+
+
+
+> What is a mixture model (not necessarily Gaussian)?
+
+
+
+> What are the parameters of a Gaussian Mixture Model?$
+
+
+
+> What is the likelhood? What is negative loglikelihood?
+
+
+
+> How are distribution parameters estimated from data?
+
+
+
+> What are main principles of the EM algorithm?
+
+
 
 ## Vragen uit het boek
 
