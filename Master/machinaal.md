@@ -632,7 +632,7 @@ Als we de zonet beschreven voorwaarden strikt opvolgen, doen we aan **hard margi
 
 <img src="img/machinaal/image-20230107154749303.png" alt="image-20230107154749303" style="zoom: 50%;" />
 
-Onze decision function $g(x)$ moet aan de volgende voorwaarde voldoen:
+Onze decision function $g(x)$ moet aan de volgende voorwaarde voldoen: :bulb:
 $$
 g(\mathbf x ^{\mathbf i}) = t^{(i)}(\mathbf w^T \mathbf x ^{(i)} + b) \geq 1, \quad \forall i
 $$
@@ -673,7 +673,7 @@ $$
 
 In het voorbeeldje hierboven zal voor punt `b` onze $\zeta^{(i)}$ dus groter moeten zijn dan $1$, want we moeten meer dan $1$ van hem aftrekken om aan de juiste kant van de straat te geraken. Ons doel is natuurlijk om een classifier te vinden waarvoor we zo veel mogelijk $\zeta$ 's op nul kunnen zetten.   
 
-We kunnen dit in de vorm van een minimalisatieprobleem als volgt voorstellen:
+We kunnen dit in de vorm van een minimalisatieprobleem als volgt voorstellen: :bulb:
 
 
 $$
@@ -715,7 +715,7 @@ $$
 \zeta^{(i)} \geq &0
 \end{align}
 $$
-Dit probleem kan alleen opgelost worden met quadratic programming. We kunnen dit probleem makkelijker maken om op te lossen met de Generalized Lagrangian. Hierdoor wordt het een convex optimalisatieprobleem dat veel efficiënter opgelost kan worden:
+Dit probleem kan alleen opgelost worden met quadratic programming. We kunnen dit probleem beter oplossen met de Generalized Lagrangian:
 $$
 \begin{align}
 \mathcal{L}(\mathbf w ,b,\zeta^{(i)}, \alpha^{(i)}, \beta^{(i)}) &= \frac 1 2 \mathbf w ^T \mathbf w + C \sum^m_{i=1} \zeta^{(i)} 
@@ -723,6 +723,12 @@ $$
 \\&- \sum^m_{i=1}\beta^{(i)} \zeta^{(i)}
 \end{align}
 $$
+In essentie zorgt dit ervoor dat we onze te minimaliseren functie kunnen combineren met de voorwaarden. 
+
+<img src="img/machinaal/image-20230125112413993.png" alt="image-20230125112413993" style="zoom:50%;" />
+
+De Lagrangiaan is een manier om een minimum te vinden van een functie, beperkt door een bepaald gebied. Onze slimme meneer heeft een manier gevonden om dit probleem, dat bestaat uit een minimalisatieprobleem, beperkt door een ongelijkheid om te vormen naar één stelsel van vergelijkingen. 
+
 //TODO ik begrijp dit niet
 
 
@@ -740,7 +746,14 @@ $$
 > 1. waarom we soms het duale probleem verkiezen over het primaire en 
 > 2. dat in de duale formulering enkel het dot product van datapunten voorkomt; waardoor de kernel trick kan toegepast worden
 
-//TODO
+Het is mogelijk om het optimalisatieprobleem van SVM om te zetten naar een andere vorm, het **duale probleem**. Dit probleem kan rechtstreeks opgelost worden met kwadratisch programmeren.
+$$
+\underset{\alpha}{\mathrm{minimize}} \frac 1 2 \sum_{i=1}^m \sum_{j=1}^m \alpha^{(i)} \alpha^{(j)}t^{(i)}t^{(j)} \mathbf x^{(i)T} \mathbf x ^{(j)} - \sum_{i=1}^m \alpha^{(i)}\\
+\text{ onderhevig aan: } \alpha^{(i)} \geq 0 \text{ voor } i=1,2,\dots , m
+$$
+De complexiteit van deze methode schaalt kwadratisch met de grootte van de dataset, maar schaalt **lineair** met het **aantal dimensies**. Gebruik deze methode als je **dimensionaliteit groter is dan het aantal samples**. Doordat in deze versie alleen het dot product voorkomt, kan je de kernel trick toepassen.
+
+
 
 ## The kernel trick
 
@@ -766,7 +779,41 @@ Een andere optie is om niet-lineaire combinaties van de bestaande features toe t
 >
 > De Sigmoid kernel is niet te kennen.
 
-//TODO effectieve uitleg kernel trick (boek p 198)
+
+
+Stel je voor dat we een functie $\phi$ hebben die een 2D vector mapt op een 3D vector als volgt:
+$$
+\phi \left(\begin{bmatrix} x_{1} \\x_{2} \\       \end{bmatrix}\right) = \begin{bmatrix} x_{1}^2 \\ \sqrt2 x_1x_2 \\x_{2}^2      \end{bmatrix}
+$$
+Neem twee vectoren $\mathbf a$ en $\mathbf b$. We vertrekken van het dot product van hun transformatie. 
+$$
+\begin{align}
+\phi(\mathbf a)^T \phi(\mathbf b) 
+&=
+\begin{pmatrix} a_{1}^2 \\ \sqrt2 a_1a_2 \\a_{2}^2      \end{pmatrix}^T
+\begin{pmatrix} b_{1}^2 \\ \sqrt2 b_1b_2 \\b_{2}^2      \end{pmatrix} \\
+&= a_1^2b_1^2 + 2a_1a_2b_1b_2 + a_2^2b_2^2
+\\&= \left( \begin{pmatrix} a_{1} \\ a_2     \end{pmatrix} \begin{pmatrix} b_{1} \\ b_2     \end{pmatrix} \right)^2 
+\\&= (\mathbf a^T \mathbf b)^2
+\end{align}
+$$
+Holy moly. Het dot product van hun transformaties is dus gewoon gelijk aan het kwadraat van hun dot product. We hebben een **kernel functie** gevonden. Dit is een functie die het dot product van de transformaties van $\mathbf a$ en $\mathbf b$ kan berekenen, door alleen gebruik te maken van $\mathbf a$ en $\mathbf b$ zelf, zonder de transformatie effectief uit te moeten rekenen. Zo'n kernel functie ziet er dan in het algemeen zo uit:
+$$
+K(\mathbf x, \mathbf z) = \phi(\mathbf x)^T \phi(\mathbf z)
+$$
+Door het kiezen van een juiste $K(\mathbf x, \mathbf z)$ kunnen we lineaire classificatie doen in ruimte met hogere dimensie zonder de effectieve transformatie te moeten doen. 
+
+
+
+### Kernel functies 
+
+We moeten kunnen zien welke soorten scheidingslijnen door welke kernels zijn gegenereerd en wat de invoed van de hyperparameters is op de vorm van de kernel
+
+| Soort kernel                         | Plaatje                                                      | Vorm                       | Hyperparameters                                              |
+| ------------------------------------ | ------------------------------------------------------------ | -------------------------- | ------------------------------------------------------------ |
+| Lineair                              | <img src="img/machinaal/image-20230124223600606.png" alt="image-20230124223600606" style="zoom:50%;" /><img src="img/machinaal/image-20230124223709494.png" alt="image-20230124223709494" style="zoom:50%;" /> | Altijd mooie rechte lijnen | Geen                                                         |
+| Polynomiaal                          | <img src="img/machinaal/image-20230124223635666.png" alt="image-20230124223635666" style="zoom:50%;" /><img src="img/machinaal/image-20230124223723558.png" alt="image-20230124223723558" style="zoom:50%;" /> | Gebogen lijnen             | $c$: Gewicht tussen termen van hogere en lagere orde Het lijkt me erop dat als deze dichter bij nul ligt, we gekkere curves krijgen. <br> $d$: de graad van de veelterm (geeft ook gekkere vormen) |
+| Gaussian kernel / Radial basis (RBF) | <img src="img/machinaal/image-20230124223619080.png" alt="image-20230124223619080" style="zoom:50%;" /><img src="img/machinaal/image-20230124223649858.png" alt="image-20230124223649858" style="zoom:50%;" /> | Cirkelvormige blobs        | $\gamma$ geeft aan hoe strak de curves rond de objecten zitten (hogere $\gamma$ is strakker) |
 
 
 
@@ -1162,7 +1209,9 @@ We transformeren eerst onze data naar een hogere dimensie met een transformatief
 
 <img src="img/machinaal/image-20230123171048774.png" alt="image-20230123171048774" style="zoom:67%;" />
 
-//TODO pre image error
+Om te weten of onze dimensionaliteitsreductie effectief goed is, zouden we normaal gezien de data reconstrueren met de inverse transformatie. De transformatie die we hier doen is equivalent aan het mappen naar $\infty$-dimensionale ruimte. We kunnen de data dus niet reconstrueren naar de originele ruimte om de **reconstruction error** te berekenen. 
+
+Het is op de één of andere manier wel mogelijk om een punt te vinden dat dichtbij dit gereconstrueerde punt zou liggen in de originele ruimte (als we het zouden kunnen berekenen). Blijkbaar kan je dat punt vinden door een regressiemodel te trainen. Deze fake reconstructie noemt met de **pre-image** een geeft ons dus toch een manier om te kijken of onze transformatie nuttig is.
 
 
 
@@ -1319,8 +1368,47 @@ Voor beide wijzes van aanpak hebben we nood aan een bepaalde metriek om de afsta
 
 ## Gaussian mixture models
 
-//TODO
+### Generative modelling
 
+Een generatief model is een soort machine learning model dat gebruikt wordt om nieuwe data te genereren, gelijkaardig aan de data waarop het model getraind werd. 
+
+We kunnen er bijvoorbeeld van uitgaan dat de samples in onze dataset een bepaalde onbekende statistische verdeling volgen. Als we de frequenties van onze samples in een plot gooien kunnen we op zoek gaan naar een **probability density function** die overeenkomt met deze onbekende verdeling.
+
+<img src="img/machinaal/image-20230125121936965.png" alt="image-20230125121936965" style="zoom:50%;" />
+
+Hieruit kunnen we een **inductive bias** introduceren. We veronderstellen dat de data vanuit een specifieke **distributiefamilie** komt. 
+
+| Exponentiële verdelingen                                     | Normaalverdelingen                                           |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| ![image-20230125122140874](img/machinaal/image-20230125122140874.png) | ![image-20230125122204799](img/machinaal/image-20230125122204799.png) |
+| $P_\text{model}(𝑥;\lambda) = \lambda e^{-\lambda x}$         | $P_\text{model}(𝑥;\mu,\sigma) = \frac{1}{\sigma \sqrt{2 \pi}}e^\frac{-(x-\mu)^2}{2\sigma^2}$ |
+| We zoeken $\lambda$                                          | We zoeken $\mu$ en $\sigma$                                  |
+
+
+
+#### Use cases
+
+We kunnen generative modellinge gebruiken voor:
+
+* Anomaly detection
+  * Als iets aan de lage kant van de curve ligt, is het waarschijnlijk vreemd
+* Nieuwe samples genereren
+  * We kunnen samples nemen uit de distributie aan de hand van de inverse van de cumulatieve distributiefunctie
+  * Bij moeilijkere verdelingen (als de functie niet inverteerbaar is) gebruiken we **rejection sampling**
+    * Teken een kader rond de functie en gooi uniform darts
+    * <img src="img/machinaal/image-20230125123118351.png" alt="image-2023012512311835" style="zoom: 33%;" /> 
+    * Alle darts die onder de gele lijn landen worden aanvaardt
+
+
+
+
+
+### Normale verdeling
+
+<img src="img/machinaal/image-20230125123457130.png" alt="image-20230125123457130" style="zoom:50%;" />
+$$
+P_\text{model}(𝑥;\mu,\sigma) = \frac{1}{\sigma \sqrt{2 \pi}}e^\frac{-(x-\mu)^2}{2\sigma^2}
+$$
 
 
 # 10 - Introduction to deep neural networks
@@ -1846,6 +1934,20 @@ Multiclass classification
 > Why do we need to apply feature scaling in SVM?
 
 
+
+> What is the primal and what is the dual problem of SVM?
+
+
+
+> What is the kernel trick?
+
+
+
+> Why is the kernel trick advantageous?
+
+
+
+> What can be an inductive bias to prefer one kernel over the other? (as alternative for doing a grid search)
 
 ## Vragen uit het boek
 
