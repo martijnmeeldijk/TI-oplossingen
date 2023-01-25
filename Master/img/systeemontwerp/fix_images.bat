@@ -1,0 +1,1 @@
+magick mogrify -background white -alpha remove -flatten -alpha off *.png
