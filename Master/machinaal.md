@@ -97,7 +97,7 @@ Soms is de data niet de boosdoener, maar liggen de slechte resultaten aan het **
   * We kunnen ook ons model versimpelen, meer trainingsdata verzamelen of de hoeveelheid *noise* in de data proberen te verminderen.
 * <u>Underfitting</u>
   * Het model doet het slecht op zowel trainingsdata als testdata
-  * Het model is te simpel, we kunnen meer paramaters of features toevoegen, maar we kunnen ook de hyperparameter van de regularisatie kleiner maken.
+  * Het model is te simpel, we kunnen meer parameters of features toevoegen, maar we kunnen ook de hyperparameter van de regularisatie kleiner maken.
 
 
 
@@ -265,7 +265,7 @@ $$
 
 
 
-Spijtig genoeg moeten we altijd een evenwicht tussen precision en recall vinden, want als de precision omhoog gaat, gaat de recall omlaag en vice versa. Dit noemt met de **precision/recall trade-off**.
+Spijtig genoeg moeten we altijd een evenwicht tussen precision en recall vinden, want als de precision omhoog gaat, gaat de recall omlaag en vice versa. Dit noemt men de **precision/recall trade-off**.
 
 <img src="img/machinaal/image-20221231104907246.png" alt="image-20221231104907246" style="zoom:67%;" />
 
@@ -279,7 +279,7 @@ Spijtig genoeg moeten we altijd een evenwicht tussen precision en recall vinden,
 
 De **receiver operating charactertistic** curve is een ander veelgebruikt hulpmiddel bij binaire classificatieproblemen. De ROC curve zet de **true positive rate** (een ander woord voor *recall*) uit tegenover tegenover de **false positive rate** (*fall-out*), zijnde de verhouding van negatieve instanties die incorrect geclassificeerd zijn als positief. De false positive rate is gelijk aan 1 - de true negative rate (*specificiteit*). 
 
-In de curve zie je weeral de trade-off. Hoe **meer recall**, hoe **meer vals positieven** het model produceert. De stippelijn representeert de de ROC curve van willekeurige classificatie. Voor een goed model willen we typisch zo ver mogelijk van die zlijn zitten.
+In de curve zie je weeral de trade-off. Hoe **meer recall**, hoe **meer vals positieven** het model produceert. De stippelijn representeert de de ROC curve van willekeurige classificatie. Voor een goed model willen we typisch zo ver mogelijk van die lijn zitten.
 
 Een manier om onze classificatiemodellen te vergelijken is door de **area under the curve** (AUC) te meten. Een perfect classificatiemodel heeft dan als oppervlakte de waarde 1. 
 
@@ -813,7 +813,7 @@ We moeten kunnen zien welke soorten scheidingslijnen door welke kernels zijn geg
 | ------------------------------------ | ------------------------------------------------------------ | -------------------------- | ------------------------------------------------------------ |
 | Lineair                              | <img src="img/machinaal/image-20230124223600606.png" alt="image-20230124223600606" style="zoom:50%;" /><img src="img/machinaal/image-20230124223709494.png" alt="image-20230124223709494" style="zoom:50%;" /> | Altijd mooie rechte lijnen | Geen                                                         |
 | Polynomiaal                          | <img src="img/machinaal/image-20230124223635666.png" alt="image-20230124223635666" style="zoom:50%;" /><img src="img/machinaal/image-20230124223723558.png" alt="image-20230124223723558" style="zoom:50%;" /> | Gebogen lijnen             | $c$: Gewicht tussen termen van hogere en lagere orde Het lijkt me erop dat als deze dichter bij nul ligt, we gekkere curves krijgen. <br> $d$: de graad van de veelterm (geeft ook gekkere vormen) |
-| Gaussian kernel / Radial basis (RBF) | <img src="img/machinaal/image-20230124223619080.png" alt="image-20230124223619080" style="zoom:50%;" /><img src="img/machinaal/image-20230124223649858.png" alt="image-20230124223649858" style="zoom:50%;" /> | Cirkelvormige blobs        | $\gamma$ geeft aan hoe strak de curves rond de objecten zitten (hogere $\gamma$ is strakker) |
+| Gaussian kernel / Radial basis (RBF) | <img src="img/machinaal/image-20230124223619080.png" alt="image-20230124223619080" style="zoom:50%;" /><img src="img/machinaal/image-20230124223649858.png" alt="image-20230124223649858" style="zoom:50%;" /> | Cirkelvormige blobs        | $\gamma$ geeft aan hoe strak de curves rond de objecten zitten (hogere $\gamma$ is strakker). Lagere $C$ is grotere marge |
 
 
 
@@ -1835,11 +1835,173 @@ Vervolgens stapelen we meerdere lagen met meerdere feature maps op elkaar, met t
 
 Soms kan het dat door de grootte van de kernel en de stride, sommige waarden (aan de rand bijvoorbeeld) worden genegeerd. Dit kan opgelost worden met **zero padding**. 
 
-* Het aantal dimensies van de output
+* Het aantal dimensies van de output hangt af van
+  * $n_{in}$: aantal features
+  * $k$: grootte van de kernel
+  * $p$: grootte van de padding
+  * $s$: grootte van de stride
 
-//TODO
+* Het aantal outputfeatures is dan: 
+  * $n_{out} = \lfloor \frac{n_{in} + 2p -k} s \rfloor + 1$
 
-# 15 - RNN
+
+
+
+### Pooling
+
+Een **pooling layer** heeft geen gewichten. Het enige wat hij doet is zijn input aggregeren. Dit zorgt voor:
+
+* Minder geheugen en CPU-gebruik
+* Volgende lagen hebben een grotere receptive field, maar we verliezen wel wat informatie
+* Minder gevoeligheid voor kleine verschuivingen van de input
+
+De meestgebruikte versie hiervan is **max pooling**. Hier wordt alleen de maximale waarde van een bepaalde gebied doorgegeven aan de volgende laag. We kunnen ook een stride gebruiken, typisch even groot als de pool size. 
+
+<img src="img/machinaal/image-20230125165512682.png" alt="image-20230125165512682" style="zoom:67%;" />
+$$
+W_{out} = \frac{W-F}S + 1
+$$
+
+* $W_{out}$: de lengte/breedte van de output
+* $W$: de lengte/breedte van de input
+* $F$: pool size
+* $S$: pool stride 
+
+
+
+### Architecture
+
+Het uiteindelijke netwerk wordt verkregen door het achtereen schakelen van: 
+
+* Convolutionele lagen
+* Niet-lineaire activaties
+* (batchnorm)
+* Pooling
+
+Waarna we de representatie *flattenen* en we een aantal fully connected layers gebruiken voor de output. Deze gebruiken dan de informatie van de gehele afbeelding om een voorspelling te maken. Het CNN gedeelte is dus eigenlijk verantwoordelijk voor de feature extraction die dan normaal handmatig zou gebeuren. 
+
+<img src="img/machinaal/image-20230125170129628.png" alt="image-20230125170129628" style="zoom:67%;" />
+
+### Aantal parameters 
+
+Het aantal parameters in één laag bedraagt:
+$$
+n_\text{param} = n_k \cdot k_w \cdot k_h \cdot k_d + n_k
+$$
+
+
+* $n_k$: aantal kernels 
+* $k_{w/h/d}$: kernel width, height, depth
+* De laatste term moet er bij omdat we voor elke kernel ook één bias term bijhouden
+
+
+
+
+
+//TODO common CNNs
+
+### Training
+
+CNNs worden op dezelfde manier getraind als fully connected neurale netwerken aan de hand van gradient decent en backpropagation. We hebben nood aan goeie GPUs en gigantische training sets. 
+
+We kunnen de grootte van onze training set artificieel aandikken door middel van **data augmentation**. Door bijvoorbeeld afbeeldingen te croppen, draaien of te vervagen. Dit **vermindert overfitting** en kan gezien worden als een vorm van **regularisatie**. Je moet het natuurlijk wel nuttig houden. Als je algoritme verkeersborden moet herkennen, zal het niet veel nut hebben om je verkeersborden ondersteboven te zetten bijvoorbeeld. (of misschien wel wie weet)
+
+Meestal hoef je niet een volledig model van nul te trainen. Je kan doen aan **transfer learning**. Je neemt een model waar een bedrijf al miljoenen in heeft geïnvesteerd en die **finetune** je voor jou use-case. 
+
+
+
+# 15 - Preprocessing sequences using RNN & CNN
+
+Voor verschillende types problemen gebruik je best verschillende types neurale netwerken:
+
+* Tabulaire data: fully connected
+* Image data: 2D convolutioneel
+* Video data: 3D convolutioneel
+* Time series: Recurrent model, 1D convolutioneel
+
+
+
+## Recurrent neural networks
+
+Een recurrent neural network is een neuraal netwerk dat ook verbindingen naar achter bevat. Hiermee kunnen we dus de toekomst voorspellen. 
+
+<img src="img/machinaal/image-20230125171918658.png" alt="image-20230125171918658" style="zoom:50%;" />
+
+We maken een laag van recurrente neuronen. In elke stap doorheen de tijd zullen de neuronen de input van de huidige stap, alsook de output van de vorige stap als input nemen. In de afbeelding rechts zie je onze laag in het klein, die doorheen de tijd zijn eigen output aan zichzelf voert. 
+
+Elke recurrente neuron heeft dus twee sets gewichten
+
+* Eén voor de input 
+* Eén voor de output van de vorige stap
+
+
+
+* Een RNN kan terwijl hij een sequentie inputs neemt, een sequentie outputs produceren. Dit soort **sequence-to-sequence** netwerk is nuttig om voorspellingen te maken op time series zoals aandelen of signalen. 
+  * <img src="img/machinaal/image-20230125172536331.png" alt="image-20230125172536331" style="zoom:50%;" /> 
+* Als je de RNN een sequentie van inputs geeft en de outputs negeert, krijg je een **sequence-to-vector** model. Je kan hem bijvoorbeeld de woorden van een tekst geven, waarna het model je kan vertellen wat de toon is van de tekst.
+  * <img src="img/machinaal/image-20230125172741921.png" alt="image-20230125172741921" style="zoom:50%;" /> 
+* Je kan het netwerk ook keer op keer dezelfde input geven, waarna hij sequentie teruggeeft. Dit is een **vector-to-sequence** netwerk en kan gebruikt worden om bijvoorbeeld een caption voor een afbeelding te genereren. 
+  * <img src="img/machinaal/image-20230125172856319.png" alt="image-20230125172856319" style="zoom:50%;" /> 
+* Als je een sequence-to-vector en een vector-to-sequence achter elkaar zet krijg je een **encoder-decoder**. Dit werkt beter voor bijvoorbeeld vertalingen. Het laatste woord van de zin kan het eerste woord van de vertaalde zin beïnvloeden, dus we moeten wachten tot we de hele zin hebben gezien alvorens we kunnen vertalen. 
+  * <img src="img/machinaal/image-20230125173203430.png" alt="image-20230125173203430" style="zoom:50%;" /> 
+
+
+
+### Training
+
+Om een RNN te trainen moeten we hem ontrollen, dan kunnen we gewoon backpropagation doen. Deze methode heet **backpropagation through time**. 
+
+Spijtig genoeg zijn RNNs vaak traag en instabiel om te trainen, zeker voor lange sequenties. De meeste trucjes die we in normale neurale netwerken gebruiken zijn hier ook van toepassing (optimizers, dropout, regularisatie). Bij RNN worden typisch **saturerende activatiefuncties** gebruikt zoals tanh of sigmoid. In plaats van batchnorm gebruiken we hier vaak **layerNorm**.
+
+
+
+## LSTM
+
+Omdat RNNs de neiging hebben om oudere inputs relatief snel te vergeten, geven we in **long-short term memory** modellen onze neuronen een expliciete **memory slot**. Een LSTM cell ziet er dan zo uit:
+
+<img src="img/machinaal/image-20230125174230295.png" alt="image-20230125174230295" style="zoom:50%;" />
+
+* De long term state $c_{(t-1)}$ gaat eerst door een forget gate, waardoor hij wat herinneringen vergeet
+* Bij de $\oplus$ krijgt hij wat nieuwe herinneringen de gekozen zijn door een input gate. De nieuwe $c_{(t)}$ wordt dan zonder verdere wijziging doorgestuurd
+* De oude short term state $h_{{(t-1)}}$ wordt aan 4 fully connected lagen gevoerd
+  * De hoofdlaag is diegene die $g_{(t)}$ geeft en doet wat je verwacht (inputs analyseren, ...)
+  * De andere lagen zijn *gate controllers*
+    * $f_{(t)}$ bestuurt de *forget gate* en zegt dus welke long-term herinneringen verwijderd moeten worden
+    * $i_{(t)}$ bestuurt de *input gate* die beslist welke delen van $g_{(t)}$ er aan de long-term herinneringen moet toegevoegd worden
+    * $o_{(t)}$ bestuurt de *output gate* en bepaalt welke delen van de long-term herinneringen er aan de output moeten worden toegevoegd
+
+LSTM cellen kunnen dus belangrijke inputs zo lang als nodig bijhouden. 
+
+
+
+### GRUs
+
+<img src="img/machinaal/image-20230125175403823.png" alt="image-20230125175403823" style="zoom:10%;" /> 
+
+**Gated recurrent units** zijn een versimpelde versie van LSTMs die typisch even goed werken. 
+
+<img src="img/machinaal/image-20230125175329792.png" alt="image-20230125175329792" style="zoom:67%;" />
+
+* Er is hier maar één state in plaats van twee. 
+
+* De controller $z$ zorgt ervoor dat wanneer een herinnering wordt opgeslagen, de locatie waar deze herinnering komt eerst wordt gewist. 
+* De *gate controller* $r$ bepaalt welke delen van de state er getoond worden aan de hoofdlaag $g$
+
+
+
+## 1D Convolutional layers
+
+<img src="img/machinaal/image-20230125180011924.png" alt="image-20230125180011924" style="zoom:50%;" />
+
+Je kan convolutie ook gebruiken met lagen van 1 dimensie. Dit is nuttig voor heel lange sequenties. 
+
+ 
+
+## 3D convolutional layers
+
+<img src="img/machinaal/image-20230125180108564.png" alt="image-20230125180108564" style="zoom:50%;" />
+
+Voor video's gebruik je dan beter convolutie met 3D lagen. 
 
 
 
@@ -1893,7 +2055,7 @@ Het model wordt getraind met twee loss functies:
 
 VAEs stimuleren het 'ontrafelen' van onderliggende factoren. Eén dimensie van de latent code kan dan één onderliggende eigenschap voorstellen (lijn dikte, hoek, ...). Deze ontrafeling is nuttig om high level informatie uit je input te halen. 
 
-Variational autoencoders waren een tijdje heel erg populair, maar ze zijn ingehaalde door Generative Adverserial Networks, dit in staat zijn tot veel betere resultaten.
+Variational autoencoders waren een tijdje heel erg populair, maar ze zijn ingehaald door Generative Adverserial Networks, die in staat zijn tot veel betere resultaten.
 
 
 
@@ -1935,35 +2097,347 @@ We voegen een klein beetje ruis toe aan onze data en trainen een model om deze r
 
 
 
+### Mijn vragen
+
+> Welke soorten gradient descent zijn er? Wat zijn hun eigenschappen, voor- en nadelen. 
+
+
+
+> Bias vs variance
+
+
+
+> Wat zijn de verschillende soorten regularisatie bij regressie?
+
+
+
+> We maken met de volgende code een neuraal netwerk in Keras. Hoeveel parameters heeft dit model? 
+
+```python
+model = keras.models. Sequential([
+keras.layers.Conv2D(64, 7, activation="relu", padding="same", # 64*7*7+64 
+input_shape=[28, 28, 1]),
+keras.layers MaxPooling2D(2), # 0
+keras.layers.Conv2D(128, 3, activation="relu", padding="same"), # 64*128*3*3+128
+keras.layers.Conv2D(128, 3, activation="relu", padding="same"), # 128*128*3*3 + 128
+keras.layers.MaxPooling2D(2), # 0
+keras.layers.Conv2D(256, 3, activation="relu", padding="same"), # 128*3*3*256 + 256
+keras.layers Conv2D(256, 3, activation="relu", padding="same"), # 256*3*3*256 + 256
+keras.layers.MaxPooling2D(2),
+keras.layers.Flatten(), # al twee keer max pool gehad 28x28 -> 7x7 -> 3x3
+    # de input van flatten is dus 3x3x256, dus zijn output is 2304
+keras.layers.Dense(128, activation="relu"), # 2304*128 + 128
+keras.layers.Dropout(0.5), # doet niks met het aantal parameters
+keras.layers.Dense(64, activation="relu"), #  128 * 64 + 64
+keras.layers.Dropout(0.5),
+keras.layers.Dense(10, activation="softmax") # 64 * 10 + 10
+```
+
+Het aantal parameters in een laag is dus het aantal outputs van de vorige laag maal het aantal parameters binnen de laag. Deze bedraagt $n_\text{param} = n_k \cdot k_w \cdot k_h \cdot k_d + n_k$.
+
+Het totaal: 
+$$
+\begin{align}
+n_{tot} &= (64*7*7+64) +  (64*128*3*3+128) + (128*128*3*3 + 128) + (128*3*3*256 + 256) 
+\\ &\quad + (256*3*3*256 + 256) + (2304*128 + 128) + (128 * 64 + 64) + (64 * 10 + 10) 
+\\ &= 1413834
+\end{align}
+$$
+
+
 ## Vragen uit de slides
+
+### ML Landscape
+
+> What is the difference between supervised, unsupervised and reinforcement learning?
+
+* **Supervised learning**
+  * De data die we aan het algoritme geven bevat ook de gewenste oplossing
+  * Classificatie: een klasse proberen te voorspellen (bv. spam filter)
+  * Regressie: een bepaalde numerieke waarde proberen te voorspellen op basis van een set van *features* (bv. prijs van een auto op basis van kilometers en leeftijd)
+* **Unsupervised learning**
+  * Er is geen *ground truth* beschikbaar
+  * Clustering: gelijkaardige datapunten groeperen (bv. aanbevelingen op netflix voor gelijkaardige kijkers)
+  * Anomaly detection (bv. fraudelente creditcard transacties)
+* **Reinforcement learning**
+  * We trainen een *agent* door hem te belonen, de *agent* leert dan vanzelf een methode (*policy*) om de beloning te maximaliseren
+
+
+
+> Explain the difference between instance-based and model-based learning.
+
+Bij **model-based** **learning** is het de bedoeling om een model te leren dat de output kan voorspellen van een gegeven input. Het model is dan een set parameters die geleerd worden van gegeven data. De nieuwe sample in de figuur is volgens het model een driehoek, op basis van de parameters die het model heeft geleerd van de training samples.
+
+Een andere manier is **instance-based learning**. We gebruiken training samples om voorspellingen te maken op nieuwe data, zonder bepaalde parameters te trainen. De voorspelling is enkel gebaseerd op de vergelijking tussen de nieuwe data en de training samples. In de figuur wordt de nieuwe instance een driehoek omdat de meeste dichtstbijzijnde training samples driehoeken zijn.
+
+
+
+> What is Model selection? 
+
+Wanneer we model-based learning toepassen, zullen we een bepaald model moeten kiezen. Het kiezen van een model is al een **inductive bias**. We maken de veronderstelling dat onze data een patroon volgt dat met een bepaald model te modelleren valt
+
+
+
+"*Inductive bias = your assumptions on the nature of the target and on the properties of the data*"
+
+
+
+> What is the No Free Lunch theorem
+
+Als je absoluut geen veronderstellingen maakt over je data, is er geen reden om een bepaald model boven een ander te kiezen. Voor sommige datasets is het beste model een lineair model, voor anderen is een neuraal netwerk beter geschikt. Er is geen model dat *a priori* gegarandeerd beter werkt.
+
+
+
+> What are the three main challenges in ML: 
+
+* Data volume
+  * Te weinig data 
+* Data quality
+  * Niet-representatieve trainingsdata
+  * Slechte kwaliteit data
+  * Irrelevante features
+    * Feature extraction: de meest nuttige features kiezen
+    * Feature selection: features combineren om een nuttigere feature te verkrijgen
+* Model type and complexity
+  * Underfitting
+  * Overfitting
+
+
+
+> Overfitting and underfitting
+
+* <u>Overfitting</u>
+  * Het model is te specifiek afgesteld op de trainingsdata en presteert daarom slechter op nieuwe data.
+  * Dit probleem kunnen we verminderen door **regularisatie**, hierover later meer.
+  * We kunnen ook ons model versimpelen, meer trainingsdata verzamelen of de hoeveelheid *noise* in de data proberen te verminderen.
+* <u>Underfitting</u>
+  * Het model doet het slecht op zowel trainingsdata als testdata
+  * Het model is te simpel, we kunnen meer parameters of features toevoegen, maar we kunnen ook de hyperparameter van de regularisatie kleiner maken.
+
+
+
+> What is Regularization?
+
+We introduceren extra regularisatietermen in de cost functie die ervoor zouden moeten zorgen dat het model minder belang hecht aan specifieke features, waardoor het meer algemeen en minder gevoelig aan overfitting zou zijn. 
+
+We kunnen dan kiezen hoe hard deze regularisatieterm doorweegt. Dit is een hyperparameter die wel zullen moeten afstellen. 
+
+
+
+> Testing and (cross-)validation
+
+Als je de hyperparameters van je model gaat afstellen en dat telkens gaat testen op de test set, ben je eigenlijk aan het overfitten op de test zet. De oplossing hiervoor is om de training set op te splitsen in een training en een **validation set**. Als je niet genoeg trainingsinstanties hebt kan je cross-validation gebruiken.
+
+Met **cross validation** kan je je model valideren tijden het trainen zonder nood aan een extra validatie set. Je verdeelt de trainingsdata in een aantal groepjes. Voor elk groepje train je een model op alle trainingsinstanties die niet in dat groepje zitten en valideer je het model met dat groepje. Je zal nu wel even veel modellen moeten trainen als het aantal groepjes dat je hebt.
+
+
+
+### E2E ML Project
+
+> Notations
+
+
+
+> Scatterplot
+
+
+
+> What is imputation? 
+
+Dit is het vervangen van ontbrekende waarden door bijvoorbeeld het gemiddelde, de mediaan of $0$.
+
+
+
+> Feature scaling? Why?
+
+Feature scaling
+
+* We kunnen de features herschalen door ze te normaliseren of standaardiseren zodat features met een groter bereik geen grotere impact hebben op modellen 
+
+
+
+> Feature transformation
+
+Wordt niet één keer vernoemd in de slides 
+
+
+
+> Categorical attributes
+
+Categorische attributen kunnen maar een aantal mogelijke waarden aannemen, voor nominale variabelen gebruiken we one-hot-encoding.
+
+
+
+> Grid search vs random search of hyperparameters
+
+* Grid search 
+  * We defineren een *grid* met combinaties van hyperparameters en trainen het model voor elk punt van de *grid*, waarna we het beste model kiezen.
+  * Dit is moeilijk als je erg veel combinaties hebt
+* Random search
+  * We proberen *at random* combinaties van parameters uit en gebruiken de beste combinatie die we vinden. 
+  * Dit werkt een stuk beter als de zoekruimte van de hyperparameters erg groot is
+  * Het is ook gemakkelijk om te beslissen hoeveel resources random search mag gebruiken. Je laat het gewoon zo lang draaien als je zin hebt.
+
+### Classification
+
+> Do you prefer high precision or high recall?
+
+> Detect videos safe for kids
+
+Hoge precisie, want het is niet erg als er een video die veilig is als onveilig wordt bestempeld. Zolang er maar geen vuile video's bij kinderen terecht komen.
+
+> Recommend videos
+
+Beter hoge precisie. Het is niet erg dat er wat video's niet in je feed zitten die je zouden kunnen interesseren, maar we willen wel dat er zo veel mogelijk goede video's op je feed komen.
+
+
+
+> Detect shoplifting in surveillance video
+
+Hoge recall, het is niet erg als we soms iemand detecteren die niet aan het stelen is. Als we maar alle dieven pakken.
+
+Valt over te discussiëren, want misschien is onschuldige klanten lastigvallen ook geen goed idee.
+
+> Cancer detection
+
+Hoge recall. Het is veel erger als een kanker niet wordt opgemerkt.
+
+
+
+> Predicting a good day based on weather conditions to launch satellite
+
+Hoge precisie. Een paar dagen wachten kan geen kwaad, als de dag maar zeker goed is. 
+
+
+
+> E-mail spam detection
+
+Hoge precisie, we willen niet dat goede emails in spam terecht komen. 
+
+
+
+> Explain precision and recall and accuracy, specificity. What are their formulas?
+
+* Precision
+  * Hoe veel van de positief voorspelde waarden is effectief positief
+  * $$ \text{precision} = \frac{TP}{TP+FP} $$
+* Recall
+  * Hoeveel van alle positieve waarden hebben gevonden
+  * $\text{recall} = \frac{TP}{TP+FN}$
+* Accuracy
+  * Hoe vaak hebben we de juiste voorspelling gedaan
+  * $\text{accuracy} = \frac{TP+TN}{TOTAAL}$
+* Specificiteit
+  * Hoeveel van de negatieve waarden als negatief voorspeld zijn
+  * $\text{specificivity}= \frac{TN}{TN+FP}$
+* Fall-out
+  * Wat is de kans dat we een positief resultaat krijgen wanneer de echte waarde negatief is
+  * $\text{fall-out}= \frac{FP}{TN+FP}$
+
+
+
+> What is the $F_1$ score? Why would you use it?
+
+$$
+F_1 = \frac{2}{\frac {1} {\text{precision}} + \frac{1}{\text{recall}} } = 2 \times \frac{\text{precision} \times \text{recall}}{\text{precision} + \text{recall}} = \frac{TP}{TP + \frac{FN + FP}{2}}
+$$
+
+Als we **precision en recall** willen **combineren** in een metriek die een hoge waarde geeft als ze **beide hoog** zijn, kunnen we gebruik maken van de  $F_1$ score. Spijtig genoeg moeten we altijd een evenwicht tussen precision en recall vinden, want als de precision omhoog gaat, gaat de recall omlaag en vice versa. Dit noemt men de **precision/recall trade-off**.
+
+
+
+> What is an ROC curve? Why is it useful?
+
+De **receiver operating characteristic** curve zet recall op tegen fall-out. Hier ga je weer een trade-off zien. Als de één stijgt daalt de ander.
+
+<img src="img/machinaal/image-20221231105717815.png" alt="image-20221231105717815" style="zoom:50%;" />
+
+Je kan classificatiemodellen vergelijken door de oppervlakte onder de curve te berekenen. Een goed model zal een oppervlakte dicht bij $1$ hebben.
+
+
+
+> Why is accuracy not always considered to be a good metric?
+
+//TODO
+
+
+
+> How can we handle sampling in unbalanced datasets? 
+
+Met **stratified sampling** zorgen we dat de verhouding tussen klassen behouden blijft wanneer we samples nemen voor bijvoorbeeld een train/test set of tussen verschillende folds bij cross-validation. 
+
+
 
 ### Training models
 
 > What is (linear) regression ? 
 
+Bij regressie zoeken we een curve die zo goed mogelijk past op onze data. Dit betreft het zoeken naar optimale parameters die deze optimale curve beschrijven. Deze parameters worden gezocht door een **loss functie** te minimaliseren. 
+
 
 
 > How is a linear regression model parameterized ? How does it make a prediction ? 
+
+$ \hat  y = \mathbf \Theta x$
+
+Alle features krijgen een bepaald gewicht in de gewichtsvector $\mathbf \Theta$ door het model te trainen. Om een voorspelling te maken vermenigvuldigen we de feature vector van een instantie met de gewichtsvector. 
 
 
 
 > How do we obtain the optimal parameters for a linear regression model. 
 
+We kunnen deze parameters vinden aan de hand van een **closed form oplossing**. We maken een vergelijking met al onze instanties en stellen zijn afgeleide gelijk aan nul. Zo kunnen we de optimale parameters direct vinden. Voor deze operatie is matrix inversie nodig en is dus $O(n^3)$
+
+Een betere optie is **gradient descent**. Door rekening houdend met de huidige parameters en instanties de gradiënt te berekenen weten we in welke 'richting' we moeten zoeken om betere parameters te verkrijgen. Door dit proces iteratief te herhalen kunnen we goedkoper en sneller zeer goede parameters vinden.
+
 
 
 > What is gradient descent ? 
+
+Gradient descent is een algemeen optimalisatiealgoritme dat de volgende stappen hanteert:
+
+* Bereken de partiële afgeleiden van de loss function voor de parameters
+* Neem random waarden voor de parameters en evalueer de partiële afgeleide 
+  * Dit geeft de **gradiënt**, deze geeft de 'richting' aan van de loss function
+* Pas de parameters aan in de tegengestelde richting van de gradiënt
+  * Hoe veel je ze aanpast hangt af van de **learning rate**
+  * Kiezen we deze te klein, zal het lang duren voor het resultaat convergeert
+  * Te groot, dan kan het dat we nooit convergeren
+  * De learning rate is dus een **hyperparameter** die we zelf moeten afstellen
+* Herhaal tot de parameters convergeren
+
+
+
+Er zijn een aantal verschillende implementaties waaronder:
+
+* **Batch gradient descent**: de gradiënt elke stap berekenen voor alle trainingsdata (traag voor grote datasets)
+* **Stochastic gradient descent**: loop over de training data, bereken de gradiënt en neem een stap voor elke sample
+  * Veel sneller
+  * Veel ruis in de schatting van de gradiënt
+  * De cost zal rondswingen, lage kans om optimale oplossing te vinden (maar we goed genoeg)
+  * Willekeur kan helpen om lokale minima te ontsnappen
+* **Mini-batch gradient descent**:
+  * Combinatie van beide
 
 
 
 > What is a convex function ? 
 
+Dit is een functie **zonder lokale minima**. Hij heeft dus één globaal minimum. Gradient descent zal dit minimum gegarandeerd ooit vinden met een voldoende kleine learning rate.
+
 
 
 > What is polynomial regression ? How does it relate to linear regression ? When is polynomial regression useful? 
 
+Dit is regressie met veeltermen van hogere graad. Het doet exact hetzelfde als lineaire regressie, maar kan complexere relaties modelleren. 
+
 
 
 > What is bias and variance, what is the relationship between them ? 
+
+
+
+> Bias-variance trade-off
 
 
 
@@ -2086,4 +2560,749 @@ Multiclass classification
 
 
 ## Vragen uit het boek
+
+Ik heb er wel alleen de vragen uitgehaald die ik nuttig vond.
+
+### H1
+
+> What is a labeled training set?
+
+Een dataset waar de gewenste oplossing ook aanwezig is. 
+
+> What are the two most common supervised tasks?
+
+Classificatie en regressie
+
+> Can you name four common unsupervised tasks?
+
+* Clustering
+* Visualisatie
+* Dimensionaliteitsreductie
+* Association rule learning
+
+
+
+> What type of algorithm would you use to segment your customers into multiple groups?
+
+Clustering als je niets weet over de groepen.
+
+Classificatie als je de groepen kent. 
+
+
+
+> Would you frame the problem of spam detection as a supervised learning problem or an unsupervised learning problem?
+
+Supervised, we geven het algoritme emails met een label of ze al dan niet spam zijn. 
+
+
+
+> What type of learning algorithm relies on a similarity measure to make predictions?
+
+Instance-based learning kent de trainingsdata 'vanbuiten' en gebruikt een similarity measure om de meest gelijkaardige instanties te vinden, waarop het model zijn voorspelling zal baseren.
+
+
+
+> What is the difference between a model parameter and a learning algorithm’s hyperparameter?
+
+Een model bestaat uit parameters die bepalen wat de voorspelling zal zijn voor een nieuwe instantie. Een model probeert typisch de optimale parameters voor een probleem te vinden. Een hyperparameter is een parameter van het algoritme zelf, niet van het model. (bijvoorbeeld de hoeveelheid regularisatie) 
+
+
+
+> Can you name four of the main challenges in Machine Learning?
+
+* Te weinig data
+* Slechte kwaliteit data
+* Underfitting
+* Overfitting
+
+
+
+> If your model performs great on the training data but generalizes poorly to new instances, what is happening? Can you name three possible solutions?
+
+Overfitting
+
+* Regularisatie
+* Meer training data vinden
+* Het model versimpelen (regularisatie, minder parameters, simpeler algoritme)
+* De hoeveelheid ruis in de training data verminderen
+
+
+
+> What is a test set, and why would you want to use it?
+
+Om te testen hoe goed het model voorspellingen doet op nieuwe instanties
+
+
+
+> What is the purpose of a validation set?
+
+Om modellen te vergelijken en hyperparameters af te stellen. 
+
+
+
+> What can go wrong if you tune hyperparameters using the test set?
+
+Het kan dat we gaan overfitten op de test set, de fout die we dan meten zal erg optimistisch zijn. 
+
+
+
+### H4
+
+> Which Linear Regression training algorithm can you use if you have a training set with millions of features?
+
+Stochastic gradient descent of mini-batch gradient descent, de andere manieren werken niet snel met zo veel features.
+
+
+
+> Suppose the features in your training set have very different scales. Which algorithms might suffer from this, and how? What can you do about it?
+
+De cost functie zal een heel uitgerekte vorm hebben, waardoor gradient decent heel traag convergeert. Je kan best je features eerst schalen. 
+
+
+
+> Can Gradient Descent get stuck in a local minimum when training a Logistic Regression model?
+
+Nee, want de cost functie is convex
+
+
+
+> Do all Gradient Descent algorithms lead to the same model, provided you let them run long enough?
+
+Nee, ze zullen allemaal wel redelijk dicht bij de oplossing raken, maar zeker stochastic en mini-batch zullen op en af springen rond het globale optimum.
+
+
+
+>  Suppose you use Batch Gradient Descent and you plot the validation error at every epoch. If you notice that the validation error consistently goes up, what is likely going on? How can you fix this?
+
+Dit kan omdat de learning rate te hoog is en het algoritme divergeert. 
+
+Als de validation error omhoog gaat en de training error niet, is je model aan het overfitten en zal je best de training stopzetten. 
+
+
+
+
+
+> Is it a good idea to stop Mini-batch Gradient Descent immediately when the validation error goes up?
+
+Nee, Mini-batch is niet gegarandeerd om vooruitgang te maken bij elke iteratie, je kan best even doorgaan. 
+
+
+
+> Which Gradient Descent algorithm (among those we discussed) will reach the vicinity of the optimal solution the fastest? Which will actually converge? How can you make the others converge as well?
+
+Stochastic gradient descent zal het snelste in de buurt raken omdat het elke iteratie maar één trainingsinstantie bekijkt, maar niet effectief convergeren. Alleen batch gradient descent convergeert effectief. 
+
+
+
+> Suppose you are using Polynomial Regression. You plot the learning curves and you notice that there is a large gap between the training error and the validation error. What is happening? What are three ways to solve this?
+
+Weeral overfitting
+
+* Lagere graad veelterm nemen
+* Regularisatie
+* Training set groter maken
+
+
+
+> Suppose you are using Ridge Regression and you notice that the training error and the validation error are almost equal and fairly high. Would you say that the model suffers from high bias or high variance? Should you increase the regularization hyperparameter α or reduce it?
+
+Hoge bias, we zijn waarschijnlijk aan het underfitten. In dit geval kan je best de regularisatie verminderen.
+
+
+
+
+
+> Why would you want to use:
+> a. Ridge Regression instead of plain Linear Regression (i.e.,without any regularization)?
+> b. Lasso instead of Ridge Regression?
+> c. Elastic Net instead of Lasso?
+
+a. Een model met regularisatie doet het meestal beter dan eentje zonder
+
+b. De $\mathscr l _1$penalty  van lasso duwt de gewichten van onbelangrijke termen naar nul, wat resulteert in een schaars model. Dit doet automatisch feature selection. Als je dus denkt dat er maar een paar features aan het model bijdragen, kan je best lasso gebruiken.
+
+c. Lasso is meestal iets onvoorspelbaarder dan elastic net. Je moet wel een extra hyperparameter afstellen bij elastic net.
+
+
+
+> Suppose you want to classify pictures as outdoor/indoor and daytime/nighttime. Should you implement two Logistic Regression classifiers or one Softmax Regression classifier?
+
+De klassen zijn niet exclusief, dus best twee keer logistic regression.
+
+
+
+### H5
+
+> What is the fundamental idea behind Support Vector Machines?
+
+Een zo breed mogelijke straat proberen passen tussen verschillende klassen. Dit wil zeggen dat we een zo groot mogelijke marge willen tussen de decision boundary en de instanties. 
+
+> What is a support vector?
+
+Nadat we een SVM hebben getraind, is dit een instantie dit op de straat ligt. De decision boundary wordt volledig bepaald door de support vectors. De andere instanties hebben geen invoed op het model.
+
+
+
+> Why is it important to scale the inputs when using SVMs?
+
+Het algoritme probeert een zo wijd mogelijke straat tussen je klassen te passen. Bij ongeschaalde data zal SVM geen rekening meer houden met heel kleine features. 
+
+
+
+> Can an SVM classifier output a confidence score when it classifies an instance?
+> What about a probability?
+
+Je kan de afstand tot de decision boundary als confidence gebruiken. Een effectieve probabiliteit zit niet in het model. Je kan we probabilities berekenen met logistic regression. 
+
+
+
+> Should you use the primal or the dual form of the SVM problem to train a model on a training set with millions of instances and hundreds of features?
+
+Liefst de primal form, want de dual form schaalt kwadratisch in het aantal instanties en wordt dus vreselijk traag. 
+
+
+
+> Say you’ve trained an SVM classifier with an RBF kernel, but it seems to underfit the training set. Should you increase or decrease γ (gamma)? What about C?
+
+Best $\gamma$ groter maken. Dit resulteert in een complexere curve. 
+
+Als je $C$ groter maakt, accepteer je een kleinere marge, dit kan ook helpen. 
+
+
+
+> How should you set the QP parameters (H, f, A, and b) to solve the soft margin linear SVM classifier problem using an off-the-shelf QP solver?
+
+//TODO ik weet niet of dit nuttig is
+
+
+
+### H6
+
+> What is the approximate depth of a Decision Tree trained (without restrictions) on a training set with one million instances?
+
+$\log_2(1.000.000)$
+
+Waarschijnlijk een klein beetje meer omdat de boom niet perfect in balans zal zijn. 
+
+> Is a node’s Gini impurity generally lower or greater than its parent’s? Is it generally lower/greater, or always lower/greater?
+
+Meestal lager, het kan wel dat een kind een hogere impuriteit heeft dan zijn ouder als zijn broeder daarvoor compenseert.
+
+
+
+> If a Decision Tree is overfitting the training set, is it a good idea to try decreasing max_depth?
+
+Ja goed idee. Dan is je model simpeler en doe je dus eigenlijk aan regularisatie. S
+
+
+
+> If a Decision Tree is underfitting the training set, is it a good idea to try scaling the input features?
+
+Het kan decision trees niks schelen of de data geschaald is of niet, dus dit is tijdverspilling.
+
+
+
+> If it takes one hour to train a Decision Tree on a training set containing 1 million instances, roughly how much time will it take to train another Decision Tree on a training set containing 10 million instances?
+
+Computationele complexiteit $O(n \times m\log(m))$. 
+
+En dus 11.667 uur
+
+
+
+> If your training set contains 100,000 instances, will setting presort=True speed up training?
+
+Dit zal alleen het geval zijn als je training set uit een paar duizend instanties bestaat.
+
+
+
+### H7
+
+> If you have trained five different models on the exact same training data, and they all achieve 95% precision, is there any chance that you can combine these models to get better results? If so, how? If not, why?
+
+Ja, met bijvoorbeeld een voting ensemble. Dit werkt het beste als de modellen veel verschillen.
+
+
+
+> What is the difference between hard and soft voting classifiers?
+
+Hard voting neemt het meest gestemde label als absolute waarheid, bij soft voting zal voor elke klasse een gemiddelde class probability berekend worden. Hij kiest dan de klasse met de hoogste probabiliteit. Dan krijgen votes met hogere confidence meer  gewicht. 
+
+
+
+> Is it possible to speed up training of a bagging ensemble by distributing it across multiple servers? What about pasting ensembles, boosting ensembles, Random Forests, or stacking ensembles?
+
+Bij bagging en pasting en random forests is dit mogelijk.
+
+Bij boosting en stacking niet want ze hangen van elkaar af. 
+
+Bij stacking kunnen de predictors in één laag wel onafhankelijk getraind worden. Deze hangen niet van elkaar af.
+
+
+
+> What is the benefit of out-of-bag evaluation?
+
+Je hebt extra evaluatie zonder een validation set te moeten gebruiken. Hierdoor heb je meer training instanties waardoor je model net ietsje beter kan zijn.
+
+
+
+
+
+> What makes Extra-Trees more random than regular Random Forests? How can this extra randomness help? Are Extra-Trees slower or faster than regular Random Forests?
+
+Er wordt een willekeurige threshold gebruikt voor de splitsing. Deze extra randomness is nuttig voor ensembles.  Ze zijn sneller om te trainen omdat je niet naar de juiste threshold moet zoeken. Voorspellingen maken is even snel.
+
+
+
+> If your AdaBoost ensemble underfits the training data, which hyperparameters should you tweak and how?
+
+Het aantal estimators vergroten of de regularisatie op de basis estimator verminderen. 
+
+We kunnen de learning rate ook een beetje verhogen.
+
+
+
+> If your Gradient Boosting ensemble overfits the training set, should you increase or decrease the learning rate?
+
+De learning rate verlagen of early stopping gebruiken om het juiste aantal predictors te vinden.
+
+
+
+### H8
+
+> What are the main motivations for reducing a dataset’s dimensionality? What are the main drawbacks?
+
+* Rekentijd
+* Gemakkelijker te begrijpen en te visualiseren
+* Om ruimte te besparen
+
+
+
+* Verlies aan precisie
+* Extra werk
+* Voegt complexiteit toe
+* Getransformeerde features zijn soms moeilijk te interpreteren
+
+
+
+> What is the curse of dimensionality?
+
+Hoe meer dimensies onze data heeft, hoe minder betekenis afstand heeft. Datasets worden schaars in de zin dat hun features heel wijd verspreid liggen in deze hoogdimensionale ruimte.
+
+De hoeveelheid data nodig om een model te trainen neemt bovendien exponentieel toe met het aantal dimensies. 
+
+
+
+> Once a dataset’s dimensionality has been reduced, is it possible to reverse the operation? If so, how? If not, why?
+
+Nee, want we zijn informatie verloren. 
+
+Je kan bij sommige algoritmes (zoals PCA) een reconstructie doen naar de originele dimensie, maar deze zal niet even precies zijn. 
+
+
+
+> Can PCA be used to reduce the dimensionality of a highly nonlinear dataset?
+
+Jazeker, als er dimensies zijn die weinig informatie bevatten.
+
+Het boek heeft hier een leuke kijk op.
+
+*"However, if there are no useless dimensions—as in a Swiss roll dataset—then reducing dimensionality with PCA will lose too much information. You want to unroll the Swiss roll, not squash it."*
+
+
+
+> Suppose you perform PCA on a 1,000-dimensional dataset, setting the explained variance ratio to 95%. How many dimensions will the resulting dataset have?
+
+Kan je niet weten. Als alles uniform verdeeld is kan je met 950 van de features 95% van de variantie behouden. 
+
+
+
+> In what cases would you use Kernel PCA over vanilla PCA?
+
+Kernel PCA is nuttig voor niet-lineaire datasets
+
+
+
+> How can you evaluate the performance of a dimensionality reduction algorithm on your dataset?
+
+In het algemeen doet een dimensionaliteitsreductiealgoritme het goed als er zo weinig mogelijk informatie verloren gaat.
+
+Bij sommige algoritmes kan je vanuit de reductie de originele data reconstrueren en zo de reconstruction error meten. 
+
+Bij andere algoritmes is dit niet mogelijk en kan je bijvoorbeeld een model testen op zowel de gewone als de gereduceerde data om te kijken of de resultaten niet veel slechter zijn geworden. 
+
+
+
+> Does it make any sense to chain two different dimensionality reduction algorithms?
+
+Ja. Typisch zou je eerst PCA doen om snel de volledig nutteloze dimensies te schrappen, waardoor de andere algoritmes minder werk hebben.
+
+
+
+### H9
+
+> How would you define clustering? Can you name a few clustering algorithms?
+
+Clustering is een voorbeeld van unsupervised learning. Het is de bedoeling om een dataset te verdelen in groepen van instanties die op de één of andere manier aan elkaar gerelateerd zijn. 
+
+K-means, DBScan.
+
+
+
+> What are some of the main applications of clustering algorithms?
+
+* Anomaly detection
+* Data preprocessing (misschien ik ben niet zeker)
+* Gelijkaardige data groeperen
+
+Nog wat uit het boek: data analysis, customer segmentation, recommender systems, search engines, image segmentation, semi-supervised learning, dimensionality reduction, anomaly detection, and novelty detection.
+
+
+
+> Describe two techniques to select the right number of clusters when using K-Means.
+
+* Elbow plot met inertia
+  * Daarin het buigpunt zoeken
+* Silhouette score plots
+  * Je kan ook de gemiddelde silhouette scoren plotten in functie van het aantal clusters om een algemeen overzicht te krijgen. Het optimale aantal zal rond de piek liggen.
+
+
+
+> What is label propagation? Why would you implement it, and how?
+
+Dit is het kopiëren van labels van gelabelde instanties naar gelijkaardige ongelabelde instanties, waardoor supervised algoritmes vaak beter prestaties kunnen halen. 
+
+
+
+> Can you name two clustering algorithms that can scale to large datasets? And two that look for regions of high density?
+
+K-means is goed voor grote datasets en DBScan zoekt naar regio's met grote dichtheid. De andere algoritmes moeten we volgens mij niet kennen.
+
+
+
+> Can you think of a use case where active learning would be useful? How would you implement it?
+
+Wanneer je heel veel ongelabelde instanties hebt, maar labeling duur is. Je zou een algoritme kunnen gebruiken dat vraagt naar de hulp van een expert om een specifieke nuttige instantie te labelen wanneer dit nodig is. 
+
+> What is the difference between anomaly detection and novelty detection?
+
+* Anomaly detection
+  * Om outliers binnen de training set en in nieuwe instanties te vinden
+* Novelty detection
+  * Hier wordt verondersteld dat de dataset clean is. Novelties worden alleen gezocht bij nieuwe instanties. 
+
+
+
+> What is a Gaussian mixture? What tasks can you use it for?
+
+Een som van normaalverdelingen. We kunnen ze gebruiken om multimodale datasets aan de hand van een gewogen som van normaalverdelingen met verschillende parameters. We veronderstellen dus dat de data is gegroepeerd in een eindig aantal clusters, ieder met een ellipsoïdale vorm. 
+
+Dit is nuttig voor density estimation, clustering en anomaly detection.
+
+
+
+> Can you name two techniques to find the right number of clusters when using a Gaussian mixture model?
+
+Met BIC en AIC
+
+//TODO
+
+
+
+
+
+### H10
+
+> Draw an ANN using the original artificial neurons (like the ones in Figure 10-3) that computes $A\oplus B$ (where $\oplus$ represents the `XOR` operation). Hint: $A \oplus B = (A \and \neg B ∨ (\neg A \and B).$
+
+<img src="img/machinaal/image-20230126131732343.png" alt="image-20230126131732343" style="zoom:50%;" />
+
+Dit is niet te kennen volgens mij.
+
+> Why is it generally preferable to use a Logistic Regression classifier rather than a classical Perceptron (i.e., a single layer of
+> threshold logic units trained using the Perceptron training algorithm)? How can you tweak a Perceptron to make it equivalent to a Logistic Regression classifier?
+
+Logistic regression zal ook convergeren als je data niet lineair te scheiden valt, een perceptron niet. 
+
+Als we de receptron logistieke activatiefuncties geven en hem trainen met gradient descent zal hij hetzelfde zijn als logistic regression. 
+
+
+
+> Why was the logistic activation function a key ingredient in training the first MLPs?
+
+Omdat zijn afgeleide altijd verschillend is van nul. De MLPs konden dan altijd naar beneden langs de helling.
+
+
+
+> Name three popular activation functions. Can you draw them?
+
+* ReLU
+* Tanh
+* Sigmoid
+
+![image-20230126132246101](img/machinaal/image-20230126132246101.png)
+
+
+
+> Suppose you have an MLP composed of one input layer with 10 passthrough neurons, followed by one hidden layer with 50
+> artificial neurons, and finally one output layer with 3 artificial neurons. All artificial neurons use the ReLU activation function.
+>
+> What is the shape of the input matrix $X$? 
+>
+> What are the shapes of the hidden layer’s weight vector $W_h$ and its bias vector $b_h$?
+>
+> What are the shapes of the output layer’s weight vector $W_o$ and its bias vector $b_o$ ?
+>
+> What is the shape of the network’s output matrix $Y$?
+>
+> Write the equation that computes the network’s output matrix $Y$as a function of $X$, $W_h$ , $b_h$ , $W_o$ , and $b_o$ .
+
+* $m \times10$ (met batch size $m$)
+* $50 \times 10 $
+* $50 \times 3$
+* $m \times3$
+* $Y* = \text{ReLU}(\text{ReLU}(X W_h + b_h ) W_o + b_o )$
+  * De heb ik gewoon gepikt van het boek ik weet niet hoe je hier aan raakt //TODO
+
+
+
+> How many neurons do you need in the output layer if you want to classify email into spam or ham? What activation function should you use in the output layer? If instead you want to tackle MNIST, how many neurons do you need in the output layer, and which activation function should you use? What about for getting your network to predict housing prices, as in Chapter 2?
+
+In de output laag zal 1 neuron volstaan voor spamclassificatie, deze geeft een probabiliteit dat een mail spam is of niet. De logistic activatiefunctie zal hier typisch gebruikt worden.  
+
+Voor MNIST zijn er 10 nodig. Hier zal je softmax nodig hebben omdat we met meerdere klassen zitten.
+
+Voor huisprijzen heb je maar 1 output nodig zonder activatiefunctie, de voorspelde prijs. 
+
+
+
+> What is backpropagation and how does it work? What is the difference between backpropagation and reverse-mode autodiff?
+
+Backpropagation is een manier om neurale netwerken te trainen. Eerst berekent het de gradiënten van de cost functie op basis van de parameters. Dan zullen we één stap Gradient descent doen op basis van die gradiënten. Dit wordt typisch miljoenen keren gedaan tijdens het trainen van een model om dat uiteindelijk te convergeren naar waarden die de cost functie minimaliseren. 
+
+De rest ga ik even achterwege laten, ze gaan volgens mij iets te veel in detail. //TODO
+
+
+
+> Can you list all the hyperparameters you can tweak in a basic MLP? If the MLP overfits the training data, how could you tweak these hyperparameters to try to solve the problem?
+
+Aantal interne lagen, aantal neuronen per laag, activatiefunctie, aantal verbindingen, aantal inputs, aantal outputs.
+
+Als we overfitten zou je best het aantal interne lagen en neuronen verminderen. 
+
+
+
+### H11
+
+> Is it OK to initialize all the weights to the same value as long as that value is selected randomly using He initialization?
+
+Nee, zeker niet. Gewichten worden best verschillend geïnitialiseerd om symmetrie te vermijden. Dan zullen bij het trainen alle neuronen in eenzelfde laag hetzelfde gewicht krijgen.
+
+
+
+> Is it OK to initialize the bias terms to 0?
+
+Ja tuurlijk. Het maakt geen verschil.
+
+
+
+> In which cases would you want to use each of the following activation functions: SELU, leaky ReLU (and its variants), ReLU, tanh, logistic, and softmax?
+
+Ik ga me beperken tot de geziene functies
+
+* Logistic
+  * Nuttig als je een probabiliteit moet voorspellen in een outputlaag
+* ReLU
+  * Heel simpel en snel, hij kan ook nul outputten wat voor sommige modellen handig is
+* tanh
+  * Nuttig in de output laag als je een output $\in [-1,1]$ nodig hebt
+  * Wordt niet veel in verbogen lagen gebruikt, behalve in RNNs
+* Softmax
+  * Nuttig in de outputlaag voor exclusieve klassen bij multiclass classificatie
+  * Wordt bijna nooit in verborgen lagen gebruikt
+
+//TODO
+
+
+
+> What may happen if you set the momentum hyperparameter too close to 1 (e.g., 0.99999) when using an SGD optimizer?
+
+Hij zal heel snel naar het optimum gaan en daar waarschijnlijk ook voorbij vliegen.
+
+
+
+> Name three ways you can produce a sparse model.
+
+Je kan na het trainen heel lage gewichten op nul zetten.
+
+$\mathscr l_1$ regularisatie is hier ook nuttig voor.
+
+
+
+> Does dropout slow down training? Does it slow down inference (i.e., making predictions on new instances)? What about MC Dropout?
+
+Dropout vertraagt het trainen, het duurt mogelijks langer voordat het model convergeert. Om voorspellingen te maken wordt het gewone model gebruikt en is er dus geen verschil.
+
+
+
+### H13
+
+> What are the advantages of a CNN over a fully connected DNN for image classification?
+
+* Minder ruimte
+* Sneller (training en inference)
+* Kan high-level en low-level features leren
+* 2D input wordt behouden in het model
+
+
+
+> Consider a CNN composed of three convolutional layers, each with 3 × 3 kernels, a stride of 2, and "same" padding. The lowest layer outputs 100 feature maps, the middle one outputs 200, and the top one outputs 400. The input images are RGB images of 200 × 300 pixels.
+> What is the total number of parameters in the CNN? If we are using 32-bit floats, at least how much RAM will this network require when making a prediction for a single instance? What about when training on a mini-batch of 50 images?
+
+<img src="img/machinaal/image-20230126155913185.png" alt="image-20230126155913185" style="zoom:67%;" />
+
+
+
+
+
+> If your GPU runs out of memory while training a CNN, what are five things you could try to solve the problem?
+
+* Minder lagen
+* Mini-batch size verkleinen
+* Een grotere stride in sommige lagen nemen = dimensionaliteitsreductie
+* Het model distribueren over meerdere servers
+* 16-bit floats gebruiken in plaats van 32-bit
+
+
+
+
+
+> Why would you want to add a max pooling layer rather than a convolutional layer with the same stride?
+
+Omdat een max pooling laag geen parameters heeft. 
+
+
+
+> What is the main technical difficulty of semantic segmentation?
+
+Dit is semantic segmentation. 
+
+<img src="img/machinaal/image-20230126171654724.png" alt="image-20230126171654724" style="zoom:50%;" />
+
+Veel ruimtelijke informatie gaat verloren doorheen de lagen van een CNN (als de stride groter is dan 1 of in pooling lagen). De uitdaging is om deze informatie te reconstrueren om een voorspelling per pixel te kunnen maken. 
+
+
+
+### H14
+
+> Can you think of a few applications for a sequence-to-sequence RNN? What about a sequence-to-vector RNN, and a vector-to-sequence RNN?
+
+* Real time dingen zoals spraakherkenning, music generation 
+* Een sentimentscore voor een tekst
+* Image captioning
+
+//TODO
+
+
+
+> How many dimensions must the inputs of an RNN layer have? What does each dimension represent? What about its outputs?
+
+Drie:
+
+* Batch dimensie
+* Tijd
+* De inputs (op elke time step)
+
+Een laag heeft even veel outputdimensies als inputs. 
+
+
+
+> If you want to build a deep sequence-to-sequence RNN, which RNN layers should have return_sequences=True? What about a sequence-to-vector RNN?
+
+Alle lagen behalve de eerste. 
+
+
+
+> Suppose you have a daily univariate time series, and you want to forecast the next seven days. Which RNN architecture should you use?
+
+* Sequence-to-vector
+
+Sequence-to-sequence gaat blijkbaar ook.
+
+
+
+> What are the main difficulties when training RNNs? How can you handle them?
+
+Ze zijn onstabiel en ze hebben een slecht kortetermijngeheugen.
+
+Voor de onstabiele gradiënten kan je een lagere learning rate gebruiken. 
+
+LSTMs en GRUs hebben een beter geheugen.
+
+
+
+> Why would you want to use 1D convolutional layers in an RNN?
+
+Als we heel lange inputs hebben. Dit kan de temporale resolutie verlagen zodat de RNN beter langetermijnspatronen kan opsporen.
+
+
+
+### H17
+
+> What are the main tasks that autoencoders are used for?
+
+* Dimensionaliteitsreductie
+* Ruis verwijderen
+* Feature extraction
+* Generative models
+* Anomaly detection
+* Unsupervised pretraining
+
+
+
+> Suppose you want to train a classifier, and you have plenty of unlabeled training data but only a few thousand labeled instances. How can autoencoders help? How would you proceed?
+
+Je kan een autoencoder trainen op de volledige dataset. Je kan de eerste helft van de autoencoder dan doorvoeren naar de classifier. 
+
+
+
+> If an autoencoder perfectly reconstructs the inputs, is it necessarily a good autoencoder? How can you evaluate the performance of an autoencoder?
+
+Met de reconstruction error. Als deze slecht is weet je dat de autoencoder slecht is. 
+
+Als de autoencoder het super goed doet kan het dat hij voor elke geleerde instantie één unieke codering heeft gemaakt (de kans is klein, maar dit is dus niet goed). Je kan testen of de modellen achter je autoencoder het goed doen.
+
+
+
+> What are undercomplete and overcomplete autoencoders? What is the main risk of an excessively undercomplete autoencoder? What about the main risk of an overcomplete autoencoder?
+
+Bij een undercomplete autoencoder heeft de codering minder dimensies dan de input. Als een autoencoder the undercomplete is kan het dat hij de data niet meer kan reconstrueren. 
+
+Een overcomplete autoencoder is het omgekeerde. Als hij te overcomplete is kan het dat hij letterlijk de input naar de output kopieert zonder iets te leren.
+
+
+
+
+
+> What is a generative model? Can you name a type of generative autoencoder?
+
+Een generatief model kan outputs genereren die hard lijken op trainingsinstanties.
+
+Een variational autoencoder is een generatief model.
+
+
+
+> What is a GAN? Can you name a few tasks where GANs can shine?
+
+Generative adverserial network. We zetten twee modellen tegen elkaar op: een discriminator en een generator. De generator moet zijn best doen om instanties te genereren die echt lijken.
+
+De discriminator moet van een instantie zeggen of hij echt is of niet. 
+
+
+
+> What are the main difficulties when training GANs?
+
+Dat de variantie van de gegenereerde instanties afneemt (mode collapse). Training kan zeer onstabiel zijn, bovendien zijn ze heel gevoelig aan de keuze van hyperparameters.
+
+
 
