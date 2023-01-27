@@ -497,7 +497,7 @@ $$
 
 De minst belangrijke gewichten worden op **nul** gezet. Het resultaat is dus een **schaars model**.
 $$
-J(\pmb\theta) = \text{MSE}(\pmb\theta) + \alpha  \sum_{i=1}^{n} \lvert{\theta_i}\rvert
+J(\pmb\theta) = \text{MSE}(\pmb\theta) + \alpha \sum_{i=1}^{n} \lvert{\theta_i}\rvert
 $$
 De absolute waarde operatie van Lasso regression is niet afleidbaar. Dit probleem kunnen we omzeilen door gebruik te maken van de **subgradiënt**. Als we de functie niet kunnen afleiden in een punt nemen we een waarde die zich tussen de afgeleiden van omliggende punten bevindt. 
 
@@ -511,9 +511,7 @@ De absolute waarde operatie van Lasso regression is niet afleidbaar. Dit problee
 
 Is een gewogen som van Ridge en lasso-regressie. 
 $$
-J(\pmb\theta) = \text{MSE}(\pmb\theta)
-+ r \alpha  \sum_{i=1}^{n} \lvert{\theta_i}\rvert
-+ \alpha \frac {1-r} 2 \sum_{i=1}^{n}\theta_i^2
+J(\pmb\theta) = \text{MSE}(\pmb\theta)+ r \alpha  \sum_{i=1}^{n} \lvert{\theta_i}\rvert+ \alpha \frac {1-r} 2 \sum_{i=1}^{n}\theta_i^2
 $$
 
 ## Visualizing performance
@@ -864,12 +862,12 @@ $$
 
 * $m_\text{left}$: hoeveel er nee hebben geantwoord
 * $m_\text{right}$: hoeveel er ja hebben geantwoord
-* $G_\text{left}$: de **impurity** van het linkerdeel, dit geeft aan hoe homogeen de waarden in het linkerdeel zijn
+* $G_\text{left}$: de **Gini impurity** van het linkerdeel, dit geeft aan hoe homogeen de waarden in het linkerdeel zijn
   * $G = 1 - \sum^c_{i=1}(p_i)^2$
   * Met $C$ het aantal klassen en $p_i$ voor een klasse hoeveel procent van de punten hij bevat
   * Als $G=1$ zijn alle elementen in de set van dezelfde klasse
   * Als $G=0$ zijn alle elementen in de set van verschillende klassen
-* $G_\text{right}$: de **impurity** van het rechterdeel (analoog aan het vorige)
+* $G_\text{right}$: de **Gini impurity** van het rechterdeel (analoog aan het vorige)
 
 
 
@@ -1006,7 +1004,7 @@ Er zijn een aantal technieken die het probleem op deze manier aanpakken:
 
 Een goeie keuze voor deze werkwijze is om  **Decision Trees** te gebruiken. Doordat zelfs een kleine verandering in data een totaal andere boom geeft, geven ze de variatie die we nodig hebben voor ensembles. Hun zwakte wordt op deze wijze een sterkte. 
 
-Bij het gebruik van bagging introduceren we de term **out-of-bag samples**. Dit zijn samples die voor een bepaald model niet in de training set zaten. Elke instantie van de volledige training set zal out-of-bag zijn voor een aantal van de modellen. Deze kunnen dan gebruikt worden voor de evaluatie van je model, zonder nood aan een extra test set. 
+Bij het gebruik van bagging introduceren we de term **out-of-bag samples**. Dit zijn samples die voor een bepaald model niet in de training set zaten. Elke instantie van de volledige training set zal out-of-bag zijn voor een aantal van de modellen. Deze kunnen dan gebruikt worden voor de evaluatie van je model, zonder nood aan een extra validation set. 
 
 Neem een instantie en laat alle modellen waarvoor deze out-of-bag is een voorspelling maken voor deze instantie. Dan neem je van die modellen de majority vote. Nu kan je voor alle out-of-bag samples deze berekening doen (de OOB error) als performantiemetriek. Je moet wel oppassen, want deze methode doet het model soms beter blijken dan het eigenlijk is. 
 
@@ -2103,51 +2101,11 @@ We voegen een klein beetje ruis toe aan onze data en trainen een model om deze r
 
 
 
-> Bias vs variance
 
 
+## Vragen uit de slides en meer
 
-> Wat zijn de verschillende soorten regularisatie bij regressie?
-
-
-
-> We maken met de volgende code een neuraal netwerk in Keras. Hoeveel parameters heeft dit model? 
-
-```python
-model = keras.models. Sequential([
-keras.layers.Conv2D(64, 7, activation="relu", padding="same", # 64*7*7+64 
-input_shape=[28, 28, 1]),
-keras.layers MaxPooling2D(2), # 0
-keras.layers.Conv2D(128, 3, activation="relu", padding="same"), # 64*128*3*3+128
-keras.layers.Conv2D(128, 3, activation="relu", padding="same"), # 128*128*3*3 + 128
-keras.layers.MaxPooling2D(2), # 0
-keras.layers.Conv2D(256, 3, activation="relu", padding="same"), # 128*3*3*256 + 256
-keras.layers Conv2D(256, 3, activation="relu", padding="same"), # 256*3*3*256 + 256
-keras.layers.MaxPooling2D(2),
-keras.layers.Flatten(), # al twee keer max pool gehad 28x28 -> 7x7 -> 3x3
-    # de input van flatten is dus 3x3x256, dus zijn output is 2304
-keras.layers.Dense(128, activation="relu"), # 2304*128 + 128
-keras.layers.Dropout(0.5), # doet niks met het aantal parameters
-keras.layers.Dense(64, activation="relu"), #  128 * 64 + 64
-keras.layers.Dropout(0.5),
-keras.layers.Dense(10, activation="softmax") # 64 * 10 + 10
-```
-
-Het aantal parameters in een laag is dus het aantal outputs van de vorige laag maal het aantal parameters binnen de laag. Deze bedraagt $n_\text{param} = n_k \cdot k_w \cdot k_h \cdot k_d + n_k$.
-
-Het totaal: 
-$$
-\begin{align}
-n_{tot} &= (64*7*7+64) +  (64*128*3*3+128) + (128*128*3*3 + 128) + (128*3*3*256 + 256) 
-\\ &\quad + (256*3*3*256 + 256) + (2304*128 + 128) + (128 * 64 + 64) + (64 * 10 + 10) 
-\\ &= 1413834
-\end{align}
-$$
-
-
-## Vragen uit de slides
-
-### ML Landscape
+### 1 - ML Landscape
 
 > What is the difference between supervised, unsupervised and reinforcement learning?
 
@@ -2232,7 +2190,7 @@ Met **cross validation** kan je je model valideren tijden het trainen zonder noo
 
 
 
-### E2E ML Project
+### 2 - E2E ML Project
 
 > Notations
 
@@ -2278,7 +2236,7 @@ Categorische attributen kunnen maar een aantal mogelijke waarden aannemen, voor 
   * Dit werkt een stuk beter als de zoekruimte van de hyperparameters erg groot is
   * Het is ook gemakkelijk om te beslissen hoeveel resources random search mag gebruiken. Je laat het gewoon zo lang draaien als je zin hebt.
 
-### Classification
+### 3 - Classification
 
 > Do you prefer high precision or high recall?
 
@@ -2368,7 +2326,7 @@ Met **stratified sampling** zorgen we dat de verhouding tussen klassen behouden 
 
 
 
-### Training models
+### 4 - Training models
 
 > What is (linear) regression ? 
 
@@ -2429,35 +2387,95 @@ Dit is een functie **zonder lokale minima**. Hij heeft dus één globaal minimum
 
 > What is polynomial regression ? How does it relate to linear regression ? When is polynomial regression useful? 
 
-Dit is regressie met veeltermen van hogere graad. Het doet exact hetzelfde als lineaire regressie, maar kan complexere relaties modelleren. 
+Dit is regressie met veeltermen van **hogere graad**. Het doet exact hetzelfde als lineaire regressie, maar kan complexere relaties modelleren. Je moet natuurlijk oppassen: hoe meer variabelen, hoe meer kans op **overfitting**.
+
+We kunnen dus gebruik maken van polynomiale regressie om een **niet-lineair model** te proberen fitten. Bijvoorbeeld:
+
+* $y = f(x) = \Theta_0 + \Theta_1x + \Theta_2x^2$
+* Dan zoeken we $(\Theta_0, \Theta_1, \Theta_2)$ met de closed form of gradiënt descent
 
 
 
 > What is bias and variance, what is the relationship between them ? 
 
+**Bias** is de fout de die geïntroduceerd wordt door het modelleren van een probleem in de echte wereld met een versimpeld model. Het woord bias verwijst naar de gemaakte assumptie dat een **complex probleem** als een **simpel model** kan voorgesteld worden. Te veel bias leidt dus tot **underfitting**, waar het model zowel slecht scoort op trainingsdata als nieuwe instanties.
+
+**Variance** verwijst naar de **gevoeligheid** van een model aan **kleine fluctuaties** in de training data. Een model met hoge variance heeft typisch een **hoge vrijheidsgraad**, met als resultaat een grote kans tot **overfitting** op de training data. Dit soort model zal typisch heel goed scoren op training data, maar slecht generaliseren naar nieuwe instanties. 
+
+Het verband tussen de twee is de bias-variance trade-off (zie volgende vraag).
+
 
 
 > Bias-variance trade-off
+
+Er bestaat altijd een evenwicht tussen bias en variance. Een te simpel model (hoge bias) zal underfitten en een te complex model (hoge variance) zal overfitten.. Het doel is niet om een model te maken dat de training data zo goed mogelijk kan modelleren, maar om een **evenwicht** vinden tussen de twee om **zo goed mogelijk** te kunnen **generaliseren** naar nieuwe instanties.
 
 
 
 > What is regularization ? What is Ridge regression, LASSO and elastic net ? What are the benefits ? 
 
+Door middel van regularisatie beperken we de uitdrukkingskracht van het model. Dit gebeurt door een regularisatieterm toe te voegen in de vergelijking van de te optimaliseren functie. Deze term beperkt het model door het te verplichten om zijn gewichten klein te houden. Dit kan op drie manieren:
+
+* Ridge regression
+  * $J(\pmb\theta) = \text{MSE}(\pmb\theta) + \alpha \frac 1 2 \sum_{i=1}^{n}\theta_i^2$
+  * We voegen een term toe aan de cost function. Deze is de som van alle kwadraten van de parameters.
+  * Vermenigvuldigt met $\alpha$, deze term bepaalt hoe hard de regularisatie doorweegt.
+  * Hoe groter de parameters, hoe hoger de cost. Kleine parameters zullen dus leiden tot een lage cost.
+* Lasso regression
+  * $J(\pmb\theta) = \text{MSE}(\pmb\theta) + \alpha  \sum_{i=1}^{n} \lvert{\theta_i}\rvert$
+  * Doordat $\lvert x \rvert$ niet afleidbaar is in $0$ zullen parameters die $0$ kruisen op nul gezet worden en daar blijven
+  * Onbelangrijke termen zullen om $0$ gezet worden, dit leidt tot een **schaars model**
+* Elastic net regression
+  * $J(\pmb\theta) = \text{MSE}(\pmb\theta)+ r \alpha  \sum_{i=1}^{n} \lvert{\theta_i}\rvert+ \alpha \frac {1-r} 2 \sum_{i=1}^{n}\theta_i^2$
+  * Een gewogen som van beide. 
+
 
 
 > What is logistic regression ? How is it parameterized ? How does it make a prediction ? How is it trained ? 
+
+**Logistic regression** is een manier om regressie te kunnen gebruiken voor classificatie. Door het resultaat van regressie door de **sigmoid functie** $\sigma(t)$ te voeren ligt de uitkomst altijd tussen $0$ en $1$. Dit resultaat wordt geïnterpreteerd als de probabiliteit van het behoren tot de positieve klasse. 
+$$
+\sigma(t) = \frac{1}{1 + \exp(-t)}
+$$
+Dit zorgt er wel voor dat de loss functie niet meer convex is. We moeten gebruik maken van de **log loss**.
+$$
+J(\pmb\theta)  = -\frac 1 m \sum_{i=1}^{m} \left[
+y^{(i) }\log(\hat p^{(i)}) + (1 - y^{(i)})\log(1-\hat p^{(i)})
+\right]
+$$
+
+* $y^{(i)}$ is altijd $1$ of $0$. 
+  * $y^{(i)} = 1$: alleen het linkse deel wordt gebruikt
+  * $y^{(i)} = 0$: alleen het rechtse deel wordt gebruikt
+* De cost is dus nog steeds de gemiddelde fout, maar dit keer nemen we eerst de $\log$ van die fout.
+
+Dit heeft geen closed form oplossing, maar de functie is wel convex, waardoor goed parameters kunnen gevonden worden met gradiënt descent. 
 
 
 
 > What is softmax regression ? How is it parameterized ? How does it make a prediction ? How is it trained ? 
 
+**Softmax regression** wordt gebruikt voor multiclass classificatie. Het voorspelt een probabiliteit voor elke mogelijke klasse gebruik makende van de **softmax functie**:
+$$
+\hat p_k = \sigma(\mathbf s(\mathbf k))_k = \frac{e^{s_k(\mathbf x)}}{\sum_{j=1}^K e^{s_j(\mathbf x)}}
+$$
+De som van de probabiliteit van alle klassen is dan gelijk aan $1$. Het model wordt getraind met gradiënt descent gebruik makende van **cross-entropy loss**.
+
 
 
 > What is cross entropy ?
 
+$$
+J(\mathbf \Theta) = - \frac 1 m \sum_{i=1}^m \sum_{k=1}^K y_k^{(i)}\log (\hat p _k ^{(i)})
+$$
+
+In deze formule meet de **cross-entropy**, het verschil tussen de juiste probabiliteiten en de voorspelde probabiliteiten van alle klassen. 
+
+$y_k^{(i)}$ is alleen $1$ bij de positieve klasse en dus meet deze functie eigenlijk de **log loss** van de voorspelde waarde voor de positieve klasse. Dit is oké want de klassen bij softmax zijn **mutueel exclusief**. 
 
 
-### SVM
+
+### 5 - SVM
 
 > Why is it called support vector machine?
 
@@ -2477,47 +2495,389 @@ Multiclass classification
 
 
 
-> Principle of (linear) SVM
+> Explain the principle of (linear) SVM.
+
+We proberen een scheiding te vinden die niet alleen de twee klassen opsplitst, maar ook **zo ver mogelijk** weg blijft van de dichtstbijzijnde trainingsinstanties. Zo is de kans groter dat het model goed presteert op nieuwe gevallen. Je kan een SVM classifier voorstellen als een zo groot mogelijke "straat" tussen je klassen te proberen passen. Dit staat ook bekend als **large margin classification**. 
+
+Als we aan weerskanten van de "straat" nieuwe training samples toevoegen, zal in tegenstelling tot bij lineaire regressie onze classifier niet veranderen. Hij is volledig afhankelijk van de waarden aan de rand van de "straat". Deze waarden aan de rand noemen we **support vectors**, aangezien ze bij wijze van spreken de straat ondersteunen.
 
 
 
-> General structure of the objective function
+> What is the general structure of the objective function in SVM?
+
+<img src="img/machinaal/image-20230107154749303.png" alt="image-20230107154749303" style="zoom: 50%;" />
+
+Onze decision function $g(x)$ moet aan de volgende voorwaarde voldoen: :bulb:
+$$
+g(\mathbf x ^{\mathbf i}) = t^{(i)}(\mathbf w^T \mathbf x ^{(i)} + b) \geq 1, \quad \forall i
+$$
+
+* $\mathbf x ^{(i)}$: de feature vector van het i-de item in de dataset
+* $t^{(i)}$ is $-1$ voor de negatieve klasse en $1$ voor de positieve klasse
+* $\mathbf w$ bevat de *weights* (richtingscoëfficiënten)
+* $b$ is de bias (verschuiving)
+* $g(x)$ vertelt ons simpelweg of een waarde 
+  * Op de straat ligt: dan ligt zijn waarde tussen $-1$ en $1$
+  * Van de straat ligt aan de positieve kant: dan is zijn waarde groter dan $1$
+  * Van de straat ligt aan de negatieve kant: dan is zijn waarde kleiner dan $-1$
+
+De breedte van onze straat wordt gegeven door $\frac 2 {\lVert \mathbf w \rVert}$. Om deze breedte te maximaliseren moeten we dus $\lVert \mathbf w \rVert$ minimaliseren. Om dat de wiskunde dan makkelijker is, minimaliseren we: $\frac 1 2 \lVert \mathbf w \rVert ^2$
+
+Dit kunnen we door $\mathbf w$ en $b$ af te stellen.
+
+
 
 
 
 > Difference between hard and soft margin classification
 
+Hierboven hebben we hard margin besproken. Dit zorgt ervoor dat het soms onmogelijk is om een straat te vinden (door uitschieters), of dat de straat extreem smal is. Soft margin classificatie laat een bepaalde **error** toe, zodat uitschieters ons model minder beïnvloeden:
+
+
+$$
+\min_{\mathbf w ,b,\zeta} \frac 1 2 \lVert\mathbf w \rVert^2 + C \sum^m_{i=1}\zeta^{(i)}\\
+\begin{align}
+\text{ onderhevig aan: } t^{(i)}(\mathbf w ^T \mathbf x^{(i)}+b) \geq &1 - \zeta^{(i)} \quad \forall i\\
+\zeta^{(i)} \geq &0
+\end{align}
+$$
+
+* Door $\frac 1 2 \lVert \mathbf w \rVert ^2$ te minimaliseren, maximaliseren we de marge (breedte van de straat)
+* $C$ is een hyperparameter die we zelf moeten afstellen die aangeeft hoe hard de fouten zullen doorwegen
+* $\zeta^{(i)}$ is de fout
+
+
+
 
 
 > Role of slack variables in soft margin classification
+
+//TODO 
 
 
 
 > What is the role of the hyperparameter in SVM?
 
+//TODO
+
 
 
 > Why do we need to apply feature scaling in SVM?
+
+SVM zoekt altijd de 'breedste straat'. Als features meerdere ordes van magnitude van elkaar verschillen in grootte, zal de uitkomst van SVM gedomineerd worden door de grootste features, en wordt er bijna geen rekening gehouden met de kleinste.
 
 
 
 > What is the primal and what is the dual problem of SVM?
 
+Ons optimalisatieprobleem:
+$$
+\min_{\mathbf w ,b,\zeta} \frac 1 2 \lVert\mathbf w \rVert^2 + C \sum^m_{i=1}\zeta^{(i)}\\
+\begin{align}
+\text{ onderhevig aan: } t^{(i)}(\mathbf w ^T \mathbf x^{(i)}+b) \geq &1 - \zeta^{(i)} \quad \forall i\\
+\zeta^{(i)} \geq &0
+\end{align}
+$$
+Kan worden opgelost door de Lagrangiaan te berekenen. Dit is het **primal problem**:
+$$
+\begin{align}
+\mathcal{L}(\mathbf w ,b,\zeta^{(i)}, \alpha^{(i)}, \beta^{(i)}) &= \frac 1 2 \mathbf w ^T \mathbf w + C \sum^m_{i=1} \zeta^{(i)} 
+\\&- \sum^m_{i=1} \alpha^{(i)} (t^{(i)}(\mathbf w^T \mathbf {x^{(i)}}+b)-1 + \zeta^{(i)}) 
+\\&- \sum^m_{i=1}\beta^{(i)} \zeta^{(i)}
+\end{align}
+$$
+
+
+Door de partiële afgeleiden van de Lagrangiaan te berekenen en ze gelijk te stellen aan $0$, kunnen we de vergelijking herschrijven als volgt:
+$$
+\underset{\alpha}{\mathrm{minimize}} \frac 1 2 \sum_{i=1}^m \sum_{j=1}^m \alpha^{(i)} \alpha^{(j)}t^{(i)}t^{(j)} \mathbf x^{(i)T} \mathbf x ^{(j)} - \sum_{i=1}^m \alpha^{(i)}\\
+\text{ onderhevig aan: } \alpha^{(i)} \geq 0 \text{ voor } i=1,2,\dots , m
+$$
+Dit is het **duale probleem**. De complexiteit van deze methode schaalt kwadratisch met de grootte van de dataset, maar schaalt **lineair** met het **aantal dimensies**. Gebruik deze methode als je **dimensionaliteit groter is dan het aantal samples**. Doordat in deze versie alleen het dot product voorkomt, kan je de kernel trick toepassen.
+
 
 
 > What is the kernel trick?
+
+Als we inputdata hebben die **niet scheidbaar** is met een **lineaire** decision boundary, kunnen we onze input transformeren naar een ruimte met hogere dimensie, waar het mogelijk is om deze te scheiden met een hypervlak. Dit wordt mogelijk gemaakt door **kernel functies.** Dit zijn functies die het **dot product** van een transformatie kunnen berekenen, zonder de transformatie effectief uit te moeten voeren. 
+
+Door het kiezen van de juiste kernel functie is het dus mogelijk om een lineaire decision boundary te vinden in een ruimte van hogere dimensie, zonder effectief te moeten transformeren naar deze dimensie.
 
 
 
 > Why is the kernel trick advantageous?
 
+hierboven
+
 
 
 > What can be an inductive bias to prefer one kernel over the other? (as alternative for doing a grid search)
 
+Als je data er lineair scheidbaar uitziet, kan je best kiezen voor een lineaire kernel. Als de data 'blobs' vormt zal een RBF kernel misschien een betere optie zijn. 
+
+Als je enige voorkennis of ervaring met de data hebt kan je opteren voor een bepaalde kernel. 
 
 
-### GMM
+
+### 6 - Decision trees
+
+> What are the advantages and disadvantages of decision trees?
+
+* Voordelen
+  * Gemakkelijk te begrijpen
+  * Kan **niet-lineaire** interacties tussen features modelleren
+  * Zeer snel $O(\log m)$ ($m$ aantal training samples), zeker bij **inferentie**
+  * Gemakkelijk te implementeren
+  * Kan helpen bij het zoeken naar **feature importance**
+  * Kunnen gemakkelijk gecombineerd worden in ensembles
+  * Ondersteunt meerdere outputs
+* Nadelen
+  * Instabiel, een kleine wijziging in de data veroorzaakt een grote wijziging in de boom
+  * Alle decisions worden gemaakt door loodrechte scheidingslijnen
+    * De dataset roteren resulteert dus in een compleet andere tree
+    * Kan verholpen worden door preprocessing met PCA (dan verlies je wel interpreteerbaarheid) //TODO wat is PCA?
+  * Ze zijn relatief inaccuraat, er zijn modellen die het beter doen op dezelfde soort data
+  * Gevoelig aan **overfitting**
+  * Omdat ze alleen stapfuncties gebruiken om de decision boundary te modelleren is het moeilijk om:
+    * Lineaire relaties te modelleren
+    * Smooth functies te benaderen
+
+
+
+> What is CART and how does it work?
+
+CART (classification and regression trees) is een algoritme om een decision tree te construeren. Het algoritme verloopt als volgt:
+
+* Loop over alle features
+  * Kies een bepaalde threshold (bijvoorbeeld het gemiddelde of de mediaan van die feature)
+    * Je kan ook meerdere thresholds uitproberen per feature om een betere split te krijgen
+  * Splits de datapunten op basis van de threshold (groter dan en kleiner dan)
+  * Meet hoe goed de splitsing is met een **cost function**
+* Kies de beste splitsing
+* Herhaal dit tot een bepaalde diepte of als we niet verder kunnen splitsen
+
+
+
+> What does the cost function for a decision tree used for classification look like? And for regression
+
+De cost function voor één bepaalde split ziet er als volgt uit:
+$$
+J(k,t_k) =\frac{ m_\text{left}}{m}G_\text{left} + \frac{m_\text{right}} m G_\text{right}
+$$
+
+* $m_\text{left}$: hoeveel er nee hebben geantwoord
+* $m_\text{right}$: hoeveel er ja hebben geantwoord
+* $G_\text{left}$: de **Gini impurity** van het linkerdeel, dit geeft aan hoe homogeen de waarden in dit deel zijn
+* $G_\text{right}$: de **Gini impurity** van het rechterdeel
+
+Als we CART gebruiken voor regressie, gebruiken we voor $G$ de **sum-of-squares error**.
+$$
+G = \sum_{i=1}^n (y_i - f(x_i))^2
+$$
+
+* $n$: het aantal datapunten in de splitsing
+* $y_i$: de target
+* $f(x_i)$: de voorspelling (het gemiddelde van de targets in de splitsing)
+
+
+
+> What is the difference between entropy and Gini impurity?
+
+Beide zijn een manier om de maat van wanorde in een bepaalde set te berekenen. Gini geeft een waarde tussen $0$ en $1$, met $0$ een perfect egale set. 
+
+Entropie kan arbitrair groot worden, een grotere set met volledig willekeurige waarden heeft dus een hogere entropie dan een kleine set waar de waarden even willekeurig zijn. De laagst mogelijke entropie is ook $0$.
+
+
+
+> How can you implement regularization on a decision tree? 
+
+Een decision tree is een **non-parametric** model. Dit betekent dat het aantal parameters niet op voorhand bekend is. We kunnen een aantal beperkingen opleggen om overfitting tegen te gaan:
+
+* `Min_samples_split`: minimum aantal samples die een knoop moet bevatten als hij wilt splitsen
+* `Min_samples_leaf`: minimum aantal samples die een blad moet bevatten
+* `Min_weight_fraction_leaf`: zelfde als het vorige, maar als een fractie van het totaal aantal gewogen instanties
+* `Max_height`: maximale hoogte van de boom 
+* `Max_leaf_nodes`: maximum aantal bladknopen
+
+
+
+### 7 - Ensembles
+
+> What are ensembles? What are three different ways to implement them?
+
+Een ensemble is een machine learning model dat bestaat uit meerdere modellen, dit kan op een aantal manieren:
+
+* **Voting**: we trainen modellen op licht verschillende datasets en combineren ze door het gemiddelde te nemen of de waarde die het meest is gekozen (een vote dus)
+* **Boosting**: We trainen modellen die de voorspellingen van andere modellen verbeteren
+* **Stacking**: We trainen een model dat de voorspellingen van andere modellen als input neemt
+
+
+
+> Voting ensembles can use bagging or pasting. What is the difference?
+
+* **Bagging**: (kort voor bootstrap aggregating) 
+  * We maken meerdere training sets door random samples te nemen uit de training set **met terugleggen**
+  * Het kan dus dat onze nieuwe training sets duplicaten bevatten.
+  * Geeft meestal betere resultaten
+* **Pasting**: 
+  * We maken meerdere training sets door random samples te nemen uit de training set **zonder terugleggen**
+  * Eén training set kan niet twee keer dezelfde waarde bevatten
+  * Tussen verschillende training sets kunnen waarden wel opnieuw voorkomen
+
+> What is the benefit of out-of-bag evaluation? How does it work?
+
+Je hebt extra evaluatie zonder een validation set te moeten gebruiken. Hierdoor heb je meer training instanties waardoor je model net ietsje beter kan zijn.
+
+**Out-of-bag samples**  zijn samples die voor een bepaald model niet in de training set zaten wanneer we bagging hebben toegepast. Elke instantie van de volledige training set zal out-of-bag zijn voor een aantal van de modellen. Deze kunnen dan gebruikt worden voor de evaluatie van je model, zonder nood aan een extra validation set. 
+
+Neem een instantie en laat alle modellen waarvoor deze out-of-bag is een voorspelling maken voor deze instantie. Dan neem je van die modellen de majority vote. Nu kan je voor alle out-of-bag samples deze berekening doen (de OOB error) als performantiemetriek. Je moet wel oppassen, want deze methode doet het model soms beter blijken dan het eigenlijk is. 
+
+
+
+> What methods can be used for boosting? What is the difference
+
+* Adaboost
+  * Elke sample krijgt een **instance weight**
+  * Als een sample fout wordt geclassificeerd door een model zal zijn gewicht hoger worden
+  * Het volgende model zal meer aandacht geven aan samples met een hogere weight
+  * Ook elk model krijgt een **predictor weight**
+  * Accuratere modellen krijgen een hoger gewicht en hun beslissing zal harder doorwegen
+* Gradient boost
+  * De volgende predictor zal proberen de **residual error** van de vorige te voorspellen
+  * Modellen werken dus elkaars fouten weg
+  * Dit lijkt op gradient descent in de zin dat elk volgend model eigenlijk de gradiënt probeert te schatten
+  * En dus zegt in welke 'richting' we moeten
+
+
+
+> Is gradient boost sensitive to overfitting?
+
+Ja, om dit te voorkomen kan je gebruikt maken van **shrinkage**, waar de bijdrage van elk volgend model (de learning rate) verlaagd wordt.
+
+
+
+> What is stacking? Explain.
+
+Stacking staat voor stacked generalization en is gebaseerd op een simpel idee. In plaats van triviale functies zoals voting te gebruiken om modellen samen te voegen, trainen we een model om deze operatie uit te voeren. 
+
+We splitsen de training set in twee. Op het eerste deel trainen we onze modellen. Op het tweede deel laten we de getrainde modellen voorspellingen maken, dit vormt deze set om tot een **blending data set**. Nu kunnen we een model, genaamd een **blender** trainen op deze voorspellingen. 
+
+
+
+> What makes Extra-Trees more random than regular Random Forests? How can this extra randomness help? Are Extra-Trees slower or faster than regular Random Forests?
+
+Er wordt een willekeurige threshold gebruikt voor de splitsing. Deze extra randomness is nuttig voor ensembles.  Ze zijn sneller om te trainen omdat je niet naar de juiste threshold moet zoeken. Voorspellingen maken is even snel.
+
+
+
+> Is it possible to speed up training of a bagging ensemble by distributing it across multiple servers? What about pasting ensembles, boosting ensembles, Random Forests, or stacking ensembles?
+
+Bij bagging en pasting en random forests is dit mogelijk.
+
+Bij boosting en stacking niet want ze hangen van elkaar af. 
+
+Bij stacking kunnen de predictors in één laag wel onafhankelijk getraind worden. Deze hangen niet van elkaar af.
+
+
+
+### 8 - Dimensionality reduction
+
+> What are the main motivations for reducing a dataset’s dimensionality? What are the main drawbacks?
+
+* Voordelen
+
+  * Rekentijd
+  * Gemakkelijker te begrijpen en te visualiseren
+  * Om ruimte te besparen
+
+* Nadelen
+
+  * Verlies aan precisie
+
+  * Extra werk
+
+  * Voegt complexiteit toe
+
+  * Getransformeerde features zijn soms moeilijk te interpreteren
+
+
+
+> What is the curse of dimensionality?
+
+Hoe meer dimensies onze data heeft, hoe minder betekenis afstand heeft. Datasets worden schaars in de zin dat hun features heel wijd verspreid liggen in deze hoogdimensionale ruimte.
+
+De hoeveelheid data nodig om een model te trainen neemt bovendien exponentieel toe met het aantal dimensies. 
+
+
+
+> What is the manifold hypothesis?
+
+Bij problemen in de echte wereld liggen training instanties gelukkig **nooit** uniform verspreid overheen alle dimensies. De **manifold hypothese** vertelt ons dat we in onze ruimte van trainingsinstanties een soort subruimte (manifold) kunnen vinden die onze instanties bevat. 
+
+
+
+> What is PCA and how does it work?
+
+Het principe van **principle component analysis** is om een hypervlak van een lagere dimensie te vinden en onze data daarop te projecteren. 
+
+We doen dit door de **principle component** te zoeken. Dit is de richting van grootste variantie in onze data. Dan gaan we verder door een volgende principle component te zoeken, orthogonaal op de vorige. Al deze principle components samen vormen een hypervlak waarop we onze data kunnen projecteren, met een zo laag mogelijk verlies aan variantie.
+
+In de praktijk volgen we deze stappen:
+
+* Centreer de dataset rond het gemiddelde
+* Bereken de covariantiematrix $\mathbf C$ van de dataset
+* Bereken de eigenvectoren en hun corresponderende eigenwaarden van de covariantiematrix
+* Maak een $n \times d$ matrix $\mathbf W$ die de eigenvectoren bevat die overeenkomen met de $d$ grootste eigenwaarden van $\mathbf C$
+  * De eigenvector met de grootste eigenwaarde is de eerste principal component
+* Nu kunnen we $\mathbf W$ gebruiken om de samples naar de nieuwe subspace te transformeren
+* We kunnen de data reconstrueren met de inverse van $\mathbf W$
+
+
+
+> What is linear local embedding?
+
+Het hoofdidee achter **linear local embedding** is om te proberen elk datapunt uit te drukken als een lineaire combinatie van zijn $k$ dichtstbijzijnde buren. Het algoritme vindt voor elk punt de $k$ dichtstbijzijnde buren en maakt daarvoor een matrix $\hat {\mathbf W}$. Deze bevat voor elk van de buren een gewicht zodat de lineaire combinatie van de buren met die gewichten het originele punt zo goed mogelijk benaderen. 
+
+
+
+> What is kernelized PCA? Why is it useful?
+
+We transformeren eerst onze data naar een **hogere dimensie** met een transformatiefunctie genaamd de **kernel**. In deze nieuwe ruimte doen we dan PCA. Door de transformatiefunctie goed te kiezen (kernel trick), kunnen we dit grote probleem toch nog net oplossen. Deze methode vergt dus vrij veel rekenkracht.
+
+Om te weten of onze dimensionaliteitsreductie effectief goed is, zouden we normaal gezien de data reconstrueren met de inverse transformatie. De transformatie die we hier doen is equivalent aan het mappen naar $\infty$-dimensionale ruimte. We kunnen de data dus niet reconstrueren naar de originele ruimte om de **reconstruction error** te berekenen. 
+
+Het is op de één of andere manier wel mogelijk om een punt te vinden dat dichtbij dit gereconstrueerde punt zou liggen in de originele ruimte (als we het zouden kunnen berekenen). Blijkbaar kan je dat punt vinden door een regressiemodel te trainen. Deze fake reconstructie noemt met de **pre-image** een geeft ons dus toch een manier om te kijken of onze transformatie nuttig is.
+
+Kernelized PCA is nuttig voor **niet-lineaire** datasets.
+
+
+
+> How can you evaluate the performance of a dimensionality reduction algorithm on your dataset?
+
+In het algemeen doet een dimensionaliteitsreductiealgoritme het goed als er zo weinig mogelijk informatie verloren gaat.
+
+Bij sommige algoritmes kan je vanuit de reductie de originele data reconstrueren en zo de reconstruction error meten. 
+
+Bij andere algoritmes is dit niet mogelijk en kan je bijvoorbeeld een model testen op zowel de gewone als de gereduceerde data om te kijken of de resultaten niet veel slechter zijn geworden. 
+
+
+
+### 9a - Clustering * 
+
+> Describe two techniques to select the right number of clusters when using K-Means.
+
+* Elbow plot met inertia
+  * Daarin het buigpunt zoeken
+* Silhouette score plots
+  * Je kan ook de gemiddelde silhouette scoren plotten in functie van het aantal clusters om een algemeen overzicht te krijgen. Het optimale aantal zal rond de piek liggen.
+
+//TODO
+
+> What are the differences between K-means and DBScan. Which one would you use for a large dataset?
+
+
+
+### 9b - GMM *
 
 > What is a Gaussian distribution?
 
@@ -2543,6 +2903,14 @@ Multiclass classification
 
 
 
+> What is a Gaussian mixture? What tasks can you use it for?
+
+Een som van normaalverdelingen. We kunnen ze gebruiken om multimodale datasets aan de hand van een gewogen som van normaalverdelingen met verschillende parameters. We veronderstellen dus dat de data is gegroepeerd in een eindig aantal clusters, ieder met een ellipsoïdale vorm. 
+
+Dit is nuttig voor density estimation, clustering en anomaly detection.
+
+
+
 > What are the parameters of a Gaussian Mixture Model?$
 
 
@@ -2556,6 +2924,96 @@ Multiclass classification
 
 
 > What are main principles of the EM algorithm?
+
+
+
+### 10 - Neural networks intro *
+
+
+
+
+
+### 11 - Neural networks training *
+
+
+
+
+
+
+
+### 14 - CNN *
+
+> What are the advantages of a CNN over a fully connected DNN for image classification?
+
+* Minder ruimte
+* Sneller (training en inference)
+* Kan high-level en low-level features leren
+* 2D input wordt behouden in het model
+
+
+
+> Why would you want to add a max pooling layer rather than a convolutional layer with the same stride?
+
+Omdat een max pooling laag geen parameters heeft. 
+
+
+
+> We maken met de volgende code een neuraal netwerk in Keras. Hoeveel parameters heeft dit model? 
+
+```python
+model = keras.models. Sequential([
+keras.layers.Conv2D(64, 7, activation="relu", padding="same", # 64*7*7+64 
+input_shape=[28, 28, 1]),
+keras.layers MaxPooling2D(2), # 0
+keras.layers.Conv2D(128, 3, activation="relu", padding="same"), # 64*128*3*3+128
+keras.layers.Conv2D(128, 3, activation="relu", padding="same"), # 128*128*3*3 + 128
+keras.layers.MaxPooling2D(2), # 0
+keras.layers.Conv2D(256, 3, activation="relu", padding="same"), # 128*3*3*256 + 256
+keras.layers Conv2D(256, 3, activation="relu", padding="same"), # 256*3*3*256 + 256
+keras.layers.MaxPooling2D(2),
+keras.layers.Flatten(), # al twee keer max pool gehad 28x28 -> 7x7 -> 3x3
+    # de input van flatten is dus 3x3x256, dus zijn output is 2304
+keras.layers.Dense(128, activation="relu"), # 2304*128 + 128
+keras.layers.Dropout(0.5), # doet niks met het aantal parameters
+keras.layers.Dense(64, activation="relu"), #  128 * 64 + 64
+keras.layers.Dropout(0.5),
+keras.layers.Dense(10, activation="softmax") # 64 * 10 + 10
+```
+
+Het aantal parameters in een laag is dus het aantal outputs van de vorige laag maal het aantal parameters binnen de laag. Het aantal parameters binnen de laag bedraagt $n_\text{param} = n_k \cdot k_w \cdot k_h \cdot k_d + n_k$.
+
+Het totaal: 
+$$
+\begin{align}
+n_{tot} &= (64*7*7+64) +  (64*128*3*3+128) + (128*128*3*3 + 128) + (128*3*3*256 + 256) 
+\\ &\quad + (256*3*3*256 + 256) + (2304*128 + 128) + (128 * 64 + 64) + (64 * 10 + 10) 
+\\ &= 1413834
+\end{align}
+$$
+
+
+
+
+
+
+
+### 15 - RNN *
+
+
+
+### 17 - GAN *
+
+> What is a GAN? Can you name a few tasks where GANs can shine?
+
+Generative adverserial network. We zetten twee modellen tegen elkaar op: een discriminator en een generator. De generator moet zijn best doen om instanties te genereren die echt lijken.
+
+De discriminator moet van een instantie zeggen of hij echt is of niet. 
+
+
+
+> What are the main difficulties when training GANs?
+
+Dat de variantie van de gegenereerde instanties afneemt (mode collapse). Training kan zeer onstabiel zijn, bovendien zijn ze heel gevoelig aan de keuze van hyperparameters.
 
 
 
