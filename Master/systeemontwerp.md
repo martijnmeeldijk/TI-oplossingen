@@ -1006,7 +1006,7 @@ Dit zijn de puntjes van het document, omgezet in vraagvorm.
 
 
 
-> **Wat zijn microservices? Leg uit en geef een aantals eigenschappen.**
+> **Wat zijn microservices? Leg uit en geef een aantal eigenschappen.**
 
 * Microservice architectural style
   * Ontwikkel een applicatie als een **verzameling van kleine services**
@@ -1191,8 +1191,8 @@ Het zijn alternatieven voor het layered model om een applicatie te bouwen.
 
 In het midden van de applicatie zit de **application core**. Dit is de business logica. Rond de applicatie hangen verschillende adapters:
 
-* **Onbound adapter** 
-  * Voorziet een API om de businesslogica op te roepe
+* **Inbound adapter** 
+  * Voorziet een API om de businesslogica op te roepen
   * Bijvoorbeeld REST API, GUI, 
   * Command handler: bv. Kafka queue met events die verwerkt dienen te worden
 * **Outbound adapter** 
@@ -1368,26 +1368,30 @@ Een manier om de request/response style te gebruiken is synchronous remote proce
 
 
 
+//TODO ik vind deze vraag niet zo goed
+
+
+
 > **Wat is het verschil tussen brokered en brokerless messaging? Wat zijn de voor- en nadelen?**
 
 Dit is wanneer je bij messaging wel of geen message broker gebruikt.
 
 * <u>Brokered</u>
   * Voordelen
-    * Zender moet de locatie van de ontvanger niet kennen (loose coupling)
-    * Message buffering als de ontvanger traag of offline is (betere availability)
+    * Zender moet de **locatie** van de ontvanger **niet** kennen (loose coupling)
+    * Message **buffering** als de ontvanger traag of offline is (betere availability)
   * Nadelen
-    * Meer latency
-    * Single point of failure
-    * Extra infrastructuur en complexiteit
+    * Meer **latency**
+    * **Single point of failure**
+    * Extra infrastructuur en **complexiteit**
 * <u>Brokerless</u>
   * Voordelen
-    * Betere latency en lichter netwerkverkeer
-    * Geen single point of failure
-    * Minder operationele complexiteit (onderhoud en set-up van de broker)
+    * Betere latency en **lichter** netwerkverkeer
+    * **Geen single point of failure**
+    * **Minder** operationele **complexiteit** (onderhoud en set-up van de broker)
   * Nadelen
-    * Services moeten elkaars locaties kennen.
-    * Minder availability (zender en ontvanger moeten beschikbaar zijn).
+    * Services moeten elkaars **locaties** **kennen**.
+    * **Minder availability** (zender en ontvanger moeten beschikbaar zijn).
     * Geavanceerde mechanismen zoals guaranteed delivery zijn moeilijker te implementeren.
 
 
@@ -1421,7 +1425,7 @@ Om asynchroon gedistribueerde transacties uit te kunnen voeren hebben we dus noo
 
 Korter:
 
-* Gedistribueerde transactionele garantie verlies van availability zoals bij 2PC
+* Gedistribueerde transactionele garantie zonder verlies van availability zoals bij 2PC
 
 
 
@@ -1429,35 +1433,33 @@ Korter:
 
 > **Wat zijn de voor- en nadelen van SAGAs?**
 
-* Voordelen
-  * Flexibel: voorziet een flexibele manier om om te gaan met transacties
-  * Atomiciteit: verzekert dat de stappen atomair zijn. Ze worden allemaal uitgvoerd of ze worden allemaal niet uitgevoerd.
-  * Compensating transaction: de gedane stappen kunnen ongedaan gemaakt worden in het geval van een probleem
-* Nadelen
-  * Complexiteit
-  * Extra overhead
-  * Goeie coördinatie tussen systemen nodig
+* <u>Voordelen</u>
+  * **Flexibel**: voorziet een flexibele manier om om te gaan met transacties
+  * **Atomiciteit**: verzekert dat de stappen atomair zijn. Ze worden allemaal uitgvoerd of ze worden allemaal niet uitgevoerd.
+  * **Compensating transaction**: de gedane stappen kunnen ongedaan gemaakt worden in het geval van een probleem
+* <u>Nadelen</u>
+  * **Complexiteit**
+  * Extra **overhead**
+  * Goeie **coördinatie** tussen systemen nodig
 
 
 
 > **Hoe werkt een SAGA?**
 
-Een **SAGA** is een sequentie van locale transacties. Voor elk systeemcommando dat data in meerdere services moet aanpassen kunnen we een SAGA samenstellen. Het is bij wijze dus een verhaaltje dat doorlopen moet worden door onze services. Als één service klaar is met zijn transactie, stuurt hij een message die de volgende transactie triggert. Elke transactie is **atomair** en kan alleen slagen als:
+Een **SAGA** is een sequentie van locale transacties. Voor elk systeemcommando dat **data in meerdere services** moet **aanpassen** kunnen we een SAGA samenstellen. Een SAGA is bij wijze van spreken dus een verhaaltje dat doorlopen moet worden door onze services. Als één service klaar is met zijn transactie, stuurt hij een message die de volgende transactie triggert. Elke transactie is **atomair** en kan alleen slagen als:
 
-* De datastore is bijgewerkt
-* Andere services op de hoogte gebracht zijn
+* De **datastore** is **bijgewerkt**
+* Andere **services op de hoogte gebracht** zijn
 
-Als dan één van de middelste transacties misloopt, zal voor elk van deze transacties een **compensating transaction** uitgevoerd worden. Deze zullen in een sequentie van tegengestelde volgorde uitgevoerd worden om de vorige transacties van de onvolledige SAGA ongedaan te maken. 
+Als dan één van de middelste transacties **misloopt**, zal voor elk van deze transacties een **compensating transaction** uitgevoerd worden. Deze zullen in een sequentie van tegengestelde volgorde uitgevoerd worden om de vorige transacties van de onvolledige SAGA ongedaan te maken. 
 
-De transactie `createOrder()` kan dan bijvoorbeeld de compenserende transactie `rejectOrder()` hebben. Alleen transacties die gevolgd worden door stappen die mis kunnen lopen vereisen een compenserende transactie. Voor read-only transacties is dit dus niet nodig.
-
-
+De transactie `createOrder()` kan dan bijvoorbeeld de compenserende transactie `rejectOrder()` hebben. Alleen transacties die **gevolgd** worden door stappen die **mis kunnen lopen** vereisen een compenserende transactie. Voor **read-only** transacties is dit dus **niet** nodig.
 
 > **Wat is het verschil tussen choreography en orchestration?**
 
 Het coördineren van een SAGA kan op twee manieren gebeuren. 
 
-Volgens een **choreografie** worden beslissingen en sequentielogica gedistribueerd afgehandeld. De communiactie verloopt dan via messages. Aan de andere kant kunnen we met **orchestratie** de coördinatielogica centraliseren met een *orchestrator* klasse. De communicatie loopt dan via commando's.
+Volgens een **choreografie** worden beslissingen en sequentielogica **gedistribueerd** afgehandeld. De communicatie verloopt dan via messages. 
 
 Choreografie kan je best gebruiken voor **heel simpele SAGA's**. Elke service moet zelf ontvangen events kunnen mappen op zijn eigen data. Ze moeten basically zelf weten wat ze moeten doen. Elke event moet beschikken over een **correlation ID**. Deze geeft dan aan welke berichten bij elkaar horen. 
 
@@ -1468,6 +1470,8 @@ Deze aanpak is simpel, maar er zijn direct een aantal nadelen zichtbaar:
 * Risico op tight coupling: elke deelnemer moet subscriben op alle events die hem beïnvloeden
 
 
+
+Aan de andere kant kunnen we met **orchestratie** de coördinatielogica centraliseren met een *orchestrator* klasse. De communicatie loopt dan via commando's.
 
 Bij **orchestratie**:
 
@@ -1511,7 +1515,7 @@ Bij **orchestratie**:
     * Verbetert latency
     * Partial failures
   * **Beperkingen**
-    * Is risky als je code gaat aanpassen
+    * Je moet code aanpassen
     * Beperkte impact op robuustheid
     * Data wordt verdeeld opgeslagen
 * <u>Functional partitioning</u>
@@ -1521,7 +1525,7 @@ Bij **orchestratie**:
     * Kost optimaliseren
     * Partial failures
   * **Beperkingen**
-    * Is risky als je code gaat aanpassen
+    * Je moet code aanpassen
     * Beperkte impact op robuustheid
     * Data wordt verdeeld opgeslagen
     * Meer infrastructuur nodig
@@ -1530,7 +1534,9 @@ Bij **orchestratie**:
 
 > **Wat betekenen cache hit en cache miss? Waarom zijn deze termen belangrijk?** 
 
-Bij een **cache hit** zit de data al in de cache en hoeft deze dus niet opgehaald te worden. Bij een **cache miss** zal dit wel moeten gebeuren. Logischerwijs willen we in onze applicatie dus zo veel mogelijk cache hits. 
+Bij een **cache hit** zit de data al in de cache en hoeft deze dus niet opgehaald te worden. 
+
+Bij een **cache miss** zal dit wel moeten gebeuren. Logischerwijs willen we in onze applicatie dus zo veel mogelijk cache hits, aangezien dit bevorderlijk is voor de performantie.
 
 
 
@@ -1551,19 +1557,19 @@ Bij een **cache hit** zit de data al in de cache en hoeft deze dus niet opgehaal
 
 * <u>Write around</u>
   * <img src="img/systeemontwerp/image-20230120161416169.png" alt="image-20230120161416169" style="zoom:33%;" /> 
-  * Reads gaan door de cache en writes gaan er 'rond', rechtstreeks naar de DB.
-  * Hierdoor hebben we wel een cache invalidation systeem nodig
+  * Reads gaan door de cache en writes gaan er '**rond**', rechtstreeks naar de DB.
+  * Hierdoor hebben we wel een **cache invalidation** systeem **nodig**
     * TTL
     * Conditional GETs
     * Notification-based (domain events)
 * <u>Write through</u>
   * <img src="img/systeemontwerp/image-20230120161634593.png" alt="image-20230120161634593" style="zoom:50%;" /> 
-  * Elke write past zowel de cache als de DB aan
+  * Elke write past **zowel** de **cache** als de **DB** aan
   * Dit is makkelijk, maar wat doen we als er een call misloopt?
 * <u>Write back</u>
   * <img src="img/systeemontwerp/image-20230120161744540.png" alt="image-20230120161744540" style="zoom:50%;" /> 
   * App schrijft naar de cache, cache schrijft naar de DB
-  * Snel, maar gevaarlijk
+  * Snel, maar **gevaarlijk**
 
 
 
@@ -1591,24 +1597,26 @@ Bij een **cache hit** zit de data al in de cache en hoeft deze dus niet opgehaal
 * Sustained adaptability
   * Aanpassing aan verandering op lange termijn
 
+//TODO dit vind ik te vaag, misschien de les is nakijken
+
 
 
 > **Wat is een time-out? Welke vragen moeten we onszelf stellen bij het gebruik van time-outs?** 
 
 Een time-out zorgt ervoor dat na een bepaalde hoeveelheid tijd, er niet meer zal gewacht worden op het antwoord op een request. 
 
-* Hoe lang?
+* **Hoe lang?**
   * Time-outs op basis van context
     * Latency budget overschreden
-    * Nutteloos response
+    * Nutteloos response (na zo veel seconden weet ik dat de client de response niet meer nodig heeft)
   * Fail quickly
   * Trace production application to find typical values
-* Waar?
+* **Waar?**
   * Elke out-of-process call heeft een time-out nodig
-* Hoe?
+* **Hoe?**
   * Service meshes voor TCP/IP calls
-  * Libraries voor IPC calls
-    * Synchroon: het proces killen (let op de state!)
+  * Libraries voor IPC calls binnen de software zelf
+    * Synchroon: het proces killen bij timeout (let op de state!)
     * Asynchroon: timeout context toevoegen in elke function call
       * `requestStart`, `requestMaxDuration`
       * Oppassen voor 'hanging processes'
@@ -1617,19 +1625,42 @@ Een time-out zorgt ervoor dat na een bepaalde hoeveelheid tijd, er niet meer zal
 
 > **Wat zijn retries? Wat zijn de gevaren en hoe kunnen we ermee omgaan?**
 
-//TODO 
+Als we merken dat er iets te lang duurt, is een logische oplossing om simpelweg opnieuw te proberen. 
 
-> **Wat is een bulkhead?**
+Je moet je bewust zijn van de aard van het probleem alvorens een retry te doen:
 
-Een **bulkhead** dient om resources van elkaar te isoleren om failures te beperken.
+* 404 not found: hier is een retry meestal nutteloos
+  * Maar bij een evantually consistent systeem kan een retry wel nuttig zijn omdat de resource misschien nog niet up-to-date was
 
-We kunnen dit op een aantal manieren:
+Als de reden dat de service niet werkt is dat hij te veel requests krijgt, zal een retry dit alleen maar verergeren. Op deze manier kan je zelfs een cascading failure veroorzaken.
+
+Toen facebook down ging stuurden alle gebruikers op hetzelfde moment retries, waardoor bijvoorbeeld cloudflare plots 30 keer zo veel DNS traffic kreeg. Als de servers van facebook dan plots terug zouden aangaan, zullen al die gebruikers tegelijk proberen te verbinden en mogelijks de servers opnieuw doen crashen. 
+
+
+
+Je moet dus zorgen dat je een **gradual buildup** doet om een aantal redenen:
+
+* **Traffic surge**: als je alle servers in één keer aanzet komen alle requests tegelijk binnen
+* **Cold caches**: bij de startup van de servers zullen er in het begin een hele boel cache misses zijn, wat nog meer CPU vereist
+* **Power surge**: in een groot systeem alle servers in één keer aanzetten kan voor zo een grote spike in het stroomverbruik zorgen dat het stroomnet neer gaat
+
+
+
+> **Wat is een bulkhead? Hoe kunnen we dit implementeren?**
+
+Een **bulkhead** dient om resources van elkaar te isoleren om failures te beperken. Als een microservice cracht neemt hij dan niet de andere services met zich mee. 
+
+We kunnen bulkheads op een aantal manieren implementeren:
 
 * Scheiding van downstream calls
   * Connection pools
 * Scheiding van concerns
   * Decomposing tot microservices
+  * Dan werken de andere microservices nog bij een crash
 * Scheiding van queues
+  * Bijvoorbeeld verschillende queues voor verschillende gebruikers
+  * Als één gebruiker dan plots veel requests doet, overspoelt hij de queues van andere gebruikers niet
+
 * Scheiding van APIs
 * Scheiding van users
 
@@ -1637,7 +1668,7 @@ We kunnen dit op een aantal manieren:
 
 > **Wat is een circuit breaker? Welke dingen kunnen we doen wanneer deze in gebruik is?** 
 
-Een **circuit breaker** is een automatisch mechanisme om een bulkhead te sluiten. Zo beschermen we consumers van een probleem downstream en beschermen we downstream services tegen overbelasting. Bijvevolg kunnen we cascading failures voorkomen.
+Een **circuit breaker** is een automatisch mechanisme om een bulkhead te sluiten. Zo beschermen we consumers van een probleem downstream en beschermen we downstream services tegen overbelasting. Bijgevolg kunnen we cascading failures voorkomen.
 
 Wanneer het circuit open is kunnen we:
 
@@ -1649,6 +1680,8 @@ Wanneer het circuit open is kunnen we:
   * Outdated resultaten teruggeven
 * Requests in een queue steken
   * Goed voor sommige asynchrone implementaties
+
+Goed om tijdelijke pieken op te vangen zodat services niet crashen door de plotse load.
 
 
 
@@ -1669,7 +1702,7 @@ Eénzelfde actie moet altijd hetzelfde resultaat hebben, ookal wordt hij meerder
 
 > **Wat is redundantie? Op welke plaatsen kan dit voorzien worden?**
 
-De term redundantie in het kader van systeemontwerp slaat op het toevoegen van extra onderdelen zodat het systeem kana blijven werken, zelfs als sommige onderdelen het niet meer doen. We kunnen redundantie wel op meerdere plekken voorzien, waaronder:
+De term redundantie in het kader van systeemontwerp slaat op het toevoegen van extra onderdelen zodat het systeem kan blijven werken, zelfs als sommige onderdelen het niet meer doen. We kunnen redundantie wel op meerdere plekken voorzien, waaronder:
 
 * Mensen
 * Microservices
@@ -1710,16 +1743,16 @@ Zonder dat daarvoor iemand beschuldigt moet worden.
 
 > **Tot welke 6 zaken moeten teams in staat zijn in een loosely coupled organization?**
 
-* Grootschalige design changes kunnen maken
+* Grootschalige **design changes** kunnen maken
   * Zonder toestemming van buitenaf
   * Zonder veranderingen buitenaf
-* Hun werk kunnen afmaken 
+* Hun **werk** kunnen **afmaken** 
   * zonder communicatie naar buiten
-* Hun product on demand uitbrengen
+* Hun product on demand **uitbrengen**
   * Ongeacht afhankelijke services
-* On demand kunnen testen 
+* On demand kunnen **testen** 
   * Zonder geïntegreerde testomgeving
-* Deployments kunnen doen
+* **Deployments** kunnen doen
   * Tijdens de werkuren met verwaarloosbare downtime
 
 
@@ -1733,7 +1766,7 @@ Door kleinere teams is iedereen gefocust op dezelfde doelen. Het is makkelijker 
 * Macht om beslissingen te maken
 * Macht om te kunnen handelen zonder coördinatie
 
-
+//TODO valuable stream of work
 
 > **Wat is het verchil tussen strong ownership en collective ownership? Wat zijn de voor-en nadelen?**
 
@@ -1776,7 +1809,7 @@ Een **enabling team** heeft als verantwoordelijkheid om andere teams te 'enablen
 
 Een **platform team** onderhoudt en beheert het gedeelde platform en voorziet typisch de **infrastructuur** en **fundering** voor de applicatie. In het perspectief van het platform team zijn de developers de gebruikers. Het platform team voorziet dan een **paved road** voor de andere teams. Dit kan frameworks of infrastructuur omvatten, maar ook bepaalde requirements waaraan teams moeten voldoen. 
 
-Het platform team legt al het ware de weg aan die de ontwikkelaars moeten volgen. Het is belangrijk dat het platform team de andere teams niet volledig de les gaat lezen en ze gaat verplichten om het platform te gebruiken, maar eerder een manier voorziet om het leven van de andere teams te vergemakkelijken zodat zij zich **op hun hoofdtaak kunnen richten**. 
+Het platform team legt als het ware de weg aan die de ontwikkelaars moeten volgen. Het is belangrijk dat het platform team de andere teams niet volledig de les gaat lezen en ze gaat verplichten om het platform te gebruiken, maar eerder een manier voorziet om het leven van de andere teams te vergemakkelijken zodat zij zich **op hun hoofdtaak kunnen richten**. 
 
 
 
