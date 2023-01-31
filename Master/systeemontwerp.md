@@ -958,7 +958,7 @@ Deze manier van werken wordt best pas gehanteerd als de codebase **mature** is. 
 
 Dit zijn de puntjes van het document, omgezet in vraagvorm.
 
-
+<startq>
 
 ## 1 - Introduction to microservices
 
@@ -966,26 +966,26 @@ Dit zijn de puntjes van het document, omgezet in vraagvorm.
 
 * <u>Monolith</u>
   * **Voordelen**
-    * Goed voor een beginnende applicatie
-    * Geen complexiteit van verschillende services
+    * Goed voor een **beginnende applicatie**
+    * **Geen** **complexiteit** van verschillende services
   * **Nadelen**
     * Codebase moeilijk te begrijpen
-    * Moeilijk schaalbaar, want elke server moet de volledige applicatiestack draaien
+    * **Moeilijk schaalbaar**, want elke server moet de volledige applicatiestack draaien
     * Moeilijk uitbreidbaar en onderhoudbaar, want één verandering kan veel gevolgen hebben
-    * Je systeem kan platliggen door één bug
+    * Je systeem kan **platliggen** door **één bug**
 * <u>Microservices</u>
   * **Voordelen**
-    * Services kunnen onafhankelijk gedeployed worden
-    * Gemakkelijker uit te breiden en te onderhouden, één verandering vereist typisch geen aanpassing in meerdere microservices. Fouten worden ook niet overgedragen tussen services.
-    * Schaalbaarder
-    * Services kunnen in verschillende talen/stacks ontwikkeld worden, met verschillende databanken
+    * Services kunnen **onafhankelijk gedeployed** worden
+    * Gemakkelijker **uit te breiden en te onderhouden**, één verandering vereist typisch geen aanpassing in meerdere microservices. Fouten worden ook niet overgedragen tussen services.
+    * **Schaalbaarder**
+    * Services kunnen in **verschillende talen/stacks** ontwikkeld worden, met verschillende databanken
   * **Nadelen**
-    * Foute toepassing kan leiden tot een gedistribueerde monoliet, het soms moeilijk om de lijn te trekken tussen verschillende services
-    * Gedistribueerde systemen zijn complex
-    * Communicatie over het netwerk is trager. Data moet geserialiseerd worden en over een mogelijk onstabiele verbinding verstuurd worden.
-    * Moeilijker om tests te schrijven die meerdere services omvatten
-    * Microservices introduceren veel overhead, zowel technisch als organisatorisch. Elke service is verantwoordelijk voor zijn eigen opslag et cetera. Veel services vereisen veel werknemers.
-    * Beter geschikt voor grote bedrijven dan voor startups
+    * Foute toepassing kan leiden tot een **gedistribueerde monoliet**, het soms moeilijk om de lijn te trekken tussen verschillende services
+    * Gedistribueerde systemen zijn **complex**
+    * **Communicatie** over het **netwerk is trager**. Data moet geserialiseerd worden en over een mogelijk onstabiele verbinding verstuurd worden.
+    * **Moeilijker** om **tests te schrijven** die meerdere services omvatten
+    * Microservices introduceren veel **overhead**, zowel technisch als organisatorisch. Elke service is verantwoordelijk voor zijn eigen opslag et cetera. Veel services vereisen veel werknemers.
+    * Beter geschikt voor **grote bedrijven** dan voor startups
 
 
 
@@ -1034,9 +1034,24 @@ Dit zijn de puntjes van het document, omgezet in vraagvorm.
 
 > **Wat is het verschil tussen SOA en microservices?**
 
-Bij SOA ligt de nadruk op services maken die gedeeld kunnen worden doorheen je applicatie. Microservices gaan een stapje verder hier bovenop. Onze hele architectuur is in dit geval gebouwd op individuele services die onafhankelijk werken. Nog een verschil is dat we bij microservices onze services **zo klein mogelijk** maken, dit is geen vereiste voor SOA.
+Bij SOA ligt de nadruk op services maken die gedeeld kunnen worden doorheen je applicatie, elk met hun eigen functionaliteit, waarnaar toegeng wordt verleend door een API. Een SOA applicatie kan nog steeds een monoliet zijn, waar de services bijvoorbeeld een databank delen en sterk afhankelijk van elkaar zijn. 
 
-De verschillende services zijn **loosely coupled** en geïmplementeerd volgens **domain driven design**, hun codebases zijn niet afhankelijk van elkaar en maken kunnen ieder gebruik maken van hun eigen tech stack. Er zijn duidelijke **boundaries** tussen de microservices en ze communiceren enkel via een **API**. 
+Microservices gaan een stapje verder hier bovenop. Onze hele architectuur is in dit geval gebouwd op individuele services die onafhankelijk werken. Nog een verschil is dat we bij microservices onze services **klein** maken, dit is geen vereiste voor SOA.
+
+De verschillende services zijn **loosely coupled** en geïmplementeerd volgens **domain driven design**, hun codebases zijn niet afhankelijk van elkaar en maken kunnen ieder gebruik maken van hun eigen tech stack. Er zijn duidelijke **boundaries** tussen de microservices en ze communiceren enkel via een **API**, typisch over een netwerk.
+
+
+
+* SOA
+  * Services delen doorheen applicatie
+  * API
+* Microservices
+  * Uitbreiding bovenop de principes van SOA
+  * Loose-coupling
+    * Domain-driven design
+  * Duidelijke grens tussen services
+    * Communicatie via APIs
+    * Data owners
 
 
 
@@ -1101,10 +1116,10 @@ De verschillende soorten diagrammen:
 
 > **Wat zijn een aantal voorwaarden voor het maken van een goed diagram?**
 
-* Duidelijkheid: een diagram moet gemakkelijk te begrijpen zijn en moet de over te brengen informatie duidelijk overdragen. 
-* Eenvoud: een diagram moet zo simpel mogelijk zijn, en enkel de nodig informatie bevatten
-* Consistentie: het is belangrijk om consistent te zijn met vormen, kleuren en taalgebruik
-* Relevantie: het diagram moet relevant zijn voor het systeem en geen irrelevante informatie bevatten
+* **Duidelijkheid**: een diagram moet gemakkelijk te begrijpen zijn en moet de over te brengen informatie duidelijk overdragen. 
+* **Eenvoud**: een diagram moet zo simpel mogelijk zijn, en enkel de nodig informatie bevatten
+* **Consistentie**: het is belangrijk om consistent te zijn met vormen, kleuren en taalgebruik
+* **Relevantie**: het diagram moet relevant zijn voor het systeem en geen irrelevante informatie bevatten
 
 <sub>Dit staat volgens mij niet in de slides maar ik vond het nuttig</sub>
 
@@ -1198,9 +1213,9 @@ Een vernieuwde versie van de hexagonale stijl is de onion style. Het model is pa
 
 We krijgen drie lagen: 
 
-* Domeinmodel: Specifieke logica om specifieke informatie te beschrijven die de applicatie gaat bijhouden
-* Applicatielaag: Bevat veel van de logica. Dit is het deel dat effectief dingen gaat doen.
-* Adapters: ongeveer hetzelfde als bij onion style (inbound/outbound)
+* **Domeinmodel**: Specifieke logica om specifieke informatie te beschrijven die de applicatie gaat bijhouden
+* **Applicatielaag**: Bevat veel van de logica. Dit is het deel dat effectief dingen gaat doen.
+* **Adapters**: ongeveer hetzelfde als bij onion style (inbound/outbound)
 
 Iedere laag is verbonden met de andere laag via interfaces. 
 
@@ -1276,9 +1291,13 @@ Om het aanmaken en de persistentie van modelobjecten te voor te stellen gebruike
 
 * Factory (niet besproken) 
 
+
+
+
+
 > **Leg uit. Wat is CQRS?**
 
-Het staat voor command-query responsibility segregation. We splitsen het domeinmodel in twee delen:
+Het staat voor **command-query responsibility segregation**. We splitsen het domeinmodel in twee delen:
 
 * **Read model** 
   * Bevat de nodige voorzieningen voor queries
@@ -1347,11 +1366,13 @@ Een manier om de request/response style te gebruiken is synchronous remote proce
   * Kan een commando, een antwoord op een commando of een event bevatten
   * Loopt via een channel
 
+
+
 > **Wat is het verschil tussen brokered en brokerless messaging? Wat zijn de voor- en nadelen?**
 
 Dit is wanneer je bij messaging wel of geen message broker gebruikt.
 
-* Brokered
+* <u>Brokered</u>
   * Voordelen
     * Zender moet de locatie van de ontvanger niet kennen (loose coupling)
     * Message buffering als de ontvanger traag of offline is (betere availability)
@@ -1359,7 +1380,7 @@ Dit is wanneer je bij messaging wel of geen message broker gebruikt.
     * Meer latency
     * Single point of failure
     * Extra infrastructuur en complexiteit
-* Brokerless
+* <u>Brokerless</u>
   * Voordelen
     * Betere latency en lichter netwerkverkeer
     * Geen single point of failure
@@ -1397,6 +1418,12 @@ In een monolithisch ontwerp hebben we het voordeel van **transactionele garantie
 Eén manier om dit te implementeren is aan de hand van een **two phase commit** (2PC). In de eerste fase sturen we onze data naar alle servers, deze maken zich vervolgens klaar. De tweede fase begint pas als alle servers 'oké' hebben gezegd, waarna ze de data verwerken. Dit is natuurlijk weer een synchrone operatie die de availability aanzienlijk verlaagt en bovendien maar beperkt ondersteund wordt.
 
 Om asynchroon gedistribueerde transacties uit te kunnen voeren hebben we dus nood aan SAGAs.
+
+Korter:
+
+* Gedistribueerde transactionele garantie verlies van availability zoals bij 2PC
+
+
 
 
 
@@ -1760,6 +1787,8 @@ We kunnen binnen een bedrijf de broncode van de gehele applicatie voor iedereen 
 Deze manier van werken wordt best pas gehanteerd als de codebase **mature** is. Want als de visie van het project nog niet duidelijk is, zijn bijdragen van andere teams waarschijnlijk niet zo zinvol.
 
 
+
+<endq>
 
 # ----------Labo-----------
 
