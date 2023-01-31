@@ -33,4 +33,4 @@ Moest je echt gemotiveerd zijn en een bijdrage willen leveren, kan je een pull r
 
 
 Oh ja, hier is een mapje met alle examens die ik tot nu toe heb weten te bemachtigen:
-[Examens](https://github.com/martijnmeeldijk/TI-oplossingen/tree/master/Schakeljaar/Examens)
+[Examens](https://github.com/martijnmeeldijk/TI-oplossingen/tree/master/Master/examens)

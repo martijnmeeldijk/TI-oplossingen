@@ -1488,7 +1488,7 @@ Je kan dit dus gebruiken voor een normale verdeling, maar voor Gaussian Mixture 
 
 ### Regularisatie
 
-We kunnen het aantal trainbare parameters beperken op bepaalde beperkingen opleggen aan de covariantiematrices, waardoor de clusters verplicht worden om een bepaalde vorm aan te nemen De opties voor `covariance_type` zijn:
+We kunnen het aantal trainbare parameters beperken door bepaalde beperkingen op te leggen aan de covariantiematrices, waardoor de clusters verplicht worden om een bepaalde vorm aan te nemen. De opties voor `covariance_type` zijn:
 
 * `full`: geen beperking
 * `tied`: clusters moeten dezelfde vorm, grootte en oriëntatie hebben
@@ -2091,19 +2091,64 @@ We voegen een klein beetje ruis toe aan onze data en trainen een model om deze r
 
 # Examenvragen
 
-![image-20221230184101596](img/machinaal/image-20221230184101596.png)
+<img src="img/machinaal/image-20221230184101596.png" alt="image-20221230184101596" style="zoom:50%;" />
 
+## Januari 2023
 
+Godverdomme dit examen was echt een stuk moeilijker dan het proefexamen dat gegeven was.
 
-### Mijn vragen
-
-> Welke soorten gradient descent zijn er? Wat zijn hun eigenschappen, voor- en nadelen. 
-
-
-
-
+* Leg het verschil uit tussen precision en recall
+* Een aantal scenario's waar je moest zeggen of precision of recall belangrijker was
+  * Een branddetectiesysteem waar via camerabeelden rook of brand werd gedetecteert
+  * Een dataset van tripadvisor waaruit je foto's van gerechten filtert om daarmee een clustering algoritme te trainen. Je wilt natuurlijk dat je training data zo zuiver mogelijk is.
+* Logistic regression
+  * Uitleggen, welke parameters en functies enzo
+  * De formule van log loss was gegeven
+    * Dan moest je uitleggen wat elk symbool betekent en wat de formule doet
+* Densiteitsfuncties
+  * Je moest uitleggen wat een densiteitsfunctie is (in algemene termen), wat de cost functie is enzovoort
+  * Uitleggen wat het principe is van maximum likelihood
+* SVM
+  * Je moest het hard margin SVM probleem uitleggen
+  * Als je `sklearn.svm.SVC` gebruikt krijg je de parameters $w, b$ en $\alpha^{(i)}$ uit welke parameter kan je afleiden welke de belangrijkste features zijn?
+  * Een tekening met twee klassen waar je de decision boundary van hard margin SVC moest tekenen
+    * Duid de support vectors aan
+    * Bereken $w$ (dit vond ik een smerige vraag)
+* Decision trees
+  * Je kreeg een tabel met klassen met 3 features met de labels erbij. Maak een decision tree met het CART algoritme en leg elke stap uit. De formules voor Gini impurity, de cost functie en sum-of-squares error waren gegeven.
+* CNN's
+  * Je kreeg een inputlaag van een CNN
+    * Gegeven deze kernel, stride en padding, bereken de output (vond ik ook een kutvraag)
+  * Dan moest je een schematische voorstelling (zonder waarden) tekenen van dezelfde CNN, maar met 5 kernels, 3 kanalen, stride 1 en zonder padding. 
+* Juist of fout
+  * Als je meer lagen aan een neuraal netwerk toevoegt, verhoog je ook de variance
+  * Bij een ridge regressie model met hoge bias, zorgt het verkleinen van de regularisatieterm voor een lagere bias.
+* Meerkeuze (8 vragen met verhoogde cesuur dus ik denk dat je er 6 juist moest hebben)
+  * Hoeveel parameters heeft een VGG model?
+    * 10.000 - 100.000
+    * 100.000 - 1000.000
+    * 1000.000 - 10.000.000
+    * Meer dan 10.000.000
+  * Wat is de functie van de generator bij GAN's?
+  * Wat is een typische initiële learning rate voor een CNN?
+    * $10^5$
+    * $10^2$
+    * $10^{-2}$
+    * $10^{-5}$
+  * Als drie verschillende modellen een precision van 95% hebben, is het dan nuttig om ze samen in een voting ensemble te steken?
+    * Ja
+    * Nee, want ...
+    * Nee, want ... idk
+  * Welke kan niet gebruikt worden bij unsupervised learning
+    * Cross-entropy
+    * GRU's
+    * mean squared error
+    * Autoencoders
+  * Iets over gradient boost of adaboost en een niet-afleidbare cost functie
 
 ## Vragen uit de slides en meer
+
+Dit zijn de vragen uit de slides, samen met de nuttigste vragen uit het boek en extra vragen die ik belangrijk achtte. 
 
 ### 1 - ML Landscape
 
@@ -2316,13 +2361,17 @@ Je kan classificatiemodellen vergelijken door de oppervlakte onder de curve te b
 
 > Why is accuracy not always considered to be a good metric?
 
-//TODO
+Als je veel meer instanties van één klasse hebt, zal de accuracy zelfs hoog liggen als we gewoon altijd op die klasse gokken en dus geen goede representatie zijn van de kwaliteit van onze classificatie.
 
 
 
 > How can we handle sampling in unbalanced datasets? 
 
-Met **stratified sampling** zorgen we dat de verhouding tussen klassen behouden blijft wanneer we samples nemen voor bijvoorbeeld een train/test set of tussen verschillende folds bij cross-validation. 
+* Stratified sampling 
+  * zorgen dat de verhouding tussen klassen behouden blijft wanneer we samples nemen voor bijvoorbeeld een train/test set of tussen verschillende folds bij cross-validation. 
+* Dataset augmentation
+* Undersampling/oversampling
+* Accuracy niet als metriek gebruiken
 
 
 
@@ -2862,44 +2911,126 @@ Bij andere algoritmes is dit niet mogelijk en kan je bijvoorbeeld een model test
 
 
 
-### 9a - Clustering * 
+### 9a - Clustering
+
+
+
+> How does K-means clustering work?
+
+Het K-means clustering algoritme werk als volgt:
+
+* Kies een getal $k$, dit is het aantal clusters
+* Kies $k$ willekeurige punten als cluster centers: $C^{(1)}, \dots ,C^{(k)}$
+* Herhaal
+  * Wijs elk punt $\mathbf x^{(i)}$ toe aan het dichtstbijzijnde cluster center
+  * $b^{(i,j)} = \begin{cases} 1 \text{ als } j =\underset{k}{\mathrm{argmin}} \sum_{l=1}^n(x_l^{(i)} - C_l^{(k)})^2 \\0  \end{cases}$
+  * Bereken het nieuwe centrum van elke cluster
+  * $C_\text{new}^{(k)} = \frac{\sum_{i=1}^m b^{(i,k)} \mathbf x^{(i)}}{\sum_{i=1}^m b^{(i,k)}}$ (dit is gewoon het gemiddelde van alle punten van de cluster)
+  * Stop wanneer het resultaat convergeert of als je tevreden bent
+
+Belangrijk om te weten is dat het resultaat niet altijd convergeert naar een globaal minimum, we kunnen ook vastraken in een lokaal minimum. Of dit al dan niet zo zal zijn hangt af van de keuze van de initiële clustercentra. 
+
+De toewijzing van een punt tot een cluster wordt volledig gebaseerd op zijn afstand tot het clustercentrum.
+
+
 
 > Describe two techniques to select the right number of clusters when using K-Means.
 
 * Elbow plot met inertia
+  * Dat is de gemiddelde afstand van elk punt tot zijn clustercentrum
   * Daarin het buigpunt zoeken
 * Silhouette score plots
   * Je kan ook de gemiddelde silhouette scoren plotten in functie van het aantal clusters om een algemeen overzicht te krijgen. Het optimale aantal zal rond de piek liggen.
+  * $s^{(i)} = \frac{b^{(i)} - a^{(i)}}{\max \{a^{(i)}, b^{(i)} \}}$
+    * $a^{(i)}$: de gemiddelde afstand van een punt tot alle andere punten in dezelfde cluster
+    * $b^{(i)}$: gemiddelde afstand van een punt tot alle waarden in de volgende dichtstbijzijnde cluster
+  * Je kan ook voor elk aantal clusters een plot maken met de silhouette scores voor alle instanties
 
-//TODO
+
+
+> What are three ways to initialize cluster centers when using K-means?
+
+* Willekeurige clustercentrums
+  * Kan in een **lokaal minimum** vastraken 
+  * of het kan dat het **erg lang** duurt om tot het globale minimum te raken. 
+* Alle punten initieel willekeurige clusternummers geven
+  * Dan vertrekken van de clustercentrums van deze willekeurige clusters
+  * Werkt niet goed
+* Kmeans++ methode
+  * Begint ook met een random punt
+  * De volgende punten zullen volgens een bepaalde distributie gekozen worden, rekening houdend met de afstand tot de al gekozen punten.
+  * Zo liggen de initiële centrums niet te dicht bij elkaar
+  * Beste methode
+
+
+
+
 
 > What are the differences between K-means and DBScan. Which one would you use for a large dataset?
 
+* K-means
+  * Werkt het best voor **cirkelvormige** clusters. 
+  * Je moet altijd je data standaardiseren voordat je k-means toepast.
+  * Kan moeilijk omgaan met verschillen in densiteit
+  * De variantie van features moet gelijkaardig zijn voor alle clusters
+  * Kan moeilijk omgaan met clusters van verschillende grootte (aantal items)
+  * In hogere dimensies heeft afstand ook minder betekenis 
+* DBScan
+  * <u>Voordelen</u>
+    * We moeten niet handmatig het aantal clusters kiezen
+    * Kan omgaan met clusters van eender welke vorm
+    * Werkt goed als clusters dense genoeg zijn er ver genoeg liggen van andere clusters
+  * <u>Nadelen</u>
+    * Niet deterministisch (maar dat maakt niet zo veel uit in de praktijk)
+    * Gebruikt een afstandsmetriek
+      * Pas op met scaling
+      * Curse of dimensionality
+    * Het is moeilijk om de juiste hyperparameters ($\epsilon$, `minPts`) te kiezen als we te maken hebben met regio's met verschillende densiteit
 
 
-### 9b - GMM *
 
-> What is a Gaussian distribution?
+> What are three ways to measure the distance between clusters? What clustering algorithm uses these measures? 
+
+* Single linkage
+  * Kortste afstand tussen twee punten van de verschillende clusters
+* Maximum linkage
+  * Langste afstand tussen twee punten van de verschillende clusters
+* Average linkage
+  * Gemiddelde afstand van elk punt van de ene tot elke punt van de andere cluster
+
+Hiërarchische clustering met bijvoorbeeld agglomerative clustering. 
+
+### 9b - GMM 
+
+> What is a Gaussian distribution? What are the parameters of a Gaussian distribution? How do they influence the shape of the distribution?
+
+Een Gaussverdeling is een probabiliteitsverdeling, gekenmerkt door een klokvormige curve. Het gemiddelde $\mu$ bepaalt het centrum van de curve en de standaardafwijking $\sigma$ de spreiding. 
+
+Veel natuurlijke fenomenen volgen een Gaussverdeling.
 
 
 
 > What is a unimodal distribution?
 
+Dit is een verdeling die maar één piek (gemiddelde) bevat in zijn kansdichtheidsfunctie. Een Gaussverdeling is een unimodale verdeling. 
+
 
 
 > What is a multivariate distribution?
+
+Dit is een probabiliteitsverdeling die de probabiliteit van meerdere variabelen voorspelt. De meestvoorkomende versie hiervan is de multivariate Gaussian distribution. 
 
 
 
 > What is a multimodal distribution?
 
-
-
-> What are the parameters of a Gaussian distribution? How do they influence the shape of the distribution?
+Dit is een verdeling die meerdere pieken bevat in zijn kansdichtheidsfunctie. Een voorbeeld hiervan is een Gaussian Mixture. Deze verdeling is een gewogen som van meerdere Gaussverdelingen, elk met hun eigen gemiddelde en standaardafwijking
 
 
 
 > What is a mixture model (not necessarily Gaussian)?
+
+Dit is een statistisch model dat een probabiliteitverdeling beschrijft als een combinatie van meerdere verdelingen. 
 
 
 
@@ -2911,37 +3042,199 @@ Dit is nuttig voor density estimation, clustering en anomaly detection.
 
 
 
-> What are the parameters of a Gaussian Mixture Model?$
+> What are the parameters of a Gaussian Mixture Model?
 
+Voor elke verdeling een gemiddelde en een standaardafwijking.
 
+Elke verdeling krijgt ook een factor $\phi_i$ die het gewicht van elk model aangeeft. De som van alle $\phi_i$ is $1$ zodat we een geldige kansfunctie bekomen.
+
+ 
 
 > What is the likelhood? What is negative loglikelihood?
+
+De **likelihood** beschrijft hoe waarschijnlijk een bepaalde set parameters $\theta$ is, gegeven een bekende uitkomst $x$.
+
+Een zo goed mogelijk model maximaliseert de **joint probability** (het product van alle probabiliteiten) van alle items $x^{(i)}$ uit onze dataset. 
+
+De functie die als variabele parameters $\theta$ neemt en met deze $\theta$ de joint probability van alle $x^{(i)}$ berekent, is dan de likelihood functie:
+$$
+\mathcal L (\pmb \theta) = \prod_{i=1}^m p_\text{model}(x_i;\pmb \theta)
+$$
+Het is belangrijk om te weten dat $\mathcal L$ geen probabiliteitsdistributiefunctie is. Als je hem integreert krijg je niet altijd 1. De parameters die leiden tot de maximale waarde van deze functie meest waarschijnlijke modelparameters.
+
+
+
+In plaats van $\mathcal L$ te maximaliseren, kunnen we zijn **negatieve logaritme minimaliseren**. Dan krijgen we de **minimum loglikelihood**. Dan moeten we niet met super kleine getalletjes werken. 
+
+Omdat de $\log$ van een product gelijk is aan een som van logaritmes:
+$$
+\mathcal{LL} (\pmb \theta) = \sum_{i=1}^m \log p_{model}(x^{(i)}; \pmb \theta)
+$$
+Je kan dit dus gebruiken voor een normale verdeling, maar voor Gaussian Mixture models bestaat er geen analytische oplossing voor dit probleem. 
 
 
 
 > How are distribution parameters estimated from data?
 
+Dit gaat met **expectation maximization**.
+
 
 
 > What are main principles of the EM algorithm?
 
+Als we weten door welke verdeling een elk punt is gegenereerd, kunnen we gemakkelijk een Gaussverdeling op deze punten fitten. Als we de onderliggende verdelingen in onze data weten, kunnen we gemakkelijk berekenen uit welke verdeling elke punt waarschijnlijk komt. We doen deze twee redeneringen in een cirkel om telkens tot een beter resultaat te geraken:
 
-
-### 10 - Neural networks intro *
-
-
-
-
-
-### 11 - Neural networks training *
-
-
-
-
+* Vertrek van willekeurige distributieparameters
+* Herhaal tot convergentie:
+  * Bereken de soft labels op basis van de huidige distributieparameters
+    * Het algoritme schat voor elke instantie de kans dat het tot een bepaalde cluster behoort
+    * **Expectation stap**
+  * Update de clusters, gebruik makende van alle instanties in de dataset
+    * **Maximization stap**
+    * We updaten dus de distributieparameters
 
 
 
-### 14 - CNN *
+> How to choose the number of mixture components in GMM?
+
+* Akaike Information Criterion (AIC) 
+* Bayesian Information Criterion (BIC)
+
+
+
+> How can we implement regulaization in GMM's?
+
+* We kunnen het aantal trainbare parameters beperken door bepaalde beperkingen op te leggen aan de covariantiematrices, waardoor de clusters verplicht worden om een bepaalde vorm aan te nemen. De opties voor `covariance_type` zijn:
+
+  * `full`: geen beperking
+  * `tied`: clusters moeten dezelfde vorm, grootte en oriëntatie hebben
+  * `diag`: de assen van de ellipsoïde clusters moeten evenwijdig zijn aan de coördinaat-assen
+  * `spherical`: alle clusters moeten mooi rond zijn (ze mogen wel verschillende groottes hebben)
+
+
+
+### 10 - Neural networks intro
+
+> Why did interest in the early perceptrons decline rapidly?
+
+Omdat een perceptron maar één laag heeft, zal hij alleen maar lineaire relaties kunnen modelleren. In essentie doet dit hetzelfde als lineaire of logistic regression. De perceptron was niet eens in staat om een `XOR` te leren. 
+
+
+
+> What is backpropagation and how does it work? 
+
+Backpropagation is een manier om neurale netwerken te trainen. Eerst berekent het de gradiënt van de cost functie op basis van de parameters. Omdat een neuraal netwerk eigenlijk een geneste functie $f_1(f_2(f_3(f_4(x))))$ is, wordt hiervoor de kettingregel gebruikt. 
+
+Dan zullen we één stap Gradient descent doen op basis van de gradiënt (die ons de richting aangeeft om de cost functie te verlagen). Dit wordt typisch miljoenen keren gedaan tijdens het trainen van een model om dan uiteindelijk te convergeren naar waarden die de cost functie zo goed mogelijk minimaliseren. 
+
+Een neuraal netwerk is een **niet-convex** optimalisatieprobleem, het kan dus dat we vastraken in een lokaal minimum. In de praktijk blijkt dit geen al te groot probleem te zijn. 
+
+
+
+> What are some of the hyperparameters of neural networks?
+
+* Aantal interne lagen
+* Aantal neuronen per laag
+* Activatiefunctie
+* Learning rate en batch size 
+* Trainingsalgoritme en loss functie
+* Initialisatie van de parameters
+* Ruis en data augmentatie
+* Regularisatie
+
+
+
+### 11 - Neural networks training
+
+
+
+> What makes training a deep neural network hard?
+
+* Groot aantal parameters 
+* Complexe geneste functie
+* Niet-convex optimalisatieprobleem
+* Vereist grote hoeveelheden data
+* Groot risico op overfitting
+
+
+
+> What is the vanishing gradients problem and how is it solved?
+
+Dit was een probleem dat zich vroeger voordeed bij het trainen van neurale netwerken. 
+
+Doordat meerdere lagen met een **sigmoid activatiefunctie** op elkaar gestapeld werden, werden de gradiënten voor de eerste lagen erg klein (vanishing gradients). Met als resultaat dat hun gewichten nauwelijks veranderden, wat leidde tot een slecht model. Dit komt doordat de sigmoid functie bij heel grote of heel kleine waarden altijd satureert naar $1$ of $-1$.
+
+Een aantal mogelijke oplossingen zijn:
+
+* Betere gewichtsinitialisatie
+  * Bv. samplen uit normaalverdelings
+* Betere activatiefuncties (zoals ReLU)
+  * Leaky ReLU als je **dying neurons** hebt
+* Batch normalization (batchnorm)
+  * Activatie min gemiddelde, gedeeld door standaardafwijking van de batch
+  * Nodig om **moving average** bij te houden voor inference
+
+
+
+> What are some ways to optimize the training of a neural network?
+
+* Momentum
+  * Gebruik de vorige gradiënten om de 'richting' aan te geven
+  * De volgende stap is dan de som van de huidige gradiënt en de momentum 
+* Second order methods
+  * Tweede orde partiële afgeleide om buiging rond een punt te schatten = duur
+* Learning rate scheduling
+  * Meestal belangrijkste hyperparameter
+  * Hoog beginnen, geleidelijk aan afnemen
+    * Power scheduling
+    * Exponential scheduling
+    * Piecewise Constant
+
+
+
+
+
+> How can you implement regularization when training a neural network?
+
+* Meer training data gebruiken
+* Data augmentation en randomness toevoegen
+* $L_1$ en $L_2$ regularisatie
+* **Dropout**
+  * Zet een willekeurige subset van de activaties op nul
+  * Dit maakt het model robuuster
+  * En forceert elke neuron om onafhankelijker te zijn
+  * Bij inferentie worden alle neuronen terug gebruikt, maar worden ze geschaald door de factor die werd gebruikt tijdens het trainen. 
+
+
+
+> In which cases would you use the following activation functions? Logistic, ReLU, tanh, softmax.
+
+* Logistic
+  * Nuttig als je een probabiliteit moet voorspellen in een outputlaag
+* ReLU
+  * Heel simpel en snel, hij kan ook nul outputten wat voor sommige modellen handig is
+* tanh
+  * Nuttig in de output laag als je een output $\in [-1,1]$ nodig hebt
+  * Wordt niet veel in verbogen lagen gebruikt, behalve in RNNs
+* Softmax
+  * Nuttig in de outputlaag voor exclusieve klassen bij multiclass classificatie
+  * Wordt bijna nooit in verborgen lagen gebruikt
+
+
+
+> Does dropout slow down training? Does it slow down inference (i.e., making predictions on new instances)? 
+
+Dropout vertraagt het trainen, het duurt mogelijks langer voordat het model convergeert. Om voorspellingen te maken wordt het gewone model gebruikt en is er dus geen verschil.
+
+
+
+
+
+
+
+
+
+### 14 - CNN
 
 > What are the advantages of a CNN over a fully connected DNN for image classification?
 
@@ -2949,6 +3242,65 @@ Dit is nuttig voor density estimation, clustering en anomaly detection.
 * Sneller (training en inference)
 * Kan high-level en low-level features leren
 * 2D input wordt behouden in het model
+
+
+
+> Explain the principle of a convolutional neural network.
+
+* CNNs zijn gebaseerd op de structuur van de visuele cortex van een brein. 
+* 2D structuur van de input wordt behouden in een **convolutional layer**.
+
+* Elke neuron heeft verbindingen naar een **klein vlak** in de **vorige laag**
+  * Hij is dus alleen gevoelig voor dat gebied
+  * Dit is de **receptive field**
+* Een CNN volgt een **hiërarchische structuur**
+  * De eerste lagen focussen op kleine, low-level features
+  * De diepere lagen brengen deze samen in high level features, de receptive field groeit dus doorheen het netwerk
+* **Weight reuse**
+  * Alle neuronen in dezelfde laag gebruiken dezelfde gewichten
+  * Deze gewichten vormen dan een filter (**kernel**) die de input overloopt
+* De **kernel** is een vierkantje (van bijvoorbeeld 3x3) dat we over onze afbeelding gaan schuiven. 
+
+  * We schuiven hem altijd een bepaalde hoeveelheid op
+    * Dit heet de **stride**, deze is 2 in het plaatje.
+  * Door de input dan met de kernel te **convolueren**, krijgen we 
+    * Een **feature map**, een gefilterde versie van de afbeelding
+    * Zo kunnen we in de afbeelding bepaalde gebieden detecteren
+      * Horizontale of verticale lijnen
+      * Kleurovergangen
+  * Elke laag gebuikt $N$ verschillende **filters**
+    * Dit resulteert dus in $N$ feature maps voor elke laag
+    * <img src="img/machinaal/image-20230124145642021.png" alt="image-20230124145642021" style="zoom:33%;" /> 
+  * De gewichten van de filters worden geleerd met gradient descent
+
+
+
+> How can you calculate the amount of outputs of a convolutional layer?
+
+* Het aantal dimensies van de output hangt af van
+  * $n_{in}$: aantal features
+  * $k$: grootte van de kernel
+  * $p$: grootte van de padding
+  * $s$: grootte van de stride
+
+* Het aantal outputfeatures is dan: 
+  * $n_{out} = \lfloor \frac{n_{in} + 2p -k} s \rfloor + 1$
+
+
+
+> How can you calculate the amount of parameters in a convolutional layer?
+
+Het aantal parameters in één laag bedraagt:
+$$
+n_\text{param} = n_k \cdot k_w \cdot k_h \cdot k_d + n_k
+$$
+
+
+* $n_k$: aantal kernels 
+* $k_{w/h/d}$: kernel width, height, depth
+* De laatste term moet er bij omdat we voor elke kernel ook één bias term bijhouden
+
+Als je het aantal parameters van een model met meerdere lagen wilt berekenen zal je dit getal nog moeten vermenigvuldigen met het aantal feature maps van de vorige laag. 
 
 
 
@@ -2961,15 +3313,17 @@ Omdat een max pooling laag geen parameters heeft.
 > We maken met de volgende code een neuraal netwerk in Keras. Hoeveel parameters heeft dit model? 
 
 ```python
-model = keras.models. Sequential([
+import keras
+
+model = keras.models.Sequential([
 keras.layers.Conv2D(64, 7, activation="relu", padding="same", # 64*7*7+64 
 input_shape=[28, 28, 1]),
-keras.layers MaxPooling2D(2), # 0
+keras.layers.MaxPooling2D(2), # 0
 keras.layers.Conv2D(128, 3, activation="relu", padding="same"), # 64*128*3*3+128
 keras.layers.Conv2D(128, 3, activation="relu", padding="same"), # 128*128*3*3 + 128
 keras.layers.MaxPooling2D(2), # 0
 keras.layers.Conv2D(256, 3, activation="relu", padding="same"), # 128*3*3*256 + 256
-keras.layers Conv2D(256, 3, activation="relu", padding="same"), # 256*3*3*256 + 256
+keras.layers.Conv2D(256, 3, activation="relu", padding="same"), # 256*3*3*256 + 256
 keras.layers.MaxPooling2D(2),
 keras.layers.Flatten(), # al twee keer max pool gehad 28x28 -> 7x7 -> 3x3
     # de input van flatten is dus 3x3x256, dus zijn output is 2304
@@ -2978,6 +3332,7 @@ keras.layers.Dropout(0.5), # doet niks met het aantal parameters
 keras.layers.Dense(64, activation="relu"), #  128 * 64 + 64
 keras.layers.Dropout(0.5),
 keras.layers.Dense(10, activation="softmax") # 64 * 10 + 10
+])
 ```
 
 Het aantal parameters in een laag is dus het aantal outputs van de vorige laag maal het aantal parameters binnen de laag. Het aantal parameters binnen de laag bedraagt $n_\text{param} = n_k \cdot k_w \cdot k_h \cdot k_d + n_k$.
@@ -2993,15 +3348,148 @@ $$
 
 
 
+De output van `model.summary()` ter controle voor als je Simoens niet gelooft:
+
+```
+Layer (type)                Output Shape              Param #   
+=================================================================
+ conv2d_5 (Conv2D)           (None, 28, 28, 64)        3200      
+                                                                 
+ max_pooling2d_3 (MaxPooling  (None, 14, 14, 64)       0         
+ 2D)                                                             
+                                                                 
+ conv2d_6 (Conv2D)           (None, 14, 14, 128)       73856     
+                                                                 
+ conv2d_7 (Conv2D)           (None, 14, 14, 128)       147584    
+                                                                 
+ max_pooling2d_4 (MaxPooling  (None, 7, 7, 128)        0         
+ 2D)                                                             
+                                                                 
+ conv2d_8 (Conv2D)           (None, 7, 7, 256)         295168    
+                                                                 
+ conv2d_9 (Conv2D)           (None, 7, 7, 256)         590080    
+                                                                 
+ max_pooling2d_5 (MaxPooling  (None, 3, 3, 256)        0         
+ 2D)                                                             
+                                                                 
+ flatten_1 (Flatten)         (None, 2304)              0         
+                                                                 
+ dense_3 (Dense)             (None, 128)               295040    
+                                                                 
+ dropout_2 (Dropout)         (None, 128)               0         
+                                                                 
+ dense_4 (Dense)             (None, 64)                8256      
+                                                                 
+ dropout_3 (Dropout)         (None, 64)                0         
+                                                                 
+ dense_5 (Dense)             (None, 10)                650       
+                                                                 
+=================================================================
+Total params: 1,413,834
+Trainable params: 1,413,834
+Non-trainable params: 0
+_________________________________________________________________
+```
+
+
+
+> What are some common CNNs and what are thei core principles?
+
+* VGG
+  * Typische CNN, maar heel groot
+* Googlenet 
+  * Verschillende parallelle convolutionele lagen
+* ResNet
+  * Shortcut lagen, waardoor we diepere netwerken kunnen maken die makkelijker te trainen zijn
+
+
+
+> What is data augmentation and why would you use it? 
+
+* Artificieel meer training instanties aanmaken
+* Roteren, croppen, blurren, ruis toevoegen
+* Is een vorm van **regularisatie**
+
+Kan het model robuuster maken, en dan hebben met meer training instances. Het moet wel nuttig blijven.
+
+
+
+> What is transfer learning?
+
+Vertrekken van een bestaand model en het finetunen voor jouw use-case.
+
+
+
+### 15 - RNN
+
+> What are some issues with RNNs?
+
+* Traag en instabiel te trainen, zeker voor lange sequenties
+  * Voor de onstabiele gradiënten kan je een lagere learning rate gebruiken. 
+* Voor lange sequenties 'vergeten' ze snel de eerst inputs
+* Gebruikt saturerende activatiefuncties (tanh, sigmoid) in plaats van ReLU
+
+
+
+> What is the difference between LSTM and GRU?
+
+* Long short-term memory
+  * Heeft lange- en kortetermijn state
+  * Output gate die beschrijft wat er naar de lange termijn mag
+* Gated recurrent units
+  * Heeft maar één state
+  * Geen output gate
+  * Simpelere versie die meestal even goed werkt
+
+
+
+> Why would you want to use 1D convolutional layers in an RNN?
+
+Als we heel lange inputs hebben. Dit kan de temporale resolutie verlagen zodat de RNN beter langetermijnspatronen kan opsporen.
+
+
+
+### 17 - GAN
+
+
+
+> What is an autoencoder? What is it used for?
+
+Een autoencoder is een neuraal netwerk dat als enige doel heeft om zijn input te reconstrueren. Hij bestaat uit twee delen:
+
+* Encoder
+  * Deze transformeert de input naar een **latent space representation**
+  * Dit is een abstracte multidimensionale representatie van de features
+* Decoder
+  * Gebruikt deze representatie om de input te reconstrueren
+* Ze kunnen beide fully connected, convolutional of recurrent lagen gebruiken
+* Reconstruction error als loss functie met gradient descent
+
+Autoencoders kunnen gebruikt worden voor
+
+* Dimensionaliteitsreductie
+* Pre-training
+* Anomaly detection. 
+
+
+
+> What is a variational autoencoder? 
+
+In plaats van rechtstreeks een encodering te maken voor een gegeven input, maakt de encoder een *mean coding* $\pmb \mu$ en een standaardafwijking $\pmb \sigma$. We nemen een **willekeurige sample** uit deze distributie, die dan aan de decoder gegeven wordt. 
+
+Wanneer het model getraind is, kunnen we dus gemakkelijk **nieuwe instanties genereren** door ruis te voeren aan de decoder. 
+
+Het model wordt getraind met twee loss functies:
+
+* Reconstruction loss (bv. MSE)
+* Latent loss
+  * Forceert het model om encoderingen terug te geven die eruitzien alsof ze uit een Gaussiaanse verdeling gesampled waren 
+
+VAEs stimuleren het '**ontrafelen**' van onderliggende factoren. Eén dimensie van de latent code kan dan één onderliggende eigenschap voorstellen (lijn dikte, hoek, ...). Deze ontrafeling is nuttig om **high level informatie** uit je input te halen. 
 
 
 
 
-### 15 - RNN *
-
-
-
-### 17 - GAN *
 
 > What is a GAN? Can you name a few tasks where GANs can shine?
 
