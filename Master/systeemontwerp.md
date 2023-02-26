@@ -973,6 +973,7 @@ Dit zijn de puntjes van het document, omgezet in vraagvorm.
     * **Moeilijk schaalbaar**, want elke server moet de volledige applicatiestack draaien
     * Moeilijk uitbreidbaar en onderhoudbaar, want één verandering kan veel gevolgen hebben
     * Je systeem kan **platliggen** door **één bug**
+    * Commitment aan één tech stack
 * <u>Microservices</u>
   * **Voordelen**
     * Services kunnen **onafhankelijk gedeployed** worden
@@ -994,7 +995,7 @@ Dit zijn de puntjes van het document, omgezet in vraagvorm.
 * <u>Wanneer de applicatie en functionaliteit groeit</u>
   * **Codebase te groot** om door één persoon begrepen te worden
   * Grote codebase is **traag** voor **IDE**
-  * Lange startup vertraagt de **edit-build-test** loop
+    * Lange startup vertraagt de **edit-build-test** loop
   * Langetermijnscommitment tot **één technology stack**
 * <u>Wanneer de nood voor agile ontwikkeling groeit</u>
   * Voor veranderingen in de code van één deel moet de **hele applicatie gerebuild** worden
@@ -1026,15 +1027,11 @@ Dit zijn de puntjes van het document, omgezet in vraagvorm.
 
 
 
-> **Wat is Conways law?**
-
-"Any organization that designs a system will produce a design whose structure is a copy of the organization's communication structure."
-
 
 
 > **Wat is het verschil tussen SOA en microservices?**
 
-Bij SOA ligt de nadruk op services maken die gedeeld kunnen worden doorheen je applicatie, elk met hun eigen functionaliteit, waarnaar toegeng wordt verleend door een API. Een SOA applicatie kan nog steeds een monoliet zijn, waar de services bijvoorbeeld een databank delen en sterk afhankelijk van elkaar zijn. 
+Bij SOA ligt de nadruk op services maken die gedeeld kunnen worden doorheen je applicatie, elk met hun eigen functionaliteit, waarnaar toegang wordt verleend door een API. Een SOA applicatie kan nog steeds een monoliet zijn, waar de services bijvoorbeeld een databank delen en sterk afhankelijk van elkaar zijn. Bovendien zal in dit scenario de herbruikbaarheid en schaalbaarheid van je services beperkt zijn door hun sterke afhankelijkheid. Services zullen niet **magisch** al je problemen oplossen
 
 Microservices gaan een stapje verder hier bovenop. Onze hele architectuur is in dit geval gebouwd op individuele services die onafhankelijk werken. Nog een verschil is dat we bij microservices onze services **klein** maken, dit is geen vereiste voor SOA.
 
@@ -1049,9 +1046,12 @@ De verschillende services zijn **loosely coupled** en geïmplementeerd volgens *
   * Uitbreiding bovenop de principes van SOA
   * Loose-coupling
     * Domain-driven design
+      * Kleine functionele granulariteit georganiseerd rond capabiliteiten
+      * Nieuwe features vereisen bijna geen veranderingen in andere microservices
+    * Onafhankelijk deploybaar en vervangbaar
   * Duidelijke grens tussen services
     * Communicatie via APIs
-    * Data owners
+    * Microservice is data owner
 
 
 
@@ -1065,10 +1065,10 @@ We kunnen de requirements van een systeem opsplitsen in twee categorieën:
 
 * <u>Functional</u>
   * Wat moet het systeem **doen**?
-  * Scalability, reliability, ... Alle -ilities
+  * Pizza verkopen of overheden destabiliseren om bananen te kunnen verkopen?
 * <u>Non-functional</u>
   * Wat moet het systeem **zijn**?
-  * Pizza verkopen of overheden destabiliseren om bananen te kunnen verkopen?
+  * Scalability, reliability, ... Alle -ilities
 
 
 
@@ -1085,21 +1085,25 @@ Een diagram kan je helpen door drie dingen te verbeteren:
 De verschillende soorten diagrammen:
 
 * <u>Domain diagram</u>
+  * Logical view
   * Het **domeinmodel** voorstellen (bv. **UML** klassediagram)
   * Bevat: Inheritance, association, depends-on
+  
 * <u>Sequence diagram</u>
   * **Eén mogelijke sequentie** van **interacties** voorstellen (tussen gebruikers en/of machines/systemen) (bv. UML sequence diagram)
   * Nuttig voor impact op **niet-functionele requirements**
-    * Blokkerende threads/processen
+    * **Blokkerende threads**/processen
     * Failing/trage remote service
     * Synchronisatie van *state*
     * Trage database queries
   * Bevat: Objecten, relaties (interprocescommunicatie)
 * <u>Process diagram</u>
+  * **Functionele** **requirements**
   * Beschrijft een **volledige workflow** (bv. BPMN process diagram)
   * Bestaat uit **meerdere sequenties**
   * Stappen, wie doet wat, wat is het proces
   * Bevat: Processen, control flow, data flow
+
 * <u>Service diagram</u>
   * Overzicht van verschillende **services** en hun **interacties**
   * Overzicht op **high-level** interacties en structuur van het systeem
@@ -1116,19 +1120,31 @@ De verschillende soorten diagrammen:
 
 > **Wat zijn een aantal voorwaarden voor het maken van een goed diagram?**
 
+* Interacties moeten betekenisvol zijn
+* Betekenis van elementen en relaties
+  * Consistentie, labels
+  * Consistente lijnen (stippelijn, vol)
+* Semantic colors
+* Geen geïsoleerde entiteiten
+* Minder afkortingen
+
+
+
+<sub>Dit staat volgens mij niet in de slides maar ik vond het nuttig</sub>
+
 * **Duidelijkheid**: een diagram moet gemakkelijk te begrijpen zijn en moet de over te brengen informatie duidelijk overdragen. 
 * **Eenvoud**: een diagram moet zo simpel mogelijk zijn, en enkel de nodig informatie bevatten
 * **Consistentie**: het is belangrijk om consistent te zijn met vormen, kleuren en taalgebruik
 * **Relevantie**: het diagram moet relevant zijn voor het systeem en geen irrelevante informatie bevatten
 
-<sub>Dit staat volgens mij niet in de slides maar ik vond het nuttig</sub>
+
 
 
 
 > **Welke drie stappen volgt het proces voor het bouwen van een microservice architectuur?**
 
 1. <u>Identify and understand system operations</u>
-   * **1a. Create a high-level domain model**: praat met experten ubiquitous language om inzicht te krijgen in het probleemdomein
+   * **1a. Create a high-level domain model**: praat met experten ubiquitous language om inzicht te krijgen in het probleemdomein. 
    * **1b. Define the requests that your application must handle**: we moeten weten welke systeemoperaties ons systeem moet ondersteuenen. Het is belangrijk om hier technische termen te vermijden. Er zijn twee soorten systeemoperaties:
      * **Commands**: CRUD
      * **Queries**: enkel lezen (typisch voor UI)
@@ -1139,9 +1155,11 @@ De verschillende soorten diagrammen:
      * **By technology**: kan goed zijn voor performance, maar je systeem wordt wel gelaagd en dat is bad
      * **By data**: Nuttig voor GDPR, bijvoorbeeld green en red zone. Voegt wel complexiteit toe.
 3. <u>Define service APIs and collaborations</u>
-   * Dit kunnen operaties of events zijn
+   * Dit kunnen **operaties** of **events** zijn
    * **3a. Decide which service is the entry point for each system operation**
+     * Map een service op elke systeemoperatie
    * **3b. Determine the methods needed to support collaboration between services**
+     * Dus de API beschrijven
 
 
 
@@ -1230,11 +1248,13 @@ Elke laag is enkel afhankelijk van onderliggende lagen.
 Dit zijn twee verschillende methodes om de business logica van een applicatie te ontwikkelen.
 
 * <u>Transaction script</u>
+  * Voor elke query/command maak je één procedure
   * Volledige scheiding tussen de logica die dingen verandert en de data opslag zelf
     * Klassen bevatten enkel een state
     * Services implementeren alle logica
   * Veel herhaalde logica voor services die bepaalde klassen gebruiken.
   * Simpel en gemakkelijk te implementeren
+  
 * <u>Rich Domain Model</u>
   * Kleine klassen met beperkte verantwoordelijkheid
   * Klassen kunnen ook logica bevatten:
@@ -1252,27 +1272,27 @@ Dit zijn twee verschillende methodes om de business logica van een applicatie te
 Om het business domein voor te stellen, maken we gebruik van de volgende concepten:
 
 * Entities
-  * Wordt gedefineerd door zijn identiteit, niet zijn attributen
+  * Wordt gedefineerd door zijn **identiteit**, niet zijn attributen
   * Twee entiteiten met gelijke attributen zijn niet speciaal aan elkaar gelijk (of ongelijk bij ongelijke attributen)
   * Wordt geïdentificeerd door een ID
     * Losgekoppeld van alle andere zaken (gebruik dus een UUID en geen database index of rijksregisternummer)
   * Bijvoorbeeld een product of een persoon
 * Values
-  * Worden alleen onderscheiden door hun eigenschappen
+  * Worden alleen onderscheiden door hun **eigenschappen**
   * Beschrijven domein-relevante attributen van entiteiten
-    * Hebben dus alleen betekenis binnen de context van een ander object
+    * Hebben dus alleen **betekenis** binnen de **context** van een ander object
   * Twee values zijn gelijk als hun attributen gelijk zijn
   * Bijvoorbeeld een prijs of een kleur
 * Domain service
-  * Stelt het gedrag voor en is dus stateless
+  * Stelt het **gedrag** voor en is dus stateless
   * Bevat business logica die moeilijk in één entity of value past
-  * Orchestreert business logica
+  * Orchestreert **business logica**
 * Domain events
   * Geven aan dat er iets is gebeurd in het probleemdomein
   * Worden gegenereerd wanneer een aggregaat van staat verandert
-  * Ze triggeren dan een side-effect (zoals iets anders updaten)
+  * Ze triggeren dan een **side-effect** (zoals iets anders updaten)
   * Om dataconsistentie te behouden
-  * Kan ook een andere actie triggeren (email, melding naar andere app, ...)
+  * Kan ook een andere actie **triggeren** (email, melding naar andere app, ...)
 
 
 
@@ -1319,7 +1339,7 @@ Geeft extra complexiteit, maar deze is wel gescheiden van de rest van de applica
 
 > **Wat is het nut van een API composer. Wie kan er de rol innemen van een API composer?** 
 
-Een **API composer** implementeert een query hem samen te stellen uit queries naar één of meerdere **provider services**. Elk van deze provider services is eigenaar van zijn data. De API composer voorziet dan een API die zich voordoet als één service, maar eigenlijk meerdere queries uitvoert om een samengesteld resultaat af te leveren.
+Een **API composer** implementeert een query door hem samen te stellen uit queries naar één of meerdere **provider services**. Elk van deze provider services is eigenaar van zijn data. De API composer voorziet dan een API die zich voordoet als één service, maar eigenlijk meerdere queries uitvoert om een samengesteld resultaat af te leveren.
 
 * **Client**: stuurt een request naar bijvoorbeeld de API gateway met een set van parameters en endpoints die opgeroepen moeten worden. De client zal de data dan zelf verwerken en aggregeren. 
 * **API gateway**: als de query deel is van de externe API. Hier zal de gateway het voor de client doen lijken alsof er maar één API is en de taken van het vorige puntje voor hem uitvoeren. 
@@ -1337,6 +1357,20 @@ Het gebruikt van een API composer is **simpel** en intuïtief, maar zorgt wel vo
 | -------------- | --------------------------------------------- | ------------------------------------------ |
 | **synchroon**  | request/response                              | /                                          |
 | **asynchroon** | request/async response, one way notifications | publish/async responses, publish/subscribe |
+
+* Synchroon one-to-one
+  * request/response
+    * Client stuurt een request en blokkeert hij een antwoord krijgt
+* Asynchroon one-to-one
+  * One way notification
+    * Client stuurt een bericht, maar verwacht geen antwoord
+* Asynchroon one-to-many
+  * Publish/subscribe
+    * Client publiceert een bericht waarom meerdere services zich kunnen abonneren
+  * Publish/async responses
+    * Client wacht tijdelijk op een antwoord zonder te blokkeren
+
+
 
 Een manier om de request/response style te gebruiken is synchronous remote procedure invocation. Deze methode wordt gehanteerd in **REST**. Elke REST resource stelt een business concept voor. Een operatie op een resource wordt dan voorgesteld door een HTTP verb (GET, PUT, DELETE, ...).
 
@@ -1374,17 +1408,19 @@ Een manier om de request/response style te gebruiken is synchronous remote proce
 
 > **Wat is het verschil tussen brokered en brokerless messaging? Wat zijn de voor- en nadelen?**
 
-Dit is wanneer je bij messaging wel of geen message broker gebruikt.
+Dit is wanneer je bij messaging wel of geen message broker gebruikt. Dit is een centraal component dat zich gedraagt als een postkantoor. 
 
 * <u>Brokered</u>
   * Voordelen
-    * Zender moet de **locatie** van de ontvanger **niet** kennen (loose coupling)
+    * Zender moet de **locatie** van de ontvanger **niet** kennen (*loose coupling*)
     * Message **buffering** als de ontvanger traag of offline is (betere availability)
+    * Beter **schaalbaar**
   * Nadelen
     * Meer **latency**
     * **Single point of failure**
     * Extra infrastructuur en **complexiteit**
 * <u>Brokerless</u>
+  * Is eigenlijk **peer-to-peer** communicatie
   * Voordelen
     * Betere latency en **lichter** netwerkverkeer
     * **Geen single point of failure**
@@ -1393,6 +1429,7 @@ Dit is wanneer je bij messaging wel of geen message broker gebruikt.
     * Services moeten elkaars **locaties** **kennen**.
     * **Minder availability** (zender en ontvanger moeten beschikbaar zijn).
     * Geavanceerde mechanismen zoals guaranteed delivery zijn moeilijker te implementeren.
+  
 
 
 
@@ -1435,7 +1472,7 @@ Korter:
 
 * <u>Voordelen</u>
   * **Flexibel**: voorziet een flexibele manier om om te gaan met transacties
-  * **Atomiciteit**: verzekert dat de stappen atomair zijn. Ze worden allemaal uitgvoerd of ze worden allemaal niet uitgevoerd.
+  * **Atomiciteit**: verzekert dat de stappen atomair zijn. Ze worden allemaal uitgevoerd of ze worden allemaal niet uitgevoerd.
   * **Compensating transaction**: de gedane stappen kunnen ongedaan gemaakt worden in het geval van een probleem
 * <u>Nadelen</u>
   * **Complexiteit**
@@ -1455,6 +1492,8 @@ Als dan één van de middelste transacties **misloopt**, zal voor elk van deze t
 
 De transactie `createOrder()` kan dan bijvoorbeeld de compenserende transactie `rejectOrder()` hebben. Alleen transacties die **gevolgd** worden door stappen die **mis kunnen lopen** vereisen een compenserende transactie. Voor **read-only** transacties is dit dus **niet** nodig.
 
+
+
 > **Wat is het verschil tussen choreography en orchestration?**
 
 Het coördineren van een SAGA kan op twee manieren gebeuren. 
@@ -1466,8 +1505,8 @@ Choreografie kan je best gebruiken voor **heel simpele SAGA's**. Elke service mo
 Deze aanpak is simpel, maar er zijn direct een aantal nadelen zichtbaar:
 
 * Verdeelde SAGA implementatie is onoverzichtelijk en moeilijk te begrijpen
-* Cyclische dependencies tussen services
-* Risico op tight coupling: elke deelnemer moet subscriben op alle events die hem beïnvloeden
+* **Cyclische dependencies** tussen services
+* **Risico op tight coupling**: elke deelnemer moet subscriben op alle events die hem beïnvloeden
 
 
 
@@ -1509,7 +1548,7 @@ Bij **orchestratie**:
     * Mogelijke veranderingen in code
 * <u>Data partitioning</u>
   * Het werk verdelen op basis van data
-  * Kan op databaseniveau of op serviceniveau met een proxy (of zelfs op geografisch niveau)
+  * Kan op **databaseniveau** of op **serviceniveau** met een proxy (of zelfs op geografisch niveau)
   * **Voordelen**
     * Nuttig voor workloads die beperkt zijn door writes
     * Verbetert latency
@@ -1540,7 +1579,7 @@ Bij een **cache miss** zal dit wel moeten gebeuren. Logischerwijs willen we in o
 
 
 
-> **Geef 3 redenen om caching te gebruiken in een applicatie.**
+> **Geef 3 redenen om caching te gebruiken in een applicatie. Op welke 4 plaatsen kunnen we caching toepassen?** 
 
 * Performance
   * We kunnen geaggregeerde resultaten opslaan
@@ -1550,6 +1589,13 @@ Bij een **cache miss** zal dit wel moeten gebeuren. Logischerwijs willen we in o
 * Rubustness
   * Caching downstream responses
   * Tijdens downtime een statische kopie tonen
+
+
+
+* Client-side
+* CDN
+* Proxy
+* Server-Side
 
 
 
@@ -1586,18 +1632,34 @@ Bij een **cache miss** zal dit wel moeten gebeuren. Logischerwijs willen we in o
 
 ## 6 - Resiliency & Chaos Engineering
 
+> **Met welke 3 soorten failures krijgen we typisch te maken in onze services?**
+
+* Errors 
+  * Je hebt mij iets gevraagd maar ik kan er niet op antwoorden
+* Blackhole
+  * Ergens een request naar sturen waar geen antwoord op komt
+* Latency
+  * Een service antwoordt veel trager dan normaal
+
+
+
 > **Welke zijn de vier types van resiliency. Geef voor elke type een korte verduidelijking.**
 
-* Rubustness
+* **Rubustness**
   * Omgaan met verwachte omstandigheden
-* Graceful extensibility
+  * Zaken die je weet dat kapot kunnen gaan
+  * Kan volledig geautomatiseerd failures opvangen
+* **Graceful extensibility**
   * Omgaan met onverwachte omstandigheden
-* Rebound
+  * Niet geautomatiseerd, goed team nodig
+* **Rebound (disaster recovery)**
   * Herstellen na een storing
-* Sustained adaptability
+  * Terugkomen naar volledige configuratie na een failure
+* **Sustained adaptability**
   * Aanpassing aan verandering op lange termijn
+  * Bijvoorbeeld constant groeiende user base
 
-//TODO dit vind ik te vaag, misschien de les is nakijken
+(ze worden niet allemaal behandeld in de les)
 
 
 
@@ -1612,7 +1674,7 @@ Een time-out zorgt ervoor dat na een bepaalde hoeveelheid tijd, er niet meer zal
   * Fail quickly
   * Trace production application to find typical values
 * **Waar?**
-  * Elke out-of-process call heeft een time-out nodig
+  * Elke **out-of-process call** heeft een time-out nodig
 * **Hoe?**
   * Service meshes voor TCP/IP calls
   * Libraries voor IPC calls binnen de software zelf
@@ -1759,14 +1821,16 @@ Zonder dat daarvoor iemand beschuldigt moet worden.
 
 > **Wat zijn stream aligned teams? Wat is het belang van autonomie in dit kader?**
 
-Een stream aligned team is een team dat verantwoordelijk is voor één **valuable stream of work**. Het team kan zo snel, veilig en onafhankelijk mogelijk user value afleveren zonder hand-offs naar andere teams. We houden deze teams best zo klein mogelijk. Proefondervindelijk vastgesteld is dat vanaf 9 mensen een team minder efficiënt wordt.
+In plaats van teams op te delen volgens bijvoorbeeld front-end, back-end, delen we ze op op basis van het domein. Eén team heeft dan volledig eigenaarschap over alle lagen die ene functionaliteit, en is dus verantwoordelijk voor één **valuable stream of work**. 
+
+Het team kan zo snel, veilig en onafhankelijk mogelijk user value afleveren zonder hand-offs naar of communicatie met andere teams. We houden deze teams best zo klein mogelijk. Proefondervindelijk vastgesteld is dat vanaf 9 mensen een team minder efficiënt wordt.
 
 Door kleinere teams is iedereen gefocust op dezelfde doelen. Het is makkelijker om werk te coördineren en om op dezelfde lijn te blijven. Elk team heeft wel echter nood aan **autonomie**. Dit betreft:
 
 * Macht om beslissingen te maken
 * Macht om te kunnen handelen zonder coördinatie
 
-//TODO valuable stream of work
+
 
 > **Wat is het verchil tussen strong ownership en collective ownership? Wat zijn de voor-en nadelen?**
 
