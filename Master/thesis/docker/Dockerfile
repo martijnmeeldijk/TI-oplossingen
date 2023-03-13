@@ -1,0 +1,2 @@
+FROM gitlab.ilabt.imec.be:4567/ilabt/gpu-docker-stacks/pytorch-notebook:latest
+RUN pip3 install --upgrade pip setuptools wheel && pip3 install pyroomacoustics && pip3 install torch && pip3 install ssqueezepy && pip3 install librosa && pip3 install pesq && pip3 install pystoi && pip3 uninstall scipy -y && pip3 install scipy && pip install python_speech_features && pip install fuzzy-c-means && pip install speechbrain
