@@ -28,7 +28,9 @@ Moest je echt gemotiveerd zijn en een bijdrage willen leveren, kan je een pull r
 
 ### Semester 2
 
-...
+[Project Management](projectmanagement.html)
+
+[Systeembeheer](systeembeheer.html)
 
 
 
