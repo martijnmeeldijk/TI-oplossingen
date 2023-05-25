@@ -317,7 +317,7 @@ So, the SSI from before gives us an idea of the risk of an activity.
 
 
 
-What do you do with these graphs now? Many companies think that risk management is a way to reduce risk. It is not, because Mr. Murphy is unpredictable. The magic word of risk management is **focus**. Focus is important because we want to be efficient. You can become efficient by minimizing your effort, and maximizing your results. The optimal balance can only be found through **focus**. 
+What do you do with these graphs now? Many companies think that risk management is a way to reduce risk. It is not, because Mr. Murphy is unpredictable. The magic word of risk management is **focus**. Focus is important because we want to be efficient. You can become efficient by minimizing your effort, and maximizing your results. And the optimal balance can only be found through **focus**. 
 $$
 \text{Control efficiency} = \frac{\text{Results}} { \text{Effort}}
 $$
@@ -363,15 +363,23 @@ We can classify objectives in two categories
 
 Mario's amazing course describes three scheduling objectives:
 
-* Time minimization
-* Net present value maximization
-* Resource levelling
+* Time minimization (RCP: resource constrained project scheduling)
+* Net present value maximization (RCP-DC: resource constrained project scheduling - discounted cash flows)
+  * This is more like cost optimization
 
-We'll discuss these in more detail in the next sections.
+* Resource levelling  (RLP: resource leveling project scheduling)
+  * Balance the use of resources
+
+* Work continuity (RCP-WC)
+  * Make sure that the work goes on
+  * If one machine is very expensive, we have to make sure it's never idle
+
+
+For each company, the objective can be different. Finding the objective is finding where the money is. So we'll discuss these objectives in more detail in the next sections.
 
 #### Time minimization
 
-When creating a schedule for a resource-constrained project using the techniques from the previous chapters, you'll be guaranteed to run into trouble. In this section, we'll create a schedule that is resource-feasible, with the same objective as before:  **minimizing project duration**. The problem we're trying to solve is called the **Resource-Constrained Project Scheduling Problem (RCPSP)**. We have a set of project activities constrained by precedence relations, and a set of renewable resource types. 
+When creating a schedule for a resource-constrained project using the techniques from the previous chapters, you'll be guaranteed to run into trouble. In this section, we'll create a schedule that is resource-feasible, with the same objective as before:  **minimizing project duration**. The problem we're trying to solve is called the **Resource-Constrained Project Scheduling Problem (RCP)**. We have a set of project activities constrained by precedence relations, and a set of renewable resource types. 
 
 Take this example AoN network:
 
@@ -387,17 +395,73 @@ If we construct the schedule, but avoid resource conflicts, we'll get this:
 
 I don't know why but this seems too easy. Am I missing something?? //TODO maybe check again later
 
+
+
+Here is another exercise with a solution:
+
+| <img src="img/projectmanagement/image-20230525145401106.png" alt="image-20230525145401106"  /> | <img src="img/projectmanagement/image-20230525145724039.png" alt="image-20230525145724039" style="zoom:80%;" /> |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+
+
+
 #### Net present value maximization
+
+Now we'll look at the **discounted cash flows problem (RCP-DC)**. First we'll have to know what net present value is. 
+
+If we put 100 euro on in a bank with 2% interest rate, we'll have 102 euro in a year. Let's say that we know that we'll be receiving 102 euro in one year. What is the value of that 102 euro today? The answer is 100 euro. Net present value tells us what money in the future is worth today. 
+
+The most important reasoning behind net present value is this; **money today is not the same as money tomorrow**. Money has a time value. Maximizing the net present value is very useful for very long projects. The challenge of these projects is not always to minimize the time, because one month difference in a 10 year project doesn't really matter. The real challenge is that they are very expensive. 
+
+If get money, you want it fast. If you have to pay money, delay it as much as possible. In the following exercise, try to maximize the net present value. 
+
+| <img src="img/projectmanagement/image-20230525151305241.png" alt="image-20230525151305241" style="zoom:50%;" /> | <img src="img/projectmanagement/image-20230525151315993.png" alt="image-20230525151315993" style="zoom:50%;" /> | <img src="img/projectmanagement/image-20230525151644057.png" alt="image-20230525151644057" style="zoom:33%;" /> |
+| ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
+
+Note the big payment at the end. This is a **lump sum payment**. This is an incentive to finish the last activity as soon as possible. Although we're not focussing on time, the lump sum makes us optimize for time anyways. This is a way to both minimize time and net present value.
 
 
 
 #### Resource levelling
 
+Here we try to avoid large resource jumps. We try to balance resource use throughout the project. This means we'll try to make the resource usage as even as possible. Here's an exercise with solution for this.
+
+| <img src="img/projectmanagement/image-20230525152444380.png" alt="image-20230525152444380" style="zoom:50%;" /> | <img src="img/projectmanagement/image-20230525152828960.png" alt="image-20230525152828960" style="zoom:50%;" /> |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
 
 
-### Scheduling methods
 
-//TODO
+#### Work Continuity 
+
+In the recording Mario says that he won't explain this. In class he used the example of the freezing machine in the westerscheldetunnel. 
+
+In projects with **repeating activities**, such as tunnels or high buildings, reducing the **idle time** of **resources** is the most important objective to optimize.
+
+
+
+
+
+### Extensions
+
+#### Activity assumptions
+
+Up until now, activities had a fixed duration. We can change that and say that each activity consists of a **fixed amount of work**. This way, work is expressed in man hours. This is possible if our resources are people. If we want to finish a task twice as fast, we can use twice as many people for that task.
+$$
+\text{Work} = \text{Duration} \times \text{Demand}
+$$
+There are more things you can change about the assumptions you make about activities:
+
+* **Pre-emption**: we can interrupt activities and continue them later
+* **Fast tracking**: Doing activities that are normally done in sequence in parallel (violate precedence relations). In reality a little overlap is often all right. The drawback is risk
+* **Setup times**: differentiate between the actual work and the time required to set it up (installation, ...)
+* **Learning**: 
+
+In the image below you can see how much you can mess around with the flexibility of your schedule if you change your assumptions about activities. 
+
+<img src="img/projectmanagement/image-20230525155617525.png" alt="image-20230525155617525" style="zoom: 50%;" />
+
+In summary, if you deviate from the defaults, you'll do better. But there will be more **risk** involved. Decreasing the total duration puts your resources under more stress. In the following image you can see a schedule with fixed duration and a schedule with fixed work. The one with fixed work will finish earlier, but put a higher strain on your resources. Thus increasing risk.
+
+<img src="img/projectmanagement/image-20230525155955871.png" alt="image-20230525155955871" style="zoom:33%;" />
 
 ### Priority rule based scheduling
 
@@ -515,6 +579,32 @@ In a CC/BM planning, work is placed as close as possible to the end of the sched
 
 //TODO
 
+
+
+### Cut and paste
+
+
+
+### Root-squared method
+
+
+
+### Adaptive method with network density
+
+
+
+### Adaptive method with resource tightness
+
+minute 42 in video
+
+
+
+You can have invisible resource links between feeding chains and the critical chain. This results in a cascade of delays and resource conflicts.
+
+You could add **resource buffers** on critical chain activities. This is just a warning, so not super useful. 
+
+Why don't we size the buffers according to the scarcity of resources. This is the **adaptive method with resource tightness (ART)**. 
+
 ## 7 - Project control
 
 //TODO
@@ -532,3 +622,7 @@ In a CC/BM planning, work is placed as close as possible to the end of the sched
 > On what types of projects does SRA work the best?
 
 Highly parallel projects.
+
+
+
+> What is the difference between fixed duration and fixed work?
