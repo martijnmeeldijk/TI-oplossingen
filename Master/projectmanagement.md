@@ -245,7 +245,7 @@ When planning a project, you'll have to select a mode for each activity in order
 * <u>Budget restriction</u>:  minimizing the project duration without exceeding a given budget.
 * <u>Complete horizon</u>: combines the two previous ones by generating an efficient time/cost profile over the set of feasible project durations.
 
-## Project scheduling game
+### Project scheduling game
 
 //TODO
 
@@ -270,19 +270,72 @@ $$
 
 A schedule risk analysis consists of four steps:
 
-1. Baseline schedule
+1. <u>Baseline schedule</u>
    * Serves as a point of reference
-   * 
-2. Uncertainty
+2. <u>Uncertainty</u>
    * Statistical estimates (hard): define which distribution an activity follows, not easy in reality. Nowadays some tools do use them
    * Three-point estimates (medium): optimistic, pessimistic, and realistic estimates make a three-point graph. If the graph is skewed to the right, the activity is sensitive to delays. This result is almost as good as using statistical distributions.
-   * Risk classes (easy)
-3. Monte-carlo simulation
-4. Simulation output
+   * Risk classes (easy): variation, foreseen uncertainty, unforeseen uncertainty, chaos.
+3. <u>Monte-carlo simulation</u>: multiple scenarios with random values generate different possible variations of your project. 
+4. <u>Simulation output</u>: instead of saying an activity is critical or not, we now get some more refined metrics.
+   * Criticality Index (CI): Measures the probability that an activity is on the critical path. 
+   * Significance Index (SI): Measures the relative importance of an activity. 
+   * Schedule Sensitivity Index (SSI): Measures the relative importance of an activity taking the CI into account. 
+   * Cruciality Index (CRI): Measures the correlation between the activity duration and the total project duration, in three different ways:
+     *  CRI($r$): Pearson’s product-moment correlation coefficient. 
+     * CRI($\rho$): Spearman’s rank correlation coefficient. 
+     * CRI($\tau$): Kendall’s tau rank correlation coefficient.
+   * Each metric tells us sensitive an activity is to problems.
+
+In the end, out simulation software will give us a risk measure between 0% and 100% for each activity.
 
 
 
-//TODO Criticality index, ...
+### Sensitivity metrics
+
+The **Criticality Index (CI)** tell us what the **probability** is that the activity lies on the **critical path**. It is calculated by checking in how many of the Monte-Carlo simulations the activity was on the critical path, this gives us a probability. Of course, this doesn't tell us much about the impact of the activity, since it just tells us how likely the activity is to end up on the critical path.
+
+Activities with a 100% criticality index are the activities on the critical path, but you can have a value in between as well. This method provides a less black-and-white view on critical activities.
+
+
+
+The **Significance Index (SI)** doesn't give us a probability. I tells us what the **impact** is that the activity will have on the project. This is useful since the CI can be very high on a very small activity that might not be very important. 
+
+
+
+The **Schedule Sensitivity Index (SSI)** is more or less CI $\times$ SI. This formula is more of an approximation, but tells us what the SSI means. It is a number that gives us information about both probability and impact. 
+
+
+
+### Efficiency
+
+As has been mentioned before:
+$$
+\text{RISK} = \text{PROBABILITY} \times \text{IMPACT}
+$$
+So, the SSI from before gives us an idea of the risk of an activity.
+
+
+
+What do you do with these graphs now? Many companies think that risk management is a way to reduce risk. It is not, because Mr. Murphy is unpredictable. The magic word of risk management is **focus**. Focus is important because we want to be efficient. You can become efficient by minimizing your effort, and maximizing your results. The optimal balance can only be found through **focus**. 
+$$
+\text{Control efficiency} = \frac{\text{Results}} { \text{Effort}}
+$$
+You'll have to find a balanced **action threshold**:
+
+| Lazy manager                                                 | Control freak                                                | Perfect manager                                              |
+| ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| ![image-20230525124301112](img/projectmanagement/image-20230525124301112.png) | ![image-20230525124304215](img/projectmanagement/image-20230525124304215.png) | ![image-20230525124356900](img/projectmanagement/image-20230525124356900.png) |
+
+
+
+So, how can we use all those metrics to become efficient? Mario says that using the CI and SI for an action threshold won't make you more efficient than the control freak. The SSI sometimes will. 
+
+<img src="img/projectmanagement/image-20230525125254157.png" alt="image-20230525125254157" style="zoom:50%;" />
+
+The red line represents the control efficiency (by crashing, etc.)  of the method we just discussed. If you control your project like the perfect manager from before using the SSI, your **efficiency** will go **up** drastically for projects with many **parallel** activities. For serial projects, schedule risk analysis has little to no benefit.
+
+
 
 ## 5 - Resource-constrained project scheduling
 
@@ -328,7 +381,11 @@ If we construct the earliest start schedule without taking resources into accoun
 
 <img src="img/projectmanagement/image-20230524214957906.png" alt="image-20230524214957906" style="zoom:50%;" />
 
+If we construct the schedule, but avoid resource conflicts, we'll get this:
 
+<img src="img/projectmanagement/image-20230524225404486.png" alt="image-20230524225404486" style="zoom:50%;" />
+
+I don't know why but this seems too easy. Am I missing something?? //TODO maybe check again later
 
 #### Net present value maximization
 
@@ -456,8 +513,22 @@ The **Critical Chain/Buffer Management** (CC/BM) approach assumes the constructi
 
 In a CC/BM planning, work is placed as close as possible to the end of the schedule. This way, work in progress is minimized and costs are made as late as possible. The problem with this as-late-as-possible (ALAP) schedule is that all activities become critical, so any activity delay will become a project delay. Since that is not very cash money, **buffers** are inserted at key points.
 
-
+//TODO
 
 ## 7 - Project control
 
 //TODO
+
+
+
+
+
+
+
+
+
+# Questions
+
+> On what types of projects does SRA work the best?
+
+Highly parallel projects.
