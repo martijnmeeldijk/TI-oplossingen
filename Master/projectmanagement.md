@@ -5,6 +5,8 @@
 
 # Exam
 
+Hoera ik heb twee oude [examens](https://github.com/martijnmeeldijk/TI-oplossingen/tree/master/Master/examens) gekregen van dit vak. Bedankt gulle donateur.
+
 * No theoretical questions
 * 5-6 exercises
 * A question about everything
@@ -654,13 +656,151 @@ The CC/BM method is not perfect, but it's a good eye-opener. We've learned that 
 
 ## 7 - Project control
 
+In the previous chapters, we assumed that the project hadn't been started yet. Now, we assume that the project is in progress. This means that we're now in the **execution phase**, and project control is necessary. A good technique for performing project control is **Earned Value Management (EVM)**. 
+
+EVM aims to provide answers to questions such as:
+
+* What is the difference between budgeted and actual costs? 
+* What is the current project status? Ahead of schedule or schedule delay? 
+* Given the current project performance, what is the expected remaining time and cost of the project?
+
+
+
+### Earned value management
+
+Earned value management is nothing more than the integration of time and cost in one integrated system. It measures the project performance today, but it predicts the future. - Mario
+
+A nice overview of the key concepts in EVM are displayed in this figure:
+
+<img src="img/projectmanagement/image-20230527121310887.png" alt="image-20230527121310887" style="zoom:50%;" />
+
+We'll go over each of them in detail. First there are some terms that we'll use throughout the explanation, so I'll outline them here
+
+* PD: Planned Duration
+  * Expected total duration known from the baseline schedule
+* RD: Real Duration
+  * Real project duration only known when the project is finished
+* BAC: Budget At Completion
+  * Expected total cost as a result of the baseline schedule
+* RAC: Real At Completion
+  * Real project cost only known when the project is finished
+* AD: Actual Duration
+  * Number of time periods the project is in progress
+
+
+
+#### 1. Key metrics
+
+We'll use three key metrics (and an additional fourth one) to use as inputs for the performance measures in the next steps.
+
+* <u>Planned Value (PV)</u>
+  * Also known as *budgeted cost of work scheduled*
+  * This is determined before the start of the project (**static**)
+  * According to the plan, what is the cumulative increase of the cost
+  * Sums up to the BAC at the end of the project
+  * In reality it will approximately follow an S-curve: <img src="img/projectmanagement/image-20230527122714837.png" alt="image-20230527122714837" style="zoom:25%;" />
+  * The PV curve measures how much value should have been earned at the current time according to the baseline schedule
+* <u>Actual Cost (AC)</u>
+  * This is the actual cost in reality, money that is spent (**dynamic**)
+  * The AC curve measures the actual cost incurred up to the current time given the work that has been done
+* <u>Earned Value (EV)</u>
+  * The value of the work you have done according to the plan (**static \& dynamic**)
+  * $\text{EV} = \%Completion \times \text{BAC}$
+  * The EV curve measures how much value has been earned at the current time, given the work that has been done up to now.
+  * We'll compare everything to this metric in the next steps. Never compare PV and AC! This can give the wrong idea of how well your project is doing.
+* <u>Earned schedule (ES)\*</u>
+  * Exactly the same as earned value, but it is expressed in time
+  * I'll explain this in one of the next sections
+
+
+
+#### 2. Performance metrics
+
+We can divide the performance metrics in two groups: time and cost. Tip from Mario to remember the formulas: each formula starts with $\text{EV}$. 
+
+* **Cost**
+  * <u>Cost Variance (CV)</u>
+    * $\text{CV} = \text{EV} -\text{AC}$
+    * If $\text{CV} < 0$, we've gone above budget (negative number is bad)
+    * Mario says not to use this one, because it's absolute
+  * <u>Cost Performance Index (CPI)</u>
+    * $\text{CPI} = \frac{\text{EV}}{\text{AC}}$
+    * Gives us a percentage 
+      * 100% = exactly on plan, lower is bad, higher is good
+* **Time**
+  * <u>Schedule Variance (SV)</u>
+    * $\text{SV} = \text{EV} - \text{PV}$
+    * Watch out: time variance is something else
+    * If $\text{SV} < 0$, we have a delay
+    * Mario says not to use this one, because it's absolute. Furthermore, we're explaining time with a unit that displays money. That doesn't really make sense. 
+  * <u>Schedule Performance Index (SPI)</u>
+    * $\text{SPI} = \frac{\text{EV}}{\text{PV}}$
+    * Gives us a percentage
+    *  This number will always end up at 100% ($\frac{\text{BAC}}{\text{BAC}}$) at the end of the project. Even if the project is dramatically late, will end up at 100%. Furthermore, it will look like the project is doing better around the middle (50% completion) even when there have been delays. This is the *quirky zone*, so the $\text{SPI}$ will go up, even when you're doing bad. If you use the $\text{SPI}$ to take actions, you're going to make mistakes.
+    * So it's better to use the following two formulas
+  * <u>SV(t)</u>
+    * $\text{SV(t)} = \text{ES} - \text{AD}$
+    * I explain earned schedule in one of the next sections. $\text{AD}$ stands for Actual Duration, and is simply the current time. We use it instead of $\text{PV}$, because that one told us about money, not time. 
+  * <u>SPI(t)</u>
+    * $\text{SPI(t)} = \frac{\text{ES}}{\text{AT}}$
+    * The $\text{SPI}(t)$ is not quirky!!! Remember this for the exam I know Mario will ask us.
+    * It's reliable from start 'till end. So you won't make wrong decisions for your project.
+
+
+
+#### 3. Forecasting
+
+* **Cost**
+  * <u>EAC(€)</u>
+    * Estimated cost at completion
+    * $\text{EAC}(\texteuro) =\text{AC} + \frac{\text{BAC} - \text{EV}}{\text{PF}}$
+    * $\text{PF}$: performance factor. 
+      * Equal to $1$ if you know the problem only occurs once (e.g. sickness)
+      * Lower if it's a structural problem (e.g. bad supplier), Y
+      * You could make $\text{PF}$ equal to the $\text{CPI}$ or equal to, depending on what you think is the nature of the problem $\text{CPI} \times \text{SPI}$
+      * Mario says it's $\text{CPI}$ most of the time
+    * Actual cost + prediction
+    * So, if we neglect the performance factor for a second, this metric is very easy to understand. You just take the difference between the money you've spent and the value you've earned, and add that to the total budget of your project. It doesn't get simpler that that. 
+* **Time**
+  * <u>EAC(t)</u>
+    * Estimated duration at completion
+    * $\text{EAC(t)} =\text{AD} + \frac{\text{PD} - \text{ES}}{\text{PF}}$
+    * Actual time + prediction
+    * Same thing here. You just take the difference between where you are in the plan and where you should be in the plan, and add that to the project duration
+    * The performance factor changes this of course.
+
+
+
+#### Earned schedule
+
+<img src="img/projectmanagement/image-20230527145622668.png" alt="image-20230527145622668" style="zoom: 50%;" />
+
+The Earned Schedule tells you when the work that you're doing now should have been done. 
+$$
+\text{ES} = t + \frac{\text{EV} - \text{PV}_t}{\text{PV}_{t+1} - \text{PV}_t}
+$$
+
+
+#### Example
+
+Which of the graphs shows a cost overrun, a time overrun, or both.
+
+| <img src="img/projectmanagement/image-20230527144932154.png" alt="image-20230527144932154" style="zoom:67%;" /> | Problem                                |
+| ------------------------------------------------------------ | -------------------------------------- |
+| <img src="img/projectmanagement/image-20230527144858470.png" alt="image-20230527144858470" style="zoom:50%;" /> | Over budget and late                   |
+| <img src="img/projectmanagement/image-20230527144854972.png" alt="image-20230527144854972" style="zoom:50%;" /> | Under budget and late                  |
+| <img src="img/projectmanagement/image-20230527144852540.png" alt="image-20230527144852540" style="zoom:50%;" /> | Over budget and early                  |
+| <img src="img/projectmanagement/image-20230527144850204.png" alt="image-20230527144850204" style="zoom:50%;" /> | Under budget and early (never happens) |
 
 
 
 
 
+### Conclusion
 
+<img src="img/projectmanagement/image-20230527154548590.png" alt="image-20230527154548590" style="zoom:50%;" />
 
+The only thing you should remember from this is that EVM doesn't work very well for projects with many parallel activities. In this case, SRA is better. In the end, you should do both. Then you can get the best results. This is the green line.
 
 # Questions
 
