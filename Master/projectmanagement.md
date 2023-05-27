@@ -361,6 +361,8 @@ We can classify objectives in two categories
 
 //TODO nakijken want chatgpt heeft dit samengevat uit de cursus
 
+
+
 Mario's amazing course describes three scheduling objectives:
 
 * Time minimization (RCP: resource constrained project scheduling)
@@ -577,37 +579,80 @@ The **Critical Chain/Buffer Management** (CC/BM) approach assumes the constructi
 
 In a CC/BM planning, work is placed as close as possible to the end of the schedule. This way, work in progress is minimized and costs are made as late as possible. The problem with this as-late-as-possible (ALAP) schedule is that all activities become critical, so any activity delay will become a project delay. Since that is not very cash money, **buffers** are inserted at key points.
 
-//TODO
+The CC/BM methodology is an application of the **theory of constraints**, which was invented by our one and only Eli Goldratt. Mario explained the theory of constraints like this. Know your **goal**, know your **bottleneck**, and make sure your bottleneck is **never idle**. I think that summarizes it pretty well.
+
+### Methodology
+
+The CC/BM method follows six steps:
+
+1. Come up with **aggressive estimates** (very optimistic time estimates)
+2. Construct an **ALAP schedule**
+3. Identify the **critical chain**
+4. Determine appropriate **buffer** **positions**
+5. Determine appropriate **buffer sizes**
+6. **Insert** the **buffers** into the schedule
 
 
 
-### Cut and paste
+Our goal is not to protect the deadlines of activities, but to **protect the deadline of the project**. So instead of buffering activities, we'll buffer the project. Milestones are self-fulfilling prophecies. If you finish your task early, you're not gonna go to management and tell them. You'll chill until the deadline and tell them you finished on time.
+
+<img src="img/projectmanagement/image-20230527103525980.png" alt="image-20230527103525980" style="zoom:67%;" />
+
+Typically, you'll take all the activity buffers, cut that in half, and put it at the end of the project. But there are different methods for determining the buffer size, as we'll see very soon. 
+
+But first. I'll tell you about **feeding buffers**. No project consists of a single chain of activities. The longest of theses chains is the **critical chain.** In the previous step, we've inserted a project buffer to protect the critical chain. But there are still other chains that feed into the critical chain. These so called **feeding chains** can induce delays as well. By inserting **buffers** on the points where the feeding chains feed into the critical chain, you can protect the critical chain from delays in the feeding chains. I don't know how large these feeding buffers have to be just yet, but I hope we'll find out in the next section of Mario's adventures. 
+
+<img src="img/projectmanagement/image-20230527104514413.png" alt="image-20230527104514413" style="zoom:67%;" />
 
 
 
-### Root-squared method
+### Buffer sizing
+
+How long should our buffers be? 
+
+* <u>Cut-and-paste (CNP)</u>
+  * Make the buffer 50% of the length of the chain
+  * Easy, but the buffers will probably be too long in some cases
+  * Mario says to forget this method because it doesn't make much sense
+* <u>Root-squared error method (RSM)</u>
+  * Square root of the sum of squared differences between normal and aggressive activity durations
+  * Now, the size of our buffer is based on **risk**
+* <u>Adaptive method with network density (AND)</u>
+  * $(1 + \text{Network density}) \times RSM \times 50\%$
+    * Watch out, this is fake maths
+    * You're supposed to multiply each square by 50%, and then take the square root
+  * $\text{Network density} = \frac{\text{\#Precedence relations}}{\#Activities}$
+  * This means that one half of our buffer size is based on risk, and the other half based on how dense the network is.
+* <u>Adaptive method with resource tightness (ART)</u>
+  * You can have invisible resource links between feeding chains and the critical chain. This results in a cascade of delays and resource conflicts.
+  * You could add **resource buffers** on critical chain activities. These just serve as a warning, so not super useful. 
+  * Better solution according to Mario: size the buffers according to the **scarcity** of resources (ART). 
+    * Scarcer resources = bigger buffer
+  * $(1 + \text{Resource Tightness}) \times RSM \times 50\%$
+  * $\text{Resource tightness} = \frac{\text{Total work content used}}{\text{Total work content available}}$
+  * With multiple resources, use the scarcest one for the calculation
 
 
 
-### Adaptive method with network density
+Inserting buffers can introduce new resource conflicts. This is a downside of CC/BM. You'll have to solve them yourself. The good part about this is that you'll be adding more slack to activities when fixing these conflicts, these are like **hidden buffers**. So now you'll have even larger buffers.
 
 
 
-### Adaptive method with resource tightness
-
-minute 42 in video
 
 
+### Remarks
 
-You can have invisible resource links between feeding chains and the critical chain. This results in a cascade of delays and resource conflicts.
+One important weakness to CC/BM is that it assumes that you always start with a good critical chain, but finding the critical chain is hard. It depends on choices you make and the quality of your software. The method ignores this. So if you start with a bad critical chain, you're screwed. 
 
-You could add **resource buffers** on critical chain activities. This is just a warning, so not super useful. 
+It gets even worse. Even if you have a good critical chain, you'll get resource conflicts again when you insert buffers. Then you have to solve them and you get the same problem. 
 
-Why don't we size the buffers according to the scarcity of resources. This is the **adaptive method with resource tightness (ART)**. 
+The CC/BM method is not perfect, but it's a good eye-opener. We've learned that protecting activities is not the goal. Protecting the project is.
+
+
+
+
 
 ## 7 - Project control
-
-//TODO
 
 
 
@@ -626,3 +671,52 @@ Highly parallel projects.
 
 
 > What is the difference between fixed duration and fixed work?
+
+
+
+> Why does CC/BM use aggressive estimates?
+
+
+
+> What are the six steps in the CC/BM method. Compare them to traditional project management (PERT, CPM)
+
+1. Come up with **aggressive estimates** (very optimistic time estimates)
+2. Construct an **ALAP schedule**
+3. Identify the **critical chain**
+4. Determine appropriate **buffer** **positions**
+5. Determine appropriate **buffer sizes**
+6. **Insert** the **buffers** into the schedule
+
+
+
+|       | CC/BM                                                        | PM                                       |
+| ----- | ------------------------------------------------------------ | ---------------------------------------- |
+| **1** | - Aggressive time estimates<br />                            | + normal time estimates                  |
+| **2** | - LSS = work backwards from project deadline (no slack, but maximize npv)<br />- All tasks become critical<br />+ Minimize work in progress<br />+ Delay cash outflows<br />+ Less rework | + ESS = work forwards from project start |
+| **3** | + CC                                                         | - CPM                                    |
+| **4** | PB/FB/RB                                                     | v                                        |
+| **5** | CC/FC                                                        | SRA -> SSI = CI*SI                       |
+| **6** |                                                              | ^                                        |
+
+
+
+# Exercises
+
+
+
+## CC/BM
+
+Apply CC/BM to this example. The activity duration is indicated above each activity node while the resource requirements for three renewable resource types are given below the node. Activities 0 and 12 are dummies, representing project start and finish, respectively.
+
+
+
+| ![image-20230527104959753](img/projectmanagement/image-20230527104959753.png) | ![image-20230527105109732](img/projectmanagement/image-20230527105109732.png) |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+
+
+
+Solution:
+
+| ![image-20230527105138437](img/projectmanagement/image-20230527105138437.png) | ![image-20230527105147871](img/projectmanagement/image-20230527105147871.png) | ![image-20230527105215489](img/projectmanagement/image-20230527105215489.png) |
+| ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
+
