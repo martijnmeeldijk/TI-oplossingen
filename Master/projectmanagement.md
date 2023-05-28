@@ -58,12 +58,7 @@ This allows us to put the project scheduling techniques in one of the four quadr
 
 ![image-20230522222418264](img/projectmanagement/image-20230522222418264.png)
 
-| Uncertainty/complexity | Low  | High |
-| ---------------------- | ---- | ---- |
-| **High**               |      |      |
-| **Low**                |      |      |
 
-//TODO voorbeeldjes
 
 ## 2 - Project network analysis
 
@@ -144,6 +139,8 @@ Time-lag can also be incorporated in all of these types. But I think your imagin
 
 The **time-lag requirement** can be maximal or minimal. In the previous it was always assumed to be minimal. The maximal time-lag means that the next activity had to start before the amount of time-lag. If your mama cooks you a nice spaghetti, you also have to eat it before it gets cold. 
 
+//TODO conversion rules (but I don't think they are very important)
+
 
 
 ### Other constraint types
@@ -172,7 +169,7 @@ All activities on the critical path will have **zero slack**.
 
 
 
-As an exercise, you can try to calculate the critical path for the example using this method. Here is the solution:
+As an exercise, you can try to calculate the critical path for the above example using this method. Here is the solution:
 
 <img src="img/projectmanagement/image-20230523123518082.png" alt="image-20230523123518082" style="zoom:67%;" />
 
@@ -235,7 +232,7 @@ We need four pieces of information for each activity:
 
 The slope of the time/cost curve gives us the marginal crash cost for one unit of time.
 $$
-\text{Unit Crash Cost} = \frac{NC + CC}{CN + CD}
+\text{Unit Crash Cost} = \frac{NC - CC}{CN - CD}
 $$
 In the real world, the aforementioned is not a continuous function. The discrete version of this problem is called the *discrete time/cost trade-off problem*. In this case the graph from before would look more like this. Each activity time/cost profile is referred to as an **activity mode.** 
 
@@ -250,6 +247,28 @@ When planning a project, you'll have to select a mode for each activity in order
 ### Project scheduling game
 
 //TODO
+
+
+
+### Conclusions
+
+Optimizing for time/cost in a project with activity crashing.
+
+* Focus on the critical path
+* Focus on the critical activities (with the smallest cost slope)
+* Crash that activity
+
+|       | Optimize for time                            | Optimize for cost                            |
+| ----- | -------------------------------------------- | -------------------------------------------- |
+| **1** | Highlight the critical path                  | Highlight the critical path                  |
+| **2** | Sort the tasks based on **duration**         | Sort the tasks based on **cost**             |
+| **3** | Find the **longest** critical task           | Find the **most expensive** critical task    |
+| **4** | Make a change on it                          | Make a change on it                          |
+| **5** | Consider impacts on quality, scope, and time | Consider impacts on quality, scope, and time |
+| **6** | Decide whether you want to keep the change   | Decide whether you want to keep the change   |
+| **7** | Repeat 3-7                                   | Repeat 3-7                                   |
+
+
 
 ## 4 - Schedule risk analysis 
 
@@ -365,7 +384,7 @@ We can classify objectives in two categories
 
 
 
-Mario's amazing course describes three scheduling objectives:
+Mario's amazing course describes four scheduling objectives:
 
 * Time minimization (RCP: resource constrained project scheduling)
 * Net present value maximization (RCP-DC: resource constrained project scheduling - discounted cash flows)
@@ -457,7 +476,7 @@ There are more things you can change about the assumptions you make about activi
 * **Pre-emption**: we can interrupt activities and continue them later
 * **Fast tracking**: Doing activities that are normally done in sequence in parallel (violate precedence relations). In reality a little overlap is often all right. The drawback is risk
 * **Setup times**: differentiate between the actual work and the time required to set it up (installation, ...)
-* **Learning**: 
+* **Learning**: humans get better at what they do. If you do the same activity twice in a row, the second one will go faster.
 
 In the image below you can see how much you can mess around with the flexibility of your schedule if you change your assumptions about activities. 
 
@@ -482,7 +501,9 @@ Constructing the ideal schedule of a resource-constrained is almost impossible t
   * Most immediate successors (MIS)
   * Most total successors (MTS)
   * Least non-related jobs (LNJ)
+    * Jobs are non-related if there is no precedence relation between them
   * Greatest rank positional weight (GRPW)
+    * The RPW is the sum of the activity duration and the durations of its successors
 * <u>Critical path based priority rules</u>: Critical path based scheduling information is used to construct the priority list. 
   * Earliest start time (EST)
   * Latest start time (LST)
@@ -554,7 +575,7 @@ A lower bound can be calculated in several ways:
   * Take the critical path of the network
   * Draw a schedule with resources for only the critical activities
   * Determine the earliest start $ES_i$ and latest finish $LF_i$ for each non critical activity $i$
-  * For each non critical activity, determine on how many times you can fit it in the schedule from earlier (between $ES_i$ and $LF_i$). This number is $e_i$
+  * For each non critical activity, determine on how many consecutive time periods you can fit it in the schedule from earlier (between $ES_i$ and $LF_i$). This number is $e_i$
   * Calculate $d_i - e_i$, where $d_i$ is the duration for each activity $i$. If the value is negative, make it $0$. 
   * Take the largest of those values and add it to the length of the critical path. 
   * Now you have your lower bound
@@ -621,8 +642,6 @@ How long should our buffers be?
   * Now, the size of our buffer is based on **risk**
 * <u>Adaptive method with network density (AND)</u>
   * $(1 + \text{Network density}) \times RSM \times 50\%$
-    * Watch out, this is fake maths
-    * You're supposed to multiply each square by 50%, and then take the square root
   * $\text{Network density} = \frac{\text{\#Precedence relations}}{\#Activities}$
   * This means that one half of our buffer size is based on risk, and the other half based on how dense the network is.
 * <u>Adaptive method with resource tightness (ART)</u>
@@ -742,7 +761,7 @@ We can divide the performance metrics in two groups: time and cost. Tip from Mar
     * $\text{SV(t)} = \text{ES} - \text{AD}$
     * I explain earned schedule in one of the next sections. $\text{AD}$ stands for Actual Duration, and is simply the current time. We use it instead of $\text{PV}$, because that one told us about money, not time. 
   * <u>SPI(t)</u>
-    * $\text{SPI(t)} = \frac{\text{ES}}{\text{AT}}$
+    * $\text{SPI(t)} = \frac{\text{ES}}{\text{AD}}$
     * The $\text{SPI}(t)$ is not quirky!!! Remember this for the exam I know Mario will ask us.
     * It's reliable from start 'till end. So you won't make wrong decisions for your project.
 
@@ -814,7 +833,30 @@ Highly parallel projects.
 
 
 
+> Why does PERT/CPM often underestimate the total project duration?
+
+The PERT/CPM approach often leads to **underestimating** the total **project** **duration**, which obviously results in time overruns in practice. There are several reasons for this:
+
+* The activity durations in the **critical path method** are **single point estimates**, they do not address the **uncertainty** of activities. The PERT method extends this to a three point estimate, but still relies on a strict predefined way of analyzing the critical path.
+* **Estimates** about time and cost are **predictions** for the future, and human beings often tend to be **optimistic** about it or, on the contrary, often add some **reserve safety** to protect themselves against unexpected events.
+* The topological structure of a network often implies **extra risk** at **points** where **parallel activities merge** into a single successor activity. Pert only focusses on the critical path so it doesn't take this into account.
+
+
+
 > Why does CC/BM use aggressive estimates?
+
+To counter these things:
+
+* Student syndrome
+  * Postponing until the very last moment
+* Parkinson's law
+  * Work expands to fill the allotted time
+* Multiple parallel paths
+  * More paths merging together, higher chance to be late
+* Mr. Murphy
+  * If you don't know this man, you've never seen Mario in person
+
+Okay, maybe these are more general reasons to use CC/BM
 
 
 
@@ -850,7 +892,7 @@ Apply CC/BM to this example. The activity duration is indicated above each activ
 
 
 
-| ![image-20230527104959753](img/projectmanagement/image-20230527104959753.png) | ![image-20230527105109732](img/projectmanagement/image-20230527105109732.png) |
+| <img src="img/projectmanagement/image-20230527104959753.png" alt="image-20230527104959753" style="zoom:50%;" /> | <img src="img/projectmanagement/image-20230527105109732.png" alt="image-20230527105109732" style="zoom:50%;" /> |
 | ------------------------------------------------------------ | ------------------------------------------------------------ |
 
 
@@ -860,3 +902,14 @@ Solution:
 | ![image-20230527105138437](img/projectmanagement/image-20230527105138437.png) | ![image-20230527105147871](img/projectmanagement/image-20230527105147871.png) | ![image-20230527105215489](img/projectmanagement/image-20230527105215489.png) |
 | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
 
+
+
+## To do
+
+* Multiple parallel paths
+* Theory of constraints
+* Benefits of CC/BM
+* Lower bounds
+* Buffer sizes
+* GCUMWC rule
+* Priority rules pm knowledge center
