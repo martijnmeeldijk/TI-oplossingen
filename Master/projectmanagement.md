@@ -211,7 +211,22 @@ One important thing to note is that the PERT analysis implicitly assumes that al
 
 
 
-//TODO find exercise for this
+* Strengths
+  * Simple and easy
+* Weaknesses
+  * There is a slight tendency for delays
+  * Estimates are human inputs
+  * 3 estimates are better than one, but garbage in is garbage out
+  * Simplification of statistics
+    * Average and standard deviations are not 100% correct
+    * Assumption of no correlation between activities
+  * Ignores non-critical activities
+    * We're only looking at the standard deviations of the activities on the critical path, but every non-critical activity can become critical if there are delays.
+    * So then the standard deviation and *central limit theorem*\* aren't correct anymore
+
+
+
+\* *The central limit theorem states that, given a distribution with an average $E(T)$ and variance $Var(T)$ /, the sampling distribution of the mean approaches a normal distribution with an average $E(T)$ / and a variance $Var(T) /n$ as $n$, the sample size, increases.*
 
 ## 3 - Project scheduling phase (the game)
 
@@ -257,16 +272,6 @@ Optimizing for time/cost in a project with activity crashing.
 * Focus on the critical path
 * Focus on the critical activities (with the smallest cost slope)
 * Crash that activity
-
-|       | Optimize for time                            | Optimize for cost                            |
-| ----- | -------------------------------------------- | -------------------------------------------- |
-| **1** | Highlight the critical path                  | Highlight the critical path                  |
-| **2** | Sort the tasks based on **duration**         | Sort the tasks based on **cost**             |
-| **3** | Find the **longest** critical task           | Find the **most expensive** critical task    |
-| **4** | Make a change on it                          | Make a change on it                          |
-| **5** | Consider impacts on quality, scope, and time | Consider impacts on quality, scope, and time |
-| **6** | Decide whether you want to keep the change   | Decide whether you want to keep the change   |
-| **7** | Repeat 3-7                                   | Repeat 3-7                                   |
 
 
 
@@ -882,13 +887,39 @@ Okay, maybe these are more general reasons to use CC/BM
 
 
 
+> What are the three downsides to PERT?
+
+* Human input
+* Simplification of statistics
+* PERT ignores non-critical activities
+
+PERT is a good technique with a low margin of error, but it's not perfect.
+
+
+
+> (Exam 2009) CPM: Explain how an automatic computerized scheduling software tool should find the optimal project cost given a predefined deadline. Explain how an automatic computerized scheduling software tool should find the optimal project cost given a predefined budget, and compare with the first approach.
+
+
+
+|       | Optimize for time                            | Optimize for cost                            |
+| ----- | -------------------------------------------- | -------------------------------------------- |
+| **1** | Highlight the critical path                  | Highlight the critical path                  |
+| **2** | Sort the tasks based on **duration**         | Sort the tasks based on **cost**             |
+| **3** | Find the **longest** critical task           | Find the **most expensive** critical task    |
+| **4** | Make a change on it                          | Make a change on it                          |
+| **5** | Consider impacts on quality, scope, and time | Consider impacts on quality, scope, and time |
+| **6** | Decide whether you want to keep the change   | Decide whether you want to keep the change   |
+| **7** | Repeat 3-7                                   | Repeat 3-7                                   |
+
+
+
 # Exercises
 
 
 
 ## CC/BM
 
-Apply CC/BM to this example. The activity duration is indicated above each activity node while the resource requirements for three renewable resource types are given below the node. Activities 0 and 12 are dummies, representing project start and finish, respectively.
+Apply CC/BM to this example. The activity duration is indicated above each activity node while the resource requirements for three renewable resource types are given below the node, with availability of 3, 1 and 2. Activities 0 and 12 are dummies, representing project start and finish, respectively.
 
 
 
@@ -909,7 +940,9 @@ Solution:
 * Multiple parallel paths
 * Theory of constraints
 * Benefits of CC/BM
+  * ALAP schedule?
 * Lower bounds
 * Buffer sizes
 * GCUMWC rule
 * Priority rules pm knowledge center
+* Earned value management proposals when metrics bad
