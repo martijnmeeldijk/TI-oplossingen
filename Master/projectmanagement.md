@@ -247,7 +247,7 @@ We need four pieces of information for each activity:
 
 The slope of the time/cost curve gives us the marginal crash cost for one unit of time.
 $$
-\text{Unit Crash Cost} = \frac{NC - CC}{CN - CD}
+\text{Unit Crash Cost} = \frac{NC - CC}{ND - CD}
 $$
 In the real world, the aforementioned is not a continuous function. The discrete version of this problem is called the *discrete time/cost trade-off problem*. In this case the graph from before would look more like this. Each activity time/cost profile is referred to as an **activity mode.** 
 
@@ -311,7 +311,6 @@ A schedule risk analysis consists of four steps:
      *  CRI($r$): Pearson’s product-moment correlation coefficient. 
      * CRI($\rho$): Spearman’s rank correlation coefficient. 
      * CRI($\tau$): Kendall’s tau rank correlation coefficient.
-   * Each metric tells us sensitive an activity is to problems.
 
 In the end, out simulation software will give us a risk measure between 0% and 100% for each activity.
 
@@ -828,17 +827,15 @@ The only thing you should remember from this is that EVM doesn't work very well 
 
 # Questions
 
-> On what types of projects does SRA work the best?
+
+
+> 1. On what types of projects does SRA work the best?
 
 Highly parallel projects.
 
 
 
-> What is the difference between fixed duration and fixed work?
-
-
-
-> Why does PERT/CPM often underestimate the total project duration?
+> 2. Why does PERT/CPM often underestimate the total project duration?
 
 The PERT/CPM approach often leads to **underestimating** the total **project** **duration**, which obviously results in time overruns in practice. There are several reasons for this:
 
@@ -848,7 +845,7 @@ The PERT/CPM approach often leads to **underestimating** the total **project** *
 
 
 
-> Why does CC/BM use aggressive estimates?
+> 3. Why does CC/BM use aggressive estimates?
 
 To counter these things:
 
@@ -865,7 +862,7 @@ Okay, maybe these are more general reasons to use CC/BM
 
 
 
-> What are the six steps in the CC/BM method. Compare them to traditional project management (PERT, CPM)
+> 4. What are the six steps in the CC/BM method. Compare them to traditional project management (PERT, CPM)
 
 1. Come up with **aggressive estimates** (very optimistic time estimates)
 2. Construct an **ALAP schedule**
@@ -887,7 +884,7 @@ Okay, maybe these are more general reasons to use CC/BM
 
 
 
-> What are the three downsides to PERT?
+> 5. What are the three downsides to PERT?
 
 * Human input
 * Simplification of statistics
@@ -897,7 +894,7 @@ PERT is a good technique with a low margin of error, but it's not perfect.
 
 
 
-> (Exam 2009) CPM: Explain how an automatic computerized scheduling software tool should find the optimal project cost given a predefined deadline. Explain how an automatic computerized scheduling software tool should find the optimal project cost given a predefined budget, and compare with the first approach.
+> 6. (Exam 2009) CPM: Explain how an automatic computerized scheduling software tool should find the optimal project cost given a predefined deadline. Explain how an automatic computerized scheduling software tool should find the optimal project cost given a predefined budget, and compare with the first approach.
 
 
 
@@ -912,6 +909,180 @@ PERT is a good technique with a low margin of error, but it's not perfect.
 | **7** | Repeat 3-7                                   | Repeat 3-7                                   |
 
 
+
+> 7. What is the formula for the expected time of an activity according to PERT? And the standard deviation?
+
+$$
+t = \frac{a + 4m +b }{6}
+$$
+
+$$
+\sigma = \frac{b-a}{6}
+$$
+
+> 8. CPM: How can you calculate the crash cost for one unit of time for an activity?
+
+$$
+\text{Unit Crash Cost} = \frac{NC - CC}{ND - CD}
+$$
+
+> 9. What is risk according to Mario?
+
+$$
+\text{RISK} = \text{PROBABILITY} \times \text{IMPACT}
+$$
+
+> 10. What are the different metrics that can be obtained when performing schedule risk analysis using a Monte Carlo simulation. What do they mean?
+
+* Criticality Index (CI):  the **probability** that the activity lies on the **critical path**. It is calculated by checking in how many of the Monte-Carlo simulations the activity was on the critical path, this gives us a probability
+* Significance Index (SI): tells us what the **impact** is that the activity will have on the project. 
+* Schedule Sensitivity Index (SSI): more or less CI $\times$ SI. The SSI gives us information about both probability and impact. 
+* Cruciality Index (CRI): Measures the correlation between the activity duration and the total project duration, in three different ways:
+  *  CRI($r$): Pearson’s product-moment correlation coefficient. 
+  *  CRI($\rho$): Spearman’s rank correlation coefficient. 
+  *  CRI($\tau$): Kendall’s tau rank correlation coefficient.
+
+
+
+> 11. How can you measure control efficiency according to Mario?
+
+$$
+\text{Control efficiency} = \frac{\text{Results}} { \text{Effort}}
+$$
+
+> 12. Name three methods to calculate the lower bound for a project duration. Explain them in detail.
+
+* <u>Critical Path Lower Bound</u> (CPLB): the length of the critical path, this disregards resources
+* <u>Basic Resource Based Lower Bound</u> (BRLB): for each activity, multiply the duration with the resource requirement. Sum those together and divide the result by the resource constraint. 
+* <u>Critical Sequence Lower Bound</u> (CSLB)
+  * Take the critical path of the network
+  * Draw a schedule with resources for only the critical activities
+  * Determine the earliest start $ES_i$ and latest finish $LF_i$ for each non critical activity $i$
+  * For each non critical activity, determine on how many consecutive time periods you can fit it in the schedule from earlier (between $ES_i$ and $LF_i$). This number is $e_i$
+  * Calculate $d_i - e_i$, where $d_i$ is the duration for each activity $i$. If the value is negative, make it $0$. 
+  * Take the largest of those values and add it to the length of the critical path. 
+  * Now you have your lower bound
+
+
+
+> 13. What are four ways to choose a buffer size when using CC/BM? 
+
+* <u>Cut-and-paste (CNP)</u>
+  * Make the buffer 50% of the length of the chain
+  * Easy, but the buffers will probably be too long in some cases
+  * Mario says to forget this method because it doesn't make much sense
+* <u>Root-squared error method (RSM)</u>
+  * Square root of the sum of squared differences between normal and aggressive activity durations
+  * Now, the size of our buffer is based on **risk**
+* <u>Adaptive method with network density (AND)</u>
+  * $(1 + \text{Network density}) \times RSM \times 50\%$
+  * $\text{Network density} = \frac{\text{\#Precedence relations}}{\#Activities}$
+  * This means that one half of our buffer size is based on risk, and the other half based on how dense the network is.
+* <u>Adaptive method with resource tightness (ART)</u>
+  * You can have invisible resource links between feeding chains and the critical chain. This results in a cascade of delays and resource conflicts.
+  * You could add **resource buffers** on critical chain activities. These just serve as a warning, so not super useful. 
+  * Better solution according to Mario: size the buffers according to the **scarcity** of resources (ART). 
+    * Scarcer resources = bigger buffer
+  * $(1 + \text{Resource Tightness}) \times RSM \times 50\%$
+  * $\text{Resource tightness} = \frac{\text{Total work content used}}{\text{Total work content available}}$
+  * With multiple resources, use the scarcest one for the calculation
+
+
+
+> 14. Discuss the weaknesses of CC/BM. What is the final conclusion?
+
+* If you start off with a bad critical chain, you'll end up with a bad schedule
+* Even if you start with a good chain, buffers can cause resource conflicts, after which you can end up with a bad schedule again.
+* Protecting activities is not the goal, protecting the project deadline is.
+
+
+
+> 15. What are the three (four) key metrics used in earned value management?
+
+* <u>Planned Value (PV)</u>
+  * The PV curve measures how much value should have been earned at the current time according to the baseline schedule
+* <u>Actual Cost (AC)</u>
+  * This is the actual cost in reality, money that is spent
+  * The AC curve measures the actual cost incurred up to the current time given the work that has been done
+* <u>Earned Value (EV)</u>
+  * The value of the work you have done according to the plan
+  * $\text{EV} = \%Completion \times \text{BAC}$
+* <u>Earned schedule (ES)\*</u>
+  * The same as earned value, but it is expressed in time and calculated differently
+
+
+
+> 16. What are the time/cost performance metrics used in EVM? What do they mean and how are they calculated.
+
+* **Cost**
+  * <u>Cost Variance (CV)</u>
+    * $\text{CV} = \text{EV} -\text{AC}$
+    * If $\text{CV} < 0$, we've gone above budget (negative number is bad)
+  * <u>Cost Performance Index (CPI)</u>
+    * $\text{CPI} = \frac{\text{EV}}{\text{AC}}$
+    * Gives us a percentage 
+      * 100% = exactly on plan, lower is bad, higher is good
+* **Time**
+  * <u>Schedule Variance (SV)</u>
+    * $\text{SV} = \text{EV} - \text{PV}$
+    * If $\text{SV} < 0$, we have a delay
+  * <u>Schedule Performance Index (SPI)</u>
+    * $\text{SPI} = \frac{\text{EV}}{\text{PV}}$
+    * Quirky zone!
+  * <u>SV(t)</u>
+    * $\text{SV(t)} = \text{ES} - \text{AD}$
+    * Better version of $\text{SV}$
+  * <u>SPI(t)</u>
+    * $\text{SPI(t)} = \frac{\text{ES}}{\text{AD}}$
+    * The $\text{SPI}(t)$ is not quirky!!! Remember this for the exam I know Mario will ask us.
+
+
+
+> 17. How can you perform time/cost forecasting with EVM? How are these predictions calculated?
+
+* <u>EAC(€)</u>
+  * Estimated cost at completion
+  * $\text{EAC}(\texteuro) =\text{AC} + \frac{\text{BAC} - \text{EV}}{\text{PF}}$
+  * $\text{PF}$: performance factor. 
+    * Equal to $1$ if you know the problem only occurs once (e.g. sickness)
+    * Lower if it's a structural problem (e.g. bad supplier), Y
+    * You could make $\text{PF}$ equal to the $\text{CPI}$ or equal to, depending on what you think is the nature of the problem $\text{CPI} \times \text{SPI}$
+* <u>EAC(t)</u>
+  * Estimated duration at completion
+  * $\text{EAC(t)} =\text{AD} + \frac{\text{PD} - \text{ES}}{\text{PF}}$
+
+
+
+> 18. What are the benefits of creating an ALAP schedule in CC/BM? What is the main downside?
+
+* Minimizing work-in-progress
+* Not incurring costs earlier than necessary, thus improving project cash flow
+* Activities that start sooner have a higher chance of rework (changed scope, ...). Delaying activities reduces that risk.
+
+The main drawback is that all activities become critical. Any increase in activity duration will result in an increase in project duration.
+
+
+
+> 19. Explain the theory of constraints.
+
+Know your **goal**, know your **bottleneck**, and make sure your bottleneck is **never idle**.
+
+
+
+> 20. EVM: What should you do if your SPI(t) or CPI is too low?
+
+That depends on the **objectives** of the project, the **nature of the problem**, and on **you**. In the end, you decide what to do and when to take action.
+
+* If time is very important, work harder
+  * This will increase the cost
+* When time is not so important
+  * Don't work harder, so your cost won't increase as much
+  * But the project will be delayed
+* If it's a one-time problem that caused the delay
+  * $\text{PF} = 1$, you don't have to do anything
+* If it's a repeating problem (like a bad supplier), you'll have to address the problem and act.
+  * $\text{PF} < 1$
+* The course of action also depends on **your** personality. If you think it's necessary to act, do it. If you don't think it's necessary. Don't do it. (I think I'm starting to sound like Mario after watching all of his videos please help me) 
 
 # Exercises
 
@@ -946,3 +1117,4 @@ Solution:
 * GCUMWC rule
 * Priority rules pm knowledge center
 * Earned value management proposals when metrics bad
+* ART and AND, calculated over what?
