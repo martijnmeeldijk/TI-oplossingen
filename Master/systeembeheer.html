@@ -1,0 +1,600 @@
+<!doctype html>
+<html>
+<head>
+<meta charset='UTF-8'><meta name='viewport' content='width=device-width initial-scale=1'>
+
+<link href='https://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,700,400&subset=latin,latin-ext' rel='stylesheet' type='text/css' /><style type='text/css'>html {overflow-x: initial !important;}:root { --bg-color:#ffffff; --text-color:#333333; --select-text-bg-color:#B5D6FC; --select-text-font-color:auto; --monospace:"Lucida Console",Consolas,"Courier",monospace; --title-bar-height:20px; }
+.mac-os-11 { --title-bar-height:28px; }
+html { font-size: 14px; background-color: var(--bg-color); color: var(--text-color); font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+h1, h2, h3, h4, h5 { white-space: pre-wrap; }
+body { margin: 0px; padding: 0px; height: auto; inset: 0px; font-size: 1rem; line-height: 1.42857; overflow-x: hidden; background: inherit; tab-size: 4; }
+iframe { margin: auto; }
+a.url { word-break: break-all; }
+a:active, a:hover { outline: 0px; }
+.in-text-selection, ::selection { text-shadow: none; background: var(--select-text-bg-color); color: var(--select-text-font-color); }
+#write { margin: 0px auto; height: auto; width: inherit; word-break: normal; overflow-wrap: break-word; position: relative; white-space: normal; overflow-x: visible; padding-top: 36px; }
+#write.first-line-indent p { text-indent: 2em; }
+#write.first-line-indent li p, #write.first-line-indent p * { text-indent: 0px; }
+#write.first-line-indent li { margin-left: 2em; }
+.for-image #write { padding-left: 8px; padding-right: 8px; }
+body.typora-export { padding-left: 30px; padding-right: 30px; }
+.typora-export .footnote-line, .typora-export li, .typora-export p { white-space: pre-wrap; }
+.typora-export .task-list-item input { pointer-events: none; }
+@media screen and (max-width: 500px) {
+  body.typora-export { padding-left: 0px; padding-right: 0px; }
+  #write { padding-left: 20px; padding-right: 20px; }
+}
+#write li > figure:last-child { margin-bottom: 0.5rem; }
+#write ol, #write ul { position: relative; }
+img { max-width: 100%; vertical-align: middle; image-orientation: from-image; }
+button, input, select, textarea { color: inherit; font: inherit; }
+input[type="checkbox"], input[type="radio"] { line-height: normal; padding: 0px; }
+*, ::after, ::before { box-sizing: border-box; }
+#write h1, #write h2, #write h3, #write h4, #write h5, #write h6, #write p, #write pre { width: inherit; }
+#write h1, #write h2, #write h3, #write h4, #write h5, #write h6, #write p { position: relative; }
+p { line-height: inherit; }
+h1, h2, h3, h4, h5, h6 { break-after: avoid-page; break-inside: avoid; orphans: 4; }
+p { orphans: 4; }
+h1 { font-size: 2rem; }
+h2 { font-size: 1.8rem; }
+h3 { font-size: 1.6rem; }
+h4 { font-size: 1.4rem; }
+h5 { font-size: 1.2rem; }
+h6 { font-size: 1rem; }
+.md-math-block, .md-rawblock, h1, h2, h3, h4, h5, h6, p { margin-top: 1rem; margin-bottom: 1rem; }
+.hidden { display: none; }
+.md-blockmeta { color: rgb(204, 204, 204); font-weight: 700; font-style: italic; }
+a { cursor: pointer; }
+sup.md-footnote { padding: 2px 4px; background-color: rgba(238, 238, 238, 0.7); color: rgb(85, 85, 85); border-radius: 4px; cursor: pointer; }
+sup.md-footnote a, sup.md-footnote a:hover { color: inherit; text-transform: inherit; text-decoration: inherit; }
+#write input[type="checkbox"] { cursor: pointer; width: inherit; height: inherit; }
+figure { overflow-x: auto; margin: 1.2em 0px; max-width: calc(100% + 16px); padding: 0px; }
+figure > table { margin: 0px; }
+thead, tr { break-inside: avoid; break-after: auto; }
+thead { display: table-header-group; }
+table { border-collapse: collapse; border-spacing: 0px; width: 100%; overflow: auto; break-inside: auto; text-align: left; }
+table.md-table td { min-width: 32px; }
+.CodeMirror-gutters { border-right: 0px; background-color: inherit; }
+.CodeMirror-linenumber { user-select: none; }
+.CodeMirror { text-align: left; }
+.CodeMirror-placeholder { opacity: 0.3; }
+.CodeMirror pre { padding: 0px 4px; }
+.CodeMirror-lines { padding: 0px; }
+div.hr:focus { cursor: none; }
+#write pre { white-space: pre-wrap; }
+#write.fences-no-line-wrapping pre { white-space: pre; }
+#write pre.ty-contain-cm { white-space: normal; }
+.CodeMirror-gutters { margin-right: 4px; }
+.md-fences { font-size: 0.9rem; display: block; break-inside: avoid; text-align: left; overflow: visible; white-space: pre; background: inherit; position: relative !important; }
+.md-fences-adv-panel { width: 100%; margin-top: 10px; text-align: center; padding-top: 0px; padding-bottom: 8px; overflow-x: auto; }
+#write .md-fences.mock-cm { white-space: pre-wrap; }
+.md-fences.md-fences-with-lineno { padding-left: 0px; }
+#write.fences-no-line-wrapping .md-fences.mock-cm { white-space: pre; overflow-x: auto; }
+.md-fences.mock-cm.md-fences-with-lineno { padding-left: 8px; }
+.CodeMirror-line, twitterwidget { break-inside: avoid; }
+svg { break-inside: avoid; }
+.footnotes { opacity: 0.8; font-size: 0.9rem; margin-top: 1em; margin-bottom: 1em; }
+.footnotes + .footnotes { margin-top: 0px; }
+.md-reset { margin: 0px; padding: 0px; border: 0px; outline: 0px; vertical-align: top; background: 0px 0px; text-decoration: none; text-shadow: none; float: none; position: static; width: auto; height: auto; white-space: nowrap; cursor: inherit; -webkit-tap-highlight-color: transparent; line-height: normal; font-weight: 400; text-align: left; box-sizing: content-box; direction: ltr; }
+li div { padding-top: 0px; }
+blockquote { margin: 1rem 0px; }
+li .mathjax-block, li p { margin: 0.5rem 0px; }
+li blockquote { margin: 1rem 0px; }
+li { margin: 0px; position: relative; }
+blockquote > :last-child { margin-bottom: 0px; }
+blockquote > :first-child, li > :first-child { margin-top: 0px; }
+.footnotes-area { color: rgb(136, 136, 136); margin-top: 0.714rem; padding-bottom: 0.143rem; white-space: normal; }
+#write .footnote-line { white-space: pre-wrap; }
+@media print {
+  body, html { border: 1px solid transparent; height: 99%; break-after: avoid; break-before: avoid; font-variant-ligatures: no-common-ligatures; }
+  #write { margin-top: 0px; border-color: transparent !important; padding-top: 0px !important; padding-bottom: 0px !important; }
+  .typora-export * { -webkit-print-color-adjust: exact; }
+  .typora-export #write { break-after: avoid; }
+  .typora-export #write::after { height: 0px; }
+  .is-mac table { break-inside: avoid; }
+  #write > p:nth-child(1) { margin-top: 0px; }
+  .typora-export-show-outline .typora-export-sidebar { display: none; }
+  figure { overflow-x: visible; }
+}
+.footnote-line { margin-top: 0.714em; font-size: 0.7em; }
+a img, img a { cursor: pointer; }
+pre.md-meta-block { font-size: 0.8rem; min-height: 0.8rem; white-space: pre-wrap; background: rgb(204, 204, 204); display: block; overflow-x: hidden; }
+p > .md-image:only-child:not(.md-img-error) img, p > img:only-child { display: block; margin: auto; }
+#write.first-line-indent p > .md-image:only-child:not(.md-img-error) img { left: -2em; position: relative; }
+p > .md-image:only-child { display: inline-block; width: 100%; }
+#write .MathJax_Display { margin: 0.8em 0px 0px; }
+.md-math-block { width: 100%; }
+.md-math-block:not(:empty)::after { display: none; }
+.MathJax_ref { fill: currentcolor; }
+[contenteditable="true"]:active, [contenteditable="true"]:focus, [contenteditable="false"]:active, [contenteditable="false"]:focus { outline: 0px; box-shadow: none; }
+.md-task-list-item { position: relative; list-style-type: none; }
+.task-list-item.md-task-list-item { padding-left: 0px; }
+.md-task-list-item > input { position: absolute; top: 0px; left: 0px; margin-left: -1.2em; margin-top: calc(1em - 10px); border: none; }
+.math { font-size: 1rem; }
+.md-toc { min-height: 3.58rem; position: relative; font-size: 0.9rem; border-radius: 10px; }
+.md-toc-content { position: relative; margin-left: 0px; }
+.md-toc-content::after, .md-toc::after { display: none; }
+.md-toc-item { display: block; color: rgb(65, 131, 196); }
+.md-toc-item a { text-decoration: none; }
+.md-toc-inner:hover { text-decoration: underline; }
+.md-toc-inner { display: inline-block; cursor: pointer; }
+.md-toc-h1 .md-toc-inner { margin-left: 0px; font-weight: 700; }
+.md-toc-h2 .md-toc-inner { margin-left: 2em; }
+.md-toc-h3 .md-toc-inner { margin-left: 4em; }
+.md-toc-h4 .md-toc-inner { margin-left: 6em; }
+.md-toc-h5 .md-toc-inner { margin-left: 8em; }
+.md-toc-h6 .md-toc-inner { margin-left: 10em; }
+@media screen and (max-width: 48em) {
+  .md-toc-h3 .md-toc-inner { margin-left: 3.5em; }
+  .md-toc-h4 .md-toc-inner { margin-left: 5em; }
+  .md-toc-h5 .md-toc-inner { margin-left: 6.5em; }
+  .md-toc-h6 .md-toc-inner { margin-left: 8em; }
+}
+a.md-toc-inner { font-size: inherit; font-style: inherit; font-weight: inherit; line-height: inherit; }
+.footnote-line a:not(.reversefootnote) { color: inherit; }
+.reversefootnote { font-family: ui-monospace, sans-serif; }
+.md-attr { display: none; }
+.md-fn-count::after { content: "."; }
+code, pre, samp, tt { font-family: var(--monospace); }
+kbd { margin: 0px 0.1em; padding: 0.1em 0.6em; font-size: 0.8em; color: rgb(36, 39, 41); background: rgb(255, 255, 255); border: 1px solid rgb(173, 179, 185); border-radius: 3px; box-shadow: rgba(12, 13, 14, 0.2) 0px 1px 0px, rgb(255, 255, 255) 0px 0px 0px 2px inset; white-space: nowrap; vertical-align: middle; }
+.md-comment { color: rgb(162, 127, 3); opacity: 0.6; font-family: var(--monospace); }
+code { text-align: left; vertical-align: initial; }
+a.md-print-anchor { white-space: pre !important; border-width: initial !important; border-style: none !important; border-color: initial !important; display: inline-block !important; position: absolute !important; width: 1px !important; right: 0px !important; outline: 0px !important; background: 0px 0px !important; text-decoration: initial !important; text-shadow: initial !important; }
+.os-windows.monocolor-emoji .md-emoji { font-family: "Segoe UI Symbol", sans-serif; }
+.md-diagram-panel > svg { max-width: 100%; }
+[lang="flow"] svg, [lang="mermaid"] svg { max-width: 100%; height: auto; }
+[lang="mermaid"] .node text { font-size: 1rem; }
+table tr th { border-bottom: 0px; }
+video { max-width: 100%; display: block; margin: 0px auto; }
+iframe { max-width: 100%; width: 100%; border: none; }
+.highlight td, .highlight tr { border: 0px; }
+mark { background: rgb(255, 255, 0); color: rgb(0, 0, 0); }
+.md-html-inline .md-plain, .md-html-inline strong, mark .md-inline-math, mark strong { color: inherit; }
+.md-expand mark .md-meta { opacity: 0.3 !important; }
+mark .md-meta { color: rgb(0, 0, 0); }
+@media print {
+  .typora-export h1, .typora-export h2, .typora-export h3, .typora-export h4, .typora-export h5, .typora-export h6 { break-inside: avoid; }
+}
+.md-diagram-panel .messageText { stroke: none !important; }
+.md-diagram-panel .start-state { fill: var(--node-fill); }
+.md-diagram-panel .edgeLabel rect { opacity: 1 !important; }
+.md-fences.md-fences-math { font-size: 1em; }
+.md-fences-advanced:not(.md-focus) { padding: 0px; white-space: nowrap; border: 0px; }
+.md-fences-advanced:not(.md-focus) { background: inherit; }
+.typora-export-show-outline .typora-export-content { max-width: 1440px; margin: auto; display: flex; flex-direction: row; }
+.typora-export-sidebar { width: 300px; font-size: 0.8rem; margin-top: 80px; margin-right: 18px; }
+.typora-export-show-outline #write { --webkit-flex:2; flex: 2 1 0%; }
+.typora-export-sidebar .outline-content { position: fixed; top: 0px; max-height: 100%; overflow: hidden auto; padding-bottom: 30px; padding-top: 60px; width: 300px; }
+@media screen and (max-width: 1024px) {
+  .typora-export-sidebar, .typora-export-sidebar .outline-content { width: 240px; }
+}
+@media screen and (max-width: 800px) {
+  .typora-export-sidebar { display: none; }
+}
+.outline-content li, .outline-content ul { margin-left: 0px; margin-right: 0px; padding-left: 0px; padding-right: 0px; list-style: none; overflow-wrap: anywhere; }
+.outline-content ul { margin-top: 0px; margin-bottom: 0px; }
+.outline-content strong { font-weight: 400; }
+.outline-expander { width: 1rem; height: 1.42857rem; position: relative; display: table-cell; vertical-align: middle; cursor: pointer; padding-left: 4px; }
+.outline-expander::before { content: ""; position: relative; font-family: Ionicons; display: inline-block; font-size: 8px; vertical-align: middle; }
+.outline-item { padding-top: 3px; padding-bottom: 3px; cursor: pointer; }
+.outline-expander:hover::before { content: ""; }
+.outline-h1 > .outline-item { padding-left: 0px; }
+.outline-h2 > .outline-item { padding-left: 1em; }
+.outline-h3 > .outline-item { padding-left: 2em; }
+.outline-h4 > .outline-item { padding-left: 3em; }
+.outline-h5 > .outline-item { padding-left: 4em; }
+.outline-h6 > .outline-item { padding-left: 5em; }
+.outline-label { cursor: pointer; display: table-cell; vertical-align: middle; text-decoration: none; color: inherit; }
+.outline-label:hover { text-decoration: underline; }
+.outline-item:hover { border-color: rgb(245, 245, 245); background-color: var(--item-hover-bg-color); }
+.outline-item:hover { margin-left: -28px; margin-right: -28px; border-left: 28px solid transparent; border-right: 28px solid transparent; }
+.outline-item-single .outline-expander::before, .outline-item-single .outline-expander:hover::before { display: none; }
+.outline-item-open > .outline-item > .outline-expander::before { content: ""; }
+.outline-children { display: none; }
+.info-panel-tab-wrapper { display: none; }
+.outline-item-open > .outline-children { display: block; }
+.typora-export .outline-item { padding-top: 1px; padding-bottom: 1px; }
+.typora-export .outline-item:hover { margin-right: -8px; border-right: 8px solid transparent; }
+.typora-export .outline-expander::before { content: "+"; font-family: inherit; top: -1px; }
+.typora-export .outline-expander:hover::before, .typora-export .outline-item-open > .outline-item > .outline-expander::before { content: "−"; }
+.typora-export-collapse-outline .outline-children { display: none; }
+.typora-export-collapse-outline .outline-item-open > .outline-children, .typora-export-no-collapse-outline .outline-children { display: block; }
+.typora-export-no-collapse-outline .outline-expander::before { content: "" !important; }
+.typora-export-show-outline .outline-item-active > .outline-item .outline-label { font-weight: 700; }
+.md-inline-math-container mjx-container { zoom: 0.95; }
+mjx-container { break-inside: avoid; }
+
+
+:root {
+    --side-bar-bg-color: #fafafa;
+    --control-text-color: #777;
+}
+
+@include-when-export url(https://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,700,400&subset=latin,latin-ext);
+
+/* open-sans-regular - latin-ext_latin */
+  /* open-sans-italic - latin-ext_latin */
+    /* open-sans-700 - latin-ext_latin */
+    /* open-sans-700italic - latin-ext_latin */
+  html {
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+}
+
+body {
+    font-family: "Open Sans","Clear Sans", "Helvetica Neue", Helvetica, Arial, 'Segoe UI Emoji', sans-serif;
+    color: rgb(51, 51, 51);
+    line-height: 1.6;
+}
+
+#write {
+    max-width: 860px;
+  	margin: 0 auto;
+  	padding: 30px;
+    padding-bottom: 100px;
+}
+
+@media only screen and (min-width: 1400px) {
+	#write {
+		max-width: 1024px;
+	}
+}
+
+@media only screen and (min-width: 1800px) {
+	#write {
+		max-width: 1200px;
+	}
+}
+
+#write > ul:first-child,
+#write > ol:first-child{
+    margin-top: 30px;
+}
+
+a {
+    color: #4183C4;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    position: relative;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    font-weight: bold;
+    line-height: 1.4;
+    cursor: text;
+}
+h1:hover a.anchor,
+h2:hover a.anchor,
+h3:hover a.anchor,
+h4:hover a.anchor,
+h5:hover a.anchor,
+h6:hover a.anchor {
+    text-decoration: none;
+}
+h1 tt,
+h1 code {
+    font-size: inherit;
+}
+h2 tt,
+h2 code {
+    font-size: inherit;
+}
+h3 tt,
+h3 code {
+    font-size: inherit;
+}
+h4 tt,
+h4 code {
+    font-size: inherit;
+}
+h5 tt,
+h5 code {
+    font-size: inherit;
+}
+h6 tt,
+h6 code {
+    font-size: inherit;
+}
+h1 {
+    font-size: 2.25em;
+    line-height: 1.2;
+    border-bottom: 1px solid #eee;
+}
+h2 {
+    font-size: 1.75em;
+    line-height: 1.225;
+    border-bottom: 1px solid #eee;
+}
+
+/*@media print {
+    .typora-export h1,
+    .typora-export h2 {
+        border-bottom: none;
+        padding-bottom: initial;
+    }
+
+    .typora-export h1::after,
+    .typora-export h2::after {
+        content: "";
+        display: block;
+        height: 100px;
+        margin-top: -96px;
+        border-top: 1px solid #eee;
+    }
+}*/
+
+h3 {
+    font-size: 1.5em;
+    line-height: 1.43;
+}
+h4 {
+    font-size: 1.25em;
+}
+h5 {
+    font-size: 1em;
+}
+h6 {
+   font-size: 1em;
+    color: #777;
+}
+p,
+blockquote,
+ul,
+ol,
+dl,
+table{
+    margin: 0.8em 0;
+}
+li>ol,
+li>ul {
+    margin: 0 0;
+}
+hr {
+    height: 2px;
+    padding: 0;
+    margin: 16px 0;
+    background-color: #e7e7e7;
+    border: 0 none;
+    overflow: hidden;
+    box-sizing: content-box;
+}
+
+li p.first {
+    display: inline-block;
+}
+ul,
+ol {
+    padding-left: 30px;
+}
+ul:first-child,
+ol:first-child {
+    margin-top: 0;
+}
+ul:last-child,
+ol:last-child {
+    margin-bottom: 0;
+}
+blockquote {
+    border-left: 4px solid #dfe2e5;
+    padding: 0 15px;
+    color: #777777;
+}
+blockquote blockquote {
+    padding-right: 0;
+}
+table {
+    padding: 0;
+    word-break: initial;
+}
+table tr {
+    border: 1px solid #dfe2e5;
+    margin: 0;
+    padding: 0;
+}
+table tr:nth-child(2n),
+thead {
+    background-color: #f8f8f8;
+}
+table th {
+    font-weight: bold;
+    border: 1px solid #dfe2e5;
+    border-bottom: 0;
+    margin: 0;
+    padding: 6px 13px;
+}
+table td {
+    border: 1px solid #dfe2e5;
+    margin: 0;
+    padding: 6px 13px;
+}
+table th:first-child,
+table td:first-child {
+    margin-top: 0;
+}
+table th:last-child,
+table td:last-child {
+    margin-bottom: 0;
+}
+
+.CodeMirror-lines {
+    padding-left: 4px;
+}
+
+.code-tooltip {
+    box-shadow: 0 1px 1px 0 rgba(0,28,36,.3);
+    border-top: 1px solid #eef2f2;
+}
+
+.md-fences,
+code,
+tt {
+    border: 1px solid #e7eaed;
+    background-color: #f8f8f8;
+    border-radius: 3px;
+    padding: 0;
+    padding: 2px 4px 0px 4px;
+    font-size: 0.9em;
+}
+
+code {
+    background-color: #f3f4f4;
+    padding: 0 2px 0 2px;
+}
+
+.md-fences {
+    margin-bottom: 15px;
+    margin-top: 15px;
+    padding-top: 8px;
+    padding-bottom: 6px;
+}
+
+
+.md-task-list-item > input {
+  margin-left: -1.3em;
+}
+
+@media print {
+    html {
+        font-size: 13px;
+    }
+    pre {
+        page-break-inside: avoid;
+        word-wrap: break-word;
+    }
+}
+
+.md-fences {
+	background-color: #f8f8f8;
+}
+#write pre.md-meta-block {
+	padding: 1rem;
+    font-size: 85%;
+    line-height: 1.45;
+    background-color: #f7f7f7;
+    border: 0;
+    border-radius: 3px;
+    color: #777777;
+    margin-top: 0 !important;
+}
+
+.mathjax-block>.code-tooltip {
+	bottom: .375rem;
+}
+
+.md-mathjax-midline {
+    background: #fafafa;
+}
+
+#write>h3.md-focus:before{
+	left: -1.5625rem;
+	top: .375rem;
+}
+#write>h4.md-focus:before{
+	left: -1.5625rem;
+	top: .285714286rem;
+}
+#write>h5.md-focus:before{
+	left: -1.5625rem;
+	top: .285714286rem;
+}
+#write>h6.md-focus:before{
+	left: -1.5625rem;
+	top: .285714286rem;
+}
+.md-image>.md-meta {
+    /*border: 1px solid #ddd;*/
+    border-radius: 3px;
+    padding: 2px 0px 0px 4px;
+    font-size: 0.9em;
+    color: inherit;
+}
+
+.md-tag {
+    color: #a7a7a7;
+    opacity: 1;
+}
+
+.md-toc { 
+    margin-top:20px;
+    padding-bottom:20px;
+}
+
+.sidebar-tabs {
+    border-bottom: none;
+}
+
+#typora-quick-open {
+    border: 1px solid #ddd;
+    background-color: #f8f8f8;
+}
+
+#typora-quick-open-item {
+    background-color: #FAFAFA;
+    border-color: #FEFEFE #e5e5e5 #e5e5e5 #eee;
+    border-style: solid;
+    border-width: 1px;
+}
+
+/** focus mode */
+.on-focus-mode blockquote {
+    border-left-color: rgba(85, 85, 85, 0.12);
+}
+
+header, .context-menu, .megamenu-content, footer{
+    font-family: "Segoe UI", "Arial", sans-serif;
+}
+
+.file-node-content:hover .file-node-icon,
+.file-node-content:hover .file-node-open-state{
+    visibility: visible;
+}
+
+.mac-seamless-mode #typora-sidebar {
+    background-color: #fafafa;
+    background-color: var(--side-bar-bg-color);
+}
+
+.md-lang {
+    color: #b4654d;
+}
+
+/*.html-for-mac {
+    --item-hover-bg-color: #E6F0FE;
+}*/
+
+#md-notification .btn {
+    border: 0;
+}
+
+.dropdown-menu .divider {
+    border-color: #e5e5e5;
+    opacity: 0.4;
+}
+
+.ty-preferences .window-content {
+    background-color: #fafafa;
+}
+
+.ty-preferences .nav-group-item.active {
+    color: white;
+    background: #999;
+}
+
+.menu-item-container a.menu-style-btn {
+    background-color: #f5f8fa;
+    background-image: linear-gradient( 180deg , hsla(0, 0%, 100%, 0.8), hsla(0, 0%, 100%, 0)); 
+}
+
+
+
+</style><title>systeembeheer</title>
+</head>
+<body class='typora-export os-windows typora-export-show-outline typora-export-no-collapse-outline'><div class='typora-export-content'>
+<div class="typora-export-sidebar"><div class="outline-content"><li class="outline-item-wrapper outline-h1"><div class="outline-item"><span class="outline-expander"></span><a class="outline-label" href="#systeembeheer">Systeembeheer</a></div><ul class="outline-children"><li class="outline-item-wrapper outline-h2"><div class="outline-item"><span class="outline-expander"></span><a class="outline-label" href="#course-specifications">Course specifications</a></div><ul class="outline-children"></ul></li></ul></li><li class="outline-item-wrapper outline-h1"><div class="outline-item"><span class="outline-expander"></span><a class="outline-label" href="#1---cloud">1 - Cloud</a></div><ul class="outline-children"><li class="outline-item-wrapper outline-h2 outline-item-open"><div class="outline-item"><span class="outline-expander"></span><a class="outline-label" href="#cloud">Cloud</a></div><ul class="outline-children"><li class="outline-item-wrapper outline-h3"><div class="outline-item"><span class="outline-expander"></span><a class="outline-label" href="#intro">Intro</a></div><ul class="outline-children"></ul></li><li class="outline-item-wrapper outline-h3 outline-item-open"><div class="outline-item"><span class="outline-expander"></span><a class="outline-label" href="#economics-of-cloud-users">Economics of cloud users</a></div><ul class="outline-children"></ul></li><li class="outline-item-wrapper outline-h3"><div class="outline-item"><span class="outline-expander"></span><a class="outline-label" href="#cloud-myths-and-facts">Cloud myths and facts</a></div><ul class="outline-children"></ul></li><li class="outline-item-wrapper outline-h3"><div class="outline-item"><span class="outline-expander"></span><a class="outline-label" href="#off-premise-cloud">Off-premise cloud</a></div><ul class="outline-children"></ul></li><li class="outline-item-wrapper outline-h3"><div class="outline-item"><span class="outline-expander"></span><a class="outline-label" href="#cloud-deployment-models">Cloud deployment models</a></div><ul class="outline-children"></ul></li><li class="outline-item-wrapper outline-h3"><div class="outline-item"><span class="outline-expander"></span><a class="outline-label" href="#hybrid-cloud">Hybrid cloud</a></div><ul class="outline-children"></ul></li><li class="outline-item-wrapper outline-h3"><div class="outline-item"><span class="outline-expander"></span><a class="outline-label" href="#cloud-models">Cloud models</a></div><ul class="outline-children"></ul></li></ul></li><li class="outline-item-wrapper outline-h2"><div class="outline-item"><span class="outline-expander"></span><a class="outline-label" href="#infrastructure-as-a-service">Infrastructure-as-a-service</a></div><ul class="outline-children"><li class="outline-item-wrapper outline-h3"><div class="outline-item"><span class="outline-expander"></span><a class="outline-label" href="#virtualisatie">Virtualisatie</a></div><ul class="outline-children"></ul></li><li class="outline-item-wrapper outline-h3"><div class="outline-item"><span class="outline-expander"></span><a class="outline-label" href="#virtual-machine-use-cases">Virtual machine use cases</a></div><ul class="outline-children"></ul></li><li class="outline-item-wrapper outline-h3 outline-item-open"><div class="outline-item"><span class="outline-expander"></span><a class="outline-label" href="#evolutie">Evolutie</a></div><ul class="outline-children"></ul></li><li class="outline-item-wrapper outline-h3 outline-item-open"><div class="outline-item"><span class="outline-expander"></span><a class="outline-label" href="#os-level-virtualization">OS-level virtualization</a></div><ul class="outline-children"><li class="outline-item-wrapper outline-h4"><div class="outline-item"><span class="outline-expander"></span><a class="outline-label" href="#os-level-vertualization-vs-vm-based-virtualization">OS-level vertualization vs VM-based virtualization</a></div><ul class="outline-children"></ul></li></ul></li><li class="outline-item-wrapper outline-h3"><div class="outline-item"><span class="outline-expander"></span><a class="outline-label" href="#containers">Containers</a></div><ul class="outline-children"></ul></li><li class="outline-item-wrapper outline-h3"><div class="outline-item"><span class="outline-expander"></span><a class="outline-label" href="#overzicht">Overzicht</a></div><ul class="outline-children"></ul></li><li class="outline-item-wrapper outline-h3"><div class="outline-item"><span class="outline-expander"></span><a class="outline-label" href="#open-iaas-offerings">Open IAAS offerings</a></div><ul class="outline-children"><li class="outline-item-wrapper outline-h4 outline-item-open"><div class="outline-item"><span class="outline-expander"></span><a class="outline-label" href="#openstack">Openstack</a></div><ul class="outline-children"></ul></li><li class="outline-item-wrapper outline-h4 outline-item-open"><div class="outline-item"><span class="outline-expander"></span><a class="outline-label" href="#apache-cloudstack">Apache Cloudstack</a></div><ul class="outline-children"></ul></li><li class="outline-item-wrapper outline-h4"><div class="outline-item"><span class="outline-expander"></span><a class="outline-label" href="#opennebula">Opennebula</a></div><ul class="outline-children"></ul></li><li class="outline-item-wrapper outline-h4"><div class="outline-item"><span class="outline-expander"></span><a class="outline-label" href="#eucalyptus">Eucalyptus</a></div><ul class="outline-children"></ul></li></ul></li><li class="outline-item-wrapper outline-h3"><div class="outline-item"><span class="outline-expander"></span><a class="outline-label" href="#iaas-cloud-standardisation">IAAS cloud standardisation</a></div><ul class="outline-children"><li class="outline-item-wrapper outline-h4"><div class="outline-item"><span class="outline-expander"></span><a class="outline-label" href="#multi-cloud-development">Multi-cloud development</a></div><ul class="outline-children"></ul></li><li class="outline-item-wrapper outline-h4 outline-item-open"><div class="outline-item"><span class="outline-expander"></span><a class="outline-label" href="#open-containers-initiative-oci">Open containers initiative (OCI)</a></div><ul class="outline-children"></ul></li><li class="outline-item-wrapper outline-h4"><div class="outline-item"><span class="outline-expander"></span><a class="outline-label" href="#container-networking-interface-cni">Container networking interface (CNI)</a></div><ul class="outline-children"></ul></li></ul></li></ul></li><li class="outline-item-wrapper outline-h2"><div class="outline-item"><span class="outline-expander"></span><a class="outline-label" href="#platform-as-a-service-paas">Platform-as-a-service (PAAS)</a></div><ul class="outline-children"><li class="outline-item-wrapper outline-h3"><div class="outline-item"><span class="outline-expander"></span><a class="outline-label" href="#red-hat-openshift">Red hat openshift</a></div><ul class="outline-children"></ul></li><li class="outline-item-wrapper outline-h3"><div class="outline-item"><span class="outline-expander"></span><a class="outline-label" href="#kubernetes-vs-openshift">Kubernetes vs openshift</a></div><ul class="outline-children"></ul></li><li class="outline-item-wrapper outline-h3"><div class="outline-item"><span class="outline-expander"></span><a class="outline-label" href="#cloud-foundry">Cloud foundry</a></div><ul class="outline-children"></ul></li><li class="outline-item-wrapper outline-h3"><div class="outline-item"><span class="outline-expander"></span><a class="outline-label" href="#cloud-foundry-vs-openshift">Cloud foundry vs openshift</a></div><ul class="outline-children"></ul></li><li class="outline-item-wrapper outline-h3"><div class="outline-item"><span class="outline-expander"></span><a class="outline-label" href="#paas-cloud-standardisation">PAAS cloud standardisation</a></div><ul class="outline-children"><li class="outline-item-wrapper outline-h4"><div class="outline-item"><span class="outline-expander"></span><a class="outline-label" href="#cloudify">Cloudify</a></div><ul class="outline-children"></ul></li></ul></li></ul></li><li class="outline-item-wrapper outline-h2"><div class="outline-item"><span class="outline-expander"></span><a class="outline-label" href="#software-as-a-service-saas">Software-as-a-service (SAAS)</a></div><ul class="outline-children"></ul></li><li class="outline-item-wrapper outline-h2"><div class="outline-item"><span class="outline-expander"></span><a class="outline-label" href="#function-as-a-service-faas">Function-as-a-service (FAAS)</a></div><ul class="outline-children"></ul></li><li class="outline-item-wrapper outline-h2"><div class="outline-item"><span class="outline-expander"></span><a class="outline-label" href="#metal-as-a-service-maas">Metal-as-a-service (MAAS)</a></div><ul class="outline-children"></ul></li></ul></li><li class="outline-item-wrapper outline-h1"><div class="outline-item"><span class="outline-expander"></span><a class="outline-label" href="#2---powershell">2 - Powershell</a></div><ul class="outline-children"></ul></li><li class="outline-item-wrapper outline-h1"><div class="outline-item"><span class="outline-expander"></span><a class="outline-label" href="#examenvragen">Examenvragen</a></div><ul class="outline-children"><li class="outline-item-wrapper outline-h2"><div class="outline-item"><span class="outline-expander"></span><a class="outline-label" href="#voorbeeldvragen">Voorbeeldvragen</a></div><ul class="outline-children"></ul></li><li class="outline-item-wrapper outline-h2"><div class="outline-item"><span class="outline-expander"></span><a class="outline-label" href="#van-de-les">Van de les</a></div><ul class="outline-children"></ul></li><li class="outline-item-wrapper outline-h2"><div class="outline-item"><span class="outline-expander"></span><a class="outline-label" href="#van-mij">Van mij</a></div><ul class="outline-children"></ul></li></ul></li></div></div><div id='write'  class=''><h1 id='systeembeheer'><span>Systeembeheer</span></h1><h2 id='course-specifications'><span>Course specifications</span></h2><ul><li><p><span>Final grade calculation </span></p><ul><li><p><span>50% on exam </span></p></li><li><p><span>50% on end-result labs </span></p></li></ul></li><li><p><span>Individual scores (exam / labs) minimally 9/20 </span></p><ul><li><p><span>Otherwise score maximum 9/20</span></p></li></ul></li></ul><p>&nbsp;</p><ul><li><p><span>Final competences </span></p><ul><li><p><span>Being able to configure Windows Server systems and manage them by means of Powershell </span></p></li><li><p><span>Being able to manage and configure file systems (local / cloud) </span></p></li><li><p><span>Knowledge of IaaS, PaaS, SaaS, FaaS and MaaS Cloud-concepts and advanced virtualisation techniques </span></p></li><li><p><span>Being able to apply Infrastructure as Code and automation tools </span></p></li><li><p><span>Being able to configure and deploy a monitoring stack for system administration</span></p></li></ul></li></ul><h1 id='1---cloud'><span>1 - Cloud</span></h1><h2 id='cloud'><span>Cloud</span></h2><h3 id='intro'><span>Intro</span></h3><p><span>Er zijn verschillende definities van wat cloud is, maar Bruno zegt dat je dit moet kennen (let op de kernwoorden vooral): </span></p><p><span>Een cloud is een grote pool van gemakkelijk bruikbare en toegankelijke </span><strong><span>gevirtualiseerde</span></strong><span> resources zoals </span><strong><span>hardware</span></strong><span>, </span><strong><span>develoment platformen</span></strong><span> en/of </span><strong><span>services.</span></strong><span> Die resources kunnen dynamisch geherconfigureerd worden om een variabele load aan te kunnen </span><strong><span>(scale)</span></strong><span>, zodat resources zo optimaal mogelijk worden gebruikt. Deze pool van resources wordt typisch aangeboden in een </span><strong><span>pay-per-use</span></strong><span> model aangeboden, waarbij garanties worden aangeboden door de provider in de vorm van een op maat gemaakte </span><strong><span>SLA</span></strong><span> (service level agreement). Netflix heeft natuurlijk veel meer macht over de opstelling van die SLA dan een klein bedrijfje, dus zij krijgen volgens Bruno waarschijnlijk een betere deal.</span></p><p><span>Alle verschillende definities van cloud hebben deze dingen gemeen:</span></p><ul><li><p><span>Pay-per-use (geen commitment)</span></p></li><li><p><span>Elastisch (op en neer schalen on demand)</span></p></li><li><p><span>Self-service interface</span></p><ul><li><p><span>Webinterface met account en creditcard</span></p></li></ul></li><li><p><span>Resources zijn abstract/gevirtualiseerd</span></p><ul><li><p><span>Je kan typisch nooit voor een specifieke fysieke machine vragen</span></p></li></ul></li></ul><p>&nbsp;</p><h3 id='economics-of-cloud-users'><span>Economics of cloud users</span></h3><p><span>Als je zelf fysieke machines hebt kan je twee problemen hebben.</span></p><figure class='table-figure'><table><thead><tr><th><img src="img/systeembeheer/image-20230611110751426.png" referrerpolicy="no-referrer" alt="image-20230611110751426"></th><th><img src="img/systeembeheer/image-20230611110802859.png" referrerpolicy="no-referrer" alt="image-20230611110802859"></th></tr></thead><tbody><tr><td><span>Je hebt te veel resources en dus verspil je super veel.</span></td><td><span>Je hebt te weinig resources, en in de pieken zullen er dus problemen zijn, zoals mensen die hun bestelling niet kunnen maken waardoor je geld verliest.</span></td></tr></tbody></table></figure><p>&nbsp;</p><p><span>Dit probleem kan opgelost worden met </span><strong><span>pay-per-use</span></strong><span> in de cloud. Het grote voordeel is nu dat je die overtollige resources in de dalmomenten niet moet betalen, je kan dus dynamisch schalen op basis van de belasting van je systeem. </span></p><p><img src="img/systeembeheer/image-20230611111129689.png" referrerpolicy="no-referrer" alt="image-20230611111129689"></p><p><span>Door de </span><strong><span>economy of scale</span></strong><span> kunnen cloud providers hun services veel goedkoper aanbieden dan als je de machine zelf zou hebben, want Google en Amazon hebben deals met elektriciteitsmaatschappijen, ISPs, fabrikanten, ... Bovendien zetten ze dan hun datacenters op speciale plekken waar bijvoorbeeld de elektriciteit goedkoper is. </span></p><p><span>Cloud is ontstaan vanuit de grote techbedrijven. Om nog meer geld te verdienen hadden ze het geweldige idee om hun al bestaande infrastructuur te verhuren wanneer deze capaciteit over had.</span></p><p>&nbsp;</p><h3 id='cloud-myths-and-facts'><span>Cloud myths and facts</span></h3><ul><li><p><span>Myths </span></p><ul><li><p><span>Cloud computing will eliminate the need for IT personnel </span></p></li><li><p><span>There will only be one super computer in the future </span></p></li><li><p><span>Moving to the cloud automatically saves money </span></p></li><li><p><span>The cloud is not safe for storing data </span></p><ul><li><p><span>Je moet niet denken dat je beter bent in beveiliging dan Microsoft of Google</span></p></li></ul></li><li><p><span>Transitioning to the cloud is quick and easy </span></p><ul><li><p><span>Altijd gedoe</span></p></li></ul></li></ul></li><li><p><span>Facts </span></p><ul><li><p><span>Cloud technology is here to stay </span></p></li><li><p><span>Cloud technology should not be ignored</span></p></li></ul></li></ul><p>&nbsp;</p><h3 id='off-premise-cloud'><span>Off-premise cloud</span></h3><p><span>Als je zelf in je bedrijf een cloud maakt noem je het een </span><strong><span>on-premise cloud</span></strong><span>. Als je dat niet doet heb je een </span><strong><span>off-premise cloud</span></strong><span>, typisch met de volgende eigenschappen:</span></p><ul><li><p><span>Off-premise</span></p><ul><li><p><span>Service in een andere locatie gehost (bij provider)</span></p></li><li><p><span>Over het publieke internet (bij public cloud)</span></p></li><li><p><span>Processing gebeurt buiten de firewall van het bedrijf</span></p></li></ul></li><li><p><span>Elasticiteit</span></p><ul><li><p><span>Schaalbaarheid van provider</span></p></li><li><p><span>Snel omhoog en omlaag schalen</span></p></li></ul></li><li><p><span>Flexibele billing</span></p><ul><li><p><span>Betaling is een abonnement of op basis van verbruik </span></p></li><li><p><span>Cost effective</span></p></li></ul></li><li><p><span>Virtualisatie</span></p><ul><li><p><span>Kost optimalisatie door </span><strong><span>multi-tenant</span></strong><span> systemen (meerdere klanten op één fysieke machine)</span></p></li></ul></li><li><p><span>Betaalbare resources</span></p><ul><li><p><span>Geen vaste aankopen</span></p></li><li><p><span>Schaal van providers</span></p></li></ul></li><li><p><span>On-demand self-service</span></p><ul><li><p><span>Vraag een service wanneer je hem nodig hebt, deze wordt dan op vraag voorzien</span></p></li></ul></li></ul><p>&nbsp;</p><h3 id='cloud-deployment-models'><span>Cloud deployment models</span></h3><p><span>Bruno toont on </span><strong><span>drie</span></strong><span> soorten clouds.</span></p><figure class='table-figure'><table><thead><tr><th><span>Public cloud</span></th><th><span>Community cloud</span></th><th><span>Private cloud</span></th></tr></thead><tbody><tr><td><img src="img/systeembeheer/image-20230611114054525.png" referrerpolicy="no-referrer" alt="image-20230611114054525"></td><td><img src="img/systeembeheer/image-20230611114105084.png" referrerpolicy="no-referrer" alt="image-20230611114105084"></td><td><img src="img/systeembeheer/image-20230611114117244.png" referrerpolicy="no-referrer" alt="image-20230611114117244"></td></tr><tr><td><span>- Google, Microsoft, ... </span><br /><span>- Voor toegang tot openbare systemen of services</span><br /><span>- Gratis of pay-per-use</span></td><td><span>- Typisch voor speciale security constraints</span><br /><span>- Bijvoorbeeld zodat de NSA niet kan meekijken</span><br /><span> -</span></td><td><span>- We emuleren een public cloud op onze eigen resources</span><br /><span>- Je doet niet alleen voor security een private cloud</span><br /><span>- Vooral als je zeker niet wilt dat je data bij google ofzo zit </span><br /><span>- (als je een bank bent bijvoorbeeld)</span><br /><span>- Is soms nodig om te voldoen aan reguleringen</span><br /><span>- Optie om naar public cloud te schalen (cloudburst)</span></td></tr></tbody></table></figure><p>&nbsp;</p><h3 id='hybrid-cloud'><span>Hybrid cloud</span></h3><p><span>Wat als we nu </span><strong><span>public cloud</span></strong><span> en </span><strong><span>private cloud</span></strong><span> combineren? Dan krijg je </span><strong><span>hybrid cloud</span></strong><span>. De kritieke activiteiten zitten dan in de private cloud en de niet-kritieke in de public cloud. Dan kunnen we ook doen aan </span><strong><span>cloud bursting</span></strong><span>, dan vragen we wanneer nodig extra resources aan uit de publieke cloud, en doen we ze weer weg wanneer ze niet meer nodig zijn. </span></p><p><span>Dan heb je ook nog </span><strong><span>multi-cloud</span></strong><span>, dan gebruik je clouds van verschillende providers. Dit wordt in heel veel bedrijven gedaan.</span></p><p>&nbsp;</p><h3 id='cloud-models'><span>Cloud models</span></h3><p><img src="img/systeembeheer/serverless computing with azure functions 1.jpg" referrerpolicy="no-referrer" alt="Serverless Computing with Azure Functions"></p><p>&nbsp;</p><h2 id='infrastructure-as-a-service'><span>Infrastructure-as-a-service</span></h2><p><span>Bij IAAS worden gebruikers voorzien van fysieke of virtuele computatie-, storage- en netwerkresources. </span></p><p><span>Er zijn enkele verschillende soorten </span><strong><span>offerings</span></strong><span>:</span></p><ul><li><p><span>Closed IAAS</span></p><ul><li><p><span>Amazon, Azure, Google, ...</span></p></li></ul></li><li><p><span>Container-as-a-service offerings</span></p></li><li><p><span>Open IAAS</span></p><ul><li><p><span>OpenStack</span></p></li></ul></li></ul><p><span>Een belangrijk begrip in dit hoofdstuk is </span><strong><span>multi-tenacy</span></strong><span>. Een fysieke computer wordt gedeeld door meerdere gebruikers. Hoe wordt dit mogelijk gemaakt?</span></p><ul><li><p><span>Door middel van </span><strong><span>abstractie</span></strong></p><ul><li><p><span>We maken een abstract model van hoe een generische resource eruit zou moeten zien (processor, memory, ...)</span></p></li></ul></li><li><p><span>Door </span><strong><span>virtualisatie</span></strong><span> is er geen afhankelijkheid op fysieke resources. </span></p><ul><li><p><span>Services zijn meestal gebaseerd rond virtuele machines</span></p></li></ul></li><li><p><span>Abstractielaag zorgt soms wel voor verlaagde </span><strong><span>performance</span></strong></p></li></ul><p>&nbsp;</p><h3 id='virtualisatie'><span>Virtualisatie</span></h3><figure class='table-figure'><table><thead><tr><th><img src="img/systeembeheer/image-20230611135946893.png" alt="image-20230611135946893" style="zoom:67%;" /></th><th><img src="img/systeembeheer/image-20230611135957804.png" alt="image-20230611135957804" style="zoom:67%;" /></th></tr></thead><tbody></tbody></table></figure><p><span>Voor virtuele machines in de cloud wordt typisch generische hardware gebruikt. Daarboven zit dan een virtualisatielaag waarboven er virtuele hardware wordt gesimuleerd. Hier zijn een aantal voordelen van virtualisatie:</span></p><ul><li><p><u><span>VM Isolatie</span></u><span> </span></p><ul><li><p><span>Secure multiplexing</span></p><ul><li><p><span>Op een veilige manier meerdere gebruikers/applicaties op dezelfde hardware zetten zonder dat ze kunnen interfereren</span></p></li><li><p><span>Moderne processoren hebben betere ondersteuning voor virtualisatie, bv. direct memory access</span></p></li></ul></li><li><p><span>Sterke garanties</span></p><ul><li><p><span>Bug, crashes, virussen in één VM raken niet bij andere VMs (behalve als er bugs in de VM software zitten)</span></p></li></ul></li><li><p><span>Performatie isolatie</span></p><ul><li><p><span>Resources van het systeem partitioneren. Je kan bijvoorbeeld niet over de limiet gaan van de VM, ook al heeft de fysieke machine meer geheugen</span></p></li></ul></li></ul></li><li><p><u><span>Mixed OS environment</span></u></p><ul><li><p><span>Je kan meerdere besturingssystemen op één machine draaien</span></p></li></ul></li><li><p><u><span>VM encapsulatie</span></u></p><ul><li><p><span>We kunnen een VM in een bestand stoppen en bijvoorbeeld doorsturen, met de volledige toestand van het geheugen, applicaties en data.</span></p></li><li><p><span>Dan kunnen we de VM gemakkelijk ergens anders opstarten</span></p></li></ul></li><li><p><u><span>VM Compatibiliteit</span></u></p><ul><li><p><span>Oude legacy applicaties kunnen uitgevoerd worden op VMs</span></p></li><li><p><span>Hardwareonafhankelijk</span></p></li><li><p><span>Create once, run everywhere</span></p></li></ul></li></ul><p>&nbsp;</p><h3 id='virtual-machine-use-cases'><span>Virtual machine use cases</span></h3><ul><li><p><span>Legacy applicaties draaien</span></p></li><li><p><span>Software testing, met een &#39;clean&#39; install van OS en software</span></p><ul><li><p><span>Kan je het ook snel op verschillende besturingssystemen testen</span></p></li></ul></li><li><p><span>Malware testing</span></p><ul><li><p><span>Loslaten in een gecontroleerd systeem</span></p></li></ul></li><li><p><span>Test en development</span></p><ul><li><p><span>Snel test, development en operational servers opdraaien</span></p></li></ul></li><li><p><span>Business continuiteit</span></p><ul><li><p><span>Snel uitrollen op meerdere servers</span></p></li></ul></li><li><p><span>Enterprise desktop</span></p><ul><li><p><span>Beveiligen van unmanaged PCs zonder de autonomie van eindgebruikers op te offeren door een security policy rond desktop virtual machines</span></p></li></ul></li><li><p><span>Server consolidatie</span></p><ul><li><p><span>Kosten reduceren door services op zo weinig mogelijk machines te draaien</span></p></li><li><p><span>Dus meerdere dingen op één machine (consolidatie)</span></p></li></ul></li></ul><p>&nbsp;</p><h3 id='evolutie'><span>Evolutie</span></h3><p><span>De virtualisatie zoals we hem nu kennen is natuurlijk niet in één keer tot stand gekomen. Er zijn meerdere evoluties gebeurd doorheen de jaren.</span></p><ul><li><p><u><span>Eerste generatie</span></u></p><ul><li><p><img src="img/systeembeheer/image-20230611142623021.png" alt="image-20230611142623021" style="zoom: 67%;" /><span> </span></p></li><li><p><span>Full virtualization, de software bootst een volledige fysieke hardware na</span></p></li><li><p><span>Volledig software-based, je hoeft </span><strong><span>niets</span></strong><span> te </span><strong><span>wijzigen</span></strong><span> in het </span><strong><span>guest operating system</span></strong></p></li><li><p><span>De hardware had geen notie van virtualisatie</span></p></li><li><p><span>Het abstracte model van de virtuele machines werd vertaald naar de hardware (binary rewriting)</span></p></li><li><p><span>Grootste </span><strong><span>nadeel</span></strong><span> is </span><strong><span>performantie</span></strong><span> (25-75% tragere memory access, ...)</span></p></li></ul></li><li><p><u><span>Tweede generatie</span></u></p><ul><li><p><img src="img/systeembeheer/image-20230611142640835.png" alt="image-20230611142640835" style="zoom:67%;" /><span> </span></p></li><li><p><span>Paravirtualization</span></p></li><li><p><span>In de VM (guest operating system) een aantal aanpassingen zodat we toch rechtstreeks naar de hardware kunnen.</span></p></li><li><p><span>Het </span><strong><span>nadeel</span></strong><span> is dat de </span><strong><span>guest OS aangepast moest worden</span></strong><span> afhankelijk van de gebruikte hypervisor (spreekt het nut van VMs rechtstreeks tegen)</span></p><ul><li><p><span>Bijvoorbeeld als je VMwareTools installeert zodat je VM minder delay heeft voor de muisinput</span></p></li></ul></li><li><p><span>Het </span><strong><span>voordeel</span></strong><span> is dat het </span><strong><span>sneller</span></strong><span> is dan de vorige generatie</span></p></li></ul></li><li><p><u><span>Derde generatie</span></u></p><ul><li><p><span>Hardware-assisted virtualization: </span><strong><span>hardware weet dat virtualisatie bestaat</span></strong></p></li><li><p><span>Guest OS moet </span><strong><span>niet aangepast</span></strong><span> worden</span></p></li><li><p><span>Je hebt wel twee dingen nodig</span></p><ul><li><p><span>Een </span><strong><span>hypervisor</span></strong><span> die </span><strong><span>hardware acceleratie ondersteunt</span></strong></p></li><li><p><strong><span>Processoren</span></strong><span> die </span><strong><span>hardware acceleratie ondersteunen</span></strong></p></li></ul></li><li><p><span>Hypervisor heeft rechtstreekse access tot RAM, netwerk, storage, ...</span></p></li><li><p><span>Het </span><strong><span>voordeel</span></strong><span> is dat je een </span><strong><span>ongewijzigde OS</span></strong><span> kan draaien zonder problemen aan hoge performantie, maar je moet wel software hebben die dat ondersteunt.</span></p></li><li><p><span>Het </span><strong><span>nadeel</span></strong><span> is de </span><strong><span>startup time</span></strong><span> van de VM, want deze moet helemaal opstarten zoals een gewone PC. Dit probleem heb je eigenlijk met alle VMs.</span></p><ul><li><p><span>Bij een container heb je dit probleem niet want deze heeft al deze rommel niet volgens Bruno</span></p></li><li><p><span>Bij een site zoals Zalando is deze vertraging geen probleem, maar bij Ticketmaster, waar het plots kan dat er duizenden mensen tegelijk refreshen is dit wel erg.</span></p></li></ul></li></ul></li></ul><p>&nbsp;</p><h3 id='os-level-virtualization'><span>OS-level virtualization</span></h3><p><span>Er is ook een vierde aanpak van virtualisatie. OS-level virtualisatie wordt op het niveau van het besturingssysteem gedaan. Dit wordt vaak gebruikt voor </span><strong><span>containers</span></strong><span>. Het voornaamste voordeel hiervan is </span><strong><span>densiteit</span></strong><span>, want containers hebben niet alle extra bagage die bij een VM zit (zoals een OS en bios). Ze nemen dus veel </span><strong><span>minder plaats</span></strong><span> in. </span></p><p><span>Je kan als je containers gebruikt met dezelfde hardware drie keer meer servers opstarten als wanneer je VMs gebruikt. Dit werd vooral gebruikt in de hosting markt.</span></p><p>&nbsp;</p><h4 id='os-level-vertualization-vs-vm-based-virtualization'><span>OS-level vertualization vs VM-based virtualization</span></h4><figure class='table-figure'><table><thead><tr><th><img src="img/systeembeheer/image-20230611150152617.png" referrerpolicy="no-referrer" alt="image-20230611150152617"></th><th><img src="img/systeembeheer/image-20230611150204145.png" referrerpolicy="no-referrer" alt="image-20230611150204145"></th></tr></thead><tbody><tr><td><span>- Virtuele machines zijn volledig geïsoleerd </span><br /><span>- Elke VM heeft zijn eigen OS</span><br /><span>- De hypervisor regelt toegang tot de gedeelde hardware</span></td><td><span>- De kernel van de host heeft meerdere process spaces</span><br /><span>- Containers zijn </span><strong><span>lightweight</span></strong><span>, ze delen de kernel van de host OS</span><br /><span>- Elke container heeft wel zijn eigen root file system</span></td></tr></tbody></table></figure><p><span>Je ziet dat in de afbeelding rechts er geen kernel en operating system in de container hoeven te zitten. Dan hoeft deze niet opgestart te worden. Containers zijn wel potentiëel minder veilig, want als er een exploit zit in het onderliggende besturingssysteem, zou het kunnen dat we vanuit één container toegang krijgen tot de andere. Bij een type 1 hypervisor heb je dit probleem niet, want de VMs zijn door hardware van elkaar gescheiden.</span></p><p>&nbsp;</p><h3 id='containers'><span>Containers</span></h3><p><span>Containers </span><strong><span>delen dezelfde OS/kernel</span></strong><span> en zijn veel </span><strong><span>lichter</span></strong><span> dan virtualisatie met een hypervisor. Ze kunnen met de host communiceren via standaard system calls. Bovendien is elke container </span><strong><span>logisch onafhankelijk</span></strong><span> van de andere containers en moet hij maar een kleine hoeveelheid data (applicatiedata) bijhouden. Een container kan ook op </span><strong><span>pauze</span></strong><span> gezet worden en op een andere machine verdergezet worden.</span></p><p><span>De voordelen van containers zijn:</span></p><ul><li><p><span>Snellere start-up tijd</span></p></li><li><p><span>Density</span></p><ul><li><p><span>Je kan op één fysieke host veel meer containers draaien dan VMs, want containers hebben slechts één OS per fysiek systeem nodig hebben.</span></p></li></ul></li><li><p><span>Potentieel beter management</span></p><ul><li><p><span>Want de gedeelde kernel heeft een beter zicht op het resource gebruik van alle containers </span></p></li><li><p><span>Bij hypervisors moet je allerlei trucjes gebruiken om ze goed te beheren</span></p></li></ul></li><li><p><span>Meer containers = meer winst</span></p></li></ul><p>&nbsp;</p><h3 id='overzicht'><span>Overzicht</span></h3><p><em><span>&quot;De kans dat dit wordt gevraagd op het examen is zeer groot&quot; - Bruno</span></em></p><figure class='table-figure'><table><thead><tr><th><span>Hypervisor</span></th><th><span>Container</span></th></tr></thead><tbody><tr><td><span>One real hardware, many virtual hardwares, many OSs</span></td><td><span>One real hardware, no virtual hardware, one kernel, many user space application instances. Hardware acceleratie is dus moeilijker</span></td></tr><tr><td><span>High versatility, can run different OSs</span></td><td><span>Hier kan je bijvoorbeeld geen DOS appllicatie mee draaien</span></td></tr><tr><td><span>Lower density</span></td><td><span>Higher density</span></td></tr><tr><td><span>Virtualization/emulation overhead (derde generatie wel wat minder)</span></td><td><span>Near-native performance, almost no overhead</span></td></tr><tr><td><span>Hardware-enforced isolation</span></td><td><span>Software-enforced isolation (minder veilig)</span></td></tr><tr><td><span>Size: potentially large (OS in VM)</span></td><td><span>Size: potentially small</span></td></tr><tr><td><span>Boot time: relatively high</span></td><td><span>Boot time: fast</span></td></tr></tbody></table></figure><p><span>Bij moderne technologie is de lijn tussen VM-virtualisatie en containervirtualisatie wat vager. Er zijn ook VMs met minimal OS layers, of containers die een minimal OS layer hebben. Er zijn ook containers met hardware-enforced isolation (microVM).</span></p><p>&nbsp;</p><h3 id='open-iaas-offerings'><span>Open IAAS offerings</span></h3><h4 id='openstack'><span>Openstack</span></h4><p><img src="img/systeembeheer/image-20230611161750367.png" alt="image-20230611161750367" style="zoom:50%;" /></p><p><span>Openstack is een softwareplatform dat je toelaat om zelf een IAAS platform op te zetten, zelfs op hardware die je huurt van grote providers. Typisch doe je het wel op je eigen cloud. </span></p><ul><li><p><span>Openstack is het meest gebruikte IAAS open source IAAS framework.</span></p></li><li><p><span>Openstack is wel heel uitgebreid en ingewikkeld.</span></p></li></ul><p><small><span>00:18:00</span></small></p><h4 id='apache-cloudstack'><span>Apache Cloudstack</span></h4><p><img src="img/systeembeheer/image-20230611161814134.png" referrerpolicy="no-referrer" alt="image-20230611161814134"></p><ul><li><p><span>Tweede meest gebruikte open-source IAAS</span></p></li><li><p><span>Veel minder uitgebreid dan openstack, maar wel makkelijker te installeren</span></p></li><li><p><span>API compatibel met AWS voor oganisaties die een hybrid cloud willen</span></p></li></ul><p>&nbsp;</p><h4 id='opennebula'><span>Opennebula</span></h4><p><img src="img/systeembeheer/image-20230611162326945.png" alt="image-20230611162326945" style="zoom:67%;" /></p><ul><li><p><span>Veel minder uitgebreid dan openstack, maar wel makkelijker te installeren</span></p></li><li><p><span>Gebruikt door sommige hele grote bedrijven (Akamai, booking.com)</span></p></li><li><p><span>Er zit een beetje minder drive achter dan bij de andere oplossingen</span></p></li><li><p><span>Bruno zegt dat hij er niet voor zou kiezen</span></p></li><li><p><span>Heeft veel geld opgeslokt</span></p></li></ul><p>&nbsp;</p><h4 id='eucalyptus'><span>Eucalyptus</span></h4><ul><li><p><span>Niet veel bedrijven gebruiken het, laatste release in 2018</span></p></li><li><p><span>Het is eigenlijk dood</span></p></li><li><p><span>Focus op een AWS compatibele private en hybrid cloud</span></p></li></ul><p>&nbsp;</p><h3 id='iaas-cloud-standardisation'><span>IAAS cloud standardisation</span></h3><p><span>Er zijn een aantal standaarden om ervoor te zorgen dat je van één provider over kan naar een andere:</span></p><ul><li><p><u><span>Open virtualization format (OVF)</span></u></p><ul><li><p><span>Beschrijft een manier om een virtuele machine in een bestand te steken</span></p><ul><li><p><span>Bevat OVF descriptor: XML die de ingepakte VM beschrijft (naam, requirements, ...)</span></p></li><li><p><span>Disk images</span></p></li><li><p><span>Certificaten en licenties</span></p></li></ul></li><li><p><span>Dan kan je je VM gewoon naar ergens anders verplaatsen</span></p></li></ul></li><li><p><u><span>Open cloud computing interface (OCCI)</span></u></p><ul><li><p><img src="img/systeembeheer/image-20230611163633776.png" alt="image-20230611163633776" style="zoom:67%;" /><span> (figuur kennen)</span></p></li><li><p><span>Vermijdt het gebruik van proprietaire IAAS APIs</span></p></li><li><p><span>Dan zijn de commando&#39;s om VMs te starten en te stoppen overal hetzelfde</span></p></li><li><p><span>Werkt met een RESTful protocol voor deployment, automatisch schalen, monitoring, network en storage resources.</span></p></li><li><p><span>Ondersteund door OpenStack, OpenNebula, Cloudstack, Amazon AWS</span></p></li><li><p><span>Niet ondersteund door Azure en Google Cloud, daarom is de standaard waarschijnlijk gestorven. De laatste versie was in 2015</span></p></li></ul></li><li><p><u><span>Cloud infrastructure management interface (CIMI)</span></u></p><ul><li><p><span>Net hetzelfde als OCCI</span></p></li><li><p><span>Laatste versie in 2016</span></p></li><li><p><span>Er is alleen een implementatie voor Openstack, dus het heeft niet zo veel nut.</span></p></li></ul></li><li><p><u><span>Cloud data management interface (CDMI)</span></u></p><ul><li><p><span>Voornamelijk bedoeld om storage to koppelen aan draaiende VMs</span></p></li><li><p><span>RESTful standaard voor storage, gebruikers exporteren, data tussen cloud systemen verplaatsen, ...</span></p></li><li><p><span>Laatste versie in 2014</span></p></li></ul></li></ul><p><span>Zowel OCCI en CIMI zijn weinig gebruikt, de standaard is nu Amazon EC2 (elastic cloud). Het is eigenlijk geen standaard want het is van Amazon, maar iedereen gebruikt het. EC2 heeft een REST API en een hele boel SDKs voor verschillende programmeertalen.</span></p><p><span>Azure en Google Cloud voorzien gelijkaardige applicaties.</span></p><p>&nbsp;</p><h4 id='multi-cloud-development'><span>Multi-cloud development</span></h4><p><span>Een multi-cloud development library voorziet een API die abstractie maakt van de vershillen tussen verschillende cloud-providers. Er zijn een aantal implementaties:</span></p><ul><li><p><span>Apache libcloud</span></p><ul><li><p><span>Open-source python toolkit om te interageren met verschillende cloud providers via één API</span></p></li><li><p><span>De API houdt zich bezig met compute, storage, load balancing, DNS, container virtualisatie</span></p></li><li><p><span>Wordt wel nog actief ontwikkeld</span></p></li><li><p><span>Je moet maar één keer code schrijven en kan dan kiezen welke cloud driver je gebruikt</span></p></li><li><p><span>Dan is het gemakkelijk om te switchen tussen cloud providers</span></p></li></ul></li><li><p><span>Apache Jclouds</span></p><ul><li><p><span>Iets minder populair dan de python versie, maar zelfde principe</span></p></li></ul></li><li><p><span>Andere</span></p><ul><li><p><span>Pkgcloud</span></p><ul><li><p><span>Node.js library</span></p></li></ul></li><li><p><span>Libretto</span></p><ul><li><p><span>Golang</span></p></li></ul></li></ul></li></ul><h4 id='open-containers-initiative-oci'><span>Open containers initiative (OCI)</span></h4><p><span>OCI heeft hetzelfde doel als de standaarden die we hierboven hebben besproken, maar dan op containers. Er zijn twee manieren waarop dit wordt gedaan:</span></p><ul><li><p><span>Runtime specification (runtime-spec)</span></p><ul><li><p><span>Een API die standaardiseert hoe we de containers starten, stoppen, pauzeren, ...</span></p></li></ul></li><li><p><span>Image specification (image-spec)</span></p><ul><li><p><span>Zoals OVF, maar dan voor containers</span></p></li><li><p><span>Vertelt hoe je een container in een file steekt</span></p></li></ul></li></ul><p>&nbsp;</p><h4 id='container-networking-interface-cni'><span>Container networking interface (CNI)</span></h4><p><span>CNI voorziet een interface tussen de container runtime in de netwerkimplementatie. CNI voorziet ook third-party plugins voor moeilijkere oplossingen. Het is een standaard die beschrijft hoe containers een IP-adres krijgen, hoe ze bereikbaar zijn, hoe ze aan routering doen, ... CNI wordt onder andere door Kubernetes gebruikt.</span></p><p>&nbsp;</p><h2 id='platform-as-a-service-paas'><span>Platform-as-a-service (PAAS)</span></h2><p><span>We nemen de afbeelding van daarstraks er weer bij:</span></p><p><img src="img/systeembeheer/serverless computing with azure functions 1.jpg" referrerpolicy="no-referrer" alt="Serverless Computing with Azure Functions"></p><p><span>Bij PAAS moet je je geen zorgen meer maken om de runtime, middleware en OS, zoals bij VMs. Je moet je enkel bezighouden met de applicatie en zijn data. Het zijn vooral web-based applicaties die je toelaten om snel een applicatie te bouwen. Typisch krijg je een soort drag-and-drop interface om applicaties aan elkaar te plakken. </span></p><p><span>Een aantal voorbeelden zijn:</span></p><ul><li><p><span>Google App engine</span></p></li><li><p><span>Aws elastic beanstalk</span></p></li><li><p><span>Microsoft Azure web apps</span></p></li><li><p><span>Salesforce</span></p></li></ul><p><span>Er zijn ook open-source alternatieven:</span></p><ul><li><p><span>RedHat Openshift</span></p></li><li><p><span>Cloud foundry</span></p></li><li><p><span>Dokku</span></p></li><li><p><span>Flynn</span></p></li></ul><h3 id='red-hat-openshift'><span>Red hat openshift</span></h3><p><span>Openshift is meer een soort managed kubernetes. Dit is nuttig als je kubernetes wilt gebruiken, maar het zelf niet wilt onderhouden. Openshift heeft ook een aantal extra dingen zoals:</span></p><ul><li><p><span>Geïntegreerde CI/CD pipelines</span></p></li><li><p><span>Applicaties kunnen in verschillende talen geschreven worden</span></p></li><li><p><span>Kan op verschillende cloud providers gehost worden</span></p></li><li><p><span>Ondersteuning voor private cloud</span></p></li><li><p><span>Een marketplace voor container images</span></p></li></ul><p><span>De voordelen zijn:</span></p><ul><li><p><span>Open-source distributie van kubernetes</span></p><ul><li><p><span>Dev-ops tools bovenop kubernetes</span></p></li></ul></li><li><p><span>Portability: volgt OCI standaarden </span></p></li><li><p><span>Gecentraliseerd platform voor zowel on-premise als hybrid in de public cloud</span></p></li><li><p><span>Health management via web interface</span></p></li><li><p><span>Mature en gemakkelijk te gebruiken web UI</span></p></li></ul><p><span>Nadelen</span></p><ul><li><p><span>Vreselijk duur</span></p></li><li><p><span>Opinionated kubernetes</span></p><ul><li><p><span>Je kan sommige dingen niet doen</span></p></li><li><p><span>Er zijn dingen toegevoegd die eigenlijk niet in kubernetes zitten</span></p></li></ul></li></ul><p>&nbsp;</p><h3 id='kubernetes-vs-openshift'><span>Kubernetes vs openshift</span></h3><figure class='table-figure'><table><thead><tr><th><span>Parameter</span></th><th><span>Kubernetes</span></th><th><span>Openshift</span></th></tr></thead><tbody><tr><td><span>Origin</span></td><td><span>Open-source project/framework, geen product</span></td><td><span>Product met veel variaties. OpenShift Origin is open source, maar dit is eigenlijk niet de beste versie. </span></td></tr><tr><td><span>Installation</span></td><td><span>Kan op bijna elke linux distro geïnstalleerd worden</span></td><td><span>Gelimiteerd, voornamelijk Red Hat enterprise linux (RHEL)</span></td></tr><tr><td><span>Key Cloud Platforms</span></td><td><span>GKE op Google cloud, EKS op amazon AWS en AKS op Microsoft azure.</span></td><td><span>Red hat ondersteunt AWS en Azure</span></td></tr><tr><td><span>Security &amp; Authentication</span></td><td><span>Well defined, maar niet zo strict als openshift. Je moet nog veel zelf doen om het veilig te krijgen.</span></td><td><span>Strictere security policies en authenticatiemodellen</span></td></tr><tr><td><span>Use of templates</span></td><td><span>Kubernetes Helm templates zijn flexibel en makkelijk te gebruiken</span></td><td><span>Openshift templates zijn minder gebruiksvriendelijk en flexibel</span></td></tr><tr><td><span>Releases</span></td><td><span>4/jaar</span></td><td><span>3/jaar</span></td></tr><tr><td><span>CI/CD</span></td><td><span>Mogelijk met Jenkins maar niet geïntegreerd in kubernetes</span></td><td><span>Geïntegreerd met Jenkins</span></td></tr><tr><td><span>Learning curve</span></td><td><span>Geen gemakkijke web UI</span></td><td><span>Gebruiksvriendelijke web console</span></td></tr><tr><td><span>Initial rollout</span></td><td><span>Moeilijk als nieuwe onderdelen moeten geïnstalleerd worden (bv. dashboard)</span></td><td><span>All-in-one oplossing</span></td></tr></tbody></table></figure><p>&nbsp;</p><h3 id='cloud-foundry'><span>Cloud foundry</span></h3><ul><li><p><span>Cloud foundry is ontwikkeld door VMware in 2011 (dus voor kubernetes)</span></p></li><li><p><span>Orchestreert applicaties. Je kan een applicatie bouwen en cloud foundry houdt zich bezig met de rest.</span></p></li><li><p><span>Apps draaien op </span><strong><span>Diego Cells</span></strong></p><ul><li><p><span>Gelijkaardig aan een container</span></p></li><li><p><span>Die Diego Cells werden dan eigenlijk op VMs geïnstalleerd</span></p></li><li><p><span>Later hebben ze Diego Cells vervangen door een eigen kubernetes versie (KubeCF). </span></p></li></ul></li><li><p><span>Voordelen</span></p><ul><li><p><span>Open source</span></p></li><li><p><span>Portability: makkelijk switchen tussen providers. CF voorziet de middleware tussen je applicatie en de IAAS provider.</span></p></li><li><p><span>Autoscaling: automatisch omhoog en omlaag scalen op basis van load</span></p></li><li><p><span>Gecentraliseerd platform administratie en logging</span></p></li><li><p><span>Applicatie health management</span></p></li><li><p><span>Ondersteuning voor verschillende SaaS providers (AWS, Azure, OpenStack, Google Cloud, ...)</span></p></li></ul></li></ul><p><span>Cloud foundry was op papier een hele goede optie, maar als je plots moet overschakelen op kubernetes zal je applicatie nooit zo goed werken als wanneer je van het begin kubernetes had gebruikt.</span></p><p>&nbsp;</p><h3 id='cloud-foundry-vs-openshift'><span>Cloud foundry vs openshift</span></h3><figure class='table-figure'><table><thead><tr><th><span>Parameter</span></th><th><span>Cloud Foundry</span></th><th><span>OpenShift</span></th></tr></thead><tbody><tr><td><span>Container orchestratie</span></td><td><span>Eerst Diego, nu kubernetes</span></td><td><span>Had van in het begin kubernetes</span></td></tr><tr><td><span>Infrastructuur</span></td><td><span>Draait liefst op VMware Origin, maar kan ook op bare metal</span></td><td><span>Kan draaien op RHEL of bare metal</span></td></tr><tr><td><span>Minimal deveoper version</span></td><td><span>CF Dev</span></td><td><span>Minishift of Code-ready containers</span></td></tr><tr><td><span>Service registry and discovery</span></td><td><span>Consul en Eureka</span></td><td><span>Eigen tooling en multicast</span></td></tr><tr><td><span>Zero downtime deployments</span></td><td><span>Blue-green deployments: twee identieke versies draaien in productie. Updates overschrijven de productie versie die offline is, waarna de load naar deze machine wordt gestuurd</span></td><td><span>Gebruikt kubernetes zero downtime deployments</span></td></tr><tr><td><span>Build mechanism</span></td><td><span>Buildpacks: je geeft je source code en er wordt vanzelf een container van gemaakt en gedeployed. Je bent afhankelijk van welke buildpacks er beschikbaar zijn.</span></td><td><span>Source to image conversion van source code van git repo naar docker images, waardoor ontwikkelaars zich niet moeten bezighouden met dockerfiles enzo.</span></td></tr></tbody></table></figure><p><span>Bruno zegt dat je best dat cloud foundry gaat uitfaseren. </span></p><p>&nbsp;</p><h3 id='paas-cloud-standardisation'><span>PAAS cloud standardisation</span></h3><p><span>Er zijn ook een aantal standaarden voor PAAS:</span></p><ul><li><p><u><span>Cloud application management for platforms (CAMP)</span></u></p><ul><li><p><span>Ontwikkeld door Oasis</span></p></li><li><p><span>Een taal die de applicatieartefacten en de services die nodig zijn om ze uit te voeren en verbinden beschrijft</span></p></li><li><p><span>Beetje hetzelfde als OCCI voor IAAS</span></p></li><li><p><span>Voorziet een unificatie van management intefaces van PAAS providers d.m.v. REST calls</span></p></li><li><p><span>In theorie zou je dan een applicatie op verschillende PAAS platformen kunnen draaien</span></p></li><li><p><span>Er is een POC op openstack, maar niemand gebruikt het eigenlijk</span></p></li></ul></li><li><p><u><span>Topology and orchestration spec for cloud apps (TOSCA)</span></u></p><ul><li><p><span>Zeer uitgebreide standaard</span></p></li><li><p><span>Een blueprint maken</span></p><ul><li><p><span>Orchestratie van cloud services </span></p></li><li><p><span>Hun relaties </span></p></li><li><p><span>Hoe ze beheerd worden</span></p></li></ul></li><li><p><span>Probleem: de standaard zegt niet &quot;hoe&quot;. De cloud vendor kan dit zelf beslissen.</span></p></li><li><p><span>Implementaties</span></p><ul><li><p><span>Tosca-parser voor OpenStack</span></p></li><li><p><span>OpenTosca</span></p></li><li><p><span>Cloudify</span></p></li></ul></li><li><p><span>Initeel geen industriële uptake</span></p><ul><li><p><span>Maar plots heeft Red Hat de Tosca v2 diss track gedropt</span></p></li><li><p><span>Is nog in ontwikkeling</span></p></li></ul></li></ul></li></ul><h4 id='cloudify'><span>Cloudify</span></h4><ul><li><p><span>Gebruikt Tosca</span></p></li><li><p><span>Composer voor het maken van visuele Tosca blueprints</span></p><ul><li><p><span>Je zou dan in theorie met je blueprint naar een grote cloud provider kunnen gaan en hem vertellen om je applicatie uit te voeren.</span></p></li></ul></li><li><p><span>Wordt gebruikt in het network function virtualization (NFV) domein. </span></p></li><li><p><span>High profile klanten</span></p><ul><li><p><span>Intel, VMware, Atos, KPN, ...</span></p></li></ul></li></ul><p><span>//TODO misschien wat meer uitbreiden</span></p><p>&nbsp;</p><h2 id='software-as-a-service-saas'><span>Software-as-a-service (SAAS)</span></h2><p><span>Dit zijn applicaties zoals, office 365, Dropbox, Google Apps, ... Hier zijn er niet echt standaarden om je te beschermen tegen vendor lock-in. Er zijn een aantal dingen waarmee je best rekening houdt:</span></p><ul><li><p><span>Zorg dat UIs, APIs, protocollen en dataformaten goed gedefineerd zijn</span></p></li><li><p><span>Wanneer mogelijk, vraag om gestandaardiseerde APIs, protocols en dataformaten</span></p><ul><li><p><span>Moeilijk bij hele grote speler als Google natuurlijk</span></p></li></ul></li><li><p><span>Kan je een versie van hun software on-premise draaien?</span></p></li><li><p><span>Is de SaaS oplossing open-source?</span></p></li><li><p><span>Een plan voor wanneer de SaaS niet meer beschikbaar is</span></p></li><li><p><span>Je moet ook zien dat je je data eruit kan krijgen</span></p><ul><li><p><span>Bijvoorbeeld als een open standaard</span></p></li></ul></li><li><p><span>Of dat je je data bij hun kan verwijderen</span></p></li></ul><p>&nbsp;</p><p>&nbsp;</p><h2 id='function-as-a-service-faas'><span>Function-as-a-service (FAAS)</span></h2><p><span>FAAS is eigenlijk een andere naam voor serverless computing. Dan kan je je code uitvoeren zonder dat je servers moet gaan managen. </span></p><ul><li><p><span>Serverless computing</span></p><ul><li><p><span>Typisch kleine code fragmenten snel laten uitvoeren zonder dat je servers moet voorzien. Dan betaal je alleen voor de resources die je gebruikt hebt</span></p></li><li><p><span>De cloud provider beheert dan dynamisch de toewijzing van resources</span></p></li><li><p><span>Voorbeelden</span></p><ul><li><p><span>AWS Lambda</span></p></li><li><p><span>Azure functions</span></p></li><li><p><span>Google cloud functions</span></p></li><li><p><span>Cloud foundry application runtime</span></p></li></ul></li><li><p><span>Nadelen</span></p><ul><li><p><span>Vendor lock-in</span></p><ul><li><p><span>Geforceerde API upgrades</span></p></li><li><p><span>Verhoogde kosten</span></p></li><li><p><span>Veranderende limieten</span></p></li></ul></li><li><p><span>Geen FAAS standaarden om vendor lock-in te vermijden</span></p></li><li><p><span>Weinig tools voor debugging en monitoring</span></p><ul><li><p><span>Hangt af van de vendor</span></p></li></ul></li><li><p><span>Architecturale complexiteit</span></p><ul><li><p><span>Moeilijk om te beslissen wat serverless moet zijn</span></p></li><li><p><span>Hoeveel moet een functie doen</span></p></li></ul></li><li><p><span>Je kan vendor lock-in deels vermijden. Kubernetes heeft sommige extensies waarmee je serverless computing kan doen</span></p></li></ul></li></ul></li></ul><p>&nbsp;</p><h2 id='metal-as-a-service-maas'><span>Metal-as-a-service (MAAS)</span></h2><ul><li><p><span>Software die ervoor zorgt dat je fysieke machines in gebruik kan nemen.</span></p></li><li><p><span>Dit doe je typisch wanneer je geen performantieoverhead van VMs wilt. </span></p></li><li><p><span>MAAS zorgt dan voor de reservatie van de machine en voorziet een platform voor management, installatie, ...</span></p></li><li><p><span>Dit is bijvoorbeeld nuttig voor performantiemetingen</span></p></li></ul><p>&nbsp;</p><h1 id='2---powershell'><span>2 - Powershell</span></h1><p><span>//TODO</span></p><p>&nbsp;</p><p>&nbsp;</p><h1 id='examenvragen'><span>Examenvragen</span></h1><h2 id='voorbeeldvragen'><span>Voorbeeldvragen</span></h2><p><span>Voorbeeldexamenvragen van Bruno:</span></p><ul><li><p><span>What three types of storage virtualization exist? What are their main properties? What benefits and drawbacks do they offer?</span></p></li><li><p><span>What advantages do network-based methods for storage virtualization offer compared to array-based methods?</span></p></li><li><p><span>What three types of network-based storage virtualization exist? What are their main properties?</span></p></li><li><p><span>What is hyperconvergence? Discuss how this can be enabled based on one specific technology that was discussed in this class.</span></p></li></ul><p>&nbsp;</p><h2 id='van-de-les'><span>Van de les</span></h2><p><span>Elke keer dat Bruno zegt dat je iets moet kennen voor het examen:</span></p><blockquote><p><span>Wat wordt bedoeld met Cloud. Leg uit. (Cloud slide 3)</span></p></blockquote><p>&nbsp;</p><blockquote><p><span>Geef de voordelen van virtualisatie.  (Cloud slides 56-59)</span></p></blockquote><p>&nbsp;</p><blockquote><p><span>Hoe is virtualisatie geëvolueerd doorheen de jaren? Leg de verschillende stappen uit en bespreek de veranderingen. Teken de figuurtjes. (Cloud slide 61)</span></p></blockquote><p>&nbsp;</p><blockquote><p><span>Wat is de vierde vorm van virtualisatie? (Cloud slide 68)</span></p></blockquote><p>&nbsp;</p><blockquote><p><span>Leg het verschil uit tussen VM-based virtualisatie en OS-level virtualisatie. Maak een tekening. (Cloud slide 69)</span></p></blockquote><p>&nbsp;</p><blockquote><p><span>Geef de open IAAS oplossingen en beschrijf ze. (Cloud slide 76)</span></p></blockquote><p><span>Openstack is de belangrijkste, maar zeer complex</span></p><p>&nbsp;</p><blockquote><p><span>Welke standaarden zijn er voor virtualisatie? Geef volledige namen (Cloud slide 86)</span></p></blockquote><p>&nbsp;</p><blockquote><p><span>Vergelijk kubernetes met openshift.</span></p></blockquote><p>&nbsp;</p><p>&nbsp;</p><h2 id='van-mij'><span>Van mij</span></h2><blockquote><p><span>Geef een aantal voorbeelden van cloud services.</span></p></blockquote><ul><li><p><span>Online data storage/retrieval</span></p></li><li><p><span>Enable access to online applications</span></p><ul><li><p><span>Gmail, google slides, ...</span></p></li></ul></li><li><p><span>Provide computing platform and computing infrastructure</span></p></li></ul><p>&nbsp;</p><blockquote><p><span>Is IT-as-a-service een nieuw concept?</span></p></blockquote><p><span>Nee, vanaf de jaren 30 (voor computers) verhuurt IBM al hun elektrische accounting machines aan bedrijven om berekeningen te maken. In de 70s was er timesharing en in de 90s was er grid computing. </span></p><p><span>Ik denk dat deze vraag nogal nutteloos is maak ja ik ga hem nu niet verwijderen.</span></p><p>&nbsp;</p><blockquote><p><span>Welke verschillende cloud models zijn er en wat houden ze in? (cloud slide 46, 01h55)</span></p></blockquote><ul><li><p><span>On premises</span></p></li><li><p><span>Infrastructure as a service</span></p></li><li><p><span>Platform as a service</span></p></li><li><p><span>Software as a service</span></p></li></ul><p>&nbsp;</p><blockquote><p><span>Waarom is de performantie van een applicatie op virtuele machines typisch lager dan op fysieke hardware?</span></p></blockquote><p><span>Voor virtuele machines in de cloud wordt typisch generische hardware gebruikt. Daarboven zit dan een abstractielaag waarboven er virtuele hardware wordt gesimuleerd.</span></p><p>&nbsp;</p><blockquote><p><span>Wat zijn de voordelen van containers?</span></p></blockquote></div></div>
+
+<script>(function(){function e(e,n,i){document.addEventListener(e,function(e){if(!e.defaultPrevented)for(var t=e.target;t&&t!=this;t=t.parentNode)if(t.matches(n)){!1===i.call(t,e)&&(e.preventDefault(),e.stopPropagation());break}},!1)}var t=document.body.parentElement,i=[],r=null,o=document.body.classList.contains("typora-export-collapse-outline");function a(){return t.scrollTop}e("click",".outline-expander",function(e){var t=this.closest(".outline-item-wrapper").classList;return t.contains("outline-item-open")?t.remove("outline-item-open"):t.add("outline-item-open"),u(),!1}),e("click",".outline-item",function(e){var t=this.querySelector(".outline-label");location.hash="#"+t.getAttribute("href"),o&&((t=this.closest(".outline-item-wrapper").classList).contains("outline-item-open")||t.add("outline-item-open"),d(),t.add("outline-item-active"))});function s(){var e=a();r=null;for(var t=0;t<i.length&&i[t][1]-e<60;t++)r=i[t]}function n(){c=setTimeout(function(){var n;i=[],n=a(),document.querySelector("#write").querySelectorAll("h1, h2, h3, h4, h5, h6").forEach(e=>{var t=e.getAttribute("id");i.push([t,n+e.getBoundingClientRect().y])}),s(),u()},300)}var l,c,d=function(){document.querySelectorAll(".outline-item-active").forEach(e=>e.classList.remove("outline-item-active")),document.querySelectorAll(".outline-item-single.outline-item-open").forEach(e=>e.classList.remove("outline-item-open"))},u=function(){if(r&&(d(),t=document.querySelector('.outline-label[href="#'+(CSS.escape?CSS.escape(r[0]):r[0])+'"]')))if(o){var e=t.closest(".outline-item-open>ul>.outline-item-wrapper");if(e)e.classList.add("outline-item-active");else{for(var t,n=(t=t.closest(".outline-item-wrapper")).parentElement.closest(".outline-item-wrapper");n;)n=(t=n).parentElement.closest(".outline-item-wrapper");t.classList.add("outline-item-active")}}else t.closest(".outline-item-wrapper").classList.add("outline-item-active")};window.addEventListener("scroll",function(e){l&&clearTimeout(l),l=setTimeout(function(){s(),u()},300)});window.addEventListener("resize",function(e){c&&clearTimeout(c),n()}),n()})();</script></body>
+</html>
