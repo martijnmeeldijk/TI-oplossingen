@@ -17,7 +17,11 @@
   * Being able to apply Infrastructure as Code and automation tools 
   * Being able to configure and deploy a monitoring stack for system administration
 
-# 1 - Cloud
+
+
+
+
+# --- 1 - Cloud ---
 
 ## Cloud
 
@@ -580,15 +584,414 @@ FAAS is eigenlijk een andere naam voor serverless computing. Dan kan je je code 
 
 
 
-# 2 - Powershell
+# --- 2 - Powershell ---
+
+Microsoft PowerShell is een universele automatie-, scripting- en ontwikkelingstaal en is ontwikkeld om het automatiseren van taken zonder kennis van programmeren mogelijk te maken. 
+
+Een aantal nuttige commando's zijn:
+
+* `Get-Alias`: toont de lijst van beschikbare aliasen
+* `Get-Command`: toont de lijst van alle beschikbare commando's
+  * Er zijn vershillende flavours van commando's
+    * De meeste zijn cmdlets, typisch geschreven in andere talen zoals C#
+    * Functies zijn commando's die in PowerShell zelf zijn geschreven
+* `Get-help`: hetzelfde als `man` in Linux
+
+Commando's in PowerShell hebben ook **parameters**. Dit zijn waarden die meegegeven worden aan het commando om zijn gedrag aan te passen. Het nadeel van powershell is dat je niet even `sudo` kan gebruiken bij een commando dat meer rechten nodig heeft. Je moet PowerShell dan opnieuw opstarten als admin.
+
+
+
+## Basic concepts
+
+* Variabelen
+  * Moet je direct een waarde geven
+    * Je kan hem wel op `$null` zetten (dit is wel een variabele die al in PowerShell zit)
+  *  Er zijn ook een aantal built-in variabelen zoals `$MaximumHistoryCount`
+  * Normaal gezien moet een variabele bestaan voordat je hem kan gebruiken (in strict mode)
+  * `$LastExitCode` is wel nuttig om te zien of de vorig uitgevoerde functie is gelukt
+
+
+
+Oké ik was de opname aan het kijken en onze Jericho zegt dat we dit niet moeten kennen voor het examen dus ik ga dit deel niet afmaken. 
+
+
+
+# --- 3 - Windows Server ---
+
+## Servers 
+
+Er zijn drie soorten servers:
+
+* Rack-mountable servers: zitten in een rek
+* Blade servers: zitten in een chassis, pakken minder ruimte in en zijn typisch hot swappable
+* Tower servers: één grote kast die rechtstaat
+
+### Processors
+
+Een server heeft typisch ook één of meerdere processors met een aantal eigenschappen:
+
+* Snelheid
+* Cache
+* Cores
+* Word size (32-bit, 64-bit, ...)
+* Virtualisatietechnologie: hardware support voor virtualisatie
+
+### Geheugen
+
+Het RAM en ROM geheugen van een server noemt met de **primary storage**. Meestal gebruiken servers een soort RAM met **error-correcting code** (ECC). Die er voor zorgen dat je fouten in het geheugen kan detecteren en corrigeren. Er zijn ook een aantal andere soorten RAM voor servers (SDDC, DDDC). Typisch is server RAM kloteduur, en een server heeft geen 8GB, maar honderden GBs aan RAM-geheugen nodig.
+
+Als we praten over **secondary storage**, bedoelen we doorgaans **harde schijven**. Deze zijn typisch hot-swappable en zorgen voor de opslag van grote hoeveelheden data. 
+
+
+
+### Netwerkinterface
+
+Servers hebben meestal meerdere netwerkinterfaces, dit geeft enkele voordelen:
+
+* NIC teaming: verhoogt de bandbreedte van en naar de server
+* Network separation: dan kan je bijvoorbeeld intranet- en internetverkeer scheiden
+
+
+
+## Windows server
+
+Windows server is en besturingssysteem voor servers, gemaakt door Microsoft, en wordt redelijk veel gebruikt. Of het vaker gebruikt wordt dan Linux weet Bruno niet zeker. Ze hebben pas vanaf 2008 een versie uitgebracht zonder UI. Er zijn een aantal **versies** van windows server:
+
+* Windows server **datacenter**
+  * De meest complete versie, vooral voor bedrijven die veel virtualizatie nodig hebben.
+* Windows server **standard**
+  * Typisch voor KMO's. De standaard versie.
+* Windows server **essentials**
+  * Goedkope versie, typisch als je één server hebt
+  * Tegenwoordig is deze versie hetzelfde als standard, maar de licentie is geodkoper
+
+### Features
+
+In Windows server 2019/2022 zijn een aantal nieuwe interessante features:
+
+* Features voor **hybrid cloud**
+  * Hybrid cloud, storage migration, ...
+  * Nu ook ondersteuning voor Azure Stack (Azure op je eigen datacenter)
+* Security features
+  * Ondersteuning voor **shielded VMs**
+  * Nieuwe encryptiestandaarden
+  * Trusted Platform Module 2.0
+* Features voor infrastructuur en performance optimalisatie
+  * Ondersteuning voor monitoring over de hele cluster en grotere hardware
+
+
+
+#### Shielded VMs
+
+<img src="img/systeembeheer/image-20230612141115273.png" alt="image-20230612141115273" style="zoom: 80%;" />
+
+Een shielded VM zorgt ervoor dat je VM wordt uitgevoerd in een **veilige omgeving**, die je verzekert dat er niemand meekijkt met wat je doet. Het opstarten van een shielded VM verloopt in 8 stappen:
+
+1. De gebruiker vraagt een shielded VM aan.
+2. De **host** stuurt informatie over zichzelf naar de **Host Guardian Service (HGS)** met de vraag om toestemming om de VM te starten.
+3. De **Attestation Service** van de HGS kijkt na of de info geldig is en of de **host** **gekend** is.
+4. Als dit oké is krijgt de host een **certificaat** van de HGS.
+5. Nu vraagt de host voor een **key** om de VM te kunnen unlocken, want zonder hem te unlocken kan hij niet opgestart worden. De host stuurt dus deze vraag samen met zijn certificaat naar de HGS.
+6. De **Key Protection Service** van de HGS beslist dan of hij de host voorziet van een sleutel.
+7. De HGS stuurt de **sleutel** naar de host.
+8. De host kan nu de VM **unlocken** en hem starten.
+
+Het is nu onmogelijk om de data en de state van de trusted VM te inspecteren. Dit komt doordat een stuk van de processor, genaamd de **Trusted Platform Module (TPM)** zorgt voor encryptie. De data kan dan enkel **gedecrypteerd** worden met de **sleutels** van de **HGS**. Zo kan hetgene dat uitgevoerd wordt in een bepaald proces op de VM enkele bekeken worden door diegene die het uitvoert.
+
+
+
+#### System insights 
+
+Er zijn een aantal nieuwe features die je meer inzicht bieden in je server. Ze maken gebruik van predictive analysis en nog wat andere bazaar. Dit is niet zo belangrijk.
+
+
+
+#### Azure
+
+Windows server ondesteunt nu **Azure Hybrid Cloud**, dit zorgt voor een verbeterde verbinding tussen on-premise servers en cloud apparaten op Azure. Bovendien bieden ze nu ook een **storage migration service** aan. Dit maakt het makkelijker om data van oude Windows servers, Linux servers of file shares te migreren naar Azure of Windows Server.
+
+
+
+#### Storage replica
+
+Windows server voorziet ook **replicatie** van volumes. Dit kan op twee manieren:
+
+* Synchroon: Als je iets schrijft, krijg je pas een oké als het op all replica's is weggeschreven
+* Asynchroon: je krijgt een oké als het op de eerste replica is weggeschreven, de rest volgt later.
+
+
+
+#### Microsoft defender
+
+Defender voorziet een gecentraliseerd punt voor beveiliging in je bedrijf. Er zitten ook een aantal coole features in. Je kan bijvoorbeeld redelijk gemakkelijk terug gaan in de tijd voor informatie over inbreuken en problemen, maar ook intrusiedetectie en onderzoek naar de oorzaak zijn mogelijk.
+
+
+
+### Administratie
+
+Het ding dat Bruno het meeste stoort is dat er voor elke actie 5 verschillende manieren zijn om hem te doen. Dat is niet erg, maar het probleem is dat elke tool maar ongeveer 60% van de taken kan doen. Dus je hebt heel veel verschillende tool nodig. Dit komt doordat Windows een rommelboel is van aan elkaar geplakte dingen. 
+
+De belangrijkste tool is PowerShell. Als je een goede sysadmin bent, **automatiseer** je **elke taak** die **meerdere keren** uitgevoerd wordt. Typisch gaan servers in een datacenter of in de cloud draaien, dus hopelijk moet je niet elke keer langsgaan of inloggen met remote desktop. Probeer zo veel mogelijk in PowerShell te doen in de remote console.
+
+
+
+### Privileged access workstation
+
+Een **Privileged Access Workstation (PAW)** is een speciale computer van waaruit administratietaken zijn toegestaan. Zo kan niet eender wie vanuit eender waar wijzigingen aanbrengen aan je systeem.
+
+Deze computer heeft typisch een **locked down** configuratie. Er mag enkel geauthoriseerde en gesigneerde software op deze computer aanwezig zijn. Een PAW wordt als volgt geconfigureerd:
+
+* Stel in dat alleen geauthoriseerde en gesigneerde software wordt toegelaten
+* Stel **Credential Guard** in om de wachtwoorden op de computer te beschermen
+* Gebruik **BitLocker** om de opslag en bootomgeving van de computer te versleutelen
+* De computer mag niet gebruikt worden om te browsen of om te mailen. Blokkeer browsen op de PAW lokaal en in de firewall van het netwerk
+* User accounts
+  * Gebruik specifieke user accounts voor sysadmins om op de PAW in te loggen
+  * Een administrator mag niet inloggen met een account dat root privileges heeft op de PAW
+    * Er moet natuurlijk wel één iemand aankunnen, maar alle gewone sysadmins mogen dit niet
+  * Je kan bijvoorbeeld ook de sign-in hours beperken
+  * Voorkom dat de sysadmin accounts op gewone computers kunnen inloggen
+* Stel in dat servers alleen verbindingen accepteren van een sysadmin account op een PAW
+* Gebruik configuuration-management tools om de configuratie van de PAW in de gaten te houden
+* Zorg dat de audit logs van de PAW naar een veilige locatie worden gestuurd
+* Verbied het gebruik van onbekende apparaten zoals USB sticks
+* Blokkeer ongevraagd binnenkomend netwerkverkeer op de PAW
+
+
+
+#### Jump servers
+
+Meestal heb je niet één enkele PAW, want als die dan kapot gaat zit je in de miserie. Als je meerdere PAWs hebt kunnen **jump servers** van pas komen. Deze kan je zien als een soort proxy tussen je PAW en je servers. 
+
+Dan stel je je servers in dat ze enkel verbindingen aannemen van een jump server. Op de jump server zelf kan niemand inloggen, deze combineert het verkeer van de verschillende PAWs. Dit zorgt dat al dit verkeer langs één punt gaat, waardoor je alles goed in de gaten kunt houden. Een jump server zorgt dus voor een **single point of entry** in je datacenter.
+
+
+
+### Windows admin center
+
+Windows admin centrer voorziet een web-based console om je Windows Server remote te beheren. Het handige hieraan is dat elk ding in de interface een powershell commando voorstelt. Je kan dan gewoon dat commando kopiëren en gebruiken om een bepaalde taak te automatiseren.
+
+Het is de bedoeling dat in de toekomst alle grafische management van Windows Server hier naartoe verplaatst, waardoor alles dan achterliggend PowerShell gebruikt.
+
+
+
+### Windows software update service
+
+Windows software update service (WSUS) zorgt ervoor dat je gecontroleerd updates van Microsoft kan uitrollen over je systeem. WSUS zorgt ervoor dat je de updates kan downloaden en zelf beslissen waar en wanneer ze moeten geïnstalleerd worden. Dan moeten de computers in je bedrijf geen Windows update gebruiken, waardoor Patrick van sales niet meer 2 jaar lang op 'skip this version' kan klikken waardoor je hele bedrijf wordt geïnfecteerd met ransomware die alle data vervangt door foto's van de instagram van Wim.
+
+![274888139_1093792608132724_3568095542717038327_n](img/systeembeheer/274888139_1093792608132724_3568095542717038327_n.png)
+
+Het is maar een grapje he ik hou heel veel van Wim. Ik ga je missen broeder.
+
+
+
+## Installatie en configuratie
+
+Windows server heeft een aantal **installatieopties**:
+
+* Desktop experience: standaard windows server met ui
+* Server core: Cli-based, minder verbruik
+* Nano server: laagste verbruik, beschikbaar als container image, geen lokale login mogelijk, moet dus remote.
+
+
+
+Windows heeft ook een soort bestandsformaat waarmee je een hele OS met updates, applicaties en drivers in een image file kan steken. Dit is dan een **image**. Dan kan je de **Deployment Image Servicing and Management (DISM)** tool gebruiken om de images te beheren. Zo kan je direct vertrekken vanuit een image bij een nieuwe machine.
+
+Eén WIM file kan meerdere OS images bevatten. Als je een image mount, kan je er wijzigingen op aanbrengen. Zo kan je er bijvoorbeeld drivers of updates op zetten. 
+
+Door middel van **answer files** kan je ook doen aan unattended installation. Deze file bevat dan het antwoord op elke vraag die tijdens de installatie gesteld wordt. Als je 100 computers moet installeren wil je niet op elke computer opnieuw het toetsenbord op Azerty zetten.
+
+Het is ook mogelijk om een machine te installeren over je **netwerk**. Hoe dat werkt boeit niet volgens Bruno. Wat wel belangrijk is volgens hem is PXE Booting, en daarom krijgt dit van mij wel een aparte titel.
+
+
+
+### PXE Booting
+
+PXE booting zorgt ervoor dat wanneer een lege pc (zonder OS) aangesloten wordt op je bedrijfsnetwerk, deze op kan starten via het netwerk. Typisch gebruik je een DHCP server om deze informatie te voorzien. Dit verloopt in 6 stappen:
+
+<img src="img/systeembeheer/image-20230612155608082.png" alt="image-20230612155608082" style="zoom: 67%;" />
+
+1. De client heeft nog geen IP-adres en verstuurt een `DHCPDISCOVERY` naar het broadcast adres, waarbij hij vermeldt dat hij een PXE boot nodig heeft.
+2. De DHCP-server stuurt een `DHCPOFFER` op het broadcast adres. Als de server informatie over de PXE boot heeft, stuurt hij ze ook door.
+3. De client stuurt een `DHCPREQUEST` op het broadcast adres, waarmee hij zegt dat hij het adres gaat gebruiken. 
+4. De DHCP-server stuurt een `DHCPACK` op het broadcast adres, zo is het IP-adres bevestigd.
+5. De client contacteert de PXE boot server met het Trivial File Transfer Protocol (TFTP) en vraagt naar de boot file vanuit de informatie in stap 2.
+6. De file wordt geladen en uitgevoerd op de client.
+
+Hierdoor heb je dus enkel een BIOS nodig om een PC te kunnen installeren, want alles kan automatisch via het netwerk gebeuren.
+
+
+
+## Registry, services and service accounts
+
+De **registry** is een database de configuratie van je hardware, software en veiligheidsinformatie bevat. Deze worden opgeslagen in de vorm van key-value paren en kunnen aangepast worden vanuit de registry editor. 
+
+Typisch draaien er op je server ook een aantal **services** die je aan of uit kan zetten en aanpassen. Je kan bovendien ook regels instellen die beschrijven wat er moet gebeuren als een service faalt. 
+
+Windows bevat een aantal service accounts. Dit zijn ingebouwde accounts waar je als gebruiker niet op kunt inloggen. De accounts worden gebruikt voor system services. Het kan dat deze accounts zelfs meet rechten hebben dan de root user. Er zijn drie van deze accounts in Windows Server:
+
+* Local system: kan alles
+* Local service: kan zo weinig mogelijk
+* Network services: kan zo weinig mogelijk, maar kan op het netwerk
+
+
+
+## Active Directory
+
+Active Directory is een proprietaire technologie van Microsoft die objecten in een boomstructuur opslaat in een **hiërarchisch, gestructureerd en veilig formaat**. Deze objecten worden uniek geïdentificeerd door een naam en attributen en zijn typisch:
+
+* Gebruikers 
+* Computers
+* Randapparaten
+* Netwerk services
+
+AD **centraliseert** al deze informatie, zodat gebruikers niet zijn verbonden aan één computer. Het maakt beheer ook makkelijker, zo kunnen accounts van mensen die onslagen worden bijvoorbeeld gemakkelijk verwijderd worden. Er zijn ook **AD-aware applicaties** die hun data in de AD kunnen zetten (meestal Microsoft-specifieke applicaties).
+
+Ookal is AD **propriëtair**, zijn er wel een aantal **standaardprotocollen** die je ermee kan gebruiken. Je kan Lightweight Directory Access Protocol (**LDAP**) gebruiken om the authenticeren, data te queryen, ... Met **Kerberos** kan je veilig authenticeren en de identiteit van gebruikers op het netwerk bewijzen.
+
+
+
+### Windows domain
+
+Er zijn twee manieren om de gebruikers, computers, devices en services in je Windows bedrijf te structureren. 
+
+| Domain                                                       | Workgroup                                                    |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| - Dedicated server voorziet services<br />- De server bestuurt beveiliging en permissions voor alle computers op het domein<br />- Veranderingen worden automatisch op alle computers gemaakt | Geen computer heeft controle over een andere computer        |
+| Je kan met één account op eender welke computer op het domein inloggen | Elke computer heeft een aantal accounts, als je hem wilt gebruiken moet je er een bijmaken |
+| Grote schaal (bedrijf): 10-1000en computers                  | Kleine schaal (thuis)                                        |
+| Computers kunnen op verschillende lokale netwerken zitten    | Computers moeten op hetzelfde lokale netwerk zitten          |
+| Gebruikt Active Directory Domain Service (AD DS) role        |                                                              |
+
+### Domain controller
+
+De **domain controller** is het belangrijkste onderdeel van je domain. Dit is de server die zegt wat er mag en wat niet. Hij bevat alle informatie over de AD en is de belanglijkste target voor hackers. Als een hacker hierop binnenraakt heeft hij **domain dominance**, en kan hij doen wat hij wilt met jouw domain. Vanaf dat dit gebeurt moet je de stekker eruit trekken en teruggaan naar de vorige backup. Daarom kan je best de DC met Server Core deployen, dus met zo weinig mogelijk **attack surface** hebt.
+
+Vroeger had je in Windows NT een primare en één of meet backup domain controllers, nu krijgen ze gewoon een nummertje dat hun prioriteit aangeeft. 
+
+
+
+### Domain tree and forest
+
+Een **domain tree** bestaat uit één of meerdere domains. De domains in een tree zijn gelinkt door **transitive trust**. Als A-B en B-C elkaar vertrouwen, zal A ook C vertrouwen. Een **forest** is een collectie van domain trees.
+
+Er zijn **twee** **redenen** om **meerdere domains** in een forest te hebben:
+
+* De organisatie ligt geographisch verspreid, en er zijn problemen met verkeer voor domein replicatie
+  * Als de netwerklink te slecht om elke keer alles over te kopiëren vanuit de andere kant van de wereld
+* De organisatie is zeer groot (honderdduizenden gebruikers)
+
+Een organisatie kan ook **meerdere forests** hebben met **trust** **relaties** tussen deze forests. Hier zijn twee redenen voor:
+
+* Meestal: Eén bedrijf neemt een ander bedrijf over en ze hebben beiden al een forest
+* Minder vaak: Een bedrijf splitst een deel van zichzelf af en gebruikers moeten naar een nieuwe forest gemigreerd worden voordat de splitsing gebeurt.
+
+
+
+### Active directory management
+
+Er zijn ook nog een aantal tools die Microsoft je geeft voor het beheren van je Active Directory:
+
+* Active Directory Administrative Center 
+  * One-stop place used to manage Windows Server's directory services 
+* Active Directory Users and Computers 
+  * Manage users, computers, and relevant information 
+* Active Directory Sites and Services 
+  * Manage replication and services between sites 
+* Active Directory Domains and Trusts 
+  * Manage domains, trusts, and relevant information 
+* Active Directory Module for Windows PowerShell 
+  * Manage the Windows Server's directory services via cmdlets
+
+Ik ga hier niet in detail gaan want Bruno gaat dit sowieso niet vragen. Hij vind dat je gewoon moet weten dat Windows Server basically alle rollen in je bedijf kan overnemen.
+
+
+
+### Organizational Units
+
+Active directory gebruikt **organizational units**. Dit zijn groeperingen (basically folders volgens Bruno) van gebruikers, groepen en computers en vergemakkelijken het organiseren van objecten in de AD.
+
+
+
+### Local accounts
+
+In een AD zijn er 3 soorten accounts:
+
+* Local user profile
+  * Wordt aangemaakt wanneer een gebruiker voor de eerste keer op een computer inlogt
+  * Veranderingen die hierin gemaakt worden, blijven alleen op deze computer 
+* Roaming user profile
+  * Dit is een kopie van de local user profile op bijvoorbeeld een share
+  * Wijzigingen worden gesynchroniseerd
+  * Wordt gedownload op elke computer waarop de gebruiker inlogt
+* Mandatory user profile
+  * Roaming user profile dat op voorhand is geconfigureerd door de admin
+  * Veranderingen in configuratie tijdens de sessie van een gebruiker worden niet opgeslagen
+  * Nuttig wanneer standaardisatie belanglijk is, bijvoorbeeld aan de kassa van de McDonalds
+
+
+
+### Groups
+
+Er zijn twee soorten groepen in een AD:
+
+* Security groups: gebruikt voor permissions
+* Distribution groups: voor email lijsten
+
+Als een server een domain controller wordt, zullen er direct een aantal default groepen aangemaakt worden. Het is natuurlijk belangrijk dat je users in de juiste groepen steekt. 
+
+Met een **group policy** kan je dingen instellen die verplicht zijn in een bepaalde groep, zoals de homepage van de browser of de achtergrond van het bureaublad.
+
+
+
+### Server Roles
+
+In het beste geval heeft een server maar één rol, maar in kleinere bedrijven laat je hem meerdere dingen doen. Een aantal mogelijke rollen zijn
+
+* File and storage
+* Webserver
+* DNS server
+* DHCP server
+* Mail server
+* Database
+* SharePoint
+* Monitoring
+
+Er zijn heel erg veel mogelijke opties. 
+
+
+
+### Virtualisatie
+
+Windows server beschikt over Hyper-V, waardoor virtualisatie mogelijk is. Dat is zo ongeveer wat ik daarover te vertellen heb.
+
+
+
+### Performance monitoring
 
 //TODO
+
+
+
+# --- 4 - Kubernetes ---
+
+
+
+# --- 5 - Monitoring ---
+
+
+
+# --- 6 - Storage Virtualization ---
 
 
 
 
 
 # Examenvragen
+
+Ik heb net een ontdekking gemaakt. Ik weet niet hoe dit mij is ontsnapt, maar blijkbaar zet Bruno een icoontje op elke slide waarvan hij vindt dat je hem moet kennen. Het icoontje in kwestie:
+
+<img src="img/systeembeheer/image-20230612154300787.png" alt="image-20230612154300787" style="zoom:50%;" />
 
 ## Voorbeeldvragen
 
@@ -603,7 +1006,11 @@ Voorbeeldexamenvragen van Bruno:
 
 ## Van de les
 
-Elke keer dat Bruno zegt dat je iets moet kennen voor het examen:
+Elke keer dat Bruno zegt dat je iets moet kennen voor het examen.
+
+
+
+### Cloud
 
 > Wat wordt bedoeld met Cloud. Leg uit. (Cloud slide 3)
 
@@ -639,9 +1046,37 @@ Openstack is de belangrijkste, maar zeer complex
 
 
 
+### Windows server
 
+> Leg het principe van shielded VMs uit aan de hand van een figuur. (Windows server slide 15)
+
+
+
+>  Wat is een Privileged Access Workstation? Hoe wordt deze best geconfigureerd? Wat doet een Jump Server in deze context? (Windows server slide 22)
+
+
+
+> Wat is PXE booting? Leg uit en beschrijf de vershillende stappen. (Windows server slide 35)
+
+
+
+> Wat is Active Directory? Waarvoor wordt het gebruikt en waarom is het nuttig? (Windows server slide 43)
+
+
+
+> Leg het verschil uit tussen een Workgroup en een Domain. Wat komt daar allemaal bij kijken? (Windows server slide 44)
+
+
+
+> Wat is een domain controller? Wat zijn de implicaties?
+
+
+
+> Leg uit: Forest, Domain. Wat zijn de redenen om meerdere domains te hebben
 
 ## Van mij
+
+allemaal nog //TODO
 
 > Geef een aantal voorbeelden van cloud services.
 
@@ -673,6 +1108,9 @@ Ik denk dat deze vraag nogal nutteloos is maak ja ik ga hem nu niet verwijderen.
 
 Voor virtuele machines in de cloud wordt typisch generische hardware gebruikt. Daarboven zit dan een abstractielaag waarboven er virtuele hardware wordt gesimuleerd.
 
-
+//TODO
 
 > Wat zijn de voordelen van containers?
+
+//TODO
+
