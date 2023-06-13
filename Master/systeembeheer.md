@@ -975,6 +975,286 @@ Windows server beschikt over Hyper-V, waardoor virtualisatie mogelijk is. Dat is
 
 # --- 4 - Kubernetes ---
 
+We begonnen met de standaard deployments, waar je software direct op de OS van een server draaide. Daarna begonnen mensen VMs te gebruiken. Nu zitten veel dingen in een container.
+
+Het probleem is nu dat je honderden containers moet beheren. Dit is onmogelijk om manueel te doen. We hebben nood aan een framework voor **container orchestratie.** Dit framework houdt zich bezig met de deployment, schaling en netwerkverbindingen van containers. Dit wordt op een **declaratieve** manier gedaan. Dat betekent dat je zegt wat de **staat** van het systeem moet zijn, niet welke stappen er worden genomen om tot die staat te komen.
+
+Kubernetes was origineel gemaakt door google, maar op een bepaald moment werden ze te groot en hadden ze een ander systeem nodig. Gelukkig heeft google het dan niet verwijderd. Nu wordt het erg veel gebruikt in productie.
+
+Kubernetes maakt **abstractie** van de onderliggende hardware en voorziet een **uniforme interface** die ervoor zorgt dat je workloads de resource pool kunnen gebruiken. Alle services binnen Kubernetes worden automatisch ge**loadbalanced**, en kunnen dus automatisch omhoog en omlaag schalen. Hierdoor zijn ze **self-healing** (de cluster wilt altijd naar de desired state) en is er mogelijkheid tot **seamless upgrading** of **rollback**. 
+
+
+
+Een aantal andere features zijn:
+
+* Automatic bin packing
+  * Doet tetris met de jobs om zo efficiënt mogelijk gebruik te maken van resources
+* Autoscalen van workloads
+* Blue/green deployments
+  * Twee productieomgevingen, één live (blue)
+  * Loadbalancer switchen tussen de twee wanneer er problemen of updates zijn
+* Jobs en cronjobs
+  * Taken en updates
+* Beheer van stateless en stateful applicaties
+  * Stateless: geen context, geen datastore (makkelijk te schalen)
+  * Stateful: heeft dit wel (moeilijker te schalen)
+* Native methodes voor service discovery
+  * Kubernetes weet altijd wat waar staat
+* Gemakkelijke integratatie met 3rd party applicaties
+* Zelfde API over bare metal en cloud
+  * Is niet bij alle Kubernetes distributies hetzelfde
+
+## Architectuur
+
+<img src="img/systeembeheer/image-20230613110808105.png" alt="image-20230613110808105" style="zoom:67%;" />
+
+* End users: gebruikters van onze applicatie
+* Nodes: onze fysieke servers
+  * Eén node kan ook overeenkomen met één VM, maar Bruno zegt dat dat makkelijk kan breken.
+* Control plane: stuurt aan
+
+
+
+## Objecten
+
+De dingen in je cluster worden voorgesteld als Kubernetes **objecten** en worden vastgelegd in een YAML. Alle objecten hebben verplicht:
+
+* `apiVersion`: versie van Kubernetes API die wordt ondersteund door het object
+* `kind`: type van object
+* `metadata.name`: unieke naam van het object
+* `metadata.namespace`: scope van het object. Kunnen gebruikt worden voor afscheiding te creëren. Standaard zijn er al:
+  *  `default`: als je niets anders meegeeft
+  * ``kube-system`: voor objecten die door kubernetes zelf zijn gemaakt
+  * `kube-public`: leesbaar door alle gebruikers, voor bootstrapping en configuratie
+* `metadata.uuid`: id van het object
+
+
+
+## Multi-container Pods
+
+<img src="img/systeembeheer/image-20230613112330244.png" alt="image-20230613112330244" style="zoom:67%;" />
+
+Een **pod** is een verzameling van **één of meerdere** containers met gedeelde volumes, netwerk, namespace. Deze maken deel uit van één context. Typisch maak je een pod **zo klein mogelijk**. Je kan een pod ook altijd aanspreken met REST.
+
+Pods zijn **ephemeraal**, dit betekent dat ze op eender welk moment uitgezet kunnen worden en dat ze geen vast netwerkadres hebben.
+
+Meestal heb je in Kubernetes maar één container per pod, maar je kan er dus ook meerdere hebben. Een pod is dus een **wrapper** rond de containers, en kan dus ook extra **sidecar** containers bevatten die 
+
+Er zijn drie dingen die je hiermee kunt doen:
+
+* Sidecar
+  * Voorziet typisch ondersteunende functies zoals tracing, meshing, logging of monitoring. Bijvoorbeeld Prometheus.
+  * Je kan meerdere sidecars hebben
+* Adapters
+  * Kan bijvoorbeeld de output van de monitoring versimpelen. Dus bijvoorbeeld alleen de interessante dingen eruit halen.
+* Ambassador
+  * Voorziet bijvoorbeeld een verbinding met een database.
+  * Dit is een dure operatie, dus dan kan de ambassador bijvoorbeeld een pool van database verbindingen bijhouden  waarvan je er eentje kan nemen.
+
+
+
+## Labels, annotaties en selectors
+
+**Labels** zorgen ervoor dat alles **los** aan elkaar gekoppeld is. Het zijn key-value pairs die door de user ingesteld worden. Je kan een label aan eender wat hangen in je cluster (pod, host, node, ...). Het is wel belangrijk dat je uniformiteit bewaart als sysadmin. Je kan ook **annotaties** toevoegen, deze zijn extra **metadata**.
+
+<img src="img/systeembeheer/image-20230613113748593.png" alt="image-20230613113748593" style="zoom:50%;" />
+
+**Selectors** gebruiken labels om objecten te filteren en te selecteren. Er zijn verschillende types selectors (`nodeSelector`, ...). Ze zijn nuttig als je bijvoorbeeld je AI moet draaien op een node met een gpu van nvidia. Dan zet je in de selector `gpu: nvidia`
+
+<img src="img/systeembeheer/image-20230613113933892.png" alt="image-20230613113933892" style="zoom:80%;" />
+
+## Storage
+
+Kubernetes voorziet een aantal verschillende manieren om om te gaan met de opslag van data. Hiervoor zijn 4 opties:
+
+* `Volume`
+  * Zit vast aan de lifecycle van een pod. Als de **pod verwijderd** wordt is de **volume weg**. Dit is nuttig voor bijvoorbeeld de cache.
+  * Er kunnen meerdere verschillende volumes aan een pod hangen.
+* `PersistentVolumes`
+  * Blijft bestaan, zelfs als de pod weg is
+  * Een pod kan niet rechtstreeks op een `persistentVolume` gekoppeld worden.
+  * Verschillende access modes zoals: `ReadWriteOnce`, `ReadOnlyMany` en `ReadWriteMany`. Deze zeggen hoe hij gebruikt mag worden. `ReadWriteOnce` is bijvoorbeeld nuttig voor auditing.
+* `PersistentVolumeClaims`
+  * Een aanvraag voor een bepaalde hoeveelheid ruimte op een `persistentVolume`
+  * Dit is belangrijk als de soort storage verandert, want zonder `PersistentVolumeClaims` is er geen **loose cloupling.** 
+  * Is eigenlijk gelijkaardig aan een pod, maar neemt dan storage resouces in plaats van node resources.
+  * Deze hebben ook de **access modes**
+* `StorageClasses`
+  * Is eigenlijk een controller
+  * Zorgt ervoor dat sysadmins niet de hele tijd `persistentVolumes` moeten aanmaken
+  * Een `storageClass` voorziet een manier om de storage te beschrijven die beschikbaar is 
+  * Hierdoor kunnen dynamisch `persistentVolumes` gemaakt worden en is er minder werk voor de sysadmin
+  * `persitentVolumeClaims `worden dan automatisch toegewezen
+  * Het is wel iets complexer om op te stellen
+  * Zie plaatje
+
+
+
+Hier twee mooie plaatjes van dit geheel.
+
+<img src="img/systeembeheer/image-20230613115258804.png" alt="image-20230613115258804" style="zoom:80%;" />
+
+<img src="img/systeembeheer/image-20230613115632285.png" alt="image-20230613115632285" style="zoom:67%;" />
+
+## Nodes 
+
+<img src="img/systeembeheer/image-20230613121651439.png" alt="image-20230613121651439" style="zoom:80%;" />
+
+Een node bestaat uit verschillende delen
+
+* **Kubelet**
+  * Verantwoordelijk voor het beheer van de lifecycle van de node
+  * Het brein
+  * Beheert alleen containers/pods die door kubernetes zijn aangemaakt
+* **Kube-proxy**
+  * Alles wat te maken heeft met netwerk van de node
+  * TCP, UDP, SCTP verbindingen of loadbalancing voor kubernetes services
+  * Zorgt ervoor dat pods naar buiten kunnen communiceren
+* **Container runtime**
+  * Kan de container starten, afbreken en beheren
+  * Verschillende opties (containerd, CRI-O, Kata, Docker, ...)
+
+
+
+## Control plane
+
+![image-20230613122249433](img/systeembeheer/image-20230613122249433.png)
+
+De **control plane** is het brein van Kubernetes en bestaat uit een aantal verschillende onderderelen
+
+* <u>kube-apiserver</u>
+  * Single point of entry voor de control plane
+  * Voorziet een REST interface
+  * Staat in verbinding met **etcd**
+  * Is een soort **gatekeeper** voor de cluster
+* <u>etcd</u>
+  * **Key-value datastore** voor config informatie
+  * Hier zitten alle YAMLs
+  * Is een snel en gedistribueerd systeem
+  * Kan ook netwerkpartities aan (wanneer het netwerk splitst door een fout, leader election doen)
+  * Toegang wordt bestuurd in 4 stappen
+    * Authenticatie: wie ben je
+    * Authorizatie: wat mag je
+    * Admission control: mag je doen wat je wilt doen
+    * Persist: wanneer het vorige succesvol was, wordt de actie opgeslagen indien nodig
+* <u>kube-controller-manager</u>
+  * Probeert de hele tijd de cluster naar de desired state te krijgen
+  * Beheert **control loops** om dit te doen
+  * Houdt de state van de cluster in de gaten via de API server
+  * Loopt over een aantal controllers die elk verantwoordelijk zijn voor één aspect van wat er moet gedaan worden
+    * Node controller: ziet als er een server down is of bijkomt
+    * Replication controller: we willen het correcte aantal replicas van een pod hebben
+    * Service account en token controllers: maken default accounts en API access token
+* <u>kube-scheduler</u>
+  * **Wijst** **pods** toe aan **nodes**
+  * Beslist dus welke nodes welke pods moeten uitvoeren
+  * Doet default aan bin-packing
+  * Je kan requirements instellen
+    * Hardware requirements
+    * Affiniteit/anti-affiniteit: zet mij liefst samen met die service of niet
+    * Labels
+* <u>cloud-controller-manager</u>
+  * Een onderdeel dat de API van Kubernetes omzet naar de API calls van een cloud vendor
+  * De vendors hebben allemaal een implementatie
+  * Heeft een aantal controllers:
+    * Node controller: nodes aanmaken
+    * Route controller: netwerk configureren
+    * Service controller: loadbalancer starten, IP-adressen toewijzen, ...
+
+
+
+Hier is het volledige plaatje:
+
+<img src="img/systeembeheer/image-20230613123810642.png" alt="image-20230613123810642" style="zoom:80%;" />
+
+
+
+## Workloads
+
+Een **workload** is een higher-level object en kan een applicatie of service voorstellen die je op de cluster wilt draaien. Als je een **pod template** voorziet, kan Kubernetes vanzelf pods aanmaken voor een workload. Er zijn een aantal verschillende soorten workloads:
+
+* <u>Replicaset</u>
+  * Voornaamste manier om **pod replicas** en hun lifecycle te beheren
+  * Zorgt ervoor dat er altijd een gewenst aantal pods draaien
+* <u>Deployment</u>
+  * Biedt functionaliteit voor **updates** en **rollbacks**
+  * Is een extentie van replicaset
+  * Wordt gebruikt voor **stateless** appllicaties
+  * Hiervoor zijn twee *strategies*:
+    * **Recreate**: alle huidige pods worden gekilled voordat nieuwe worden aangemaakt
+    * **Rollingupdate**: doorheen de pods gaan en selectief updaten
+      * Dan kan je updaten zonder downtime doordat de loadbalancer het verkeer afleidt tijdens de update
+      * met `maxSurge` kunnen er tijdens een update nieuwe replicas worden toegevoegd
+      * Als er dan een probleem is kan je rollbacken
+  * Met een **loadbalancer** zijn er ook nog andere deployment operaties die je kan doen
+    * Canary release: maak een klein deel van de applicatie een nieuwe versie om te testen. Dan heeft maar een klein deel van de users potentiële bugs
+    * A/B testing: release twee versies, gebruikers krijgen random één van de twee. Dan kan je zien welke versie het best werkt
+* <u>Daemonset</u>
+  * Zorg ervoor dat elke node die aan een bepaald criterium voldoet een instantie van een bepaalde pod draait
+  * Bijvoorbeeld voor monitoring of log forwarding
+  * Heeft ook updatestrategieën
+* <u>Statefulset</u>
+  * Gelijkaardig aan een deployment, maar is **stateful**
+  * Houdt een **unieke identiteit** voor elke pod bij en houdt deez bij wanneer de pod opnieuw opgestart wordt
+* <u>Job en cronjob</u>
+  * Job: een bepaalde taak of script dat uitgevoerd moet worden, typisch wordt hier een minimale pod voor gemaakt
+  * Cronjob: job die regelmatig uitgevoerd moet worden volgens een schema
+
+
+
+## Services
+
+<img src="img/systeembeheer/image-20230613130429264.png" alt="image-20230613130429264" style="zoom:67%;" />
+
+Een **service** voorziet netwerktoegang tot een set van **pods** en dient dus als entry point. De service is eigenlijk ook een soort loadbalancer en krijgt een vast IP-adres en weet welke instanties er achterliggend zitten en kan dus verkeer naar daar doorwijzen wanneer nodig. De dri voornamelijkste service types zijn:
+
+* <u>ClusterIP</u>
+  * Een service die intern moet blijven, wordt ge-exposed op een intern virtueel IP
+  * Bijvoorbeeld een hulpmicroservice
+* <u>NodePort</u>
+  * Extensie van clusterIP
+  * Ook een poort openen op op het IP van elke node 
+    * is bereikbaar van **buiten de cluster**
+    * Je moet wel het IP en de poort weten (IP is meestal niet statisch)
+  * Gebruikers toegang geven tot de service
+  * Sysadmin gaat ook de firewall open moeten zetten
+* <u>LoadBalancer</u>
+  * De standaard manier om services open te zetten voor kubernetes in de cloud
+  * Voorziet een uniek, **publiek toegankelijk IP-adres** die alle verbindingen naar een specifieke service stuurt
+  * Elke service in de cluster zal een LoadBalancer instantie nodig hebben (kan duur worden)
+* <u>Ingress</u>
+  * Is eigenlijk geen service type meer, maar een **controller** die een **set van regels volgt**
+  * Gedraagt zich als een proxy
+  * Nuttig als je **meerdere services** onder **hetzelfde adres** wilt exposen
+  * Complexer om te onderhouden
+
+
+
+## Helm, operators
+
+**Helm** is een command-line package manager voor kubernetes die zich bezig houdt met software updates en installs of dependencies. Dit zijn dag 1 taken. 
+
+**Operators** houden zich bezig met dag 2 management taken zoals monitoring of backups. Zij kijken of alles wel goedloopt.
+
+
+
+## Configuratie
+
+* Configmap
+  * Niet-confidentiele data in key-value paren
+  * Kunnen bijvoorbeeld als environment variables geïnjecteerd worden
+* Secrets
+  * Voor confidentiële data
+  * Je moet een setting aanzetten om ze te encrypteren, anders is het gewoon base64
+
+
+
+## CNCFs open cluster management
+
+Wat als we meerdere Kubernetes clusters willen federeren? 
+
+//TODO
+
 
 
 # --- 5 - Monitoring ---
@@ -1073,6 +1353,58 @@ Openstack is de belangrijkste, maar zeer complex
 
 
 > Leg uit: Forest, Domain. Wat zijn de redenen om meerdere domains te hebben
+
+
+
+### Kubernetes
+
+> Wat is Kubernetes? Wat zijn de belangrijkste concepten?
+
+
+
+> Wat is de high-level architectuur van Kubernetes? Teken en leg uit.
+
+
+
+> Leg uit waarvoor multi-container pods gebruikt kunnen worden
+
+
+
+> Beschrijf labels, annotaties en selectors. Wat zijn ze, wat doen ze en waarom worden ze gebruikt. Geef een eigen voorbeeld.
+
+
+
+> Wat zijn de opties voor storage in Kubernetes?
+
+
+
+> Wat is een storageClass? Leg uit een teken.
+
+
+
+> Teken een Kubernetes node. Leg de vershillende onderdelen uit.
+
+
+
+> Teken de structuur van de Control Plane van Kubernetes en leg uit.
+
+
+
+> Beschrijf Kubernetes aan de hand van de architecturale figuur. Leg elk onderdeel uit.
+
+
+
+> Leg de principes uit van Kubernetes workloads. Doe dit aan de hand van een figuur.
+
+
+
+> Je hebt een applicatie met meerdere services. Hoe zou je dit deployen op Kubernetes?
+
+onderscheid stateful/stateless ...
+
+
+
+> Welke soorten services worden er voorzien door Kubernetes? Leg elke service uit.
 
 ## Van mij
 
