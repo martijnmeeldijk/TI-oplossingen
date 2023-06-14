@@ -1257,13 +1257,313 @@ Wat als we meerdere Kubernetes clusters willen federeren?
 
 
 
-# --- 5 - Monitoring ---
+# --- 5 - Infrastructure as code
+
+Hier is een transcriptie van de laatste 30 seconden van de les van Merlijn waar hij zegt wat je moet kennen. Zo moet je het zelf niet gaan zoeken. :wink:
+
+> Van de verschillende applicaties die ik aangehaald heb, moet je de basis kennen. *eum* Bijvoorbeeld. Hoe werkt die applicatie? Hoe werkt Ansible? Waarom is dat al dan niet declaratief? *eum* Waarvoor kan het gebruikt worden, bijvoorbeeld op het schema, waar op dat schema is het gepositioneerd. Maar je moet bijvoorbeeld niet kunnen uitleggen hoedat die code er specifiek uitziet ofzo. *eum* Van de zaken gelijk de design patterns en de infrastructure as code zelf. Dat moet wel volledig gekend zijn. (10 seconden stilte) Oké als er geen verdere vragen zijn dan zal ik jullie laten. - Merlijn
 
 
 
-# --- 6 - Storage Virtualization ---
+## Levels van automatie
+
+Het doel van **Infrastructure as Code (IaC)** is om de volledige job van de systeembeheerde te automatiseren. De bedoeling is om alles vanaf het opzetten van fysieke servers tot deployen en configureren van software om te zetten in code. Dan kunnen we de tools die we gebruiken voor softwareontwikkeling toepassen op onze infrastructuur.
+
+Doorheen de geschiedenis heeft de automatisatie van systeembeheer verschillende stappen doorlopen:
+
+* <u>Manueel</u>
+  * Er zijn een aantal problemen met manueel systeembeheer.
+  * **Configuration drift**: servers die eerst identiek ingesteld zijn kunnen door updates en kleine veranderingen uiteindelijk meer en meer van elkaar verschillen. Hierdoor kan het plots dat je applicatie werkt op één server, maar niet op de andere.
+  * **Scaling**: als je alle servers manueel moet instellen duurt het natuurlijk klotelang om een heel datacenter op te starten.
+  * **Unexpected problems**: Wat als het datacenter in brand vliegt? Als je niet werkt met IaC moet je helemaal opnieuw beginnen met de setup van je datacenter. 
+* <u>Scripting</u>
+  * We gebruiken bash of powershell om taken te automatiseren? Natuurlijk zijn er ook weer problemen als je te veel van scripting afhangt
+  * **Automation fear cycle**: je hebt scripts die automatisch dingen kunnen regelen in het systeem. Op een moment moet je manueel ingrijpen omdat er iets kapot gaat en wijzig je iets in de configuratie van het systeem. Nu weet je eigenlijk niet of je automatisatiescript nog juist werkt. En dus durf je ze niet meer uit te voeren en doe je alles manueel.
+  * **Knowledge**: Er zijn al te weinig mensen in de IT. Specifieke scripts zijn anders voor elk bedrijf waardoor het moeilijk is om nieuwe mensen aan te nemen. Je moet elke keer mensen trainen om te kunnen werken met jouw scripts, wat ook weer tijd en geld kost.
+  * **Maintenance**: Het grootste deel van het werk dat is software wordt gestoken is onderhoud. Je moet dus ook constant je eigen scripts constant opdaten als de applicatie veranderd, omdat je code onderhevig is aan **code rot**.
+  * **Heruitvinden van het wiel**: Je moet eigenlijk constant dingen maken die al bestaan als je scipting gebruikt.
+* <u>Code describing infrastructure</u>
+  * Een systeembeheerder beschrijft wat de **desired state** is van de infrastructuur. Deze geeft hij door aan **management sofware**, die te allen tijde tracht de infrastructuur in deze staat te krijgen. Bij IaC maken we dus code die onze infrastructuur beschrijft.
+  * Het doel van IaC is om de **consistentie** en **betrouwbaarheid** van het systeem te verbeteren door menselijke fouten en **environment drift** te vermijden. 
+  * Door IaC **maakt** de infrastructuur eigenlijk zijn **eigen documentatie**
+  * Het vergemakkelijkt de volgende dingen:
+    * **Schaalbaarheid**
+    * **Deployment en wijzigingen**
+    * **Disaster recovery**
+    * **Herbuikbaarheid**
+    * **Workflow automation**
+* Operators en abstractions
+  * zie [operators en abstractions](#operators-and-abstractions) aan het einde van dit hoofdstuk
+  * Dit is meer de toekomst
 
 
+
+
+
+Kleine sidenote van Merlijn. Er is een vershil tussen **fault tolerance** en **disaster recovery**:
+
+* Fault tolerance:
+  * We zetten meer instanties op van onze services, dus duplicatie en backups
+  * We moeten wel manueel onze service terug aanpassen om hem te dupliceren
+  * Als één server platgaat moeten we ingrijpen voordat de andere ook platgaat
+* Disaster recovery
+  * Ga uit van het worst-case scenario. Wat doen we als alles volledig naar de klote is?
+  * We slaan alles op als code, waardoor we het zo snel mogelijk kunnen terugzetten
+
+
+
+## Geschiedenis
+
+<img src="img/systeembeheer/image-20230614165812887.png" alt="image-20230614165812887" style="zoom: 33%;" />
+
+De eerste instantie van IaC was CFEngine, ontwikkeld door een fysicus genaamd Mark. Mark vond het vervelend om de hele tijd servers te configureren. Zijn oplossing was om een **declaratieve** beschrijving te voorzien van een **gewenste staat** van het systeem, waardoor je van een onverwachte beginstaat kan **convergeren** naar een verwachte eindstaat. De manier waarop die staat wordt bereikt wordt beslist door de software. Mark vergeleek die met een zwart gat. Waar je ook bent, zul je er uiteindelijk in belanden.
+
+
+
+## Terminologie
+
+IaC verschilt van scripting in het volgende opzicht. Bij scripting is kennis over de beginstaat vereist, dus kan je infrastructuur niet altijd convergeren naar de gewenste staat.
+
+Een belangrijke nadruk is het verschil tussen de woorden **imperatief** en **declaratief**. Als we bijvoorbeeld een programma dat een lijst sorteert op **imperatieve** wijze programmeren, zeggen we stap voor stap **hoe** het programma dit moet doen. Als we **declaratief** werken, zeggen we simpelweg **wat** het programma moet doen. In dit geval is dat de lijst sorteren. Hoe dit gebeurt, houden wij ons niet mee bezig. Hierdoor kan de computer bijvoorbeeld zelf beslissen om taken te parallelliseren.
+
+
+
+Merlijn gaf een mooi overzichtje van de belangrijke termen in dit hoofdstuk, dus ik neem het over:
+
+* State: infrastructuur, software, configuratie, processen
+* Desired state: wat de gebruiker wilt dat de staat is 
+* Desired state priciple: een designpatroon
+* Model of Manifest: configuratiebestand dat de desired state beschrijft
+* Declaratief: beschrijft resultaat
+* Imperatief: beschrijft acties
+
+
+
+<img src="img/systeembeheer/image-20230614170550216.png" alt="image-20230614170550216" style="zoom:50%;" />
+
+Een configuratiebeheersysteem of **orchestrator** krijgt de desired state binnen en gaat op basis daarvan de service aanpassen. Als een configuratiebeheersysteem werkt op basis van **idempotentie**, wat betekent dat het meermaals uitvoeren van een taak altijd hetzelfde resultaat geeft, zal het iedere keer opnieuw alle taken uitvoeren om het systeem in de desired state te houden. Het configuratiebeheersysteem is pas zeker dat het systeem zich in de juiste staat bevindt als alle taken zijn uitgevoerd.
+
+Een configuratiebeheersysteem gebaseerd op **convergentie** zal eerst kijken welke acties er moeten uitgevoerd worden, en vervolgens de nodige acties uitvoeren. Als het systeem in de juiste staat is worden er geen acties uitgevoerd. Als je geen oen bent zie je dat deze oplossing sneller is.
+
+
+
+Nog iets dat handig is om te weten is dat Linux inherent **niet declaratief** is. Alle tools maken een imperatieve interface voor Linux commano's. 
+
+
+
+## Config management tools
+
+### Ansible
+
+<img src="img/systeembeheer/image-20230614171941508.png" alt="image-20230614171941508" style="zoom:50%;" />
+
+Ansible is een tool voor configuratiebeheer die zich focust op het beheren en installeren van besturingssystemen en services. Eigenlijk is Ansible wel imperatief. Een playbook is een YAML met commando's die in volgorde uitgevoerd worden. Met ieder commando in een playbook voer je een module uit, waaraan je configuratie geeft. De configuratie van de meeste modules is wel declaratief. Elke module is een Python script dat wordt uitgevoerd op de servers.
+
+Hier een overzicht van de belangrijkste onderdelen van Ansible:
+
+* <u>Playbooks</u>
+  * Een YAML file waarin **taken** beschreven staan. Deze worden sequentieel uitgevoerd.
+  * Ookal is Ansible cross-platform, zijn de playbooks die je schrijft vaak wel **platformspecifiek**.
+  * **Statisch herbruikbaar**. Je kan één playbook gebruiken om meerdere machines te configureren.
+  * Onderverdeeld in **plays**. 
+* <u>Task</u>
+  * Eén uitvoering van een module
+* <u>Role</u>
+  * Is een verzameling van **templated** taken en gerelateerde content
+  * Dynamisch herbruikbaar
+  * Kan je bijvoorbeeld van het internet halen en aanpassen naar jouw use-case
+
+
+
+### Terrraform
+
+<img src="img/systeembeheer/image-20230614173551878.png" alt="image-20230614173551878" style="zoom:50%;" />
+
+Terraform dient vooral voor infrastructuur. Het houdt zich bezig met het opzetten van servers, virtuele netwerken, gateways, ... Terraform is een **volledig declaratieve** taal. Het maak niet uit in welke volgorde verschillende resources in de code worden beschreven. Als er dependencies zijn tussen servers moet je dit expliciet vermelden.
+
+Terraform is cross-platform en cross-cloud, maar als je een model maakt voor Amazon kan je het natuurlijk niet gebruiken voor Azure. Hieronder een overzicht van de belangrijkste onderdelen van Terraform:
+
+* Configuration
+  * Een bestand dat de beschrijving van meerdere **resources** bevat. Een voorbeeld van een resource is een server.
+  * Hierin beschrijf je je infrastructuur: "ik wil deze server van deze provider"
+  * Om te voorkomen dat je dingen per ongeluk verandert kan je *terraform lock* gebruiken
+* Providers
+  * Plugins die gebruikt worden door terraform om de resources te beheren
+* Modules
+  * Dit zijn herbruikbare terraform configuraties
+  * Er bestaat bijvoorbeeld een module om Kubernetes op te zetten
+* Registry 
+  * Online repository van alle modules
+
+Als je Terraform gebruikt op bestaande infrastructuur, is het mogelijk om een plan te laten genereren voor de servers die je al had. Dan kan je ze vanaf dat moment aanpassen met Terraform. Verder wordt Terraform vaak in combinatie met Ansible gebruikt. Terraform wordt dan gebruikt om de servers en het netwerk op te zetten. Ansible wordt gebruikt om hun configuratie aan te passen.
+
+
+
+### Chef
+
+Chef is een vreselijke tool om documentatie voor op te zoeken, want chef gebruikt termen zoals *cookbook* en *knife* voor verschillende concepten, maar wordt toch ontzettend veel gebruikt. Onder andere door Facebook. Chef is inherent **imperatief**. Je schrijft de desired state in ruby code, waardoor je ook per ongeluk een script kan schrijven als je niet goed nadenkt. Je kan met Chef servers aanpassen doormiddel van **resources** met een declaratieve configuratie. Deze gebruiken wel allemaal het **desired state principle**, dus je moet opletten dat je alleen de resources gebruikt en niet gewoon ruby begint te schrijven om je infrastructuur te configureren.
+
+<img src="img/systeembeheer/image-20230614180636750.png" alt="image-20230614180636750" style="zoom:50%;" />
+
+Chef is ook weer cross-platform op de manier dat de vorige twee tools cross-platform waren. De tool is ondertussen zodanig uitgebreid dat je er bijna alles mee kan.
+
+De belangrijkste onderdelen van Chef zijn:
+
+* Cookbook
+  * Bevat meerdere recipes
+  * Is een templated model van een desired state dat je kan gebruiken om licht verschillende infrastucturen mee op te zetten
+* Recipe
+  * Bevat meerdere resources
+* Resource
+  * Beschrijft de desired state
+* Chef supermarket
+  * Bevat code van de community
+
+
+
+### Puppet
+
+<img src="img/systeembeheer/image-20230614181220872.png" alt="image-20230614181220872" style="zoom: 50%;" />
+
+Puppet is gelijkaardig aan Ansible in de zin dat je er dingen mee kan configureren, maar je kan er ook clour resources mee aanmaken. Puppet is **volledig declaratief**, wat impliceert dat de volgorde van uitvoering van taken niet vast ligt. Je moet dus net zoals bij Terraform expliciet dependencies vermelden. Puppet werkt d.m.v. een agent op elke server. Deze halen allemaal hun desired state op bij een master.
+
+Puppet is heel goed voor cross-platform, je moet een minimale hoeveelheid aanpassingen doen om te veranderen van platform.
+
+
+
+### Juju
+
+<img src="img/systeembeheer/image-20230614181657421.png" alt="image-20230614181657421" style="zoom:50%;" />
+
+
+
+Vreemde eend in de bijt. Juju is één van de enige tools die alles van cloud resources tot applicaties kan regelen. Juju is **volledig declaratief**, doordat je een YAML model maakt waarin je beschrijft wat de desired state is. Verschillende agents halen de desired state van een controller. Je beheert de infrastructuur door een **model** aan te maken, waarin je beschrijft welke charms je wilt gebruiken. **Charms** stellen elk een service voor zoals Kubernetes of OpenStack. Juji is gemaakt voor zeer complexe applicaties die bestaan uit veel verschillende componenten die op een complexe manier aan elkaar hangen. 
+
+Juji is in theorie cross-platform, maar werkt eigenlijk alleen goed op Ubuntu.
+
+Juju is anders dan de andere tools omdat over **relaties** beschikt. De manier dat een charm in Juju geconfigureerd wordt hangt af van met welke andere Charms hij verbonden is. Als er dus een nieuwe Charm toegevoegd wordt, worden de verbonden Charms dynamisch geherconfigureerd. Dan moet je niet al die andere Charms zitten aanpassen als je iets toevoegt.
+
+Je kan charms downloaden of implementeren in eender welke taal.
+
+
+
+Het grootste probleem aan Juju is dat je vaak zelf naar beneden moet gaan tot het niveau van charms schrijven. Voor bijvoorbeeld Puppet of Ansible zal je dit zelf nooit moeten doen. Bij Juju is het model veel meer high-level. Juju heeft een heel lage entry barries, maar als je dieper wilt gaan wordt het heel erg moeilijk.
+
+
+
+### Desired state configuration (DSC)
+
+<img src="img/systeembeheer/image-20230614183739344.png" alt="image-20230614183739344" style="zoom:50%;" />
+
+Dit is een tool van Microsoft en maakt gebruik van PowerShell en is **declaratief** door middel van PowerShell objecten. Het bestaat uit de volgende onderdelen:
+
+* Agent (Local configuration manager)
+* Configuration
+  * Bevat ten minste één resource en één node
+* Resource
+  * Declaratieve beschrijving van de desired state
+* Node
+  * De externe host waarop de desired state moet toegepast worden
+
+DSC werkt een beetje vreemd. Je schrijft eerst een imperatief script, en dat wordt dan omgezet naar een declaratief model. Dit resulteert in een `.mof` file. Deze file deploy je op een windows server node met **Push**, of je configureert een **Pull** server waaruit de nodes periodiek hun `.mof` files en DSC resources halen. 
+
+
+
+### Kubernetes
+
+<img src="img/systeembeheer/image-20230614183804229.png" alt="image-20230614183804229" style="zoom:50%;" />
+
+
+
+Kubernetes kan voor alles gebruikt worden. Het werkt ook volgens het **desired state principe** en is eigenlijk veel meer dan een container orchestrator. Je kan bijvoorbeeld ook Kubernetes gebruiken om een nieuwe Kubernetes cluster op te zetten. 
+
+De beste eigenschap aan Kubernetes is dat het een gestandaardiseerde API voorziet voor systeembeheerders om te interageren met de code die de infrastructuur en applicaties beheert. Bovendien kan deze API ook gebruikt worden je infrastructuurcode te laten interageren met andere infrastructuurcode.
+
+Kubernetes bevat default al een aantal APIs:
+
+* Ingress controller (Citrix ADC)
+* Overlay network (Calico)
+* ClusterAPI (VMware vSphere)
+* Cloud controller manager (Amazon AWS)
+* Cloud service integration
+
+ <small>1:34:52</small>
+
+
+
+## Operators and Abstractions
+
+<img src="img/systeembeheer/image-20230614190459238.png" alt="image-20230614190459238" style="zoom:50%;" />
+
+Dit is de laatste stap in automatisatie. De dingen die hier verteld worden zijn dingen die we in de toekomst willen.
+
+In softwareontwikkeling maken we heel veel abstracties. We gebruiken laag op laag op laag van verschillende software die abstactie maakt van de onderliggende lagen, waardoor wij als programmeur ons enkel moeten bezighouden met de laag waarin we ons bevinden. 
+
+We kunnen dit ook in systeembeheer door middel van een **operator**. Als we een bepaald ding willen opzetten zeggen we aan de operator wat we willen, deze roept dan zelf onderliggende modules aan zonder dat wij deze moeten begrijpen. Een operator doet veel meer dan enkel deployment, en werkt op een veel meer dynamische manier dan de klassieke configuratiebeheertools. De operator houdt zich buiten deployment ook bezig met het upgraden, monitoren, schalen en back-uppen van je infrastructuur. Ookal communiceer je met de operator via een desired state, zal de operator deze op een heel dynamische wijze toepassen.
+
+
+
+## IaC design patterns
+
+Hier een oplijsting van IaC design patterns:
+
+* Een oplossing voor de Automation fear cycle ([hier](#levels-van-automatie) uitgelegd)
+  * **Unattended Automation**:
+    * Dan zijn we steeds 100% zeker dat de huidige staat de verwachte staat is
+    * Als er is misloopt ga je dat direct zien, en zal de configuratie direct terug worden overschreven door de automatisatie
+    * Dit maakt het ook moeilijker voor hackers
+  * **Re-use & promote definitions**
+    * Gebruik dezelfde definition files voor dev, staging en production
+    * Dan moet je alleen maar wat variabelen aanpassen
+* **Cattle, not pets**
+  * Als je een uniek systeem hebt waar elke server onvervangbaar is, kan je de servers vergelijken met **huisdieren**. Dit is niet goed, want je moet je hond eten geven en naar de dierenarts als hij ziek is en als je hond sterft moet je huilen en dan doet de dierenarts die naar het hondencrematorium en dan krijg je nog een brief of je wilt bijbetalen om de assen van je hond te laten opsturen naar je huis (been there)
+  * Het is dus beter om je servers te zien als **vee**. De servers worden beheerd door geautomatiseerde tools en zijn vervangbaar. 
+* Duplicatie
+  * We hebben microservices met ieder een eigen databank. Hoe kunnen we hierop duplicatie toepassen?
+  * **Forking**
+    * Het declaratief model forken en hergebruiken
+    * Het voordeel is dat je **tight coupling vermijdt** en kan omgaan met verschillende requirements
+    * Maar dan met je ook weer omgaan met **divergentie** en **inconsistentie**
+      * Kan je wel oplossen met git, maar is wel vervelend
+  * **Definition libraries**
+    * Meer abstract. Maak bijvoorbeeld een cookbook die een mySql cluster opzet. Die cookbook heeft dan een paar variabelen om de werking van de cluster lichtjes aan te passen. Die cookbook dan dan overal opnieuw gebruikt worden
+    * Je hebt dan een infrastructuurteam nodig die de cookbooks maakt
+    * Het is hier moeilijk om tight coupling te vermijden. Code ownership is ook een probleem
+    * Je moet oppassen dat je niet wijzigingen aan de CI/CD pipeline van de developers aanbrengt terwijl zij wijzigingen aan de applicatie aanbrengen, want dan heb je problemen. Daarom is het belangrijk om een aparte pipeline te hebben voor de infrastructuur.
+* Gedeelde elementen
+  * Bijvoorbeeld een loadbalancer. Elke keer dat een developer iets nieuws toevoegt, moet hij een aanpassing maken in de loadbalancer. 
+  * We willen eigenlijk niet dat de developers de hele tijd aan de systeembeheerders moeten vragen om iets aan te passen.
+  * **Oplossing**: optimaliseer de architectuur om zo weinig mogelijk gedeelde elementen te hebben en wijzigingen zo makkelijk mogelijk te maken
+
+<small>1:51:48</small>
+
+## Declarative Linux
+
+De meeste Linux-distributies werken nu bijvoorbeeld wel al met een declaratieve configuratie van het netwerk. (netplan, systemd-networkd)  Hierna gaf Merlijn een hele boel voorbeelden maar ik denk niet dat ik in zo veel detail ga gaan.
+
+<img src="img/systeembeheer/image-20230614194107274.png" alt="image-20230614194107274" style="zoom: 50%;" />
+
+Het komt erop neer dat netplan een high-level declaratieve taal is waarmee je beschrijft hoe je wilt dat je netwerk eruit ziet. Dat wordt dan omget naar een backend netwerk configuratie voor systemd-networkd voor servers of bijvoorbeel Network Manager voor Desktop Ubuntu gebruikers. 
+
+Een voorbeeld van een declaratieve Linux distributie is **NixOS** en wordt vaak gezien als een package manager, maar is meer dan dat. Je kan eigenlijk alles declaratief instellen. Hier is een plaatje van NixOS.
+
+
+
+<img src="img/systeembeheer/image-20230614194440837.png" alt="image-20230614194440837" style="zoom:67%;" />
+
+Het is gemaakt door Nederlanders dus de naam NixOS is waarschijnlijk een mop. 
+
+# --- 6 - Monitoring ---
+
+> Enkel dat laatste stuk over Dynamo is geen onderdeel van het examen. De rest is wel examenleerstof. Ik kan niet hetzelfde goeie nieuws geven als bij PowerShell. - Jericho
+
+//TODO
+
+
+
+# --- 7 - Storage Virtualization ---
+
+//TODO
 
 
 
@@ -1405,6 +1705,30 @@ onderscheid stateful/stateless ...
 
 
 > Welke soorten services worden er voorzien door Kubernetes? Leg elke service uit.
+
+
+
+
+
+### Infrastructure as code
+
+Merlijn heeft niet specifiek gezegd wat we moesten kennen dus de vragen hier zijn verzonnen door mij op basis van zijn uitleg op het einde van de les.
+
+> Wat zijn de nadelen van manueel systeembeheer?
+
+
+
+//TODO
+
+
+
+### Monitoring
+
+//TODO
+
+### Storage virtualization 
+
+//TODO
 
 ## Van mij
 
