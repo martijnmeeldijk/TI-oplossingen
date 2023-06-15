@@ -1557,7 +1557,329 @@ Het is gemaakt door Nederlanders dus de naam NixOS is waarschijnlijk een mop.
 
 > Enkel dat laatste stuk over Dynamo is geen onderdeel van het examen. De rest is wel examenleerstof. Ik kan niet hetzelfde goeie nieuws geven als bij PowerShell. - Jericho
 
-//TODO
+
+
+Een **monitor** is een programma of stuk hardware dat de verschillende aspecten van een computersysteem in de gaten houdt. Monitoring is belangrijk, want als je niet weet dat er een probleem is kan je het ook niet oplossen. Verder geeft het je ook inzicht in de veiligheid van je systeem.
+
+Het grote probleem in monitoring zijn alle verschillende **formaten**. Er is geen consistent formaat voor monitoring, waardoor analyse moeilijk is. Je hebt veel kennis nodig en bovendien kost het extra geld. 
+
+Je gebruikt dus best een monitoring solution. We zullen meerdere oplossingen uitvoerig overlopen, maar eerst bekijken we een aantal principes van monitoring.
+
+
+
+## Principles
+
+Hier een aantal definities van monitoring:
+
+* Monitoring
+  * Het verzamelen, verwerken, aggregeren en weergeven van real-time data over een systeem. 
+  * Bijvoorbeeld: aantal queries en types, aantal errors en types, uptime, gebruikte resources
+* White-box monitoring
+  * Monitoring op basis wat er intern in het systeem zit.
+  * Bijvoorbeeld: Http handler, JVM profiling interface, logs
+* Black-box monitoring
+  * Langs de buitenkant kijken naar de applicatie
+  * Zoals een gebruiker het zou zien
+
+
+
+
+
+Bij een monitoringsysteem zal je vaak **symptomen** krijgen te zien. Als je een 500 error krijgt, kan het dat de database geen verbindingen meer aanneemt. Het is belangrijk om de **wat** en de **waarom** te scheiden.
+
+Het eerste principe can monitoring is het verzamelen van de **juiste data**. Je kan alles opslaan wat je wilt, maar te veel verzamelen is geldverspilling. We maken onderscheid tussen drie soorten metrieken die je best verzamelt:
+
+* <u>Work metrieken</u>
+  * Hoevaak krijg ik een http 200?
+  * Vertelt je over de werking van de applicatie
+* <u>Resource metrieken</u>
+  * Hoeveel RAM, CPU?
+  * Vertelt je over het verbruik van de applicatie
+  * Kan je goed helpen met geld uitsparen
+* <u>Events</u>
+  * Veranderingen in code, alerts, scaling events
+
+
+
+Je kan een monitoring architectuur op twee manieren opbouwen. Dit kan **push** of **pull**-based:
+
+| <img src="img/systeembeheer/image-20230615114946391.png" alt="image-20230615114946391" style="zoom:33%;" /> | <img src="img/systeembeheer/image-20230615114930115.png" alt="image-20230615114930115" style="zoom:33%;" /> |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| Je zegt tegen de agent welke metrieken je allemaal wilt. Deze worden dan periodiek doorgestuurd. | Het monitoring systeem moet zelf de metrieken ophalen bij de bron. |
+
+
+
+Volgens google moet je bij monitoring rekening houden met **4** **golden signals**. Deze betreffen:
+
+1. Latency
+   * Hoe lang het duurt om op een request te antwoorden. 
+   * Het is wel belangrijk om een vershil te maken tussen succesvolle en gefaalde request, om geen foute conclusies te trekken
+2. Traffic
+   * Hoeveel vraag is er naar de applicatie?
+3. Errors
+   * Het aantal requests die falen. 
+4. Saturatie
+   * Hoe 'vol' is de service.  (Memory, I/O)
+   * Kan de service meer aan?
+
+
+
+Het detecteren van problemen is moeilijker dan het lijkt. Je kan niet zomaar een threshold hardcoden voor het verbruik van een bepaalde resource, want dan ga je heel veel vals-positieven krijgen. Je zal dus gebruik moeten maken van de **history** van de metriek om conclusies te trekken. Dan is het bovendien ook moeilijk om te weten wanneer dat probleem echt een probleem is. Zo kan je bijvoorbeeld instellen dat je een error krijgt als je systeem voor een bepaalde tijd boven een bepaalde threshold zit. 
+
+Er moeten ook verschillende thresholds zijn voor een **probleem** en **recovery**. Als je bijvoorbeeld een error krijgt als je disk op 99% zit, is het probleem niet opgelost als de disk op 98% zit, want dan krijg je 5 minuten later weer een error.
+
+Om een **anomalie** te detecteren moeten we een norm vastleggen op basis van vorige data, en nieuwe data met deze norm vergelijken. Je kan zelfs een stapje verder gaan. Door te **voorspellen** hoe een trend zich gedraagt, kan je problemen oplossen alvorens ze optreden.
+
+Wanneer er zich een probleem voordoet, zijn er verschillende manieren om hierop te reageren. De software kan het automatisch oplossen, je kan ze zelf eens naar kijken of een ticket aanmaken. Elke stap kost extra tijd en verliest dus extra geld. We moeten dus streven naar **automatische probleemoplossing**. We kunnen bijvoorbeeld automatisch alerts sturen naar de mensen die het probleem kunnen oplossen. Hierin moet je ook een goede **balans** vinden. Als er te veel berichten worden gestuurd, kijkt niemand er meer naar. Te weinig is natuurlijk ook niet goed.
+
+In een applicatie kan één error zorgen voor een hele cascade aan verschillende dingen die mislopen, waardoor alle belletjes in je monitoring beginnen te rinkelen. Het is hier de bedoeling dat je een module voorziet die de errors de-dupliceert. Dan kan je de **root cause** vinden en deze herstellen.
+
+
+
+## Microsoft Scom
+
+Microsoft System Center Operations Manager (SCOM) is een closed-source monitoring solution van Microsoft. SCOM maakt het makkelijker om meerdere computers, apparaten, applicaties en services te monitoren en wordt typisch gebruikt op het IT-departement van bedrijven die gebruik maken van het Microsoft-ecosysteem.
+
+OM kan het volgende:
+
+* Je vertellen welke gemonitorde objecten problemen vertonen
+* Alerts versturen
+* Informatie voorzien
+* Je kan als admin kiezen wat er gemonitored wordt
+
+
+
+### Infrastructuur
+
+OM bestaat uit de volgende onderdelen:
+
+* **Management server**
+  * Van hieruit beheer je alles
+  * Heeft verschillende rollen:
+    * Administreert de configuratie van de management group
+    * Agents aansturen en ermee communiceren
+    * Communiceren met databases in de management group
+* **Operational database**
+  * Hier wordt de configuratiedata bewaard
+* **Data warehouse database**
+  * Hier wordt alle monitoring en alerting data in opgeslagen
+* **Management group**
+  * Groep van minimaal één management server, operationele database en data warehouse database
+* **Optionele** **onderdelen**
+  * **Reporting server**
+    * Deze maakt en presenteert rapporten vanuit de data in de data warehouse database
+  * **Webconsole**
+    * Gemakkelijke interface om data te bekijken
+  * **Gateway**
+    * Dan kunnen computers buiten het Ad domein ook monitoring data binnensturen. 
+    * Is eigenlijk een gepecialiseerd type van een management server
+
+
+
+### Agents
+
+Op elke computer moet een **agent** geïnstalleerd worden. Dit is een programma dat data verzamelt, bekijkt, alerts genereert en doorstuurt. De agents halen hun configuratie van een management server in hun management group, waaraan ze ook hun rapportering doen. 
+
+Je kan ook gebruik maken van een **proxy agent**, deze kan data van een andere computer doorsturen naar de management server en is nuttig voor apparaten waar je de monitoring software niet op geïnstalleerd krijgt.
+
+
+
+### Management pack
+
+Een management pack is een pakket dat automatisch alle nodige software kan installeren om de dingen te monitoren die gemonitored moeten worden. Hierin zitten dan ook een aantal **rules** die zeggen wat er precies moet bijgehouden worden en wat er gedaan moet worden als er bepaalde dingen gebeuren. Die rules kunnen er zelfs voor zorgen dat er een script gedraaid wordt.
+
+
+
+Objecten worden volgends de volgende stappen ontdekt en gemonitored:
+
+<img src="img/systeembeheer/image-20230615124957575.png" alt="image-20230615124957575" style="zoom:67%;" />
+
+
+
+### Deployments
+
+Je kan OM op verschillende manieren deployen
+
+* Single-server
+  * Wordt gebruikt voor evaluatiedeployment en testing
+  * Alle management group roles zitten samen op één server
+  * Dus alle gemonitorde apparaten moeten op dezelfde AD forest zitten als de management group
+  * Slecht robuustheid en performantie
+* Distributed deployment
+  * Bijvorbeeld meerdere management servers in een resource pool
+  * Schaalbaarheid
+  * Audit collection
+  * 99% van de OM deployments werken zo
+  * Je kan tegenwoordig ook dingen in de de public cloud monitoren met je eigen monitoring systeem
+  * Je kan de OM zelfs hosten in de cloud 
+
+
+
+Het probleem is dat Microsoft eigenlijk SCOM al aan het killen is. Ze gebruiken het zelf al niet meer. Nu gebruiken ze Azure Monitor.
+
+
+
+## Zabbix
+
+Zabbix is een enterprise open-source monitoring solution voor netwerken applicaties. De code is open-source, maar je moet wel geld betalen aan Zabbix voor garanties en installatie enzo. Een aantal features:
+
+* Goeie performance en capaciteit
+* Autodiscovery
+* Low level discovery
+* Agentless monitoring
+* Flexibele email notificaties om voorgemaakte events
+* Veilige gebruikersauthenticatie
+
+### Architectuur
+
+<img src="img/systeembeheer/image-20230615132426553.png" alt="image-20230615132426553" style="zoom:67%;" />
+
+Je stuurt al je data door naar een **zabbix server** (waar je voor moet betalen). Zabbix doet dan een heleboel processing enzo en geeft jou mooie visualisaties en alerts enzo. 
+
+<img src="img/systeembeheer/image-20230615132543379.png" alt="image-20230615132543379" style="zoom:50%;" />
+
+
+
+Om jouw remote locatie te kunnen monitoren moet je zelf een **zabbix proxy** hosten om door de firewall te raken en de data naar de zabbix server te sturen.
+
+
+
+### Data collection
+
+Zabbix kan data verzamelen op **alle lagen** (Hardware, OS, Netwerk, ... , Applicatie). Dit kan zoals we al gezien hebben bij andere tools op twee manieren:
+
+* Pull
+  * Service check of script uitvoeren
+  * Passieve agent: werkt pas op het moment dat hij een request krijgt
+* Push 
+  * Apparaat gaat uit zichzelf logs enzo sturen
+  * Actieve agent: periodiek gevraagde data forwarden
+
+
+
+## Tick stack
+
+De TICK stack is een open-souce monitoring oplossing, TICK staat voor:
+
+* Telegraf
+  * Data verzamelen
+  * Werkt met plugins en kan werken met externe scripts
+  * Minimaal memory verbruik
+* InfluxDB
+  * Schaalbare time-series database voor metrieken, events, real-time analytics
+  * SQL-achtige querytaal
+  * Ondersteuning voor 'continuous queries'
+  * In InfluxDB v2 zitten Chronograph en Kapacitor erbij 
+* Chronograph
+  * Data visualisatie, database management
+  * Overzicht van de infrastructuur
+  * Alert management
+* Kapacitor
+  * Processing van zowel streaming als batch data
+  * Kan alle transformaties uitvoeren die InfluxQL kan doen
+  * Je kan makkelijk pipelines maken
+
+Dat ziet er dan ongeveer zo uit:
+
+<img src="img/systeembeheer/Influx-1.0-Diagram_04.20.2020v2.png" alt="Influx-1.0-Diagram" style="zoom: 15%;" />
+
+De belangrijkste link hier is de alerting frameworks.
+
+
+
+## Elastic Stack
+
+<img src="img/systeembeheer/image-20230615134722783.png" alt="image-20230615134722783" style="zoom:50%;" />
+
+Elastic was eigenlijk een **search** bedrijf, maar iets uigebreider dan hoe bijvoorbeeld google ofzo werkt. Dit dan natuurlijk op monitoring data. Zoals je in het figuurtje hierboven ziet is de Elastic stack in drie stappen ontwikkeld. Eerst had je alleen elastic search, dan de ELK stack. 
+
+ELK staat voor:
+
+* Elasticsearch
+  * Open-source RESTful search engine voor analyses
+  * Json based
+* Logstash
+  * Data processing pipeline
+  * Kan data transformeren enzo
+  * Pusht de data naar elasticsearch, maar je kan ook naar andere dingen pushen
+* Kibana
+  * Visualisatie en UI
+  * Dashboards
+
+
+
+Een probleem met de ELK stack was dat data shippers (dingen die data doorsturen) vaak erg zwaar waren en veel onnodige functionaliteit bevatten. Dit werd opgelost met de introductie van **beats**. Dit zijn kleine, specifieke plugins die de nodige data gaan doorsturen. Een aantal voorbeelden van beats zijn: Filebeats, metricbeats, packetbeats, ... Met de introductie van beats komen we in de laatste fase. De **elastic stack**.
+
+| <img src="img/systeembeheer/image-20230615135427779.png" alt="image-20230615135427779"  /> | ![image-20230615135948175](img/systeembeheer/image-20230615135948175.png) |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+
+
+
+## Prometheus
+
+Prometheus is een metrics-based monitoring en alerting stack die gemaakt is voor dynamische cloud-omgevingen. Prometheus is niet gemaakt voor logging of tracing, automatische anomalie detectie of schaalbare opslag. Prometheus is eigenlijk enkel de **time-series database**.
+
+<img src="img/systeembeheer/image-20230615140409633.png" alt="image-20230615140409633" style="zoom: 50%;" />
+
+Je kan queries schrijven met **promQL**, dit is een nieuwe querytaal die niet lijkt op SQL. Je kan er wel makkelijk berekeningen mee doen. Prometheus bewaart data **local**, zonder clustering, dus op één plek. Voor de meeste oplossingen is dit genoeg. Voor lange termijn opslag schrijf je de data van Prometheus weg naar een **decoupled remote storage**.
+
+Als je echt wilt, kan je Prometheus nog schaalbaarder maken met Thanos.
+
+<img src="img/systeembeheer/image-20230615140853274.png" alt="image-20230615140853274" style="zoom:50%;" />
+
+
+
+### Service discovery
+
+Het voordeel aan Prometheus is **service discovery**, dit betekent dat het zelf services kan vinden om te monitoren. Meer kan ik hier eigenlijk niet over vertellen.
+
+
+
+## Standardized APIs and formats for monitoring
+
+Als we willen switchen van zebbix naar elastic stack, zijn we gekloot. De oplossing voor dit probleem is om niet meer te monitoren. In de plaast daarvan gaan we **observeren**. Dit is eigenlijk een subset van monitoring, en wijst op het observeren en verzamelen van **drie types data** om de performantie en gezondheid van een systeem te garanderen:
+
+* **Metrieken**: quantificeerbare stukken data
+  * Wat is mijn load, CPU, geheugen, ...
+* **Traces**: wat is er gebeurd en in welke volgorde
+  * Wat is het verloop van mijn request?
+* **Logs/events**: specifieke gebeurtenissen
+  * Wat is een error? Wat is geen error?
+
+![image-20230615142501802](img/systeembeheer/image-20230615142501802.png)
+
+Als we een gestandaardiseerde API hebben voor het verzamelen van deze drie types, kunnen we altijd zien hoe ons systeem zich momenteel gedraagt en toekomstige problemen voorkomen. Er zijn een aantal open-source projecten die dit zo proberen te doen:
+
+* Opentracing
+  * Weet wat er uitgevoerd is en welke weg het heeft afgelegd
+  * Een gestandardiseerde API voor tracing, voorziet een specificatie voor ontwikkelaars om hun eigen services te voorzien van distributed tracing.
+  * Momenteel gearchiveerd
+* Opencensus
+  * Kwam van google
+  * Een verzameling van libraries om metrieken te verzamelen en data te exproteren 
+  * Kan je naar verschillende back-ends sturen
+  * Ook gearchiveerd
+* Opentelemetry
+  * Opentracing + opencensus
+* Openmetrics
+  * Beïnvloedt door Prometheus
+  * Een formaat dat zegt hoe metrieken eruit moeten zien (standardisatie)
+  * `ding.onderdeel.metriek`
+  * Kan je samen met opentelemetry gebruiken
+
+
+
+## Welke moet ik kiezen
+
+* Microsoft SCOM
+  * Als je een Microsoft omgeving hebt
+* ELK Stack
+  * Vooral voor logs
+* TICK, Prometheus, Zabbix
+  * Prometheus bijvoorbeeld voor dingen met containers 
+  * Zabbix is makkelijker en kan grotere topologieën aan
+
+//TODO misschien wat uitbreiden want nu is het een kopie van de slide
 
 
 
@@ -1573,14 +1895,9 @@ Ik heb net een ontdekking gemaakt. Ik weet niet hoe dit mij is ontsnapt, maar bl
 
 <img src="img/systeembeheer/image-20230612154300787.png" alt="image-20230612154300787" style="zoom:50%;" />
 
+Godverdomme hij doet dit alleen in de eerste twee hoofdstukken. 
+
 ## Voorbeeldvragen
-
-Voorbeeldexamenvragen van Bruno:
-
-* What three types of storage virtualization exist? What are their main properties? What benefits and drawbacks do they offer?
-* What advantages do network-based methods for storage virtualization offer compared to array-based methods?
-* What three types of network-based storage virtualization exist? What are their main properties?
-* What is hyperconvergence? Discuss how this can be enabled based on one specific technology that was discussed in this class.
 
 
 
@@ -1728,7 +2045,19 @@ Merlijn heeft niet specifiek gezegd wat we moesten kennen dus de vragen hier zij
 
 ### Storage virtualization 
 
-//TODO
+> What three types of storage virtualization exist? What are their main properties? What benefits and drawbacks do they offer?
+
+
+
+> What advantages do network-based methods for storage virtualization offer compared to array-based methods?
+
+
+
+> What three types of network-based storage virtualization exist? What are their main properties?
+
+
+
+> What is hyperconvergence? Discuss how this can be enabled based on one specific technology that was discussed in this class.
 
 ## Van mij
 
