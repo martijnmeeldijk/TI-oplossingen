@@ -356,7 +356,7 @@ Azure en Google Cloud voorzien gelijkaardige applicaties.
 
 #### Multi-cloud development
 
-Een multi-cloud development library voorziet een API die abstractie maakt van de vershillen tussen verschillende cloud-providers. Er zijn een aantal implementaties:
+Een multi-cloud development library voorziet een API die abstractie maakt van de verschillen tussen verschillende cloud-providers. Er zijn een aantal implementaties:
 
 * Apache libcloud
   * Open-source python toolkit om te interageren met verschillende cloud providers via één API
@@ -1292,7 +1292,7 @@ Doorheen de geschiedenis heeft de automatisatie van systeembeheer verschillende 
     * **Disaster recovery**
     * **Herbuikbaarheid**
     * **Workflow automation**
-* Operators en abstractions
+* <u>Operators en abstractions</u>
   * zie [operators en abstractions](#operators-and-abstractions) aan het einde van dit hoofdstuk
   * Dit is meer de toekomst
 
@@ -1885,7 +1885,280 @@ Als we een gestandaardiseerde API hebben voor het verzamelen van deze drie types
 
 # --- 7 - Storage Virtualization ---
 
-//TODO
+## Intro
+
+Met **storage virtualization** **verbergen** we de **onderliggende complexiteit** van fysieke opslagmediums, waardoor we een **logisch overzicht** van deze mediums kunnen voorzien voor computersystemen. In het algemeen verbergen, abstrageren of isoleren we de interne functies van de opslag. Dit biedt de mogelijkheid tot netwerk- en applicatie**onafhankelijk** beheer van opslag of data. 
+
+Storage virtualization heeft een aantal voordelen:
+
+* Vergemakkelijkt beheer
+  * Ontwikkelaars moeten zich niet bezig houden met opslag
+  * Moeten niet weten waar de data is opgeslagen
+* Vermijdt underutilization
+  * En verbeterde performance
+  * Minder investering in hardware
+* Hogere flexibiliteit
+  * Laat pay-per-use toe
+  * Opslag toevoegen of verwijderen wanneer nodig
+* Schaalbaarheid & fault tolerance
+  * Snel en remote data access, backup, mirroring, replication
+* We kunnen storage van meerdere vendors combineren
+
+
+
+## Types
+
+* <u>File-level virtualization</u>
+  * Alles in de virtuele storage wordt aangeboden als een filesystem
+  * Dus in de vorm van **hiërarchisch** gestructureerde **bestanden** en **mappen**
+  * We kunnen verschillende fysieke bronnen hebben, maar ze worden als één **virtueel filesystem** getoond
+  * Beheer van dit filesystem wordt gedaan door een **virtualization entity**
+  * Voordelen
+    * Gekende hiërarchische structuur
+    * Makkelijke navigatie
+    * Bestaande applicaties gebruiken dit typisch al, dus de applicatie moet niet gewijzigd worden
+  * Nadelen
+    * Deze systemen moeten schalen door extra filesystems toe te voegen, en niet door meer capaciteit toe te voegen
+    * Dus iets minder schaalbaar
+  * Voorbeelden
+    * Amazon elastic filesystem
+    * Google cloud filestore
+* <u>Block-level virtualization</u>
+  * We mappen virtuele blokken naar de fysieke blokken van opslagapparaten
+  * De OS of applicatie moet hier zelf een filesysteem op maken
+  * De opslagcapaciteit wordt aangeboden in de vorm van **virtual disks**
+  * Typisch voor high-performance applicaties
+  * Voordelen
+    * Niet langer één pad naar de data
+    * Rechtstreeks toegang tot verschillende blokken, sneller ophalen
+    * Gemakkelijke partitionering van blokken
+    * Goed schaalbaar voor grote databanken
+  * Nadelen
+    * Relatief duur
+    * Kan niet om met metadata (verantwoodelijkheid van de applicatie)
+  * Voorbeelden
+    * AWS elastic block storage
+    * Google persistent disks
+* <u>Object-level virtualization</u>
+  * Voor applicaties die werken met verschillende soorten ongestructureerde data
+  * Als **structuur** **niet belangrijk** is
+  * De data is opgesplitst in discrete eenheiden, elk met eigen metadata en unieke id
+  * Worden op geslagen in **één platte repository**
+  * Worden beschikbaar gemaakt door een **API via HTTP requests** 
+  * Voordelen
+    * Heel goed schaalbaar
+    * Perfect voor ongestructureerde data, zoals foto's en video's op sociale media
+    * Goed voor statische data
+    * Snel ophalen door middel van object storage metadata
+  * Nadelen
+    * Objecten kunnen achteraf niet aangepast worden (moeten herschreven worden), dus minder performant
+    * Moeilijke match met traditionele databanken
+    * Extra complexiteit in ontwikkeling door object storage API
+  * Voorbeelden
+    * WeTransfer
+    * Messenger, facebook, instagram
+    * Amazon S3
+    * Google Cloud storage
+
+
+
+Hier is een kadertje van de slides (ik had even plezier met de emojis):
+
+|             | Block                                                        | File                                                         | Object                                                       |
+| ----------- | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| Interface   | Operating system                                             | User                                                         | Program (API)                                                |
+| Cost        | :heavy_dollar_sign::heavy_dollar_sign: tot :heavy_dollar_sign::heavy_dollar_sign::heavy_dollar_sign: | :heavy_dollar_sign::heavy_dollar_sign: tot :heavy_dollar_sign::heavy_dollar_sign::heavy_dollar_sign::heavy_dollar_sign: | :heavy_dollar_sign:                                          |
+| Performance | :airplane:                                                   | :bus:                                                        | :bike:                                                       |
+| Proximity   | Dedicated network / fibre channel / 10Gb                     | LAN / 10Gb                                                   | Internet                                                     |
+| Use case    | OS, Database                                                 | Sharing user data, web content                               | Images, PDFs, video                                          |
+| Scalable    | :minidisc::minidisc:                                         | :minidisc::minidisc::minidisc::minidisc:                     | :minidisc::minidisc::minidisc::minidisc::minidisc::minidisc::minidisc::minidisc: |
+
+
+
+## Methodes
+
+Er zijn verschillende methodes waarop storage virtualization kan worden aangeboden:
+
+* <u>Host-based virtualization</u>
+  * Een **virtualization host** biedt storage aan een guest OS
+  * Virtuele machines nemen niet de hele schijf over, maar krijgen een **virtual drive**. Dit is gewoon een bestand
+  * Kan **dynamisch** groter en kleiner gemaakt worden
+  * Beperkte schaalbaarheid
+    * Beperkt tot de ene host waar die file op staat
+  * Overhead door maintenance en software
+    * Het draait op een OS van een host
+  * Zeker niet de beste oplossing
+* <u>Array-based virtualization</u>
+  * Onderscheid maken tussen **vershillende** **tiers** opslag
+  * Bijvoorbeeld high-speed en standard tier (SSD, HDD)
+  * Een logische eenheid kan bestaan uit uit disks van zowel high-speed en standard tiers
+  * Dan is de high-speed meestal een read-write cache, of wordt data altijd eerst op de high-speed geplaatst
+    * Achterliggend kan er dan synchronizatie gedaan worden
+    * Hoe dit gedaan wordt is de verantwoordelijkheid van de **virtualization entity**
+  * In het algemeen **verhoogde** **performance**
+  * Wordt nog veel gebruikt, maar is niet de belangrijkste oplossing
+* <u>Network- or fabric-based virtualization</u>
+  * We kunnen aan een computer eender welke storage van eender welke vendor hangen
+  * DAS, NAS en SAN
+  * //TODO
+
+
+
+### Network storage
+
+Er zijn drie soorten network storage:
+
+* <u>Direct-attached storage (DAS)</u>
+  * Clients kunnen verbinden met één of meerdere servers waarop verschillende soorten data wordt opgeslagen
+  * Was ontwikkeld om opslagcapaciteit te schalen wanneer datavolumes groter werden door disk arrays aan een server te zetten
+  * De server waaruit toegang wordt verleend tot de verschillende opslagapparaten is een **single-point of failure**
+  * **Veel bandbreedte** wordt gebuikt voor toegang, opslag en backups van data
+* <u>Network-attached storage (NAS)</u>
+  * Ontstaan uit DAS
+  * Eén of meer dedicated fileservers worden beschikbaar gemaakt in een LAN
+  * Het netwerk is nog steeds een bottleneck, zeker voor backups
+* <u>Storage-area network (SAN)</u>
+  * Een **apart netwerk** met storage devices (storage area)
+  * Zijn vebonden met een speciale **san switch**
+  * Bieden een **pool** van opslagruimte
+  * Elke computer kan aan de opslag van de SAN alsof ze lokale schijven zijn
+  * Gebruikt intern **fibre channel** protocol
+    * Onderdelen van SAN
+      * Node: eender welk apparaat verbonden aan de SAN (typisch servers)
+      * Fabric: alle hardware die servers met opslagapparaten verbindt via fibre channel switching
+      * Fibre channel: hoge-snelheid netwerktechnologie speciaal voor storage area
+      * World-wide name (WWN): unieke id voor elk opslagapparaat
+  * Alle **data transfer** zoals backups gebeurt **achter de servers** en is transparant
+  * Het is daardoor wel een stuk duurder dan NAS
+  * Voordelen
+    * Tegelijke toegang door meerdere hosts
+    * Storage consolidation
+    * Verlaagde cost of ownership en management complexiteit
+    * Verhoogde availability, schaalbaarheid en databescherming
+    * Beter gebruik van capaciteit
+
+
+
+## Hyperconvergence
+
+Het idee rond **hyperconvergence** is om een framework te maken dat opslag, computing en networking combineert. Alle IT shit wordt dan gezien als één groot geheel. Zo wordt het tegenwoordig ook aangeboden door veel providers. Hyperconvergence maakt gebruik van een **hypervisor** voor gevirtualiseerde computing, software-defined storage en gevirtualiseerd networking. Alle kritieke (data center) functies draaien dan op een **geïntegreerde softwarelaag**, in plaats van op specifieke hardware.
+
+De virtualisatiesoftware maakt dus abstractie van de onderliggende resources en alloceert ze dynamisch voor applicaties die in VMs of containers draaien. Deze aanpak heeft een aantal voordelen:
+
+* Verlaagde data-center complexiteit en verhoogde schaalbaarheid
+* Betere resource efficiëntie
+* Time en cost savings
+* Vermijdt licensed software (zoals disaster recovery tools) <small>hier ben ik het niet helemaal mee eens want VMware is ook duur, maar oké</small>
+
+
+
+## Technologieën
+
+### Vmware vSAN
+
+VMware vSAN voorziet een gedistribueerde, gedeelde datastore. Dit kan door **DAS storage devices** te **aggregeren** tot een **storage repository**, waar ze virtueel gekoppeld zijn in een vSphere cluster. Hierdoor is er **geen single point-of-failure** door: 
+
+* datareplicatie 
+* erasure codes\*
+* snapshots 
+* storage cloning
+
+| ![image-20230616153045855](img/systeembeheer/image-20230616153045855.png) | ![image-20230616153055852](img/systeembeheer/image-20230616153055852.png) |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+
+vSAN werkt dus ook met verschillende tiers (die van daarstraks) voor hogere performantie. In het tweede plaatje zie je twee opties om dit te doen. Optie 1 is goedkoper, maar heeft lagere reliability. Optie 2 is duurder, maar als één SSD neergaat ben je niet plots toegang tot alles kwijt. 
+
+Verder kan je vSAN ook combineren met Kubernetes. Je kan vSAN dan gebruiken voor persistentVolumes, waardoor je dan een virtueel volume kan aanbieden dat beschikbaar is voor je pods.
+
+#### Erasure codes
+
+Erasure codes zorgen ervoor dat je je data kan verpreiden over meerdere servers, maar toch de volledige data kan terugkrijgen als er eentje kapot gaat. Beschouw het volgende voorbeeld.
+
+We slaan de getallen $a = 49$ en $b=75$ op in drie servers. Je kan nu bijvoorbeeld een functie maken die voor de verschillende servers zegt welke data wordt opgeslagen.
+$$
+\begin{align}
+f(i) &= a + (b-a)(i-1)\\
+f(1) &= 49\\
+f(2) &= 75\\
+f(3) &= 101
+\end{align}
+$$
+Nu kan je met de formule altijd de data van één dode server herberekenen wanneer hij sterft, zonder dat er een volledige backup genomen moet worden. Eigenlijk is dit voorbeeld iets te ingewikkeld voor geen reden. Je kan ook een optelling of een `XOR` gebruiken.
+
+
+
+### CEPH
+
+CEPH is een open-source gedistribueerde storage oplossing en biedt zowel object-, block- als file-based storage aan, maar het wordt vooral ingezet voor de eerste twee. Door zijn gedistribueerde aard voorziet het opslag **zonder** **single point-of-failure.**
+
+Er worden vijf soorten daemons gebruikt om dit mogelijk te maken:
+
+* Cluster monitors (mon)
+  * Houdt de staat van de verschillende apparaten in de cluster in de gaten
+  * Houdt bij welke actief of dood zijn
+* Object storage devices (osd)
+  * Slaan de effectieve data op
+* Metadata server (mds)
+  * Houden bij wat waar opgeslagen is
+  * Metadata voor object-based storage
+* HTTP gateways (rgw)
+  * Geven toegang aan opslaglaag via een API
+  * Typisch compatibel met Amazon S3 en OpenStack Swift (voor hybride storage)
+* Managers (mgr)
+  * Onderhoudstaken (backups, ...)
+  * Voorziet een interface voor monitoring
+
+
+
+#### Rook
+
+Rook voorziet een interface tussen CEPH en Kubernetes, en zorgt er dus voor dat ons gedistribueerd datasysteem kan samenwerken met de verschillende pods. Hierdoor kan onze gedistribueerde storage zichzelf schalen, beheren en healen. Alle taken van een systeemadministrator worden dus basically overgenomen. Het komt erop neer dat **Rook** een **storage operator** is voor Kubernetes. Rook zal ervoor zorgen dat je CEPH kan draaien met je Kubernetes cluster. Alle configuratie van de storage gebeurt dus automatisch onderliggend.
+
+Als je storage nodig hebt in Kubernetes zal Rook vanzelf agents en operators opzetten:
+
+* Operator
+  * Zorgt ervoor dat de verschillende storage clusters onderhouden worden
+  * Doet dus ook monitoring
+* Agent
+  * Draait op elke storage host
+  * Houdt zich bezig met alle storage operaties (network storage vastmaken, volumes mounten, ...)
+
+
+
+### MinIO
+
+Minio is ook weer zo een storage ding en bestaat uit een aantal delen:
+
+* MinIO Server
+  * Gedistribueerde object storage, kan met Amazon S3 API
+  * Voorziet encryptie, erasure coding, replicatie, ...
+* MinIO Client
+  * Hij slaat dit over in de les
+  * Command-line interface die je kan gebruiken om met minIO servers te interageren en ze te beheren
+* MinIO SDKs
+  * APIs om aan eender welke S3-compatibele object storage te kunnen
+
+Danzij MinIO kan je met één API aan Amazon S3, Azure Blob en je private cloud. Je kan het zelfs samen met vSAN en Kubernetes gebruiken.
+
+
+
+### Red Hat Gluster
+
+* Ook volledig open source
+* Je kan weer Amazon S3 aanspreken voor object storage
+* Inherent volledig container-based
+* Vermijdt single point-of-failure
+
+Je kan verschillende protocollen gebruiken om je data en storage spaces te beheren. Verschillende fysiek bronnen worden als één geheel aangeboden. Hier wordt ook weer hyperconvergence gedaan. Servers, disks, ... worden door de virtualization entity aangeboden aan de applicatie.
+
+
+
+# --- 8 - Gastlessen ---
+
+Transcriptie van het einde van de tweede gastles: 
+
+> Van de eerste gastles moet je niets kennen voor het examen. Voor deze gastles moet je ook niets kennen voor het examen. 
+> - Bruno 
 
 
 
@@ -1897,131 +2170,221 @@ Ik heb net een ontdekking gemaakt. Ik weet niet hoe dit mij is ontsnapt, maar bl
 
 Godverdomme hij doet dit alleen in de eerste twee hoofdstukken. 
 
-## Voorbeeldvragen
-
 
 
 ## Van de les
 
 Elke keer dat Bruno zegt dat je iets moet kennen voor het examen.
 
-
-
 ### Cloud
 
-> Wat wordt bedoeld met Cloud. Leg uit. (Cloud slide 3)
+> **Wat wordt bedoeld met Cloud. Leg uit. (Cloud slide 3)**
+
+Een cloud is een grote pool van gemakkelijk bruikbare en toegankelijke **gevirtualiseerde** resources zoals **hardware**, **develoment platformen** en/of **services.** Die resources kunnen dynamisch geherconfigureerd worden om een variabele load aan te kunnen **(scale)**, zodat resources zo optimaal mogelijk worden gebruikt. Deze pool van resources wordt typisch aangeboden in een **pay-per-use** model aangeboden, waarbij garanties worden aangeboden door de provider in de vorm van een op maat gemaakte **SLA** (service level agreement).
+
+Alle verschillende definities van cloud hebben deze dingen gemeen:
+
+* Pay-per-use (geen commitment)
+* Elastisch (op en neer schalen on demand)
+* Self-service interface
+  * Webinterface met account en creditcard
+* Resources zijn abstract/gevirtualiseerd
+  * Je kan typisch nooit voor een specifieke fysieke machine vragen
 
 
 
-> Geef de voordelen van virtualisatie.  (Cloud slides 56-59)
+> **Geef de voordelen van virtualisatie.  (Cloud slides 56-59)**
 
 
 
-> Hoe is virtualisatie geëvolueerd doorheen de jaren? Leg de verschillende stappen uit en bespreek de veranderingen. Teken de figuurtjes. (Cloud slide 61)
+> **Hoe is virtualisatie geëvolueerd doorheen de jaren? Leg de verschillende stappen uit en bespreek de veranderingen. Teken de figuurtjes. (Cloud slide 61)**
+
+* <u>Eerste generatie</u>
+  * <img src="img/systeembeheer/image-20230611142623021.png" alt="image-20230611142623021" style="zoom: 67%;" /> 
+  * Full virtualization, de software bootst een volledige fysieke hardware na
+  * Volledig software-based, je hoeft **niets** te **wijzigen** in het **guest operating system**
+  * De hardware had geen notie van virtualisatie
+  * Het abstracte model van de virtuele machines werd vertaald naar de hardware (binary rewriting)
+  * Grootste **nadeel** is **performantie** (25-75% tragere memory access, ...)
+* <u>Tweede generatie</u>
+  * <img src="img/systeembeheer/image-20230611142640835.png" alt="image-20230611142640835" style="zoom:67%;" /> 
+  * Paravirtualization
+  * In de VM (guest operating system) een aantal aanpassingen zodat we toch rechtstreeks naar de hardware kunnen.
+  * Het **nadeel** is dat de **guest OS aangepast moest worden** afhankelijk van de gebruikte hypervisor (spreekt het nut van VMs rechtstreeks tegen)
+    * Bijvoorbeeld als je VMwareTools installeert zodat je VM minder delay heeft voor de muisinput
+  * Het **voordeel** is dat het **sneller** is dan de vorige generatie
+* <u>Derde generatie</u>
+  * <img src="img/systeembeheer/image-20230616195840598.png" alt="image-20230616195840598" style="zoom: 50%;" /> 
+  * Hardware-assisted virtualization: **hardware weet dat virtualisatie bestaat**
+  * Guest OS moet **niet aangepast** worden
+  * Je hebt wel twee dingen nodig
+    * Een **hypervisor** die **hardware acceleratie ondersteunt**
+    * **Processoren** die **hardware acceleratie ondersteunen**
+  * Hypervisor heeft rechtstreekse access tot RAM, netwerk, storage, ...
+  * Het **voordeel** is dat je een **ongewijzigde OS** kan draaien zonder problemen aan hoge performantie, maar je moet wel software hebben die dat ondersteunt.
+  * Het **nadeel** is de **startup time** van de VM, want deze moet helemaal opstarten zoals een gewone PC. Dit probleem heb je eigenlijk met alle VMs.
+    * Bij een container heb je dit probleem niet want deze heeft al deze rommel niet volgens Bruno
+    * Bij een site zoals Zalando is deze vertraging geen probleem, maar bij Ticketmaster, waar het plots kan dat er duizenden mensen tegelijk refreshen is dit wel erg.
 
 
 
-> Wat is de vierde vorm van virtualisatie? (Cloud slide 68)
+> **Wat is de vierde vorm van virtualisatie? (Cloud slide 68)**
+
+OS-level virtualisatie wordt op het niveau van het besturingssysteem gedaan. Dit wordt vaak gebruikt voor **containers**. Het voornaamste voordeel hiervan is **densiteit**, want containers hebben niet alle extra bagage die bij een VM zit (zoals een OS en bios). Ze nemen dus veel **minder plaats** in. 
+
+Je kan als je containers gebruikt met dezelfde hardware drie keer meer servers opstarten als wanneer je VMs gebruikt. Dit werd vooral gebruikt in de hosting markt.
 
 
 
-> Leg het verschil uit tussen VM-based virtualisatie en OS-level virtualisatie. Maak een tekening. (Cloud slide 69)
+> **Leg het verschil uit tussen VM-based virtualisatie en OS-level virtualisatie. Maak een tekening. (Cloud slide 69)**
+
+| ![image-20230611150152617](img/systeembeheer/image-20230611150152617.png) | ![image-20230611150204145](img/systeembeheer/image-20230611150204145.png) |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| - Virtuele machines zijn volledig geïsoleerd <br />- Elke VM heeft zijn eigen OS<br />- De hypervisor regelt toegang tot de gedeelde hardware | - De kernel van de host heeft meerdere process spaces<br />- Containers zijn **lightweight**, ze delen de kernel van de host OS<br />- Elke container heeft wel zijn eigen root file system |
 
 
 
-> Geef de open IAAS oplossingen en beschrijf ze. (Cloud slide 76)
+
+
+> **Geef de open IAAS oplossingen en beschrijf ze. (Cloud slide 76)**
 
 Openstack is de belangrijkste, maar zeer complex
 
-
-
-> Welke standaarden zijn er voor virtualisatie? Geef volledige namen (Cloud slide 86)
+//TODO 
 
 
 
-> Vergelijk kubernetes met openshift.
+> **Welke standaarden zijn er voor virtualisatie? Geef volledige namen (Cloud slide 86)**
+
+* <u>Open virtualization format (OVF)</u>
+  * Beschrijft een manier om een virtuele machine in een bestand te steken
+    * Bevat OVF descriptor: XML die de ingepakte VM beschrijft (naam, requirements, ...)
+    * Disk images
+    * Certificaten en licenties
+  * Dan kan je je VM gewoon naar ergens anders verplaatsen
+* <u>Open cloud computing interface (OCCI)</u>
+  * <img src="img/systeembeheer/image-20230611163633776.png" alt="image-20230611163633776" style="zoom:67%;" /> (figuur kennen)
+  * Vermijdt het gebruik van proprietaire IAAS APIs
+  * Dan zijn de commando's om VMs te starten en te stoppen overal hetzelfde
+  * Werkt met een RESTful protocol voor deployment, automatisch schalen, monitoring, network en storage resources.
+  * Ondersteund door OpenStack, OpenNebula, Cloudstack, Amazon AWS
+  * Niet ondersteund door Azure en Google Cloud, daarom is de standaard waarschijnlijk gestorven. De laatste versie was in 2015
+* <u>Cloud infrastructure management interface (CIMI)</u>
+  * Net hetzelfde als OCCI
+  * Laatste versie in 2016
+  * Er is alleen een implementatie voor Openstack, dus het heeft niet zo veel nut.
+* <u>Cloud data management interface (CDMI)</u>
+  * Voornamelijk bedoeld om storage to koppelen aan draaiende VMs
+  * RESTful standaard voor storage, gebruikers exporteren, data tussen cloud systemen verplaatsen, ...
+  * Laatste versie in 2014
+
+Zowel OCCI en CIMI zijn weinig gebruikt, de standaard is nu Amazon EC2 (elastic cloud). Het is eigenlijk geen standaard want het is van Amazon, maar iedereen gebruikt het. EC2 heeft een REST API en een hele boel SDKs voor verschillende programmeertalen.
+
+Azure en Google Cloud voorzien gelijkaardige applicaties.
+
+
+
+> **Vergelijk kubernetes met openshift.**
+
+| Parameter                 | Kubernetes                                                   | Openshift                                                    |
+| ------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| Origin                    | Open-source project/framework, geen product                  | Product met veel variaties. OpenShift Origin is open source, maar dit is eigenlijk niet de beste versie. |
+| Installation              | Kan op bijna elke linux distro geïnstalleerd worden          | Gelimiteerd, voornamelijk Red Hat enterprise linux (RHEL)    |
+| Key Cloud Platforms       | GKE op Google cloud, EKS op amazon AWS en AKS op Microsoft azure. | Red hat ondersteunt AWS en Azure                             |
+| Security & Authentication | Well defined, maar niet zo strict als openshift. Je moet nog veel zelf doen om het veilig te krijgen. | Strictere security policies en authenticatiemodellen         |
+| Use of templates          | Kubernetes Helm templates zijn flexibel en makkelijk te gebruiken | Openshift templates zijn minder gebruiksvriendelijk en flexibel |
+| Releases                  | 4/jaar                                                       | 3/jaar                                                       |
+| CI/CD                     | Mogelijk met Jenkins maar niet geïntegreerd in kubernetes    | Geïntegreerd met Jenkins                                     |
+| Learning curve            | Geen gemakkijke web UI                                       | Gebruiksvriendelijke web console                             |
+| Initial rollout           | Moeilijk als nieuwe onderdelen moeten geïnstalleerd worden (bv. dashboard) | All-in-one oplossing                                         |
+
+
+
+> Iets met Diego cells want ik kon met herinneren dat Bruno dat belangrijk vond.
+
+//TODO
 
 
 
 ### Windows server
 
-> Leg het principe van shielded VMs uit aan de hand van een figuur. (Windows server slide 15)
+> **Leg het principe van shielded VMs uit aan de hand van een figuur. (Windows server slide 15)**
 
 
 
->  Wat is een Privileged Access Workstation? Hoe wordt deze best geconfigureerd? Wat doet een Jump Server in deze context? (Windows server slide 22)
+>  **Wat is een Privileged Access Workstation? Hoe wordt deze best geconfigureerd? Wat doet een Jump Server in deze context? (Windows server slide 22)**
 
 
 
-> Wat is PXE booting? Leg uit en beschrijf de vershillende stappen. (Windows server slide 35)
+> **Wat is PXE booting? Leg uit en beschrijf de vershillende stappen. (Windows server slide 35)**
 
 
 
-> Wat is Active Directory? Waarvoor wordt het gebruikt en waarom is het nuttig? (Windows server slide 43)
+> **Wat is Active Directory? Waarvoor wordt het gebruikt en waarom is het nuttig? (Windows server slide 43)**
 
 
 
-> Leg het verschil uit tussen een Workgroup en een Domain. Wat komt daar allemaal bij kijken? (Windows server slide 44)
+> **Leg het verschil uit tussen een Workgroup en een Domain. Wat komt daar allemaal bij kijken? (Windows server slide 44)**
 
 
 
-> Wat is een domain controller? Wat zijn de implicaties?
+> **Wat is een domain controller? Wat zijn de implicaties?**
 
 
 
-> Leg uit: Forest, Domain. Wat zijn de redenen om meerdere domains te hebben
+> **Leg uit: Forest, Domain. Wat zijn de redenen om meerdere domains te hebben**
 
 
 
 ### Kubernetes
 
-> Wat is Kubernetes? Wat zijn de belangrijkste concepten?
+> **Wat is Kubernetes? Wat zijn de belangrijkste concepten?**
 
 
 
-> Wat is de high-level architectuur van Kubernetes? Teken en leg uit.
+> **Wat is de high-level architectuur van Kubernetes? Teken en leg uit.**
 
 
 
-> Leg uit waarvoor multi-container pods gebruikt kunnen worden
+> **Leg uit waarvoor multi-container pods gebruikt kunnen worden**
 
 
 
-> Beschrijf labels, annotaties en selectors. Wat zijn ze, wat doen ze en waarom worden ze gebruikt. Geef een eigen voorbeeld.
+> **Beschrijf labels, annotaties en selectors. Wat zijn ze, wat doen ze en waarom worden ze gebruikt. Geef een eigen voorbeeld.**
 
 
 
-> Wat zijn de opties voor storage in Kubernetes?
+> **Wat zijn de opties voor storage in Kubernetes?**
 
 
 
-> Wat is een storageClass? Leg uit een teken.
+> **Wat is een storageClass? Leg uit een teken.**
 
 
 
-> Teken een Kubernetes node. Leg de vershillende onderdelen uit.
+> **Teken een Kubernetes node. Leg de vershillende onderdelen uit.**
 
 
 
-> Teken de structuur van de Control Plane van Kubernetes en leg uit.
+> **Teken de structuur van de Control Plane van Kubernetes en leg uit.**
 
 
 
-> Beschrijf Kubernetes aan de hand van de architecturale figuur. Leg elk onderdeel uit.
+> **Beschrijf Kubernetes aan de hand van de architecturale figuur. Leg elk onderdeel uit.**
 
 
 
-> Leg de principes uit van Kubernetes workloads. Doe dit aan de hand van een figuur.
+> **Leg de principes uit van Kubernetes workloads. Doe dit aan de hand van een figuur.**
 
 
 
-> Je hebt een applicatie met meerdere services. Hoe zou je dit deployen op Kubernetes?
+> **Je hebt een applicatie met meerdere services. Hoe zou je dit deployen op Kubernetes?**
 
 onderscheid stateful/stateless ...
 
 
 
-> Welke soorten services worden er voorzien door Kubernetes? Leg elke service uit.
+> **Welke soorten services worden er voorzien door Kubernetes? Leg elke service uit.**
 
 
 
@@ -2031,37 +2394,222 @@ onderscheid stateful/stateless ...
 
 Merlijn heeft niet specifiek gezegd wat we moesten kennen dus de vragen hier zijn verzonnen door mij op basis van zijn uitleg op het einde van de les.
 
-> Wat zijn de nadelen van manueel systeembeheer?
 
 
+> **Wat zijn de vier niveaus van automatie in systeembeheer? Leg elk niveau uitvoerig uit. Beschrijf de voor- en nadelen.**
+
+* <u>Manueel</u>
+  * Basically alles zelf doen
+  * Configuration drift
+  * Schaalt moeilijk
+  * Onverwachte problemen
+* <u>Scripting</u>
+  * Sommige taken automatiseren (bash, powershell)
+  * Automation fear cycle: als je iets handmatig aanpast kan het dat scripts niet meer werken
+  * Knowledge: mensen moeten weten hoe je zelfgemaakte scripts werken
+  * Maintenance: constant scripts updaten
+  * Heruitvinden van het wiel
+* <u>Code describing infrastructure</u>
+  * We beschrijven een **desired state**
+    * Management software probeert deze constant te bereiken
+  * **Consistentie** en **betrouwbaarheid** van het systeem te verbeteren door menselijke fouten en **environment drift** te vermijden. 
+  * Documenteert zichzelf
+  * Het vergemakkelijkt, schaalbaarheid, deployment en wijzigingen, disaster recovery, herbuikbaarheid en workflow automation
+* <u>Operators en abstractions</u>
+  * Nog hoger abstractieniveau
+  * Een **operator** houdt het hele systeem dynamisch werkende (upgraden, monitoren, schalen, backups, ...)
+  * We spreken de operator aan als we wijzigingen willen doorvoeren, dit verbergt onderliggende complexiteit
+
+
+
+> **Leg uit: Wat is infrastructure as code? Wat zijn de voor- en nadelen?**
+
+Bij infrastructure as code beschrijf je je gehele infrastructuur als code. Dit gaat vanaf het opzetten van fysieke servers tot het deployen en configureren van software en gebeurt op een **declaratieve** wijze. Dit betekent dat je zegt wat er gedaan moet worden, en niet hoe het gedaan moet worden. Aan de hand van jouw beschrijving probeert een **ochestrator** het systeem constant in een **desired state** te brengen. Dit kan op twee manieren:
+
+* **Idempotentie**
+  * Het meermaals uitvoeren van een taak geeft altijd hetzelfde resultaat
+  * We voeren **elke keer opnieuw** alle taken uit, dan weten we dat we in de desired state zitten
+* **Convergentie**
+  * **Eerst kijken** welke acties er moeten uitgevoerd worden
+  * **Dan** die acties **uitvoeren**
+  * Als er niets te doen valt moet je ook niets doen, dus deze aanpak is **sneller**
+
+
+
+> **Wat is de automation fear cycle?**
+
+
+
+> **Leg het verschil uit tussen een imperatieve en declaratieve werkwijze in de context van IaC.**
+
+Als we bijvoorbeeld een programma dat een lijst sorteert op **imperatieve** wijze programmeren, zeggen we stap voor stap **hoe** het programma dit moet doen. Als we **declaratief** werken, zeggen we simpelweg **wat** het programma moet doen. In dit geval is dat de lijst sorteren. Hoe dit gebeurt, houden wij ons niet mee bezig. Hierdoor kan de computer bijvoorbeeld zelf beslissen om taken te parallelliseren.
+
+//TODO zeker nog iets zeggen over desired state
+
+
+
+> **Welke 7 tools hebben we gezien in het hoofdstuk IaC? Geef van elke tool een korte beschrijving, een overzicht van zijn essentiële componenten en zijn voor- en nadelen. (deze vraag is echt hardcore ik weet nog niet of ik dit erin ga laten)**
 
 //TODO
 
 
 
+> **Gegeven 7 software tools (Ansible, Terraform, Chef, Puppet, Juju, DSC en Kubernetes). Vertel voor elke tool op welk niveau van de infrastructuur hij kan worden gebruikt.**
+
+|                | Cloud resources | Operating system | Applications  | Code           |
+| -------------- | --------------- | ---------------- | ------------- | -------------- |
+| **Ansible**    | :yellow_heart:  | :green_heart:    | :green_heart: | :heart:        |
+| **Terraform**  | :green_heart:   | :yellow_heart:   | :heart:       | :heart:        |
+| **Chef**       | :yellow_heart:  | :green_heart:    | :green_heart: | :yellow_heart: |
+| **Puppet**     | :yellow_heart:  | :green_heart:    | :green_heart: | :heart:        |
+| **Juju**       | :green_heart:   | :green_heart:    | :green_heart: | :heart:        |
+| **DSC**        | :heart:         | :green_heart:    | :green_heart: | :heart:        |
+| **Kubernetes** | :yellow_heart:  | :green_heart:    | :green_heart: | :green_heart:  |
+
+
+
+> **Geef 6 design patterns die gebruikt worden in IaC. Leg uit wat ze betekenen en waarom ze nuttig zijn.**
+
+* Unattended automation
+  * Oplossing voor de automation fear cycle
+  * Het systeem houdt zichzelf constant in de desired state, als er plots iets verandert zie je het direct
+  * Maakt het leven van hackers ook moeilijk
+* Re-use & promote definitions
+  * Oplossing voor de automation fear cycle
+  * Gebruik dezelfde definition files voor dev, staging en production
+  * Dan moet je alleen maar wat variabelen aanpassen
+* Cattle, not pets
+  * Vergelijk servers met vee, niet met huisdieren
+  * Servers moeten vervangbaar zijn en beheerd worden door geautomatiseerde tools
+* Forking
+  * Oplossing voor duplicatie
+  * Het declaratief model forken en hergebruiken
+  * Vermijdt tight coupling en kan omgaan met verschillende requirements
+  * Nadelen zijn **divergentie** en **inconsistentie**
+* Definition libraries
+  * Oplossing voor duplicatie
+  * Templates maken op hoger abstractieniveau, dan moeten er alleen variabelen ingevuld worden
+  * Meer abstract. Maak bijvoorbeeld een cookbook die een mySql cluster opzet. Die cookbook heeft dan een paar variabelen om de werking van de cluster lichtjes aan te passen. Die cookbook dan dan overal opnieuw gebruikt worden
+  * Wel vaak infrastructuurteam nodig
+  * Het is hier moeilijk om tight coupling te vermijden. Code ownership is ook een probleem
+  * Aparte pipeline nodig
+* Minimaliseer gedeelde elementen
+  * Optimaliseer de architectuur om zo weinig mogelijk gedeelde elementen te hebben en wijzigingen zo makkelijk mogelijk te maken
+  * Dan moeten de developers niet de hele tijd aan de systeembeheerders moeten vragen om iets aan te passen.
+  * Bijvoorbeeld een loadbalancer. Elke keer dat een developer iets nieuws toevoegt, moet hij een aanpassing maken in de loadbalancer. 
+
 ### Monitoring
+
+> **Wat is monitoring? Welke types bestaan er? Op welke dingen moet je letten?**
+
+Een **monitor** is een programma of stuk hardware dat de verschillende aspecten van een computersysteem in de gaten houdt. Monitoring is belangrijk, want als je niet weet dat er een probleem is kan je het ook niet oplossen. Verder geeft het je ook inzicht in de veiligheid van je systeem.
+
+Het grote probleem in monitoring zijn alle verschillende **formaten**. Er is geen consistent formaat voor monitoring, waardoor analyse moeilijk is. Je hebt veel kennis nodig en bovendien kost het extra geld. 
+
+* <u>Monitoring</u>
+  * Het verzamelen, verwerken, aggregeren en weergeven van real-time data over een systeem. 
+  * Bijvoorbeeld: aantal queries en types, aantal errors en types, uptime, gebruikte resources
+* <u>White-box monitoring</u>
+  * Monitoring op basis wat er intern in het systeem zit.
+  * Bijvoorbeeld: Http handler, JVM profiling interface, logs
+* <u>Black-box monitoring</u>
+  * Langs de buitenkant kijken naar de applicatie
+  * Zoals een gebruiker het zou zien
+
+Bij een monitoringsysteem zal je vaak **symptomen** krijgen te zien. Als je een 500 error krijgt, kan het dat de database geen verbindingen meer aanneemt. Het is belangrijk om de **wat** en de **waarom** te scheiden.
+
+Het eerste principe can monitoring is het verzamelen van de **juiste data**. Je kan alles opslaan wat je wilt, maar te veel verzamelen is geldverspilling. We maken onderscheid tussen drie soorten metrieken die je best verzamelt:
+
+* <u>Work metrieken</u>
+  * Hoevaak krijg ik een http 200?
+  * Vertelt je over de werking van de applicatie
+* <u>Resource metrieken</u>
+  * Hoeveel RAM, CPU?
+  * Vertelt je over het verbruik van de applicatie
+  * Kan je goed helpen met geld uitsparen
+* <u>Events</u>
+  * Veranderingen in code, alerts, scaling events
+
+
+
+> **Op welke twee manieren kan je een monitoring-architectuur opbouwen?**
+
+Je kan een monitoring architectuur op twee manieren opbouwen. Dit kan **push** of **pull**-based:
+
+| <img src="img/systeembeheer/image-20230615114946391.png" alt="image-20230615114946391" style="zoom:33%;" /> | <img src="img/systeembeheer/image-20230615114930115.png" alt="image-20230615114930115" style="zoom:33%;" /> |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| Je zegt tegen de agent welke metrieken je allemaal wilt. Deze worden dan periodiek doorgestuurd. | Het monitoring systeem moet zelf de metrieken ophalen bij de bron. |
+
+
+
+> **Wat zijn de 4 golden signals van monitoring?**
+
+Volgens google moet je bij monitoring rekening houden met **4** **golden signals**. Deze betreffen:
+
+1. Latency
+   * Hoe lang het duurt om op een request te antwoorden. 
+   * Het is wel belangrijk om een vershil te maken tussen succesvolle en gefaalde request, om geen foute conclusies te trekken
+2. Traffic
+   * Hoeveel vraag is er naar de applicatie?
+3. Errors
+   * Het aantal requests die falen. 
+4. Saturatie
+   * Hoe 'vol' is de service.  (Memory, I/O)
+   * Kan de service meer aan?
+
+
+
+> **Wat is de TICK stack? Leg de verschillende onderdelen uit en teken hoe ze interageren.**
+
+De TICK stack is een open-souce monitoring oplossing, TICK staat voor:
+
+* Telegraf
+  * Data verzamelen
+  * Werkt met plugins en kan werken met externe scripts
+  * Minimaal memory verbruik
+* InfluxDB
+  * Schaalbare time-series database voor metrieken, events, real-time analytics
+  * SQL-achtige querytaal
+  * Ondersteuning voor 'continuous queries'
+  * In InfluxDB v2 zitten Chronograph en Kapacitor erbij 
+* Chronograph
+  * Data visualisatie, database management
+  * Overzicht van de infrastructuur
+  * Alert management
+* Kapacitor
+  * Processing van zowel streaming als batch data
+  * Kan alle transformaties uitvoeren die InfluxQL kan doen
+  * Je kan makkelijk pipelines maken
+
+<img src="img/systeembeheer/Influx-1.0-Diagram_04.20.2020v2.png" alt="Influx-1.0-Diagram" style="zoom: 15%;" />
+
+De belangrijkste link hier is de alerting frameworks blijkbaar.
+
+
+
+> **Geef de 5 geziene oplossingen voor monitoring en geef voor elke oplossing een korte beschrijving van de belangrijkste onderdelen. Geef een overzicht van de voor- en nadelen.**
 
 //TODO
 
 ### Storage virtualization 
 
-> What three types of storage virtualization exist? What are their main properties? What benefits and drawbacks do they offer?
+> **What three types of storage virtualization exist? What are their main properties? What benefits and drawbacks do they offer?**
 
 
 
-> What advantages do network-based methods for storage virtualization offer compared to array-based methods?
+> **What advantages do network-based methods for storage virtualization offer compared to array-based methods?**
 
 
 
-> What three types of network-based storage virtualization exist? What are their main properties?
+> **What three types of network-based storage virtualization exist? What are their main properties?**
 
 
 
-> What is hyperconvergence? Discuss how this can be enabled based on one specific technology that was discussed in this class.
+> **What is hyperconvergence? Discuss how this can be enabled based on one specific technology that was discussed in this class.**
 
 ## Van mij
 
-allemaal nog //TODO
+
 
 > Geef een aantal voorbeelden van cloud services.
 
@@ -2070,7 +2618,7 @@ allemaal nog //TODO
   * Gmail, google slides, ...
 * Provide computing platform and computing infrastructure
 
-
+//TODO
 
 > Is IT-as-a-service een nieuw concept?
 
@@ -2078,7 +2626,7 @@ Nee, vanaf de jaren 30 (voor computers) verhuurt IBM al hun elektrische accounti
 
 Ik denk dat deze vraag nogal nutteloos is maak ja ik ga hem nu niet verwijderen.
 
-
+//TODO
 
 > Welke verschillende cloud models zijn er en wat houden ze in? (cloud slide 46, 01h55)
 
@@ -2087,7 +2635,7 @@ Ik denk dat deze vraag nogal nutteloos is maak ja ik ga hem nu niet verwijderen.
 * Platform as a service
 * Software as a service
 
-
+//TODO
 
 > Waarom is de performantie van een applicatie op virtuele machines typisch lager dan op fysieke hardware?
 
