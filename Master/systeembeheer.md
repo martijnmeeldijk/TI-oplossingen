@@ -865,9 +865,9 @@ Er zijn twee manieren om de gebruikers, computers, devices en services in je Win
 
 ### Domain controller
 
-De **domain controller** is het belangrijkste onderdeel van je domain. Dit is de server die zegt wat er mag en wat niet. Hij bevat alle informatie over de AD en is de belanglijkste target voor hackers. Als een hacker hierop binnenraakt heeft hij **domain dominance**, en kan hij doen wat hij wilt met jouw domain. Vanaf dat dit gebeurt moet je de stekker eruit trekken en teruggaan naar de vorige backup. Daarom kan je best de DC met Server Core deployen, dus met zo weinig mogelijk **attack surface** hebt.
+De **domain controller** is het belangrijkste onderdeel van je domain. Dit is de server die zegt wat er mag en wat niet. Hij bevat alle informatie over de AD en is de belanglijkste target voor hackers. Als een hacker hierop binnenraakt heeft hij **domain dominance**, en kan hij doen wat hij wilt met jouw domain. Vanaf dat dit gebeurt moet je de stekker eruit trekken en teruggaan naar de vorige backup. Daarom kan je best de DC met Server Core deployen, zodat je zo weinig mogelijk **attack surface** hebt.
 
-Vroeger had je in Windows NT een primare en één of meet backup domain controllers, nu krijgen ze gewoon een nummertje dat hun prioriteit aangeeft. 
+Vroeger had je in Windows NT één primare en één of meer backup domain controllers, nu krijgen ze gewoon een nummertje dat hun prioriteit aangeeft. 
 
 
 
@@ -1005,6 +1005,8 @@ Een aantal andere features zijn:
   * Is niet bij alle Kubernetes distributies hetzelfde
 
 ## Architectuur
+
+Alle dingen over de onderdelen van Kubernetes staan ook [op de site](https://kubernetes.io/docs/concepts/overview/components/) van Kubernetes, maar zo te zien heeft Bruno de diagrammen zelf gemaakt (dus ik zou ze zeker leren want als ik een prof zou zijn en ik zou allemaal mooie diagrammetjes maken zou ik ze ook vragen op het examen hoor).
 
 <img src="img/systeembeheer/image-20230613110808105.png" alt="image-20230613110808105" style="zoom:67%;" />
 
@@ -1750,7 +1752,7 @@ Zabbix kan data verzamelen op **alle lagen** (Hardware, OS, Netwerk, ... , Appli
 
 * Pull
   * Service check of script uitvoeren
-  * Passieve agent: werkt pas op het moment dat hij een request krijgt
+  * Passieve agent: werkt pasfp het moment dat hij een request krijgt
 * Push 
   * Apparaat gaat uit zichzelf logs enzo sturen
   * Actieve agent: periodiek gevraagde data forwarden
@@ -1770,7 +1772,7 @@ De TICK stack is een open-souce monitoring oplossing, TICK staat voor:
   * SQL-achtige querytaal
   * Ondersteuning voor 'continuous queries'
   * In InfluxDB v2 zitten Chronograph en Kapacitor erbij 
-* Chronograph
+* Chronograf
   * Data visualisatie, database management
   * Overzicht van de infrastructuur
   * Alert management
@@ -1856,7 +1858,7 @@ Als we een gestandaardiseerde API hebben voor het verzamelen van deze drie types
   * Momenteel gearchiveerd
 * Opencensus
   * Kwam van google
-  * Een verzameling van libraries om metrieken te verzamelen en data te exproteren 
+  * Een verzameling van libraries om metrieken te verzamelen en data te exporteren 
   * Kan je naar verschillende back-ends sturen
   * Ook gearchiveerd
 * Opentelemetry
@@ -2000,7 +2002,6 @@ Er zijn verschillende methodes waarop storage virtualization kan worden aangebod
 * <u>Network- or fabric-based virtualization</u>
   * We kunnen aan een computer eender welke storage van eender welke vendor hangen
   * DAS, NAS en SAN
-  * //TODO
 
 
 
@@ -2162,23 +2163,29 @@ Transcriptie van het einde van de tweede gastles:
 
 
 
-# Examenvragen
+
+
+# 
+
+
+
+# --- Examenvragen ---
 
 Ik heb net een ontdekking gemaakt. Ik weet niet hoe dit mij is ontsnapt, maar blijkbaar zet Bruno een icoontje op elke slide waarvan hij vindt dat je hem moet kennen. Het icoontje in kwestie:
 
 <img src="img/systeembeheer/image-20230612154300787.png" alt="image-20230612154300787" style="zoom:50%;" />
 
-Godverdomme hij doet dit alleen in de eerste twee hoofdstukken. 
+Godverdomme hij doet dit alleen in het tweede hoofdstuk. Geen wonder dat ik mijn eigen geestelijke gezondheid in vraag begon te stellen.
 
 
 
-## Van de les
+## Vragen van de les
 
-Elke keer dat Bruno zegt dat je iets moet kennen voor het examen.
+Ik heb voor jullie alle lessen bekenen en een lijst gemaakt van alle momenten dat bruno heeft gezegd dat je iets moest kennen voor het examen. Ik heb voor de delen die gegeven zijn door Merlijn en Jericho wel vragen verzonnen op basis van hun uitleg. Alle vragen waar je een figuur moet kennen zijn aangeduid met [figuur].
 
 ### Cloud
 
-> **Wat wordt bedoeld met Cloud. Leg uit. (Cloud slide 3)**
+> **1. Wat wordt bedoeld met Cloud. Leg uit. (Cloud slide 3)**
 
 Een cloud is een grote pool van gemakkelijk bruikbare en toegankelijke **gevirtualiseerde** resources zoals **hardware**, **develoment platformen** en/of **services.** Die resources kunnen dynamisch geherconfigureerd worden om een variabele load aan te kunnen **(scale)**, zodat resources zo optimaal mogelijk worden gebruikt. Deze pool van resources wordt typisch aangeboden in een **pay-per-use** model aangeboden, waarbij garanties worden aangeboden door de provider in de vorm van een op maat gemaakte **SLA** (service level agreement).
 
@@ -2193,11 +2200,29 @@ Alle verschillende definities van cloud hebben deze dingen gemeen:
 
 
 
-> **Geef de voordelen van virtualisatie.  (Cloud slides 56-59)**
+> **2. Geef de voordelen van virtualisatie.  (Cloud slides 56-59)**
+
+* <u>VM Isolatie</u> 
+  * Secure multiplexing
+    * Op een veilige manier meerdere gebruikers/applicaties op dezelfde hardware zetten zonder dat ze kunnen interfereren
+    * Moderne processoren hebben betere ondersteuning voor virtualisatie, bv. direct memory access
+  * Sterke garanties
+    * Bug, crashes, virussen in één VM raken niet bij andere VMs (behalve als er bugs in de VM software zitten)
+  * Performatie isolatie
+    * Resources van het systeem partitioneren. Je kan bijvoorbeeld niet over de limiet gaan van de VM, ook al heeft de fysieke machine meer geheugen
+* <u>Mixed OS environment</u>
+  * Je kan meerdere besturingssystemen op één machine draaien
+* <u>VM encapsulatie</u>
+  * We kunnen een VM in een bestand stoppen en bijvoorbeeld doorsturen, met de volledige toestand van het geheugen, applicaties en data.
+  * Dan kunnen we de VM gemakkelijk ergens anders opstarten
+* <u>VM Compatibiliteit</u>
+  * Oude legacy applicaties kunnen uitgevoerd worden op VMs
+  * Hardwareonafhankelijk
+  * Create once, run everywhere
 
 
 
-> **Hoe is virtualisatie geëvolueerd doorheen de jaren? Leg de verschillende stappen uit en bespreek de veranderingen. Teken de figuurtjes. (Cloud slide 61)**
+> **3. Hoe is virtualisatie geëvolueerd doorheen de jaren? Leg de verschillende stappen uit en bespreek de veranderingen. Teken de figuurtjes. (Cloud slide 61)**[figuur]
 
 * <u>Eerste generatie</u>
   * <img src="img/systeembeheer/image-20230611142623021.png" alt="image-20230611142623021" style="zoom: 67%;" /> 
@@ -2228,7 +2253,7 @@ Alle verschillende definities van cloud hebben deze dingen gemeen:
 
 
 
-> **Wat is de vierde vorm van virtualisatie? (Cloud slide 68)**
+> **4. Wat is de vierde vorm van virtualisatie? (Cloud slide 68)**
 
 OS-level virtualisatie wordt op het niveau van het besturingssysteem gedaan. Dit wordt vaak gebruikt voor **containers**. Het voornaamste voordeel hiervan is **densiteit**, want containers hebben niet alle extra bagage die bij een VM zit (zoals een OS en bios). Ze nemen dus veel **minder plaats** in. 
 
@@ -2236,7 +2261,7 @@ Je kan als je containers gebruikt met dezelfde hardware drie keer meer servers o
 
 
 
-> **Leg het verschil uit tussen VM-based virtualisatie en OS-level virtualisatie. Maak een tekening. (Cloud slide 69)**
+> **5. Leg het verschil uit tussen VM-based virtualisatie en OS-level virtualisatie. Maak een tekening. (Cloud slide 69)**[figuur]
 
 | ![image-20230611150152617](img/systeembeheer/image-20230611150152617.png) | ![image-20230611150204145](img/systeembeheer/image-20230611150204145.png) |
 | ------------------------------------------------------------ | ------------------------------------------------------------ |
@@ -2246,15 +2271,37 @@ Je kan als je containers gebruikt met dezelfde hardware drie keer meer servers o
 
 
 
-> **Geef de open IAAS oplossingen en beschrijf ze. (Cloud slide 76)**
+> **6. Geef de open IAAS oplossingen en beschrijf ze. (Cloud slide 76)**
 
-Openstack is de belangrijkste, maar zeer complex
+* Openstack 
 
-//TODO 
+  * Meest gebruikte
+  * Zeer uitgebreid en ingewikkeld
+
+* Apache Cloudstack
+
+  * Tweede meest gebruikt
+  * Minder uitgebreid, maar makkelijker
+  * API compatibel met AWS voor hybrid cloud
+
+* Opennebula
+
+  * Minder uitgebreid, maar makkelijker
+  * Gebruikt door sommige grote bedrijven
+  * Niet echt aangeraden, minder populaire oplossing
+
+* Eucalyptus
+
+  * Geflopt
+  * Focus op AWS compatiebele private cloud
+
+  
 
 
 
-> **Welke standaarden zijn er voor virtualisatie? Geef volledige namen (Cloud slide 86)**
+
+
+> **7. Welke standaarden zijn er voor virtualisatie? Geef volledige namen (Cloud slide 86)** [figuur]
 
 * <u>Open virtualization format (OVF)</u>
   * Beschrijft een manier om een virtuele machine in een bestand te steken
@@ -2264,19 +2311,18 @@ Openstack is de belangrijkste, maar zeer complex
   * Dan kan je je VM gewoon naar ergens anders verplaatsen
 * <u>Open cloud computing interface (OCCI)</u>
   * <img src="img/systeembeheer/image-20230611163633776.png" alt="image-20230611163633776" style="zoom:67%;" /> (figuur kennen)
-  * Vermijdt het gebruik van proprietaire IAAS APIs
-  * Dan zijn de commando's om VMs te starten en te stoppen overal hetzelfde
-  * Werkt met een RESTful protocol voor deployment, automatisch schalen, monitoring, network en storage resources.
-  * Ondersteund door OpenStack, OpenNebula, Cloudstack, Amazon AWS
-  * Niet ondersteund door Azure en Google Cloud, daarom is de standaard waarschijnlijk gestorven. De laatste versie was in 2015
+  * Vermijdt het gebruik van proprietaire IAAS APIs, dan zijn de commando's om VMs te starten en te stoppen overal hetzelfde
+  * Werkt met een RESTful protocol voor alle commando's
+  * Ondersteund door een aantal providers (en open source oplossingen), maar van de grote spelers alleen AWS
+  * Niet meer gebruikt
 * <u>Cloud infrastructure management interface (CIMI)</u>
   * Net hetzelfde als OCCI
-  * Laatste versie in 2016
   * Er is alleen een implementatie voor Openstack, dus het heeft niet zo veel nut.
+  * Niet meer gebruikt
 * <u>Cloud data management interface (CDMI)</u>
   * Voornamelijk bedoeld om storage to koppelen aan draaiende VMs
   * RESTful standaard voor storage, gebruikers exporteren, data tussen cloud systemen verplaatsen, ...
-  * Laatste versie in 2014
+  * Niet meer gebruikt
 
 Zowel OCCI en CIMI zijn weinig gebruikt, de standaard is nu Amazon EC2 (elastic cloud). Het is eigenlijk geen standaard want het is van Amazon, maar iedereen gebruikt het. EC2 heeft een REST API en een hele boel SDKs voor verschillende programmeertalen.
 
@@ -2284,7 +2330,7 @@ Azure en Google Cloud voorzien gelijkaardige applicaties.
 
 
 
-> **Vergelijk kubernetes met openshift.**
+> **8. Vergelijk kubernetes met openshift.**
 
 | Parameter                 | Kubernetes                                                   | Openshift                                                    |
 | ------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
@@ -2300,93 +2346,379 @@ Azure en Google Cloud voorzien gelijkaardige applicaties.
 
 
 
-> Iets met Diego cells want ik kon met herinneren dat Bruno dat belangrijk vond.
+> **9. Iets met Diego cells want ik kon met herinneren dat Bruno dat belangrijk vond.**
 
 //TODO
 
 
 
+> **10. Wat is serverless computing? Wat zijn de voor- en nadelen?**
+
+//TODO
+
 ### Windows server
 
-> **Leg het principe van shielded VMs uit aan de hand van een figuur. (Windows server slide 15)**
+> **11. Leg het principe van shielded VMs uit aan de hand van een figuur. (Windows server slide 15)**[figuur]
+
+<img src="img/systeembeheer/image-20230612141115273.png" alt="image-20230612141115273" style="zoom: 80%;" />
+
+Een shielded VM zorgt ervoor dat je VM wordt uitgevoerd in een **veilige omgeving**, die je verzekert dat er niemand meekijkt met wat je doet. Het opstarten van een shielded VM verloopt in 8 stappen:
+
+1. De gebruiker vraagt een shielded VM aan.
+2. De **host** stuurt informatie over zichzelf naar de **Host Guardian Service (HGS)** met de vraag om toestemming om de VM te starten.
+3. De **Attestation Service** van de HGS kijkt na of de info geldig is en of de **host** **gekend** is.
+4. Als dit oké is krijgt de host een **certificaat** van de HGS.
+5. Nu vraagt de host voor een **key** om de VM te kunnen unlocken, want zonder hem te unlocken kan hij niet opgestart worden. De host stuurt dus deze vraag samen met zijn certificaat naar de HGS.
+6. De **Key Protection Service** van de HGS beslist dan of hij de host voorziet van een sleutel.
+7. De HGS stuurt de **sleutel** naar de host.
+8. De host kan nu de VM **unlocken** en hem starten.
+
+Het is nu onmogelijk om de data en de state van de trusted VM te inspecteren. Dit komt doordat een stuk van de processor, genaamd de **Trusted Platform Module (TPM)** zorgt voor encryptie. De data kan dan enkel **gedecrypteerd** worden met de **sleutels** van de **HGS**. Zo kan hetgene dat uitgevoerd wordt in een bepaald proces op de VM enkele bekeken worden door diegene die het uitvoert.
 
 
 
->  **Wat is een Privileged Access Workstation? Hoe wordt deze best geconfigureerd? Wat doet een Jump Server in deze context? (Windows server slide 22)**
+>  **12. Wat is een Privileged Access Workstation? Hoe wordt deze best geconfigureerd? Wat doet een Jump Server in deze context? (Windows server slide 22)**
+
+Een **Privileged Access Workstation (PAW)** is een speciale computer van waaruit administratietaken zijn toegestaan. Zo kan niet eender wie vanuit eender waar wijzigingen aanbrengen aan je systeem.
+
+Deze computer heeft typisch een **locked down** configuratie. Er mag enkel geauthoriseerde en gesigneerde software op deze computer aanwezig zijn. Een PAW wordt als volgt geconfigureerd:
+
+* Stel in dat alleen geauthoriseerde en gesigneerde software wordt toegelaten
+* Stel **Credential Guard** in om de wachtwoorden op de computer te beschermen
+* Gebruik **BitLocker** om de opslag en bootomgeving van de computer te versleutelen
+* De computer mag niet gebruikt worden om te browsen of om te mailen. Blokkeer browsen op de PAW lokaal en in de firewall van het netwerk
+* User accounts
+  * Gebruik specifieke user accounts voor sysadmins om op de PAW in te loggen
+  * Een administrator mag niet inloggen met een account dat root privileges heeft op de PAW
+    * Er moet natuurlijk wel één iemand aankunnen, maar alle gewone sysadmins mogen dit niet
+  * Je kan bijvoorbeeld ook de sign-in hours beperken
+  * Voorkom dat de sysadmin accounts op gewone computers kunnen inloggen
+* Stel in dat servers alleen verbindingen accepteren van een sysadmin account op een PAW
+* Gebruik configuuration-management tools om de configuratie van de PAW in de gaten te houden
+* Zorg dat de audit logs van de PAW naar een veilige locatie worden gestuurd
+* Verbied het gebruik van onbekende apparaten zoals USB sticks
+* Blokkeer ongevraagd binnenkomend netwerkverkeer op de PAW
+
+//TODO dit is te uitgebreid
+
+Meestal heb je niet één enkele PAW, want als die dan kapot gaat zit je in de miserie. Als je meerdere PAWs hebt kunnen **jump servers** van pas komen. Deze kan je zien als een soort proxy tussen je PAW en je servers. 
+
+Dan stel je je servers in dat ze enkel verbindingen aannemen van een jump server. Op de jump server zelf kan niemand inloggen, deze combineert het verkeer van de verschillende PAWs. Dit zorgt dat al dit verkeer langs één punt gaat, waardoor je alles goed in de gaten kunt houden. Een jump server zorgt dus voor een **single point of entry** in je datacenter.
 
 
 
-> **Wat is PXE booting? Leg uit en beschrijf de vershillende stappen. (Windows server slide 35)**
+> **13. Wat is PXE booting? Leg uit en beschrijf de vershillende stappen. (Windows server slide 35)**[figuur]
+
+PXE booting zorgt ervoor dat wanneer een lege pc (zonder OS) aangesloten wordt op je bedrijfsnetwerk, deze op kan starten via het netwerk. Typisch gebruik je een DHCP server om deze informatie te voorzien. Dit verloopt in 6 stappen:
+
+<img src="img/systeembeheer/image-20230612155608082.png" alt="image-20230612155608082" style="zoom: 67%;" />
+
+1. De client heeft nog geen IP-adres en verstuurt een `DHCPDISCOVERY` naar het broadcast adres, waarbij hij vermeldt dat hij een PXE boot nodig heeft.
+2. De DHCP-server stuurt een `DHCPOFFER` op het broadcast adres. Als de server informatie over de PXE boot heeft, stuurt hij ze ook door.
+3. De client stuurt een `DHCPREQUEST` op het broadcast adres, waarmee hij zegt dat hij het adres gaat gebruiken. 
+4. De DHCP-server stuurt een `DHCPACK` op het broadcast adres, zo is het IP-adres bevestigd.
+5. De client contacteert de PXE boot server met het Trivial File Transfer Protocol (TFTP) en vraagt naar de boot file vanuit de informatie in stap 2.
+6. De file wordt geladen en uitgevoerd op de client.
+
+Hierdoor heb je dus enkel een BIOS nodig om een PC te kunnen installeren, want alles kan automatisch via het netwerk gebeuren.
 
 
 
-> **Wat is Active Directory? Waarvoor wordt het gebruikt en waarom is het nuttig? (Windows server slide 43)**
+> **14. Wat is Active Directory? Waarvoor wordt het gebruikt en waarom is het nuttig? (Windows server slide 43)**
+
+Active Directory is een proprietaire technologie van Microsoft die objecten in een boomstructuur opslaat in een **hiërarchisch, gestructureerd en veilig formaat**. Deze objecten worden uniek geïdentificeerd door een naam en attributen en zijn typisch:
+
+* Gebruikers 
+* Computers
+* Randapparaten
+* Netwerk services
+
+AD **centraliseert** al deze informatie, zodat gebruikers niet zijn verbonden aan één computer. Het maakt beheer ook makkelijker, zo kunnen accounts van mensen die onslagen worden bijvoorbeeld gemakkelijk verwijderd worden. Er zijn ook **AD-aware applicaties** die hun data in de AD kunnen zetten (meestal Microsoft-specifieke applicaties).
+
+Ookal is AD **propriëtair**, zijn er wel een aantal **standaardprotocollen** die je ermee kan gebruiken. Je kan Lightweight Directory Access Protocol (**LDAP**) gebruiken om the authenticeren, data te queryen, ... Met **Kerberos** kan je veilig authenticeren en de identiteit van gebruikers op het netwerk bewijzen.
 
 
 
-> **Leg het verschil uit tussen een Workgroup en een Domain. Wat komt daar allemaal bij kijken? (Windows server slide 44)**
+> **15. Leg het verschil uit tussen een Workgroup en een Domain. Wat komt daar allemaal bij kijken? (Windows server slide 44)**
 
 
 
-> **Wat is een domain controller? Wat zijn de implicaties?**
+| Domain                                                       | Workgroup                                                    |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| - Dedicated server voorziet services<br />- De server bestuurt beveiliging en permissions voor alle computers op het domein<br />- Veranderingen worden automatisch op alle computers gemaakt | Geen computer heeft controle over een andere computer        |
+| Je kan met één account op eender welke computer op het domein inloggen | Elke computer heeft een aantal accounts, als je hem wilt gebruiken moet je er een bijmaken |
+| Grote schaal (bedrijf): 10-1000en computers                  | Kleine schaal (thuis)                                        |
+| Computers kunnen op verschillende lokale netwerken zitten    | Computers moeten op hetzelfde lokale netwerk zitten          |
+| Gebruikt Active Directory Domain Service (AD DS) role        |                                                              |
 
 
 
-> **Leg uit: Forest, Domain. Wat zijn de redenen om meerdere domains te hebben**
+> **16. Wat is een domain controller? Wat zijn de implicaties?**
+
+De **domain controller** is het belangrijkste onderdeel van je domain. Dit is de server die zegt wat er mag en wat niet. Hij bevat alle informatie over de AD en is de belanglijkste target voor hackers. Als een hacker hierop binnenraakt heeft hij **domain dominance**, en kan hij doen wat hij wilt met jouw domain. Vanaf dat dit gebeurt moet je de stekker eruit trekken en teruggaan naar de vorige backup. Daarom kan je best de DC met Server Core deployen, zodat je zo weinig mogelijk **attack surface** hebt.
+
+Vroeger had je in Windows NT één primare en één of meer backup domain controllers, nu krijgen ze gewoon een nummertje dat hun prioriteit aangeeft. 
+
+
+
+> **17. Leg uit: Forest, Domain. Wat zijn de redenen om meerdere domains te hebben?**
+
+Een **domain tree** bestaat uit één of meerdere domains. De domains in een tree zijn gelinkt door **transitive trust**. Als A-B en B-C elkaar vertrouwen, zal A ook C vertrouwen. Een **forest** is een collectie van domain trees.
+
+Er zijn **twee** **redenen** om **meerdere domains** in een forest te hebben:
+
+* De organisatie ligt geographisch verspreid, en er zijn problemen met verkeer voor domein replicatie
+  * Als de netwerklink te slecht om elke keer alles over te kopiëren vanuit de andere kant van de wereld
+* De organisatie is zeer groot (honderdduizenden gebruikers)
+
+Een organisatie kan ook **meerdere forests** hebben met **trust** **relaties** tussen deze forests. Hier zijn twee redenen voor:
+
+* Meestal: Eén bedrijf neemt een ander bedrijf over en ze hebben beiden al een forest
+* Minder vaak: Een bedrijf splitst een deel van zichzelf af en gebruikers moeten naar een nieuwe forest gemigreerd worden voordat de splitsing gebeurt.
 
 
 
 ### Kubernetes
 
-> **Wat is Kubernetes? Wat zijn de belangrijkste concepten?**
+> **18. Wat is Kubernetes? Wat zijn de belangrijkste concepten?**
+
+Kubernetes is een oplossing voor (onder meer) **container orchestratie.** Het framework houdt zich bezig met de deployment, schaling en netwerkverbindingen van containers. Dit wordt op een **declaratieve** manier gedaan. Dat betekent dat je zegt wat de **staat** van het systeem moet zijn, niet welke stappen er worden genomen om tot die staat te komen.
+
+Kubernetes was origineel gemaakt door google, maar op een bepaald moment werden ze te groot en hadden ze een ander systeem nodig. Gelukkig heeft google het dan niet verwijderd. Nu wordt Kubernetes erg veel gebruikt in productie.
+
+Kubernetes maakt **abstractie** van de onderliggende hardware en voorziet een **uniforme interface** die ervoor zorgt dat je workloads de resource pool kunnen gebruiken. Alle services binnen Kubernetes worden automatisch ge**loadbalanced**, en kunnen dus automatisch omhoog en omlaag schalen. Hierdoor zijn ze **self-healing** (de cluster wilt altijd naar de desired state) en is er mogelijkheid tot **seamless upgrading** of **rollback**. 
+
+Een aantal andere features zijn:
+
+* Automatic bin packing
+  * Doet tetris met de jobs om zo efficiënt mogelijk gebruik te maken van resources
+* Autoscalen van workloads
+* Blue/green deployments
+  * Twee productieomgevingen, één live (blue)
+  * Loadbalancer switchen tussen de twee wanneer er problemen of updates zijn
+* Jobs en cronjobs
+  * Taken en updates
+* Beheer van stateless en stateful applicaties
+  * Stateless: geen context, geen datastore (makkelijk te schalen)
+  * Stateful: heeft dit wel (moeilijker te schalen)
+* Native methodes voor service discovery
+  * Kubernetes weet altijd wat waar staat
+* Gemakkelijke integratatie met 3rd party applicaties
+* Zelfde API over bare metal en cloud
+  * Is niet bij alle Kubernetes distributies hetzelfde
 
 
 
-> **Wat is de high-level architectuur van Kubernetes? Teken en leg uit.**
+De belangrijkste functies van een orchestration tool zijn:
+
+* Resource management: resource beschikbaarheid, monitoring, opslag
+* Scheduling: workload toewijzen aan de juiste hosts
+* Workload management: replicas, updates, rollbacks, network.
 
 
 
-> **Leg uit waarvoor multi-container pods gebruikt kunnen worden**
+> **19. Wat is de high-level architectuur van Kubernetes? Teken en leg uit.**[figuur]
+
+<img src="img/systeembeheer/image-20230613110808105.png" alt="image-20230613110808105" style="zoom:67%;" />
+
+* End users: gebruikters van onze applicatie
+* Nodes: onze fysieke servers
+  * Eén node kan ook overeenkomen met één VM, maar Bruno zegt dat dat makkelijk kan breken.
+* Control plane: stuurt aan
 
 
 
-> **Beschrijf labels, annotaties en selectors. Wat zijn ze, wat doen ze en waarom worden ze gebruikt. Geef een eigen voorbeeld.**
+> **20. Leg uit waarvoor multi-container pods gebruikt kunnen worden**
+
+<img src="img/systeembeheer/image-20230613112330244.png" alt="image-20230613112330244" style="zoom:67%;" />
+
+Een **pod** is een verzameling van **één of meerdere** containers met gedeelde volumes, netwerk, namespace. Deze maken deel uit van één context. Typisch maak je een pod **zo klein mogelijk**. Je kan een pod ook altijd aanspreken met REST.
+
+Pods zijn **ephemeraal**, dit betekent dat ze op eender welk moment uitgezet kunnen worden en dat ze geen vast netwerkadres hebben.
+
+Meestal heb je in Kubernetes maar één container per pod, maar je kan er dus ook meerdere hebben. Een pod is dus een **wrapper** rond de containers, en kan dus ook extra **sidecar** containers bevatten die 
+
+Er zijn drie dingen die je hiermee kunt doen:
+
+* Sidecar
+  * Voorziet typisch ondersteunende functies zoals tracing, meshing, logging of monitoring. Bijvoorbeeld Prometheus.
+  * Je kan meerdere sidecars hebben
+* Adapters
+  * Kan bijvoorbeeld de output van de monitoring versimpelen. Dus bijvoorbeeld alleen de interessante dingen eruit halen.
+* Ambassador
+  * Voorziet bijvoorbeeld een verbinding met een database.
+  * Dit is een dure operatie, dus dan kan de ambassador bijvoorbeeld een pool van database verbindingen bijhouden  waarvan je er eentje kan nemen.
 
 
 
-> **Wat zijn de opties voor storage in Kubernetes?**
+
+
+> **21. Beschrijf labels, annotaties en selectors. Wat zijn ze, wat doen ze en waarom worden ze gebruikt. Geef een eigen voorbeeld.**
+
+* Labels
+  * Maken alles **loosely coupled**
+  * Key-value paren die je als user op eender welk ding (pod, host, node, ...) in kubernetes kan zetten om het aan te spreken
+* Annotaties
+  * Extra metadata
+* Selector
+  * Kan je dan gebruiken om dingen met bepaalde labels aan te spreken 
 
 
 
-> **Wat is een storageClass? Leg uit een teken.**
+> **22. Wat zijn de opties voor storage in Kubernetes?**
+
+* `Volume`
+  * Zit vast aan de lifecycle van een pod. Als de **pod verwijderd** wordt is de **volume weg**. Dit is nuttig voor bijvoorbeeld de cache.
+  * Er kunnen meerdere verschillende volumes aan een pod hangen.
+* `PersistentVolumes`
+  * Blijft bestaan, zelfs als de pod weg is
+  * Een pod kan niet rechtstreeks op een `persistentVolume` gekoppeld worden.
+  * Verschillende access modes zoals: `ReadWriteOnce`, `ReadOnlyMany` en `ReadWriteMany`. Deze zeggen hoe hij gebruikt mag worden. `ReadWriteOnce` is bijvoorbeeld nuttig voor auditing.
+* `PersistentVolumeClaims`
+  * Een aanvraag voor een bepaalde hoeveelheid ruimte op een `persistentVolume`
+  * Dit is belangrijk als de soort storage verandert, want zonder `PersistentVolumeClaims` is er geen **loose cloupling.** 
+  * Is eigenlijk gelijkaardig aan een pod, maar neemt dan storage resouces in plaats van node resources.
+  * Deze hebben ook de **access modes**
+* `StorageClasses`
+  * Is eigenlijk een controller
+  * Zorgt ervoor dat sysadmins niet de hele tijd `persistentVolumes` moeten aanmaken
+  * Een `storageClass` voorziet een manier om de storage te beschrijven die beschikbaar is 
+  * Hierdoor kunnen dynamisch `persistentVolumes` gemaakt worden en`persitentVolumeClaims `worden dan automatisch toegewezen
+  * Het is wel iets complexer om op te stellen
 
 
 
-> **Teken een Kubernetes node. Leg de vershillende onderdelen uit.**
+> **23. Wat is een storageClass? Leg uit een teken.**[figuur]
+
+Een `storageClass` voorziet een manier om de storage te beschrijven die beschikbaar is. Hierdoor kunnen dynamisch `persistentVolumes` gemaakt worden en is er minder werk voor de sysadmin. De`persitentVolumeClaims `worden dan automatisch toegewezen. Het is wel iets complexer om op te stellen.
+
+<img src="img/systeembeheer/image-20230613115258804.png" alt="image-20230613115258804" style="zoom:80%;" />
 
 
 
-> **Teken de structuur van de Control Plane van Kubernetes en leg uit.**
+> **24. Teken een Kubernetes node. Leg de vershillende onderdelen uit.**[figuur]
+
+<img src="img/systeembeheer/image-20230613121651439.png" alt="image-20230613121651439" style="zoom:80%;" />
+
+* **Kubelet**
+  * Verantwoordelijk voor het **beheer van de lifecycle** van alle **pods** en hun containers op de host 
+  * Registreert de node bij de control plane en neemt een set van **PodSpecs** die de pods beschrijven die hij moet onderhouden
+  * Het brein
+  * Beheert alleen containers/pods die door kubernetes zijn aangemaakt
+* **Kube-proxy**
+  * Alles wat te maken heeft met netwerk van de node
+  * TCP, UDP, SCTP verbindingen of loadbalancing voor kubernetes services
+  * Zorgt ervoor dat pods naar buiten kunnen communiceren
+* **Container runtime**
+  * Kan containers uitvoeren en beheren
+  * Verschillende opties (containerd, CRI-O, Kata, Docker, ...)
+
+> **25. Teken de structuur van de Control Plane van Kubernetes en leg uit.**[figuur]
+
+![image-20230613122249433](img/systeembeheer/image-20230613122249433.png)
+
+De **control plane** is het brein van Kubernetes en bestaat uit een aantal verschillende onderderelen
+
+* <u>kube-apiserver</u>
+  * Single point of entry voor de control plane (REST interface)
+  * Staat in verbinding met **etcd**
+* <u>etcd</u>
+  * **Key-value datastore** voor config informatie (YAMLs)
+  * Is een snel en **gedistribueerd** systeem
+  * Kan ook netwerkpartities aan (wanneer het netwerk splitst door een fout, leader election doen)
+  * Toegang wordt bestuurd in 4 stappen:
+    * Authenticatie: wie ben je
+    * Authorizatie: wat mag je
+    * Admission control: mag je doen wat je wilt doen
+    * Persist: wanneer het vorige succesvol was, wordt de actie opgeslagen indien nodig
+* <u>kube-controller-manager</u>
+  * Probeert de hele tijd de cluster naar de **desired state** te krijgen
+  * Beheert **control loops** om dit te doen
+  * Houdt de state van de cluster in de gaten via de kube-apiserver
+  * Loopt over een aantal controllers die elk verantwoordelijk zijn voor één aspect van wat er moet gedaan worden
+    * Node controller: ziet als er een server down is of bijkomt
+    * Replication controller: we willen het correcte aantal replicas van een pod hebben
+    * Service account en token controllers: maken default accounts en API access token
+* <u>kube-scheduler</u>
+  * **Wijst** **pods** toe aan **nodes**
+  * Doet default aan bin-packing
+  * Je kan requirements instellen
+    * Hardware requirements
+    * Affiniteit/anti-affiniteit: zet mij liefst samen met die service of niet
+    * Labels
+* <u>cloud-controller-manager</u>
+  * Een onderdeel dat de API van Kubernetes omzet naar de API calls van een cloud vendor
+  * De vendors hebben allemaal een implementatie
+  * Heeft een aantal controllers: (node controller, route controller, service controller)
 
 
 
-> **Beschrijf Kubernetes aan de hand van de architecturale figuur. Leg elk onderdeel uit.**
+> **26. Beschrijf Kubernetes aan de hand van de architecturale figuur. Leg elk onderdeel uit.**[figuur]
+
+<img src="img/systeembeheer/image-20230613123810642.png" alt="image-20230613123810642" style="zoom:80%;" />
+
+En dan de uitleg van de vorige twee vragen.
+
+> **27. Leg de principes uit van Kubernetes workloads. Welke workloads zijn er mogelijk?** 
+
+Een **workload** is een higher-level object en kan een applicatie of service voorstellen die je op de cluster wilt draaien. Als je een **pod template** voorziet, kan Kubernetes vanzelf pods aanmaken voor een workload. Er zijn een aantal verschillende soorten workloads:
+
+* <u>Replicaset</u>
+  * Voornaamste manier om **pod replicas** en hun lifecycle te beheren
+  * Zorgt ervoor dat er altijd een gewenst aantal pods draaien
+* <u>Deployment</u>
+  * Biedt functionaliteit voor **updates** en **rollbacks**
+  * Is een extentie van replicaset
+  * Wordt gebruikt voor **stateless** appllicaties
+  * Hiervoor zijn twee *strategies*:
+    * **Recreate**: alle huidige pods worden gekilled voordat nieuwe worden aangemaakt
+    * **Rollingupdate**: doorheen de pods gaan en selectief updaten
+      * Dan kan je updaten zonder downtime doordat de loadbalancer het verkeer afleidt tijdens de update
+      * met `maxSurge` kunnen er tijdens een update nieuwe replicas worden toegevoegd
+      * Als er dan een probleem is kan je rollbacken
+  * Met een **loadbalancer** zijn er ook nog andere deployment operaties die je kan doen
+    * Canary release: maak een klein deel van de applicatie een nieuwe versie om te testen. Dan heeft maar een klein deel van de users potentiële bugs
+    * A/B testing: release twee versies, gebruikers krijgen random één van de twee. Dan kan je zien welke versie het best werkt
+* <u>Daemonset</u>
+  * Zorg ervoor dat elke node die aan een bepaald criterium voldoet een instantie van een bepaalde pod draait
+  * Bijvoorbeeld voor monitoring of log forwarding
+  * Heeft ook updatestrategieën
+* <u>Statefulset</u>
+  * Gelijkaardig aan een deployment, maar is **stateful**
+  * Houdt een **unieke identiteit** voor elke pod bij en houdt deez bij wanneer de pod opnieuw opgestart wordt
+* <u>Job en cronjob</u>
+  * Job: een bepaalde taak of script dat uitgevoerd moet worden, typisch wordt hier een minimale pod voor gemaakt
+  * Cronjob: job die regelmatig uitgevoerd moet worden volgens een schema
+
+> **28. Je hebt een applicatie met meerdere services. Hoe zou je dit deployen op Kubernetes?**
+
+//TODO
 
 
 
-> **Leg de principes uit van Kubernetes workloads. Doe dit aan de hand van een figuur.**
+> **29. Welke soorten services worden er voorzien door Kubernetes? Leg elke service uit.**
 
+Een **service** voorziet netwerktoegang tot een set van **pods** en dient dus als entry point. De service is eigenlijk ook een soort loadbalancer en krijgt een vast IP-adres en weet welke instanties er achterliggend zitten en kan dus verkeer naar daar doorwijzen wanneer nodig. De dri voornamelijkste service types zijn:
 
-
-> **Je hebt een applicatie met meerdere services. Hoe zou je dit deployen op Kubernetes?**
-
-onderscheid stateful/stateless ...
-
-
-
-> **Welke soorten services worden er voorzien door Kubernetes? Leg elke service uit.**
-
-
+* <u>ClusterIP</u>
+  * Een service die intern moet blijven, wordt ge-exposed op een intern virtueel IP
+  * Bijvoorbeeld een hulpmicroservice
+* <u>NodePort</u>
+  * Extensie van clusterIP
+  * Ook een poort openen op op het IP van elke node 
+    * is bereikbaar van **buiten de cluster**
+    * Je moet wel het IP en de poort weten (IP is meestal niet statisch)
+  * Gebruikers toegang geven tot de service
+  * Sysadmin gaat ook de firewall open moeten zetten
+* <u>LoadBalancer</u>
+  * De standaard manier om services open te zetten voor kubernetes in de cloud
+  * Voorziet een uniek, **publiek toegankelijk IP-adres** die alle verbindingen naar een specifieke service stuurt
+  * Elke service in de cluster zal een LoadBalancer instantie nodig hebben (kan duur worden)
+* <u>Ingress</u>
+  * Is eigenlijk geen service type meer, maar een **controller** die een **set van regels volgt**
+  * Gedraagt zich als een proxy
+  * Nuttig als je **meerdere services** onder **hetzelfde adres** wilt exposen
+  * Complexer om te onderhouden
 
 
 
@@ -2396,7 +2728,7 @@ Merlijn heeft niet specifiek gezegd wat we moesten kennen dus de vragen hier zij
 
 
 
-> **Wat zijn de vier niveaus van automatie in systeembeheer? Leg elk niveau uitvoerig uit. Beschrijf de voor- en nadelen.**
+> **30. Wat zijn de vier niveaus van automatie in systeembeheer? Leg elk niveau uitvoerig uit. Beschrijf de voor- en nadelen.**
 
 * <u>Manueel</u>
   * Basically alles zelf doen
@@ -2422,7 +2754,7 @@ Merlijn heeft niet specifiek gezegd wat we moesten kennen dus de vragen hier zij
 
 
 
-> **Leg uit: Wat is infrastructure as code? Wat zijn de voor- en nadelen?**
+> **31. Leg uit: Wat is infrastructure as code? Wat zijn de voor- en nadelen?**
 
 Bij infrastructure as code beschrijf je je gehele infrastructuur als code. Dit gaat vanaf het opzetten van fysieke servers tot het deployen en configureren van software en gebeurt op een **declaratieve** wijze. Dit betekent dat je zegt wat er gedaan moet worden, en niet hoe het gedaan moet worden. Aan de hand van jouw beschrijving probeert een **ochestrator** het systeem constant in een **desired state** te brengen. Dit kan op twee manieren:
 
@@ -2436,11 +2768,11 @@ Bij infrastructure as code beschrijf je je gehele infrastructuur als code. Dit g
 
 
 
-> **Wat is de automation fear cycle?**
+> **32. Wat is de automation fear cycle?**
 
+//TODO 
 
-
-> **Leg het verschil uit tussen een imperatieve en declaratieve werkwijze in de context van IaC.**
+> **33. Leg het verschil uit tussen een imperatieve en declaratieve werkwijze in de context van IaC.**
 
 Als we bijvoorbeeld een programma dat een lijst sorteert op **imperatieve** wijze programmeren, zeggen we stap voor stap **hoe** het programma dit moet doen. Als we **declaratief** werken, zeggen we simpelweg **wat** het programma moet doen. In dit geval is dat de lijst sorteren. Hoe dit gebeurt, houden wij ons niet mee bezig. Hierdoor kan de computer bijvoorbeeld zelf beslissen om taken te parallelliseren.
 
@@ -2448,13 +2780,47 @@ Als we bijvoorbeeld een programma dat een lijst sorteert op **imperatieve** wijz
 
 
 
-> **Welke 7 tools hebben we gezien in het hoofdstuk IaC? Geef van elke tool een korte beschrijving, een overzicht van zijn essentiële componenten en zijn voor- en nadelen. (deze vraag is echt hardcore ik weet nog niet of ik dit erin ga laten)**
+> **34. Welke 7 tools hebben we gezien in het hoofdstuk IaC? Geef van elke tool een korte beschrijving, een overzicht van zijn essentiële componenten en zijn voor- en nadelen. (deze vraag is echt hardcore ik weet nog niet of ik dit erin ga laten)**
 
-//TODO
+* Ansible
+  * Playbooks (lijst van tasks), tasks, roles (template)
+  * Ansible zelf **niet declaratief**, want cmds in playbooks worden in volgorde uitgevoerd
+  * Configuratie van de meeste **modules** (python scripts) is **wel declaratief**
+* Terraform
+  * **Volledig declaratieve** taal
+  * Configuration: bestand dat beschrijving van **resources** bevat
+  * Providers: plugins om resources te beheren
+  * Modules: Herbruikbare terraform configuraties (bv. voor Kubernetes)
+  * Registry: online repo van alle modules
+* Chef
+  * Gebruikt ruby en is inherent **imperatief**
+  * Cookbook: bevat meerdere recipes (templated model van desired state)
+  * Recipe: bevat meerdere resources
+  * Resource: beschrijft desired state
+  * Chef supermarket: community code
+* Puppet
+  * **Volledig declaratief**
+  * **Agent** op elke server, halen desired state op bij **master**
+* Juju
+  * Beschrijft relaties, heel high level. Configuratie verandert dynamisch als je charms verbindt
+  * **Volledig declaratief**
+  * Charms: stellen elk een service voor
+  * Model: beschrijf welke charms je gebruikt
+  * Voor specifieke use-cases moet je zelf charms schrijven en dat is moeilijk
+* DSC
+  * Van Microsoft, werkt op PowerShell en is **declaratief**. Je schrijft eerst een imperaties script, dit wordt om gezet in een declaratief model (`.mof` file). Kan met **push** of **pull** gedeployed worden.
+  * Agent: local configuration manager
+  * Configuration: bevat ten minste één resource en één node
+  * Resource: declaratieve beschrijving van de desired state
+  * Node: hierop wordt desired state toegepast
+* Kubernetes
+  * Werkt via **desired state principle**
+  * **Gestandaardiseerde API** om te **interageren** met de **code** die je apps en **infrastructuur** beheert
+  * Gestandaardiseerde API waarmee deze code met **elkaar** kan interageren
 
 
 
-> **Gegeven 7 software tools (Ansible, Terraform, Chef, Puppet, Juju, DSC en Kubernetes). Vertel voor elke tool op welk niveau van de infrastructuur hij kan worden gebruikt.**
+> **35. Gegeven 7 software tools (Ansible, Terraform, Chef, Puppet, Juju, DSC en Kubernetes). Vertel voor elke tool op welk niveau van de infrastructuur hij kan worden gebruikt.**
 
 |                | Cloud resources | Operating system | Applications  | Code           |
 | -------------- | --------------- | ---------------- | ------------- | -------------- |
@@ -2468,7 +2834,7 @@ Als we bijvoorbeeld een programma dat een lijst sorteert op **imperatieve** wijz
 
 
 
-> **Geef 6 design patterns die gebruikt worden in IaC. Leg uit wat ze betekenen en waarom ze nuttig zijn.**
+> **36. Geef 6 design patterns die gebruikt worden in IaC. Leg uit wat ze betekenen en waarom ze nuttig zijn.**
 
 * Unattended automation
   * Oplossing voor de automation fear cycle
@@ -2500,7 +2866,7 @@ Als we bijvoorbeeld een programma dat een lijst sorteert op **imperatieve** wijz
 
 ### Monitoring
 
-> **Wat is monitoring? Welke types bestaan er? Op welke dingen moet je letten?**
+> **37. Wat is monitoring? Welke types bestaan er? Op welke dingen moet je letten?**
 
 Een **monitor** is een programma of stuk hardware dat de verschillende aspecten van een computersysteem in de gaten houdt. Monitoring is belangrijk, want als je niet weet dat er een probleem is kan je het ook niet oplossen. Verder geeft het je ook inzicht in de veiligheid van je systeem.
 
@@ -2532,7 +2898,7 @@ Het eerste principe can monitoring is het verzamelen van de **juiste data**. Je 
 
 
 
-> **Op welke twee manieren kan je een monitoring-architectuur opbouwen?**
+> **38. Op welke twee manieren kan je een monitoring-architectuur opbouwen?**
 
 Je kan een monitoring architectuur op twee manieren opbouwen. Dit kan **push** of **pull**-based:
 
@@ -2542,7 +2908,7 @@ Je kan een monitoring architectuur op twee manieren opbouwen. Dit kan **push** o
 
 
 
-> **Wat zijn de 4 golden signals van monitoring?**
+> **39. Wat zijn de 4 golden signals van monitoring?**
 
 Volgens google moet je bij monitoring rekening houden met **4** **golden signals**. Deze betreffen:
 
@@ -2559,24 +2925,24 @@ Volgens google moet je bij monitoring rekening houden met **4** **golden signals
 
 
 
-> **Wat is de TICK stack? Leg de verschillende onderdelen uit en teken hoe ze interageren.**
+> **40. Wat is de TICK stack? Leg de verschillende onderdelen uit en teken hoe ze interageren.**[figuur]
 
 De TICK stack is een open-souce monitoring oplossing, TICK staat voor:
 
-* Telegraf
+* <u>Telegraf</u>
   * Data verzamelen
   * Werkt met plugins en kan werken met externe scripts
   * Minimaal memory verbruik
-* InfluxDB
+* <u>InfluxDB</u>
   * Schaalbare time-series database voor metrieken, events, real-time analytics
   * SQL-achtige querytaal
   * Ondersteuning voor 'continuous queries'
   * In InfluxDB v2 zitten Chronograph en Kapacitor erbij 
-* Chronograph
+* <u>Chronograph</u>
   * Data visualisatie, database management
   * Overzicht van de infrastructuur
   * Alert management
-* Kapacitor
+* <u>Kapacitor</u>
   * Processing van zowel streaming als batch data
   * Kan alle transformaties uitvoeren die InfluxQL kan doen
   * Je kan makkelijk pipelines maken
@@ -2587,61 +2953,212 @@ De belangrijkste link hier is de alerting frameworks blijkbaar.
 
 
 
-> **Geef de 5 geziene oplossingen voor monitoring en geef voor elke oplossing een korte beschrijving van de belangrijkste onderdelen. Geef een overzicht van de voor- en nadelen.**
+> **41. Geef de 5 geziene oplossingen voor monitoring en geef voor elke oplossing een korte beschrijving van de belangrijkste onderdelen. Geef een overzicht van de voor- en nadelen.**
 
-//TODO
+* <u>Microsoft Service Center Operations Manager (SCOM)</u>
+  * **Management server**: beheert alles (configuratie, agents aansturen, communicatie met DBs)
+  * **Operationele DB**: configuratiedata
+  * **Data warehouse DB**: monitoring en alerting data
+  * **Management group**: groep van minimaal één van elk van de drie vorige
+  * Optionele onderdelen: reporting server, webconsole, gateway
+  * Extra info: elke pc een agent, kan ook proxy agent zijn, management pack om in één keer alles kan installeren, SCOM kan single-server of gedistribueerd gedeployed worden (meestal zo). SCOM is aan het sterven door Azure Monitor
+  * Voordelen
+    * Goed in Windows omgeving
+  * Nadelen
+    * Alleen goed in Windows omgeving (licences, complexiteit, limitaties)
+* <u>Zabbix</u>
+  * Enterprise open source
+  * **Zabbix server**: doet processing voor jou (betalend)
+  * Op remote locatie moet je een **Zabbix proxy hosten**
+  * **Push** (apparaat stuurt zelf = active) of **pull** (server haalt op = passive) om data te verzamelen
+  * Voordelen
+    * Hoge performance
+    * Veel platforms
+  * Nadelen
+    * Geld betalen
+* <u>TICK stack</u>
+  * Telegraf, InfluxDB, Chronograf, Kapacitor
+  * In InfluxBD 2.0 zitten de laatste drie samen
+  * Voordelen
+    * Schaalbaar
+    * Heel veel opties
+    * Specifiek voor time-series data
+* <u>Elastic stack</u>
+  * Eerst ELK stack (elasticsearch, logstash, kibana)
+  * Dan **beats** toegevoegd (kleinere data shippers), toen werd het elestic stack
+  * Voordelen
+    * Grote actieve community
+  * Nadelen
+    * Focus op logs
+    * Alerting en anomaly detection vereisen mogelijks extra uitbreidingen
+* <u>Prometeus</u>
+  * Eigenlijk enkel time-series database
+  * **promQL** (lijkt niet op SQL)
+  * Voordelen
+    * Specifiek voor time-series
+    * Integratie met andere tools
+    * Service discovery (voor dynamische cloud)
+  * Nadelen
+    * Niet gemaakt voor logging, tracing, automatische anomalie detectie of schaalbare opslag
+    * Niet super schaalbaar want alles zit op één plek (vaak oké, dan wel wegschrijven naar decoupled remote storage)
+    * Schaalbaarheid kan verbeterd worden met **Thanos**
+
+
+
+> **42. Welke open-source monitoring oplossingen/standaarden bestaan er en wat zijn de verschillen?**
+
+* Opentracing
+  * Een gestandardiseerde API voor **gedistribueerde tracing**, voorziet een specificatie voor ontwikkelaars om hun eigen services te voorzien van distributed tracing.
+  * Momenteel gearchiveerd
+* Opencensus
+  * Kwam van google
+  * Een verzameling van libraries om metrieken te verzamelen en data te exporteren 
+  * Kan je naar verschillende back-ends sturen
+  * Ook gearchiveerd
+* Opentelemetry
+  * Opentracing + opencensus
+* Openmetrics
+  * Beïnvloedt door Prometheus
+  * Een formaat dat zegt hoe metrieken eruit moeten zien (standardisatie)
+  * `ding.onderdeel.metriek`
+  * Kan je ideaal samen met opentelemetry gebruiken
 
 ### Storage virtualization 
 
-> **What three types of storage virtualization exist? What are their main properties? What benefits and drawbacks do they offer?**
+> **43. What three types of storage virtualization exist? What are their main properties? What benefits and drawbacks do they offer?**
+
+* <u>File-level virtualization</u>
+  * Alles in de virtuele storage wordt aangeboden als een filesystem
+  * Dus in de vorm van **hiërarchisch** gestructureerde **bestanden** en **mappen**
+  * We kunnen verschillende fysieke bronnen hebben, maar ze worden als één **virtueel filesystem** getoond
+  * Beheer van dit filesystem wordt gedaan door een **virtualization entity**
+  * Voordelen
+    * Gekende hiërarchische structuur
+    * Makkelijke navigatie
+    * Bestaande applicaties gebruiken dit typisch al, dus de applicatie moet niet gewijzigd worden
+  * Nadelen
+    * Deze systemen moeten schalen door extra filesystems toe te voegen, en niet door meer capaciteit toe te voegen
+    * Dus iets minder schaalbaar
+  * Voorbeelden
+    * Amazon elastic filesystem
+    * Google cloud filestore
+* <u>Block-level virtualization</u>
+  * We mappen virtuele blokken naar de fysieke blokken van opslagapparaten
+  * De OS of applicatie moet hier zelf een filesysteem op maken
+  * De opslagcapaciteit wordt aangeboden in de vorm van **virtual disks**
+  * Typisch voor high-performance applicaties
+  * Voordelen
+    * Niet langer één pad naar de data
+    * Rechtstreeks toegang tot verschillende blokken, sneller ophalen
+    * Gemakkelijke partitionering van blokken
+    * Goed schaalbaar voor grote databanken
+  * Nadelen
+    * Relatief duur
+    * Kan niet om met metadata (verantwoodelijkheid van de applicatie)
+  * Voorbeelden
+    * AWS elastic block storage
+    * Google persistent disks
+* <u>Object-level virtualization</u>
+  * Voor applicaties die werken met verschillende soorten ongestructureerde data
+  * Als **structuur** **niet belangrijk** is
+  * De data is opgesplitst in discrete eenheiden, elk met eigen metadata en unieke id
+  * Worden op geslagen in **één platte repository**
+  * Worden beschikbaar gemaakt door een **API via HTTP requests** 
+  * Voordelen
+    * Heel goed schaalbaar
+    * Perfect voor ongestructureerde data, zoals foto's en video's op sociale media
+    * Goed voor statische data
+    * Snel ophalen door middel van object storage metadata
+  * Nadelen
+    * Objecten kunnen achteraf niet aangepast worden (moeten herschreven worden), dus minder performant
+    * Moeilijke match met traditionele databanken
+    * Extra complexiteit in ontwikkeling door object storage API
+  * Voorbeelden
+    * WeTransfer
+    * Messenger, facebook, instagram
+    * Amazon S3
+    * Google Cloud storage
 
 
 
-> **What advantages do network-based methods for storage virtualization offer compared to array-based methods?**
+> **44. Op welke 3 methodes kan storage virtualization worden aangeboden?**
+
+* <u>Host-based virtualization</u>
+  * Een **virtualization host** biedt storage aan een guest OS
+  * Virtuele machines nemen niet de hele schijf over, maar krijgen een **virtual drive**. Dit is gewoon een bestand
+  * Kan **dynamisch** groter en kleiner gemaakt worden
+  * Beperkte schaalbaarheid
+    * Beperkt tot de ene host waar die file op staat
+  * Overhead door maintenance en software
+    * Het draait op een OS van een host
+  * Zeker niet de beste oplossing
+* <u>Array-based virtualization</u>
+  * Onderscheid maken tussen **vershillende** **tiers** opslag
+  * Bijvoorbeeld high-speed en standard tier (SSD, HDD)
+  * Een logische eenheid kan bestaan uit uit disks van zowel high-speed en standard tiers
+  * Dan is de high-speed meestal een read-write cache, of wordt data altijd eerst op de high-speed geplaatst
+    * Achterliggend kan er dan synchronizatie gedaan worden
+    * Hoe dit gedaan wordt is de verantwoordelijkheid van de **virtualization entity**
+  * In het algemeen **verhoogde** **performance**
+  * Wordt nog veel gebruikt, maar is niet de belangrijkste oplossing
+* <u>Network- or fabric-based virtualization</u>
+  * We kunnen aan een computer eender welke storage van eender welke vendor hangen
+  * DAS, NAS en SAN
 
 
 
-> **What three types of network-based storage virtualization exist? What are their main properties?**
+> **45. What advantages do network-based methods for storage virtualization offer compared to array-based methods?**
+
+//TODO 
 
 
 
-> **What is hyperconvergence? Discuss how this can be enabled based on one specific technology that was discussed in this class.**
+> **46. What three types of network-based storage virtualization exist? What are their main properties?**
 
-## Van mij
+Er zijn drie soorten network storage:
+
+* <u>Direct-attached storage (DAS)</u>
+  * Clients kunnen verbinden met één of meerdere servers waarop verschillende soorten data wordt opgeslagen
+  * Was ontwikkeld om opslagcapaciteit te schalen wanneer datavolumes groter werden door disk arrays aan een server te zetten
+  * De server waaruit toegang wordt verleend tot de verschillende opslagapparaten is een **single-point of failure**
+  * **Veel bandbreedte** wordt gebuikt voor toegang, opslag en backups van data
+* <u>Network-attached storage (NAS)</u>
+  * Ontstaan uit DAS
+  * Eén of meer dedicated fileservers worden beschikbaar gemaakt in een LAN
+  * Het netwerk is nog steeds een bottleneck, zeker voor backups
+* <u>Storage-area network (SAN)</u>
+  * Een **apart netwerk** met storage devices (storage area)
+  * Zijn vebonden met een speciale **san switch**
+  * Bieden een **pool** van opslagruimte
+  * Elke computer kan aan de opslag van de SAN alsof ze lokale schijven zijn
+  * Gebruikt intern **fibre channel** protocol
+    * Onderdelen van SAN
+      * Node: eender welk apparaat verbonden aan de SAN (typisch servers)
+      * Fabric: alle hardware die servers met opslagapparaten verbindt via fibre channel switching
+      * Fibre channel: hoge-snelheid netwerktechnologie speciaal voor storage area
+      * World-wide name (WWN): unieke id voor elk opslagapparaat
+  * Alle **data transfer** zoals backups gebeurt **achter de servers** en is transparant
+  * Het is daardoor wel een stuk duurder dan NAS
+  * Voordelen
+    * Tegelijke toegang door meerdere hosts
+    * Storage consolidation
+    * Verlaagde cost of ownership en management complexiteit
+    * Verhoogde availability, schaalbaarheid en databescherming
+    * Beter gebruik van capaciteit
 
 
 
-> Geef een aantal voorbeelden van cloud services.
+> **47. What is hyperconvergence? Discuss how this can be enabled based on one specific technology that was discussed in this class.**
 
-* Online data storage/retrieval
-* Enable access to online applications
-  * Gmail, google slides, ...
-* Provide computing platform and computing infrastructure
+Het idee rond **hyperconvergence** is om een framework te maken dat opslag, computing en networking combineert. Alle IT shit wordt dan gezien als één groot geheel. Zo wordt het tegenwoordig ook aangeboden door veel providers. Hyperconvergence maakt gebruik van een **hypervisor** voor gevirtualiseerde computing, software-defined storage en gevirtualiseerd networking. Alle kritieke (data center) functies draaien dan op een **geïntegreerde softwarelaag**, in plaats van op specifieke hardware.
 
-//TODO
+De virtualisatiesoftware maakt dus abstractie van de onderliggende resources en alloceert ze dynamisch voor applicaties die in VMs of containers draaien.
 
-> Is IT-as-a-service een nieuw concept?
+//TODO voorbeeld
 
-Nee, vanaf de jaren 30 (voor computers) verhuurt IBM al hun elektrische accounting machines aan bedrijven om berekeningen te maken. In de 70s was er timesharing en in de 90s was er grid computing. 
+## Extra
 
-Ik denk dat deze vraag nogal nutteloos is maak ja ik ga hem nu niet verwijderen.
 
-//TODO
-
-> Welke verschillende cloud models zijn er en wat houden ze in? (cloud slide 46, 01h55)
-
-* On premises
-* Infrastructure as a service
-* Platform as a service
-* Software as a service
-
-//TODO
-
-> Waarom is de performantie van een applicatie op virtuele machines typisch lager dan op fysieke hardware?
-
-Voor virtuele machines in de cloud wordt typisch generische hardware gebruikt. Daarboven zit dan een abstractielaag waarboven er virtuele hardware wordt gesimuleerd.
-
-//TODO
 
 > Wat zijn de voordelen van containers?
 
