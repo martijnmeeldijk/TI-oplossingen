@@ -127,7 +127,7 @@ Dan heb je ook nog **multi-cloud**, dan gebruik je clouds van verschillende prov
 
 
 
-## Infrastructure-as-a-service
+## Infrastructure-as-a-service (IAAS)
 
 Bij IAAS worden gebruikers voorzien van fysieke of virtuele computatie-, storage- en netwerkresources. 
 
@@ -2344,17 +2344,28 @@ Azure en Google Cloud voorzien gelijkaardige applicaties.
 | Learning curve            | Geen gemakkijke web UI                                       | Gebruiksvriendelijke web console                             |
 | Initial rollout           | Moeilijk als nieuwe onderdelen moeten geïnstalleerd worden (bv. dashboard) | All-in-one oplossing                                         |
 
+Openshift is basically Openshit.
+
 
 
 > **9. Iets met Diego cells want ik kon met herinneren dat Bruno dat belangrijk vond.**
 
-//TODO
+Bij cloud foundry draaide je applicatie in Diego cells. Dit was gelijkaardig aan een container en bestond voor Kubernetes. Later zijn de Diego cells vervangen door een soort Kubernetes (KubeCF). 
 
 
 
 > **10. Wat is serverless computing? Wat zijn de voor- en nadelen?**
 
-//TODO
+* Een andere naam voor **FAAS (Function-as-a-service)**
+* Voordelen
+  * Geen beheer van servers
+  * Betaal alleen voor wat je gebruikt
+  * Dynamische toewijzing van resources
+  * Kleine codefragmenten
+* Nadelen
+  * Vendor lock-in
+  * Weinig debug en monitoring tools
+  * Moeilijk om te beslissen wat serverless moet zijn
 
 ### Windows server
 
@@ -2770,7 +2781,7 @@ Bij infrastructure as code beschrijf je je gehele infrastructuur als code. Dit g
 
 > **32. Wat is de automation fear cycle?**
 
-//TODO 
+
 
 > **33. Leg het verschil uit tussen een imperatieve en declaratieve werkwijze in de context van IaC.**
 
@@ -3109,7 +3120,16 @@ De belangrijkste link hier is de alerting frameworks blijkbaar.
 
 > **45. What advantages do network-based methods for storage virtualization offer compared to array-based methods?**
 
-//TODO 
+* Storage van verschillende vendors
+* Schaalbaarheid
+* Hogere availability
+* Lagere management complexiteit
+* Lagere cost of ownership
+* Je kan met eende welke computer aan de storage
+* Geen single point of failure
+* Gemakkelijkere backups en replicatie
+
+single-point of failure backups replicatie
 
 
 
@@ -3150,11 +3170,29 @@ Er zijn drie soorten network storage:
 
 > **47. What is hyperconvergence? Discuss how this can be enabled based on one specific technology that was discussed in this class.**
 
-Het idee rond **hyperconvergence** is om een framework te maken dat opslag, computing en networking combineert. Alle IT shit wordt dan gezien als één groot geheel. Zo wordt het tegenwoordig ook aangeboden door veel providers. Hyperconvergence maakt gebruik van een **hypervisor** voor gevirtualiseerde computing, software-defined storage en gevirtualiseerd networking. Alle kritieke (data center) functies draaien dan op een **geïntegreerde softwarelaag**, in plaats van op specifieke hardware.
+Het idee rond **hyperconvergence** is om een framework te maken dat **opslag, computing en networking combineert**. Alle IT shit wordt dan gezien als één groot geheel. Zo wordt het tegenwoordig ook aangeboden door veel providers. Hyperconvergence maakt gebruik van een **hypervisor** voor gevirtualiseerde computing, software-defined storage en gevirtualiseerd networking. Alle kritieke (data center) functies draaien dan op een **geïntegreerde softwarelaag**, in plaats van op specifieke hardware.
 
 De virtualisatiesoftware maakt dus abstractie van de onderliggende resources en alloceert ze dynamisch voor applicaties die in VMs of containers draaien.
 
-//TODO voorbeeld
+Voordelen:
+
+* Lagere data center complexiteit en hogere schaalbaarheid
+* Betere resource efficiëntie
+* Tijd en kosten besparing
+* Vermijdt licenced software (bv. disaster recovery tools)
+
+
+
+Hyperconvergence met Kubernetes:
+
+* **Kubernetes** voor container orchestratie. Hiermee zijn alle compute resources gevirtualiseerd.
+
+* **CEPH** open-source gedistribueerde storage oplossing.
+* **Rook** voorziet een interface tussen CEPH en Kubernetes. Het komt erop neer dat **Rook** een **storage operator** is voor Kubernetes.  Alle configuratie van de storage gebeurt dus automatisch onderliggend.
+* Bonus: **Calico** voor netwerkvirtulaizatie
+* Extra bonus: Je kan dan ook heel je Kubernetes [managen met **Terraform**](https://developer.hashicorp.com/terraform/tutorials/kubernetes/kubernetes-provider)
+
+
 
 ## Extra
 
