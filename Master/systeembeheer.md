@@ -58,7 +58,7 @@ Dit probleem kan opgelost worden met **pay-per-use** in de cloud. Het grote voor
 
 Door de **economy of scale** kunnen cloud providers hun services veel goedkoper aanbieden dan als je de machine zelf zou hebben, want Google en Amazon hebben deals met elektriciteitsmaatschappijen, ISPs, fabrikanten, ... Bovendien zetten ze dan hun datacenters op speciale plekken waar bijvoorbeeld de elektriciteit goedkoper is. 
 
-Cloud is ontstaan vanuit de grote techbedrijven. Om nog meer geld te verdienen hadden ze het geweldige idee om hun al bestaande infrastructuur te verhuren wanneer deze capaciteit over had.
+Cloud is eigenlijk ontstaan vanuit de grote techbedrijven. Om nog meer geld te verdienen hadden ze het geweldige idee om hun al bestaande infrastructuur te verhuren wanneer deze capaciteit over had.
 
 
 
@@ -98,7 +98,7 @@ Als je zelf in je bedrijf een cloud maakt noem je het een **on-premise cloud**. 
   * Geen vaste aankopen
   * Schaal van providers
 * On-demand self-service
-  * Vraag een service wanneer je hem nodig hebt, deze wordt dan op vraag voorzien
+  * Vraag een service aan wanneer je hem nodig hebt, deze wordt dan op vraag voorzien
 
 
 
@@ -108,7 +108,7 @@ Bruno toont on **drie** soorten clouds.
 
 | Public cloud                                                 | Community cloud                                              | Private cloud                                                |
 | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| ![image-20230611114054525](img/systeembeheer/image-20230611114054525.png) | ![image-20230611114105084](img/systeembeheer/image-20230611114105084.png) | ![image-20230611114117244](img/systeembeheer/image-20230611114117244.png) |
+| <img src="img/systeembeheer/image-20230611114054525.png" alt="image-20230611114054525" style="zoom:80%;" /> | <img src="img/systeembeheer/image-20230611114105084.png" alt="image-20230611114105084" style="zoom:80%;" /> | <img src="img/systeembeheer/image-20230611114117244.png" alt="image-20230611114117244" style="zoom:80%;" /> |
 | - Google, Microsoft, ... <br />- Voor toegang tot openbare systemen of services<br />- Gratis of pay-per-use | - Typisch voor speciale security constraints<br />- Bijvoorbeeld zodat de NSA niet kan meekijken<br /> - | - We emuleren een public cloud op onze eigen resources<br />- Je doet niet alleen voor security een private cloud<br />- Vooral als je zeker niet wilt dat je data bij google ofzo zit <br />- (als je een bank bent bijvoorbeeld)<br />- Is soms nodig om te voldoen aan reguleringen<br />- Optie om naar public cloud te schalen (cloudburst) |
 
 
@@ -209,7 +209,7 @@ De virtualisatie zoals we hem nu kennen is natuurlijk niet in één keer tot sta
 * <u>Tweede generatie</u>
   * <img src="img/systeembeheer/image-20230611142640835.png" alt="image-20230611142640835" style="zoom:67%;" /> 
   * Paravirtualization
-  * In de VM (guest operating system) een aantal aanpassingen zodat we toch rechtstreeks naar de hardware kunnen.
+  * In de VM (guest operating system) een aantal aanpassingen maken zodat we toch rechtstreeks naar de hardware kunnen.
   * Het **nadeel** is dat de **guest OS aangepast moest worden** afhankelijk van de gebruikte hypervisor (spreekt het nut van VMs rechtstreeks tegen)
     * Bijvoorbeeld als je VMwareTools installeert zodat je VM minder delay heeft voor de muisinput
   * Het **voordeel** is dat het **sneller** is dan de vorige generatie
@@ -231,7 +231,7 @@ De virtualisatie zoals we hem nu kennen is natuurlijk niet in één keer tot sta
 
 Er is ook een vierde aanpak van virtualisatie. OS-level virtualisatie wordt op het niveau van het besturingssysteem gedaan. Dit wordt vaak gebruikt voor **containers**. Het voornaamste voordeel hiervan is **densiteit**, want containers hebben niet alle extra bagage die bij een VM zit (zoals een OS en bios). Ze nemen dus veel **minder plaats** in. 
 
-Je kan als je containers gebruikt met dezelfde hardware drie keer meer servers opstarten als wanneer je VMs gebruikt. Dit werd vooral gebruikt in de hosting markt.
+Je kan als je containers gebruikt met dezelfde hardware drie keer meer servers opstarten als wanneer je VMs gebruikt. Containers werden vooral gebruikt in de hosting markt volgens Bruno.
 
 
 
@@ -241,7 +241,7 @@ Je kan als je containers gebruikt met dezelfde hardware drie keer meer servers o
 | ------------------------------------------------------------ | ------------------------------------------------------------ |
 | - Virtuele machines zijn volledig geïsoleerd <br />- Elke VM heeft zijn eigen OS<br />- De hypervisor regelt toegang tot de gedeelde hardware | - De kernel van de host heeft meerdere process spaces<br />- Containers zijn **lightweight**, ze delen de kernel van de host OS<br />- Elke container heeft wel zijn eigen root file system |
 
-Je ziet dat in de afbeelding rechts er geen kernel en operating system in de container hoeven te zitten. Dan hoeft deze niet opgestart te worden. Containers zijn wel potentiëel minder veilig, want als er een exploit zit in het onderliggende besturingssysteem, zou het kunnen dat we vanuit één container toegang krijgen tot de andere. Bij een type 1 hypervisor heb je dit probleem niet, want de VMs zijn door hardware van elkaar gescheiden.
+Je ziet dat in de afbeelding rechts er geen kernel en operating system in de container hoeven te zitten. Dan hoeft deze niet opgestart te worden. Containers zijn wel potentieel minder veilig, want als er een exploit zit in het onderliggende besturingssysteem, zou het kunnen dat we vanuit één container toegang krijgen tot de andere. Bij een type 1 hypervisor heb je dit probleem niet, want de VMs zijn door hardware van elkaar gescheiden.
 
 
 
@@ -2165,8 +2165,6 @@ Transcriptie van het einde van de tweede gastles:
 
 
 
-# 
-
 
 
 # --- Examenvragen ---
@@ -2261,13 +2259,23 @@ Je kan als je containers gebruikt met dezelfde hardware drie keer meer servers o
 
 
 
-> **5. Leg het verschil uit tussen VM-based virtualisatie en OS-level virtualisatie. Maak een tekening. (Cloud slide 69)**[figuur]
+> **5. Leg het verschil uit tussen VM-based virtualisatie en OS-level virtualisatie. Maak een tekening. Vergelijk ten slotte een hypervisor met een container (Cloud slide 69)**[figuur]
 
 | ![image-20230611150152617](img/systeembeheer/image-20230611150152617.png) | ![image-20230611150204145](img/systeembeheer/image-20230611150204145.png) |
 | ------------------------------------------------------------ | ------------------------------------------------------------ |
 | - Virtuele machines zijn volledig geïsoleerd <br />- Elke VM heeft zijn eigen OS<br />- De hypervisor regelt toegang tot de gedeelde hardware | - De kernel van de host heeft meerdere process spaces<br />- Containers zijn **lightweight**, ze delen de kernel van de host OS<br />- Elke container heeft wel zijn eigen root file system |
 
+| Hypervisor                                                   | Container                                                    |
+| ------------------------------------------------------------ | ------------------------------------------------------------ |
+| One real hardware, many virtual hardwares, many OSs          | One real hardware, no virtual hardware, one kernel, many user space application instances. Hardware acceleratie is dus moeilijker |
+| High versatility, can run different OSs                      | Hier kan je bijvoorbeeld geen DOS appllicatie mee draaien    |
+| Lower density                                                | Higher density                                               |
+| Virtualization/emulation overhead (derde generatie wel wat minder) | Near-native performance, almost no overhead                  |
+| Hardware-enforced isolation                                  | Software-enforced isolation (minder veilig)                  |
+| Size: potentially large (OS in VM)                           | Size: potentially small                                      |
+| Boot time: relatively high                                   | Boot time: fast                                              |
 
+Bij moderne technologie is de lijn tussen VM-virtualisatie en containervirtualisatie wat vager. Er zijn ook VMs met minimal OS layers, of containers die een minimal OS layer hebben. Er zijn ook containers met hardware-enforced isolation (microVM).
 
 
 
@@ -2301,7 +2309,7 @@ Je kan als je containers gebruikt met dezelfde hardware drie keer meer servers o
 
 
 
-> **7. Welke standaarden zijn er voor virtualisatie? Geef volledige namen (Cloud slide 86)** [figuur]
+> **7. Welke standaarden zijn er voor virtualisatie? Geef volledige namen. Zijn er ook gelijksoortige standaarden voor containers? (Cloud slide 86)** [figuur]
 
 * <u>Open virtualization format (OVF)</u>
   * Beschrijft een manier om een virtuele machine in een bestand te steken
@@ -2310,7 +2318,7 @@ Je kan als je containers gebruikt met dezelfde hardware drie keer meer servers o
     * Certificaten en licenties
   * Dan kan je je VM gewoon naar ergens anders verplaatsen
 * <u>Open cloud computing interface (OCCI)</u>
-  * <img src="img/systeembeheer/image-20230611163633776.png" alt="image-20230611163633776" style="zoom:67%;" /> (figuur kennen)
+  * <img src="img/systeembeheer/image-20230611163633776.png" alt="image-20230611163633776"  /> (figuur kennen)
   * Vermijdt het gebruik van proprietaire IAAS APIs, dan zijn de commando's om VMs te starten en te stoppen overal hetzelfde
   * Werkt met een RESTful protocol voor alle commando's
   * Ondersteund door een aantal providers (en open source oplossingen), maar van de grote spelers alleen AWS
@@ -2327,6 +2335,23 @@ Je kan als je containers gebruikt met dezelfde hardware drie keer meer servers o
 Zowel OCCI en CIMI zijn weinig gebruikt, de standaard is nu Amazon EC2 (elastic cloud). Het is eigenlijk geen standaard want het is van Amazon, maar iedereen gebruikt het. EC2 heeft een REST API en een hele boel SDKs voor verschillende programmeertalen.
 
 Azure en Google Cloud voorzien gelijkaardige applicaties.
+
+
+
+Er zijn ook gelijkaardige standaarden voor containers:
+
+* <u>Open containers initiative (OCI)</u>
+  * OCI heeft hetzelfde doel als de standaarden die we hierboven hebben besproken, maar dan op containers. Er zijn twee manieren waarop dit wordt gedaan:
+    * Runtime specification (runtime-spec)
+      * Een API die standaardiseert hoe we de containers starten, stoppen, pauzeren, ...
+    * Image specification (image-spec)
+      * Zoals OVF, maar dan voor containers
+      * Vertelt hoe je een container in een file steekt
+* <u>Container networking interface (CNI)</u>
+  * CNI voorziet een interface tussen de container runtime in de netwerkimplementatie. 
+  * Voorziet ook third-party plugins voor moeilijkere oplossingen. 
+  * Het is een standaard die beschrijft hoe containers een IP-adres krijgen, hoe ze bereikbaar zijn, hoe ze aan routering doen, ...
+  * Wordt onder andere door Kubernetes gebruikt.
 
 
 
@@ -2348,9 +2373,18 @@ Openshift is basically Openshit.
 
 
 
-> **9. Iets met Diego cells want ik kon met herinneren dat Bruno dat belangrijk vond.**
+> **9. Wat is Cloud Foundry? Wat zijn Diego Cells? Vergelijk Cloud Foundry met OpenShift.**
 
-Bij cloud foundry draaide je applicatie in Diego cells. Dit was gelijkaardig aan een container en bestond voor Kubernetes. Later zijn de Diego cells vervangen door een soort Kubernetes (KubeCF). 
+Bij cloud foundry draaide je applicatie in Diego cells. Dit was gelijkaardig aan een container en bestond voordat Kubernetes bestond. Later zijn de Diego cells vervangen door een soort Kubernetes (KubeCF). 
+
+| Parameter                      | Cloud Foundry                                                | OpenShift                                                    |
+| ------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| Container orchestratie         | Eerst Diego, nu kubernetes                                   | Had van in het begin kubernetes                              |
+| Infrastructuur                 | Draait liefst op VMware Origin, maar kan ook op bare metal   | Kan draaien op RHEL of bare metal                            |
+| Minimal deveoper version       | CF Dev                                                       | Minishift of Code-ready containers                           |
+| Service registry and discovery | Consul en Eureka                                             | Eigen tooling en multicast                                   |
+| Zero downtime deployments      | Blue-green deployments: twee identieke versies draaien in productie. Updates overschrijven de productie versie die offline is, waarna de load naar deze machine wordt gestuurd | Gebruikt kubernetes zero downtime deployments                |
+| Build mechanism                | Buildpacks: je geeft je source code en er wordt vanzelf een container van gemaakt en gedeployed. Je bent afhankelijk van welke buildpacks er beschikbaar zijn. | Source to image conversion van source code van git repo naar docker images, waardoor ontwikkelaars zich niet moeten bezighouden met dockerfiles enzo. |
 
 
 
@@ -2366,6 +2400,34 @@ Bij cloud foundry draaide je applicatie in Diego cells. Dit was gelijkaardig aan
   * Vendor lock-in
   * Weinig debug en monitoring tools
   * Moeilijk om te beslissen wat serverless moet zijn
+
+
+
+> **Bonus: Welke standaarden bestaan er voor PAAS?**
+
+* <u>Cloud application management for platforms (CAMP)</u>
+  * Ontwikkeld door Oasis
+  * Een taal die de applicatieartefacten en de services die nodig zijn om ze uit te voeren en verbinden beschrijft
+  * Beetje hetzelfde als OCCI voor IAAS
+  * Voorziet een unificatie van management intefaces van PAAS providers d.m.v. REST calls
+  * In theorie zou je dan een applicatie op verschillende PAAS platformen kunnen draaien
+  * Er is een POC op openstack, maar niemand gebruikt het eigenlijk
+* <u>Topology and orchestration spec for cloud apps (TOSCA)</u>
+  * Zeer uitgebreide standaard
+  * Een blueprint maken
+    * Orchestratie van cloud services 
+    * Hun relaties 
+    * Hoe ze beheerd worden
+  * Probleem: de standaard zegt niet "hoe". De cloud vendor kan dit zelf beslissen.
+  * Implementaties
+    * Tosca-parser voor OpenStack
+    * OpenTosca
+    * Cloudify
+  * Initeel geen industriële uptake
+    * Maar plots heeft Red Hat de Tosca v2 diss track gedropt
+    * Is nog in ontwikkeling
+
+
 
 ### Windows server
 
@@ -2420,7 +2482,7 @@ Dan stel je je servers in dat ze enkel verbindingen aannemen van een jump server
 
 > **13. Wat is PXE booting? Leg uit en beschrijf de vershillende stappen. (Windows server slide 35)**[figuur]
 
-PXE booting zorgt ervoor dat wanneer een lege pc (zonder OS) aangesloten wordt op je bedrijfsnetwerk, deze op kan starten via het netwerk. Typisch gebruik je een DHCP server om deze informatie te voorzien. Dit verloopt in 6 stappen:
+PXE (preboot execution environment) booting zorgt ervoor dat wanneer een lege pc (zonder OS) aangesloten wordt op je bedrijfsnetwerk, deze op kan starten via het netwerk. Typisch gebruik je een DHCP server om deze informatie te voorzien. Dit verloopt in 6 stappen:
 
 <img src="img/systeembeheer/image-20230612155608082.png" alt="image-20230612155608082" style="zoom: 67%;" />
 
@@ -2466,7 +2528,7 @@ Ookal is AD **propriëtair**, zijn er wel een aantal **standaardprotocollen** di
 
 > **16. Wat is een domain controller? Wat zijn de implicaties?**
 
-De **domain controller** is het belangrijkste onderdeel van je domain. Dit is de server die zegt wat er mag en wat niet. Hij bevat alle informatie over de AD en is de belanglijkste target voor hackers. Als een hacker hierop binnenraakt heeft hij **domain dominance**, en kan hij doen wat hij wilt met jouw domain. Vanaf dat dit gebeurt moet je de stekker eruit trekken en teruggaan naar de vorige backup. Daarom kan je best de DC met Server Core deployen, zodat je zo weinig mogelijk **attack surface** hebt.
+De **domain controller** is het belangrijkste onderdeel van je domain. Dit is de server die zegt wat er mag en wat niet. Hij bevat alle informatie over de AD en is de belangrijkste target voor hackers. Als een hacker hierop binnenraakt heeft hij **domain dominance**, en kan hij doen wat hij wilt met jouw domain. Vanaf dat dit gebeurt moet je de stekker eruit trekken en teruggaan naar de vorige backup. Daarom kan je best de DC met Server Core deployen, zodat je zo weinig mogelijk **attack surface** hebt.
 
 Vroeger had je in Windows NT één primare en één of meer backup domain controllers, nu krijgen ze gewoon een nummertje dat hun prioriteit aangeeft. 
 
@@ -2532,7 +2594,7 @@ De belangrijkste functies van een orchestration tool zijn:
 
 <img src="img/systeembeheer/image-20230613110808105.png" alt="image-20230613110808105" style="zoom:67%;" />
 
-* End users: gebruikters van onze applicatie
+* End users: gebruikers van onze applicatie
 * Nodes: onze fysieke servers
   * Eén node kan ook overeenkomen met één VM, maar Bruno zegt dat dat makkelijk kan breken.
 * Control plane: stuurt aan
@@ -2582,7 +2644,7 @@ Er zijn drie dingen die je hiermee kunt doen:
   * Zit vast aan de lifecycle van een pod. Als de **pod verwijderd** wordt is de **volume weg**. Dit is nuttig voor bijvoorbeeld de cache.
   * Er kunnen meerdere verschillende volumes aan een pod hangen.
 * `PersistentVolumes`
-  * Blijft bestaan, zelfs als de pod weg is
+  * **Blijft bestaan**, zelfs als de pod weg is
   * Een pod kan niet rechtstreeks op een `persistentVolume` gekoppeld worden.
   * Verschillende access modes zoals: `ReadWriteOnce`, `ReadOnlyMany` en `ReadWriteMany`. Deze zeggen hoe hij gebruikt mag worden. `ReadWriteOnce` is bijvoorbeeld nuttig voor auditing.
 * `PersistentVolumeClaims`
@@ -2680,7 +2742,7 @@ Een **workload** is een higher-level object en kan een applicatie of service voo
 * <u>Deployment</u>
   * Biedt functionaliteit voor **updates** en **rollbacks**
   * Is een extentie van replicaset
-  * Wordt gebruikt voor **stateless** appllicaties
+  * Wordt gebruikt voor **stateless** applicaties
   * Hiervoor zijn twee *strategies*:
     * **Recreate**: alle huidige pods worden gekilled voordat nieuwe worden aangemaakt
     * **Rollingupdate**: doorheen de pods gaan en selectief updaten
@@ -2696,7 +2758,7 @@ Een **workload** is een higher-level object en kan een applicatie of service voo
   * Heeft ook updatestrategieën
 * <u>Statefulset</u>
   * Gelijkaardig aan een deployment, maar is **stateful**
-  * Houdt een **unieke identiteit** voor elke pod bij en houdt deez bij wanneer de pod opnieuw opgestart wordt
+  * Houdt een **unieke identiteit** voor elke pod bij en houdt deze bij wanneer de pod opnieuw opgestart wordt
 * <u>Job en cronjob</u>
   * Job: een bepaalde taak of script dat uitgevoerd moet worden, typisch wordt hier een minimale pod voor gemaakt
   * Cronjob: job die regelmatig uitgevoerd moet worden volgens een schema
@@ -2709,7 +2771,7 @@ Een **workload** is een higher-level object en kan een applicatie of service voo
 
 > **29. Welke soorten services worden er voorzien door Kubernetes? Leg elke service uit.**
 
-Een **service** voorziet netwerktoegang tot een set van **pods** en dient dus als entry point. De service is eigenlijk ook een soort loadbalancer en krijgt een vast IP-adres en weet welke instanties er achterliggend zitten en kan dus verkeer naar daar doorwijzen wanneer nodig. De dri voornamelijkste service types zijn:
+Een **service** voorziet netwerktoegang tot een set van **pods** en dient dus als entry point. De service is eigenlijk ook een soort loadbalancer en krijgt een vast IP-adres en weet welke instanties er achterliggend zitten en kan dus verkeer naar daar doorwijzen wanneer nodig. De drie voornamelijkste service types zijn:
 
 * <u>ClusterIP</u>
   * Een service die intern moet blijven, wordt ge-exposed op een intern virtueel IP
@@ -2757,7 +2819,7 @@ Merlijn heeft niet specifiek gezegd wat we moesten kennen dus de vragen hier zij
     * Management software probeert deze constant te bereiken
   * **Consistentie** en **betrouwbaarheid** van het systeem te verbeteren door menselijke fouten en **environment drift** te vermijden. 
   * Documenteert zichzelf
-  * Het vergemakkelijkt, schaalbaarheid, deployment en wijzigingen, disaster recovery, herbuikbaarheid en workflow automation
+  * Het vergemakkelijkt schaalbaarheid, deployment en wijzigingen, disaster recovery, herbuikbaarheid en workflow automation
 * <u>Operators en abstractions</u>
   * Nog hoger abstractieniveau
   * Een **operator** houdt het hele systeem dynamisch werkende (upgraden, monitoren, schalen, backups, ...)
@@ -2777,9 +2839,11 @@ Bij infrastructure as code beschrijf je je gehele infrastructuur als code. Dit g
   * **Dan** die acties **uitvoeren**
   * Als er niets te doen valt moet je ook niets doen, dus deze aanpak is **sneller**
 
-
+//TODO ik heb geen voor- en nadelen gezegd
 
 > **32. Wat is de automation fear cycle?**
+
+//TODO 
 
 
 
@@ -2842,6 +2906,8 @@ Als we bijvoorbeeld een programma dat een lijst sorteert op **imperatieve** wijz
 | **Juju**       | :green_heart:   | :green_heart:    | :green_heart: | :heart:        |
 | **DSC**        | :heart:         | :green_heart:    | :green_heart: | :heart:        |
 | **Kubernetes** | :yellow_heart:  | :green_heart:    | :green_heart: | :green_heart:  |
+
+
 
 
 
@@ -2949,7 +3015,7 @@ De TICK stack is een open-souce monitoring oplossing, TICK staat voor:
   * SQL-achtige querytaal
   * Ondersteuning voor 'continuous queries'
   * In InfluxDB v2 zitten Chronograph en Kapacitor erbij 
-* <u>Chronograph</u>
+* <u>Chronograf</u>
   * Data visualisatie, database management
   * Overzicht van de infrastructuur
   * Alert management
@@ -3002,7 +3068,7 @@ De belangrijkste link hier is de alerting frameworks blijkbaar.
   * Nadelen
     * Focus op logs
     * Alerting en anomaly detection vereisen mogelijks extra uitbreidingen
-* <u>Prometeus</u>
+* <u>Prometheus</u>
   * Eigenlijk enkel time-series database
   * **promQL** (lijkt niet op SQL)
   * Voordelen
@@ -3138,13 +3204,15 @@ single-point of failure backups replicatie
 Er zijn drie soorten network storage:
 
 * <u>Direct-attached storage (DAS)</u>
-  * Clients kunnen verbinden met één of meerdere servers waarop verschillende soorten data wordt opgeslagen
+  * Clients kunnen verbinden met één of meerdere servers 
   * Was ontwikkeld om opslagcapaciteit te schalen wanneer datavolumes groter werden door disk arrays aan een server te zetten
-  * De server waaruit toegang wordt verleend tot de verschillende opslagapparaten is een **single-point of failure**
+  * Dan kon je vanuit een server aan een storage device
+  * De server waaruit toegang wordt verleend tot de data storage is een **single-point of failure**, dus kan je er best meerdere zetten.
   * **Veel bandbreedte** wordt gebuikt voor toegang, opslag en backups van data
 * <u>Network-attached storage (NAS)</u>
   * Ontstaan uit DAS
-  * Eén of meer dedicated fileservers worden beschikbaar gemaakt in een LAN
+  * Eén of meer **dedicated fileservers** worden beschikbaar gemaakt in een LAN
+  * Ik had het hier moeilijk mee, maar het verschil tussen DAS en NAS is dat je met DAS **via** een server aan een disk array (*direct attached* aan die server) kan. Maar dat is eigenlijk al de meest advanced manier van DAS. DAS is eigenlijk maar zo simpel als de naam zegt. De storage van je computer is eigenlijk ook een DAS. Bij NAS ligt de nadruk op dedicated storage servers die je in je netwerk gaat zetten.
   * Het netwerk is nog steeds een bottleneck, zeker voor backups
 * <u>Storage-area network (SAN)</u>
   * Een **apart netwerk** met storage devices (storage area)
