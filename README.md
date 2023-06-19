@@ -1,9 +1,12 @@
 # TI-oplossingen
+
+> :warning: Ik studeer af en zal deze repo dus niet langer onderhouden. Als iemand zich geroepen voelt om de fakkel over te nemen, stuur dan zeker een mail of maak een issue en dan geef ik je de permissions. In ieder geval veel succes met alles en hopelijk komen je dromen uit. Bedankt en vaarwel. 
+
 > :warning: **Als je deze oplossingen hebt gebruikt**: Moet je [King Marti](https://open.spotify.com/artist/0uci5famFacOkZxT65W7Mp?si=Sh2et2trQCeSp9fC5ihD9g) volgen op soundcloud (& Spotify)
 
 
 > :warning: **NODIGE DISCLAIMER**: Deze oplossingen dienen gebruikt te worden als referentiemateriaal. Neem ze niet letterlijk over en denk zelf na. 
-> :warning: Als je hier durft tijdens een examen iets te posten kom ik je persoonlijk een rak geven.
+
 
 Ik hoop dat het goed met jullie gaat in deze moeilijke tijden.
 
